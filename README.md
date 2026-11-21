@@ -1,8 +1,11 @@
 # hypbr
 
 [![CI](https://github.com/wrong-nebula/hypbr/actions/workflows/ci.yml/badge.svg)](https://github.com/wrong-nebula/hypbr/actions/workflows/ci.yml)
+[![Live 3D Playground](https://img.shields.io/badge/Live_3D_Playground-hypbr.vercel.app-d97742?style=flat&logo=vercel)](https://hypbr.vercel.app)
 
 **Hybrid Neural + Exact Periodic Procedural PBR Material Synthesizer**
+
+> **Try it live in your browser:** **[hypbr.vercel.app](https://hypbr.vercel.app)** — interactive Three.js `r187` PBR studio with all **69** seamless 512px materials, real-time 6-channel weathering, HeightLerp A×B blending, A/B split compare, channel inspection, and one-click PNG ZIP export.
 
 `hypbr` synthesizes seamlessly tileable, physically calibrated **15-map PBR material sets** (glTF 2.0 ORM, 16-bit height, OpenGL/DirectX tangent normals, 8-azimuth horizon-based AO, bent normals, curvature, anisotropy, specular, and subsurface thickness) at arbitrary resolution with zero border seams.
 
@@ -42,10 +45,18 @@ List built-in procedural materials:
 hypbr list
 ```
 
-Synthesize a single seamless 15-map PBR material at `1024x1024` (with optional physical weathering `--wear 0.0..1.0`):
+Synthesize a single seamless 15-map PBR material at `1024x1024` (with optional physical weathering `--wear`, `--weather-preset`, or per-channel `--dirt/--wet/--moss/--rust/--dust`):
 
 ```bash
 hypbr synth patinated_verdigris_bronze --size 1024 --wear 0.35 --out ./output/pbr
+hypbr synth travertine_porous_stone --size 1024 --weather-preset mossy --wet 0.5 --out ./output/pbr
+```
+
+Apply optional multi-mode physical weathering (`aged`, `rain`, `mossy`, `rusty`, `dusty`, `coastal`, `abandoned`, or custom channels) to any existing `hypbr` material directory — writing updated 15 maps plus a packed `RGBA8` `weather_mask.png` (`R=Wear, G=Dirt/Rust, B=Wet, A=Moss`). Supports both zero-GPU exact periodic procedural masks (default) and optional Single-Encode `DepthPro2-S` neural masks (`--backend neural --patch-dir ...`):
+
+```bash
+hypbr weather ./output/pbr/travertine_porous_stone --preset abandoned --out ./output/pbr/travertine_abandoned
+hypbr weather ./output/pbr/diamond_tread_plate --rust 0.8 --wet 0.4 --out ./output/pbr/tread_rusty
 ```
 
 Physically blend two materials using Unreal/Substance-style HeightLerp (`height`, `cavity`, or `linear`) with recomputed 8-azimuth HBAO, curvature, and ORM:

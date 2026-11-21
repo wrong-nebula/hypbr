@@ -782,17 +782,20 @@ def node_hardops_plug_stamp(
 
 
 def _interp_grid_2d(g: np.ndarray, H: int, W: int, circular: bool) -> np.ndarray:
-    """Bilinearly upsample a 2D coarse grid to `(H, W)`; exact torus-periodic when `circular=True`."""
+    """C2-smooth quintic-interpolated 2D upsampler to `(H, W)`; exact torus-periodic when `circular=True`."""
     if not circular:
-        return F.interpolate(torch.from_numpy(g.astype(np.float32))[None, None], size=(H, W), mode="bilinear", align_corners=False)[0, 0].numpy()
+        return F.interpolate(torch.from_numpy(g.astype(np.float32))[None, None], size=(H, W), mode="bicubic", align_corners=False)[0, 0].numpy()
     gh, gw = g.shape
     arr = np.pad(g.astype(np.float32), ((0, 1), (0, 1)), mode="wrap")
     u = np.arange(W, dtype=np.float32) * (gw / float(W))
     v = np.arange(H, dtype=np.float32) * (gh / float(H))
     ix = np.floor(u).astype(np.int32)
     iy = np.floor(v).astype(np.int32)
-    fx = (u - ix)[None, :]
-    fy = (v - iy)[:, None]
+    tx = (u - ix)[None, :]
+    ty = (v - iy)[:, None]
+    # C2 Perlin quintic fade eliminates bilinear grid creases in downstream normal derivatives
+    fx = tx * tx * tx * (tx * (tx * 6.0 - 15.0) + 10.0)
+    fy = ty * ty * ty * (ty * (ty * 6.0 - 15.0) + 10.0)
     v00 = arr[iy[:, None], ix[None, :]]
     v10 = arr[iy[:, None], (ix + 1)[None, :]]
     v01 = arr[(iy + 1)[:, None], ix[None, :]]
@@ -819,28 +822,30 @@ def node_micro_grain(
     res_scale = (min(H, W) / 512.0) if res_invariant else 1.0
     rng = np.random.default_rng(int(seed))
     if kind == "brushed":
-        # Anisotropic fine machined brush lines (exact periodic when circular=True)
-        g = rng.standard_normal((max(8, int(scale * 4)), max(4, int(scale * 0.35)))).astype(np.float32)
-        t = _interp_grid_2d(g, H, W, circular=circ)
-        th = math.radians(float(angle_deg))
-        cycles = max(4, int(round(float(scale) * 24.0 / (2.0 * math.pi))))
-        yy_1d = np.arange(H, dtype=np.float32) / float(H)
-        if abs(th) < 1e-5:
-            grain = 0.65 * t + 0.35 * np.sin(yy_1d * (2.0 * math.pi * cycles))[:, None]
-        else:
+        # Authentic multi-scale anisotropic brushed-metal streaks (zero artificial sine scanlines!)
+        g_fine = rng.standard_normal((max(16, int(scale * 4.5)), max(4, int(scale * 0.28)))).astype(np.float32)
+        g_med = rng.standard_normal((max(8, int(scale * 1.8)), max(3, int(scale * 0.14)))).astype(np.float32)
+        t_fine = _interp_grid_2d(g_fine, H, W, circular=circ)
+        t_med = _interp_grid_2d(g_med, H, W, circular=circ)
+        grain = 0.68 * t_fine + 0.32 * t_med
+        if abs(float(angle_deg)) >= 1e-5:
+            th = math.radians(float(angle_deg))
+            cycles = max(4, int(round(float(scale) * 14.0 / (2.0 * math.pi))))
+            yy_1d = np.arange(H, dtype=np.float32) / float(H)
             xx_1d = np.arange(W, dtype=np.float32) / float(W)
             ry = math.sin(th) * xx_1d[None, :] + math.cos(th) * yy_1d[:, None]
-            grain = 0.65 * t + 0.35 * np.sin(ry * (2.0 * math.pi * cycles))
+            grain = 0.80 * grain + 0.20 * np.sin(ry * (2.0 * math.pi * cycles))
     elif kind == "cast":
-        # Cast-iron stipple (two-octave periodic fbm)
+        # Fine isotropic forged/cast metal stipple (two-octave C2 smooth periodic noise)
         g1 = rng.standard_normal((max(8, int(scale)), max(8, int(scale)))).astype(np.float32)
-        g2 = rng.standard_normal((max(16, int(scale * 2.5)), max(16, int(scale * 2.5)))).astype(np.float32)
+        g2 = rng.standard_normal((max(16, int(scale * 2.2)), max(16, int(scale * 2.2)))).astype(np.float32)
         t1 = _interp_grid_2d(g1, H, W, circular=circ)
         t2 = _interp_grid_2d(g2, H, W, circular=circ)
         grain = 0.55 * t1 + 0.45 * t2
     else:  # "mineral"
-        g = rng.standard_normal((max(16, int(scale * 2)), max(16, int(scale * 2)))).astype(np.float32)
-        grain = _interp_grid_2d(g, H, W, circular=circ)
+        g1 = rng.standard_normal((max(12, int(scale * 1.2)), max(12, int(scale * 1.2)))).astype(np.float32)
+        g2 = rng.standard_normal((max(24, int(scale * 2.6)), max(24, int(scale * 2.6)))).astype(np.float32)
+        grain = 0.50 * _interp_grid_2d(g1, H, W, circular=circ) + 0.50 * _interp_grid_2d(g2, H, W, circular=circ)
 
     N_g = dp.height_to_unit_normal(grain, strength=float(strength) * 2.2 * res_scale, circular=circ)
     return {"normal": dp.blend_rnm(base_n, N_g, detail_weight=1.0), "grain": grain.astype(np.float32)}

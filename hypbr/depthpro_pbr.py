@@ -207,20 +207,32 @@ def _fast_percentiles(arr: np.ndarray, qs: tuple[float, ...]) -> tuple[float, ..
     return tuple(float(v) for v in vals)
 
 
-def normalize_height(h: np.ndarray, clip_pct: float = 1.0) -> np.ndarray:
+def normalize_height(h: np.ndarray, clip_pct: float = 1.0, min_span: float = 0.0) -> np.ndarray:
     lo, hi = _fast_percentiles(h, (clip_pct, 100.0 - clip_pct))
-    if hi - lo < 1e-6:
+    span = hi - lo
+    if span < 1e-6:
         return np.full_like(h, 0.5, dtype=np.float32)
-    return np.clip((h - lo) / (hi - lo), 0.0, 1.0).astype(np.float32)
+    if min_span > 0.0 and span < min_span:
+        mid = 0.5 * (lo + hi)
+        return np.clip(0.5 + (h - mid) / min_span, 0.0, 1.0).astype(np.float32)
+    return np.clip((h - lo) / span, 0.0, 1.0).astype(np.float32)
 
 
-def height_to_unit_normal(h: np.ndarray, strength: float = 2.4, flip_y: bool = False, circular: bool = False) -> np.ndarray:
+def height_to_unit_normal(
+    h: np.ndarray,
+    strength: float = 2.4,
+    flip_y: bool = False,
+    circular: bool = False,
+    min_span: float = 0.0,
+) -> np.ndarray:
     p5, p95 = _fast_percentiles(h, (3.0, 97.0))
-    if p95 - p5 < 1e-6:
+    span = p95 - p5
+    if span < 1e-6:
         out = np.zeros(h.shape + (3,), dtype=np.float32)
         out[..., 2] = 1.0
         return out
-    hn = (h - p5) / (p95 - p5)
+    denom = max(span, min_span) if min_span > 0.0 else span
+    hn = (h - p5) / denom
     t = torch.from_numpy(hn.astype(np.float32))[None, None]
     mode = "circular" if circular else "reflect"
     t = F.pad(t, (1, 1, 1, 1), mode=mode)
@@ -525,24 +537,24 @@ def process_images(paths: list[Path], out_dir: Path, size: int = 512, strength: 
             h_v2 = screened_poisson_fusion(h_anchor, N_db_gl, lam=0.06, slope_gain=0.50)
             amp = float(np.clip(h_v2.std() / 0.55, 0.10, 1.15))
             N_base = height_to_unit_normal(gaussian_blur_np(h_v2, 0.8, circular=tileable),
-                                           strength=2.1 * amp * strength, flip_y=flip_y, circular=tileable)
+                                           strength=2.1 * amp * strength, flip_y=flip_y, circular=tileable, min_span=0.06)
             N_out = blend_rnm(N_base, N_db, detail_weight=0.80 * strength)
         else:
             h_v2 = detrend_surface(0.38 * m_lp + 0.62 * u_hp, degree=2)
             amp = float(np.clip(h_v2.std() / 0.55, 0.10, 1.15))
             N_base = height_to_unit_normal(gaussian_blur_np(h_v2, 0.8, circular=tileable),
-                                           strength=2.2 * amp * strength, flip_y=flip_y, circular=tileable)
+                                           strength=2.2 * amp * strength, flip_y=flip_y, circular=tileable, min_span=0.06)
             if db_map is not None:
                 N_db = db_map[stem] * 2.0 - 1.0
                 if not flip_y:
                     N_db[..., 1] = -N_db[..., 1]
-                N_db[..., 0] *= (0.15 + 0.85 * gate) * gconf
-                N_db[..., 1] *= (0.15 + 0.85 * gate) * gconf
+                N_db[..., 0] *= (0.15 + 0.85 * chroma_gate) * gconf
+                N_db[..., 1] *= (0.15 + 0.85 * chroma_gate) * gconf
                 N_db /= np.linalg.norm(N_db, axis=-1, keepdims=True) + 1e-8
                 N_out = blend_rnm(N_base, N_db, detail_weight=0.65 * strength)
             else:
                 N_out = N_base
-        h_norm = normalize_height(h_v2, clip_pct=1.0)
+        h_norm = normalize_height(h_v2, clip_pct=1.0, min_span=0.06)
 
         ao_u8 = height_to_ao(h_norm, strength=1.8, circular=tileable)
         h_u8 = np.clip(h_norm * 255.0 + 0.5, 0, 255).astype(np.uint8)

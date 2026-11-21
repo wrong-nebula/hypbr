@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>hypbr — Interactive 3D PBR Material Playground</title>
+  <meta name="description" content="Explore 69 seamless calibrated procedural PBR materials in Three.js with real-time 6-channel physical weathering, HeightLerp A×B blending, and engine-ready PNG ZIP export." />
+  <meta property="og:title" content="hypbr — Interactive 3D PBR Material Playground" />
+  <meta property="og:description" content="69 seamless calibrated procedural PBR materials · Real-time 6-channel weathering · HeightLerp blending · Three.js r187 AgX Studio" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3CradialGradient id='g' cx='35%25' cy='30%25' r='68%25'%3E%3Cstop offset='0%25' stop-color='%23f6b88f'/%3E%3Cstop offset='55%25' stop-color='%23c87042'/%3E%3Cstop offset='100%25' stop-color='%233d1e12'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='%230d1117'/%3E%3Ccircle cx='16' cy='16' r='11' fill='url(%23g)'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.187.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.187.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Studio Header -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="brand">
+          <span class="brand-dot" aria-hidden="true"></span>
+          <span class="brand-name">HYPBR</span>
+          <span class="brand-sub">PBR STUDIO</span>
+        </div>
+        <span class="divider-v" aria-hidden="true"></span>
+        <div class="active-mat-meta">
+          <span id="headerMatName" class="active-mat-name">Loading catalog…</span>
+          <span id="headerMatKind" class="tag-pill">—</span>
+          <span id="headerDeviceBadge" class="tag-pill tag-cpu">CPU</span>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="seg-control" role="group" aria-label="Synthesis resolution">
+          <button type="button" class="seg-btn" data-size="256" title="Fast interactive synthesis (256×256)">256px</button>
+          <button type="button" class="seg-btn active" data-size="512" title="Crisp high-detail synthesis (512×512)">512px</button>
+        </div>
+
+        <button type="button" id="btnSplitAB" class="hdr-btn" title="Split-screen Fresh (left) vs Weathered (right) comparison">
+          <span class="btn-icon">◧</span> Split A/B
+        </button>
+
+        <button type="button" id="btnHoldFresh" class="hdr-btn" title="Hold button or Spacebar to compare against Fresh">
+          Hold Fresh <kbd>Space</kbd>
+        </button>
+
+        <a id="btnDownloadZip" class="hdr-btn hdr-btn-accent disabled" href="#" download title="Download full seamless PNG map pack + QA report">
+          ↓ ZIP
+        </a>
+
+        <a class="hdr-btn" href="https://github.com/wrong-nebula/hypbr" target="_blank" rel="noopener noreferrer" title="View hypbr source & Python CLI on GitHub">
+          GitHub ↗
+        </a>
+      </div>
+    </header>
+
+    <!-- Main 3-Column Workspace -->
+    <div class="workspace">
+      <!-- Left Sidebar: Material Catalog Browser -->
+      <aside class="sidebar-left" aria-label="Material catalog">
+        <div class="panel-header">
+          <span class="panel-title">CATALOG</span>
+          <span id="catalogCount" class="mono-dim">0 / 0</span>
+        </div>
+
+        <div class="search-wrap">
+          <input
+            id="catalogSearch"
+            type="text"
+            placeholder="Filter materials… (press /)"
+            autocomplete="off"
+            spellcheck="false"
+            aria-label="Filter materials"
+          />
+          <button type="button" id="btnClearSearch" class="search-clear hidden" aria-label="Clear search">×</button>
+        </div>
+
+        <div id="categoryPills" class="category-pills" role="tablist" aria-label="Material categories"></div>
+
+        <div id="materialList" class="material-list" role="listbox" aria-label="Materials"></div>
+
+        <div class="sidebar-footer">
+          <span><kbd>↑</kbd><kbd>↓</kbd> Browse</span>
+          <span><kbd>⇧</kbd>Drag Light</span>
+          <span><kbd>Space</kbd> Fresh</span>
+          <span><kbd>1</kbd>-<kbd>6</kbd> Mesh</span>
+        </div>
+      </aside>
+
+      <!-- Center Viewport: Three.js PBR Stage + 2D Map Grid -->
+      <main class="viewport-pane">
+        <div id="viewportWrap" class="viewport-wrap">
+          <canvas id="glCanvas"></canvas>
+
+          <!-- Top Floating Viewport Toolbar -->
+          <div class="vp-toolbar">
+            <div class="vp-group" id="geomSelector" role="group" aria-label="Preview geometry">
+              <button type="button" class="vp-btn active" data-geom="sphere" title="High-subdivision Shaderball">Shaderball</button>
+              <button type="button" class="vp-btn" data-geom="box" title="Rounded Studio Cube">Cube</button>
+              <button type="button" class="vp-btn" data-geom="knot" title="Sculpted Torus Knot">Knot</button>
+              <button type="button" class="vp-btn" data-geom="cylinder" title="Capped Cylinder">Cylinder</button>
+              <button type="button" class="vp-btn" data-geom="plane" title="High-res Flat Displaced Tile">Flat Tile</button>
+              <button type="button" class="vp-btn" data-geom="wall2x2" title="2×2 Seamless Tile Wall for wrap-seam inspection">2×2 Wall</button>
+            </div>
+
+            <div class="vp-group">
+              <select id="lightRigSelect" class="vp-select" aria-label="Lighting rig" title="Studio Lighting Rig">
+                <option value="studio">Studio 3-Point</option>
+                <option value="raking" selected>Raking Grazing</option>
+                <option value="golden">Golden Hour</option>
+                <option value="overcast">Overcast Softbox</option>
+                <option value="darkrim">Dark Rim</option>
+              </select>
+              <button type="button" id="btnAutoStage" class="vp-btn active" title="Automatically pick the best preview geometry, lighting rig & UV repeat per material">Auto Scene</button>
+              <button type="button" id="btnAutoRotate" class="vp-btn" title="Toggle turntable auto-rotation (R)">Rotate</button>
+              <button type="button" id="btnSeamGrid" class="vp-btn hidden" title="Toggle 2×2 UV seam crosshair guide">Seam Lines</button>
+              <button type="button" id="btnSnapshot" class="vp-btn" title="Save crisp PNG screenshot of the 3D viewport">PNG</button>
+              <button type="button" id="btnResetCam" class="vp-btn" title="Reset camera view (double-click canvas)">Reset</button>
+            </div>
+          </div>
+
+          <!-- Shift+Drag Light Rig HUD -->
+          <div id="lightHudPill" class="light-hud-pill hidden" aria-hidden="true"></div>
+
+          <!-- Split A/B Divider Overlay -->
+          <div id="splitOverlay" class="split-overlay hidden" aria-hidden="true">
+            <div class="split-tag split-tag-left">FRESH (A)</div>
+            <div class="split-tag split-tag-right">WEATHERED (B)</div>
+            <div id="splitHandle" class="split-handle" role="slider" aria-label="Split comparison position" aria-valuemin="5" aria-valuemax="95" aria-valuenow="50" tabindex="0">
+              <div class="split-knob">⇆</div>
+            </div>
+          </div>
+
+          <!-- Hold-Fresh Active Indicator -->
+          <div id="freshHoldBanner" class="fresh-hold-banner hidden">
+            COMPARING FRESH (A) · RELEASE SPACE
+          </div>
+
+          <!-- Non-blocking Status / Synthesis Spinner -->
+          <div id="vpStatusPill" class="vp-status-pill hidden">
+            <span class="spinner" aria-hidden="true"></span>
+            <span id="vpStatusText">Synthesizing…</span>
+          </div>
+
+          <!-- Active Material Description Caption (bottom-left subtle) -->
+          <div id="vpCaption" class="vp-caption"></div>
+
+          <!-- 2D Diagnostic All-Maps Grid Overlay -->
+          <div id="mapGridOverlay" class="map-grid-overlay hidden">
+            <div class="map-grid-header">
+              <div class="map-grid-title-wrap">
+                <span class="panel-title">2D MAP DIAGNOSTIC SHEET</span>
+                <span id="mapGridSubtitle" class="mono-dim"></span>
+              </div>
+              <div class="map-grid-actions">
+                <label class="toggle-chip">
+                  <input type="checkbox" id="chkGrid2x2" />
+                  <span>2×2 Seamless Tile Preview</span>
+                </label>
+                <button type="button" id="btnCloseGrid" class="vp-btn">Back to 3D</button>
+              </div>
+            </div>
+            <div id="mapGridContent" class="map-grid-content"></div>
+          </div>
+
+          <!-- Single-Map Lightbox Modal inside viewport -->
+          <div id="mapLightbox" class="map-lightbox hidden">
+            <div class="map-lightbox-bar">
+              <span id="lightboxTitle" class="mono-bright"></span>
+              <div class="map-lightbox-actions">
+                <button type="button" id="btnLightbox3D" class="vp-btn">Inspect in 3D</button>
+                <button type="button" id="btnLightboxClose" class="vp-btn">Close</button>
+              </div>
+            </div>
+            <div id="lightboxStage" class="map-lightbox-stage"></div>
+          </div>
+
+          <!-- Bottom Floating Channel Inspector Bar -->
+          <div class="channel-bar" id="channelBar" role="tablist" aria-label="PBR Channel Inspector">
+            <button type="button" class="chan-btn active" data-channel="pbr">Final PBR</button>
+            <button type="button" class="chan-btn" data-channel="albedo_delit">Albedo</button>
+            <button type="button" class="chan-btn" data-channel="normal">Normal</button>
+            <button type="button" class="chan-btn" data-channel="roughness">Roughness</button>
+            <button type="button" class="chan-btn" data-channel="metallic">Metallic</button>
+            <button type="button" class="chan-btn" data-channel="ao">AO</button>
+            <button type="button" class="chan-btn" data-channel="height">Height</button>
+            <button type="button" class="chan-btn" data-channel="curvature">Curvature</button>
+            <button type="button" class="chan-btn" data-channel="weather_mask">Weather Mask</button>
+            <span class="chan-sep" aria-hidden="true"></span>
+            <button type="button" class="chan-btn chan-btn-grid" data-channel="grid2d">⊞ 2D All Maps</button>
+          </div>
+        </div>
+      </main>
+
+      <!-- Right Sidebar: Weathering Lab, Surface & Lighting, Blend, QA -->
+      <aside class="sidebar-right" aria-label="Weathering and Material Controls">
+        <div class="right-tabs" role="tablist">
+          <button type="button" class="rtab-btn active" data-rtab="weather">Weathering &amp; Surface</button>
+          <button type="button" class="rtab-btn" data-rtab="blend">Height Blend</button>
+        </div>
+
+        <div class="right-scroll">
+          <!-- TAB 1: Weathering Lab + Surface Controls -->
+          <div id="rtabWeather" class="rtab-pane active">
+            <section class="ctrl-section">
+              <div class="section-head">
+                <span class="panel-title">WEATHERING PRESETS</span>
+                <button type="button" id="btnResetWeather" class="link-btn">Reset</button>
+              </div>
+              <div id="weatherPresets" class="preset-grid"></div>
+            </section>
+
+            <section class="ctrl-section">
+              <div class="section-head">
+                <span class="panel-title">MULTI-MODE LAYERS</span>
+                <label class="inline-check" title="Automatically re-synthesize after slider release">
+                  <input type="checkbox" id="chkAutoSynth" checked />
+                  <span>Auto</span>
+                </label>
+              </div>
+
+              <div class="slider-stack" id="weatherSliders">
+                <div class="slider-row">
+                  <div class="slider-label"><span>Wear <small>edge chip</small></span><span id="valWear" class="mono-val">0.00</span></div>
+                  <input type="range" id="slWear" data-wkey="wear" min="0" max="1" step="0.05" value="0" />
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label"><span>Dirt <small>crevice grime</small></span><span id="valDirt" class="mono-val">0.00</span></div>
+                  <input type="range" id="slDirt" data-wkey="dirt" min="0" max="1" step="0.05" value="0" />
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label"><span>Wet <small>rain puddles</small></span><span id="valWet" class="mono-val">0.00</span></div>
+                  <input type="range" id="slWet" data-wkey="wet" min="0" max="1" step="0.05" value="0" />
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label"><span>Moss <small>lichen tufts</small></span><span id="valMoss" class="mono-val">0.00</span></div>
+                  <input type="range" id="slMoss" data-wkey="moss" min="0" max="1" step="0.05" value="0" />
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label"><span>Rust <small>gravity runoff</small></span><span id="valRust" class="mono-val">0.00</span></div>
+                  <input type="range" id="slRust" data-wkey="rust" min="0" max="1" step="0.05" value="0" />
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label"><span>Dust <small>settled ash</small></span><span id="valDust" class="mono-val">0.00</span></div>
+                  <input type="range" id="slDust" data-wkey="dust" min="0" max="1" step="0.05" value="0" />
+                </div>
+              </div>
+
+              <div class="seed-action-row">
+                <div class="seed-box">
+                  <label for="inputSeed">SEED</label>
+                  <input type="number" id="inputSeed" min="0" max="999999" step="1" placeholder="auto" />
+                  <button type="button" id="btnRandSeed" class="icon-btn" title="Randomize seed">↻</button>
+                </div>
+                <button type="button" id="btnApplySynth" class="primary-btn">Synthesize</button>
+              </div>
+            </section>
+
+            <section class="ctrl-section">
+              <div class="section-head">
+                <span class="panel-title">SURFACE &amp; LIGHTING</span>
+                <button type="button" id="btnResetSurface" class="link-btn">Defaults</button>
+              </div>
+
+              <div class="slider-stack">
+                <div class="slider-row">
+                  <div class="slider-label"><span>UV Repeat</span><span id="valRepeat" class="mono-val">4.0×</span></div>
+                  <input type="range" id="slRepeat" min="1" max="8" step="0.5" value="4" />
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label"><span>Normal Strength</span><span id="valNormal" class="mono-val">1.00</span></div>
+                  <input type="range" id="slNormal" min="0" max="2.5" step="0.05" value="1.0" />
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label"><span>Displacement</span><span id="valDisp" class="mono-val">0.012</span></div>
+                  <input type="range" id="slDisp" min="0" max="0.12" step="0.002" value="0.012" />
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label"><span>Roughness Mult</span><span id="valRough" class="mono-val">1.00×</span></div>
+                  <input type="range" id="slRough" min="0.2" max="2.0" step="0.05" value="1.0" />
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label"><span>Metalness Scale</span><span id="valMetal" class="mono-val">1.00×</span></div>
+                  <input type="range" id="slMetal" min="0" max="1.5" step="0.05" value="1.0" />
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label"><span>Light Azimuth <small>⇧Drag</small></span><span id="valAzimuth" class="mono-val">38°</span></div>
+                  <input type="range" id="slAzimuth" min="0" max="360" step="1" value="38" />
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label"><span>Light Elevation</span><span id="valElevation" class="mono-val">14°</span></div>
+                  <input type="range" id="slElevation" min="6" max="78" step="1" value="14" />
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label"><span>IBL Strength</span><span id="valIbl" class="mono-val">1.00×</span></div>
+                  <input type="range" id="slIbl" min="0" max="2.0" step="0.05" value="1.0" />
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label"><span>Specular AA <small>anti-shimmer</small></span><span id="valSpecAA" class="mono-val">1.00×</span></div>
+                  <input type="range" id="slSpecAA" min="0" max="2.0" step="0.05" value="1.0" />
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label"><span>Exposure</span><span id="valExposure" class="mono-val">1.08</span></div>
+                  <input type="range" id="slExposure" min="0.4" max="2.0" step="0.02" value="1.08" />
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- TAB 2: Height-Lerp Material Blend -->
+          <div id="rtabBlend" class="rtab-pane">
+            <section class="ctrl-section">
+              <div class="section-head">
+                <span class="panel-title">HEIGHT-LERP BLENDER</span>
+                <span class="mono-dim">hypbr.blend</span>
+              </div>
+              <p class="helper-copy">
+                Physically blends Material A (selected in catalog) with Material B using heightmap or cavity masking, linear albedo, and unit-renormalized normals.
+              </p>
+
+              <div class="field-group">
+                <label class="field-lbl">Material A (Base)</label>
+                <div id="blendMatALabel" class="readonly-pill">—</div>
+              </div>
+
+              <div class="field-group">
+                <label class="field-lbl" for="blendMatBSelect">Material B (Overlay)</label>
+                <select id="blendMatBSelect" class="ctrl-select"></select>
+              </div>
+
+              <div class="field-group">
+                <label class="field-lbl">Blend Mode</label>
+                <div class="seg-control seg-full" id="blendModeSeg">
+                  <button type="button" class="seg-btn active" data-bmode="height">Height</button>
+                  <button type="button" class="seg-btn" data-bmode="cavity">Cavity</button>
+                  <button type="button" class="seg-btn" data-bmode="linear">Linear</button>
+                </div>
+              </div>
+
+              <div class="slider-stack">
+                <div class="slider-row">
+                  <div class="slider-label"><span>Blend Factor (B)</span><span id="valBlendFactor" class="mono-val">0.50</span></div>
+                  <input type="range" id="slBlendFactor" min="0" max="1" step="0.05" value="0.5" />
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label"><span>Edge Contrast</span><span id="valBlendContrast" class="mono-val">0.08</span></div>
+                  <input type="range" id="slBlendContrast" min="0.02" max="0.30" step="0.01" value="0.08" />
+                </div>
+              </div>
+
+              <div class="blend-btn-row">
+                <button type="button" id="btnRunBlend" class="primary-btn">Blend A × B</button>
+                <button type="button" id="btnExitBlend" class="secondary-btn hidden">Exit Blend</button>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <!-- Pinned QA Verification Telemetry Card -->
+        <section class="qa-card" aria-label="Material verification telemetry">
+          <div class="qa-head">
+            <div class="qa-head-left">
+              <span class="panel-title">QA VERIFY</span>
+              <span id="qaBadge" class="qa-badge qa-pending">—</span>
+            </div>
+            <span id="qaLatency" class="mono-dim">—</span>
+          </div>
+
+          <div class="qa-grid">
+            <div class="qa-metric">
+              <span class="qa-k">Max Seam</span>
+              <span id="qaSeam" class="qa-v">—</span>
+            </div>
+            <div class="qa-metric">
+              <span class="qa-k">Norm Err</span>
+              <span id="qaNormErr" class="qa-v">—</span>
+            </div>
+            <div class="qa-metric">
+              <span class="qa-k">Roughness</span>
+              <span id="qaRough" class="qa-v">—</span>
+            </div>
+            <div class="qa-metric">
+              <span class="qa-k">Metallic</span>
+              <span id="qaMetal" class="qa-v">—</span>
+            </div>
+            <div class="qa-metric">
+              <span class="qa-k">AO Mean</span>
+              <span id="qaAO" class="qa-v">—</span>
+            </div>
+            <div class="qa-metric">
+              <span class="qa-k">ORM Diff</span>
+              <span id="qaOrm" class="qa-v">—</span>
+            </div>
+          </div>
+
+          <div id="qaMessages" class="qa-messages hidden"></div>
+
+          <div class="qa-footer">
+            <span id="qaCacheHash" class="mono-dim" title="Content-addressed cache key">—</span>
+            <button type="button" id="btnCopyPath" class="link-btn" title="Copy local cache folder path">Copy Path</button>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hypbr"
-version = "0.5.0"
+version = "0.6.0"
 description = "Hybrid Neural + Exact Periodic Procedural PBR Material Synthesizer (15 calibrated PBR maps)"
 readme = "README.md"
 license = { text = "MIT" }

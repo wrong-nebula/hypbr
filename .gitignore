@@ -9,3 +9,5 @@ output/
 *.onnx
 *.pt
 *.pth
+.vercel/
+playground/.cache/

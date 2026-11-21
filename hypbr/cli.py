@@ -13,6 +13,7 @@ from .exporters import SUPPORTED_TARGETS, export_material
 from .preview import serve_preview
 from .synthesize import list_materials, synthesize_all, synthesize_hardops_plate, synthesize_material
 from .verify import verify_material
+from .weathering import WEATHER_ARCHETYPES, WEATHER_PRESETS, weather_material
 
 
 def cmd_list(_args: argparse.Namespace) -> int:
@@ -33,15 +34,31 @@ def _resolve_targets(raw: str) -> list[str]:
 
 def cmd_synth(args: argparse.Namespace) -> int:
     t0 = time.time()
+    w_kw = dict(
+        weather_preset=args.weather_preset,
+        dirt=args.dirt,
+        wet=args.wet,
+        moss=args.moss,
+        rust=args.rust,
+        dust=args.dust,
+    )
     if args.material == "all":
-        paths = synthesize_all(args.out, size=args.size, wear=args.wear)
+        paths = synthesize_all(args.out, size=args.size, wear=args.wear, **w_kw)
         print(f"Synthesized {len(paths)} seamless 15-map PBR sets in {time.time() - t0:.1f}s -> {args.out}")
     elif args.material == "hardops_plate":
         paths = [synthesize_hardops_plate(args.out / "hardops_plate", size=args.size)]
         print(f"Synthesized hardops_plate in {time.time() - t0:.2f}s -> {paths[0]}")
     else:
-        paths = [synthesize_material(args.material, args.out / args.material, size=args.size, seed=args.seed, wear=args.wear)]
-        print(f"Synthesized {args.material} (15 maps, {args.size}x{args.size}, wear={args.wear:.2f}) in {time.time() - t0:.2f}s -> {paths[0]}")
+        paths = [
+            synthesize_material(
+                args.material, args.out / args.material, size=args.size, seed=args.seed, wear=args.wear, **w_kw
+            )
+        ]
+        preset_str = f", preset={args.weather_preset}" if args.weather_preset else ""
+        print(
+            f"Synthesized {args.material} (15 maps, {args.size}x{args.size}, wear={args.wear:.2f}{preset_str}) "
+            f"in {time.time() - t0:.2f}s -> {paths[0]}"
+        )
 
     if args.export:
         targets = _resolve_targets(args.export)
@@ -50,6 +67,34 @@ def cmd_synth(args: argparse.Namespace) -> int:
                 exp_dir = mat_dir / "exports" / tgt
                 export_material(mat_dir, exp_dir, target=tgt, name=mat_dir.name)
             print(f"  Exported {mat_dir.name} -> {', '.join(targets)} ({mat_dir / 'exports'})")
+    return 0
+
+
+def cmd_weather(args: argparse.Namespace) -> int:
+    t0 = time.time()
+    out = weather_material(
+        args.src,
+        args.out,
+        preset=args.preset,
+        wear=args.wear,
+        dirt=args.dirt,
+        wet=args.wet,
+        moss=args.moss,
+        rust=args.rust,
+        dust=args.dust,
+        material_kind=args.kind,
+        seed=args.seed,
+        backend=args.backend,
+        patch_dir=args.patch_dir,
+        vit_patch=args.vit_patch,
+    )
+    print(f"Weathered {args.src.name} (backend={args.backend}, preset={args.preset or 'custom'}) in {time.time() - t0:.2f}s -> {out}")
+    if args.export:
+        targets = _resolve_targets(args.export)
+        for tgt in targets:
+            exp_dir = out / "exports" / tgt
+            export_material(out, exp_dir, target=tgt, name=out.name)
+        print(f"  Exported {out.name} -> {', '.join(targets)} ({out / 'exports'})")
     return 0
 
 
@@ -139,12 +184,61 @@ def build_parser() -> argparse.ArgumentParser:
     p_synth.add_argument("--seed", type=int, default=None, help="Optional deterministic seed override")
     p_synth.add_argument("--wear", type=float, default=0.0, help="Weathering intensity 0.0 (fresh) to 1.0 (weathered)")
     p_synth.add_argument(
+        "--weather-preset",
+        choices=sorted(WEATHER_PRESETS),
+        default=None,
+        help=f"Optional multi-layer weathering preset ({', '.join(sorted(WEATHER_PRESETS))})",
+    )
+    p_synth.add_argument("--dirt", type=float, default=None, help="Optional crevice dirt/grime intensity [0, 1]")
+    p_synth.add_argument("--wet", type=float, default=None, help="Optional rain & puddle moisture intensity [0, 1]")
+    p_synth.add_argument("--moss", type=float, default=None, help="Optional moss & lichen growth intensity [0, 1]")
+    p_synth.add_argument("--rust", type=float, default=None, help="Optional rust/verdigris/runoff intensity [0, 1]")
+    p_synth.add_argument("--dust", type=float, default=None, help="Optional settled dust/ash intensity [0, 1]")
+    p_synth.add_argument(
         "--export",
         type=str,
         default=None,
         help=f"Comma-separated engine export targets ({', '.join(SUPPORTED_TARGETS)}, all)",
     )
     p_synth.set_defaults(func=cmd_synth)
+
+    p_w = sub.add_parser("weather", help="Apply optional multi-mode physical or neural weathering to a hypbr material")
+    p_w.add_argument("src", type=Path, help="Source hypbr material directory")
+    p_w.add_argument("--out", type=Path, required=True, help="Output directory for weathered material")
+    p_w.add_argument(
+        "--preset",
+        choices=sorted(WEATHER_PRESETS),
+        default=None,
+        help=f"Named weathering preset ({', '.join(sorted(WEATHER_PRESETS))})",
+    )
+    p_w.add_argument("--wear", type=float, default=None, help="Convex edge wear intensity [0, 1]")
+    p_w.add_argument("--dirt", type=float, default=None, help="Crevice dirt/grime intensity [0, 1]")
+    p_w.add_argument("--wet", type=float, default=None, help="Rain & standing puddle moisture intensity [0, 1]")
+    p_w.add_argument("--moss", type=float, default=None, help="Biological moss & lichen intensity [0, 1]")
+    p_w.add_argument("--rust", type=float, default=None, help="Rust, verdigris & gravity runoff intensity [0, 1]")
+    p_w.add_argument("--dust", type=float, default=None, help="Settled mineral dust intensity [0, 1]")
+    p_w.add_argument(
+        "--kind",
+        choices=WEATHER_ARCHETYPES,
+        default=None,
+        help="Optional physical material archetype override (auto-inferred if omitted)",
+    )
+    p_w.add_argument("--seed", type=int, default=42, help="Deterministic weathering seed (default: 42)")
+    p_w.add_argument(
+        "--backend",
+        choices=("procedural", "neural"),
+        default="procedural",
+        help="Mask backend: zero-GPU 'procedural' (default) or Single-Encode DepthPro2-S 'neural'",
+    )
+    p_w.add_argument("--patch-dir", type=Path, default=None, help="Directory of neural *_patch.pt branch weights")
+    p_w.add_argument("--vit-patch", type=Path, default=None, help="Optional DepthPro2-S ViT backbone patch (.pt)")
+    p_w.add_argument(
+        "--export",
+        type=str,
+        default=None,
+        help=f"Comma-separated engine export targets ({', '.join(SUPPORTED_TARGETS)}, all)",
+    )
+    p_w.set_defaults(func=cmd_weather)
 
     p_exp = sub.add_parser("export", help="Export an existing hypbr material directory to game engines & 3D standards")
     p_exp.add_argument("src", type=Path, help="Source hypbr material directory")

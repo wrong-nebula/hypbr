@@ -114,14 +114,23 @@ def _periodic_fbm(H: int, W: int, seed: int, octaves=(4, 8, 16, 32, 64)) -> np.n
 
 
 def _periodic_grad(h: np.ndarray):
-    """Exact periodic central differences (zero boundary seam!)."""
-    gx = 0.5 * (np.roll(h, -1, axis=1) - np.roll(h, 1, axis=1))
-    gy = 0.5 * (np.roll(h, -1, axis=0) - np.roll(h, 1, axis=0))
+    """Exact periodic 3x3 isotropic Scharr gradient operator (zero boundary seam & optimal diagonal AA!)."""
+    h_l = np.roll(h, 1, axis=1)
+    h_r = np.roll(h, -1, axis=1)
+    h_u = np.roll(h, 1, axis=0)
+    h_d = np.roll(h, -1, axis=0)
+    h_ul = np.roll(h_u, 1, axis=1)
+    h_ur = np.roll(h_u, -1, axis=1)
+    h_dl = np.roll(h_d, 1, axis=1)
+    h_dr = np.roll(h_d, -1, axis=1)
+    # Scharr 3x3 weights [3, 10, 3] / 32 preserve exact magnitude of 2-tap central diff with isotropic AA
+    gx = (3.0 * (h_ur - h_ul) + 10.0 * (h_r - h_l) + 3.0 * (h_dr - h_dl)) * (1.0 / 32.0)
+    gy = (3.0 * (h_dl - h_ul) + 10.0 * (h_d - h_u) + 3.0 * (h_dr - h_ur)) * (1.0 / 32.0)
     return gx.astype(np.float32), gy.astype(np.float32)
 
 
 def _height_to_normal_periodic(h: np.ndarray, slope: float = 18.0) -> np.ndarray:
-    """Convert periodic heightfield to OpenGL +Y tangent-space normal (resolution-invariant to 512px)."""
+    """Convert periodic heightfield to OpenGL +Y tangent-space normal (resolution-invariant to 512px, Scharr AA)."""
     gx, gy = _periodic_grad(h)
     eff_slope = float(slope) * (min(h.shape[0], h.shape[1]) / 512.0)
     return ng.slopes_to_normal(-gx * eff_slope, +gy * eff_slope)
@@ -132,6 +141,17 @@ def _smoothstep(e0: float, e1: float, x: np.ndarray) -> np.ndarray:
         return (x >= e0).astype(np.float32)
     t = np.clip((x - e0) / (e1 - e0), 0.0, 1.0)
     return (t * t * (3.0 - 2.0 * t)).astype(np.float32)
+
+
+def _smin(a: np.ndarray, b: np.ndarray, k: float = 0.08) -> np.ndarray:
+    """C1-smooth polynomial minimum (eliminates sharp V-creases at SDF intersections)."""
+    h = np.clip(0.5 + 0.5 * (b - a) / k, 0.0, 1.0)
+    return (b * (1.0 - h) + a * h - k * h * (1.0 - h)).astype(np.float32)
+
+
+def _smax(a: np.ndarray, b: np.ndarray, k: float = 0.08) -> np.ndarray:
+    """C1-smooth polynomial maximum."""
+    return (-_smin(-a, -b, k)).astype(np.float32)
 
 
 def _periodic_worley(u: np.ndarray, v: np.ndarray, n: int, seed: int):
@@ -156,6 +176,66 @@ def _periodic_worley(u: np.ndarray, v: np.ndarray, n: int, seed: int):
             f2 = np.where(m1, f1, np.minimum(f2, d))
             f1 = np.where(m1, d, f1)
     return f1, f2
+
+
+def _periodic_hammer_peen(u: np.ndarray, v: np.ndarray, n: int, seed: int, beta: float = 4.6):
+    """C-infinity smooth, order-independent 5x5 LogSumExp lower envelope of 3D ball-peen hammer strikes (ZERO Voronoi creases!)."""
+    rng = np.random.default_rng(seed)
+    jx = rng.uniform(0.18, 0.82, (n, n)).astype(np.float32)
+    jy = rng.uniform(0.18, 0.82, (n, n)).astype(np.float32)
+    # Natural artisan strike depth & peen curvature radius variance
+    z_off = rng.uniform(-0.08, 0.10, (n, n)).astype(np.float32)
+    r_inv2 = rng.uniform(1.15, 1.72, (n, n)).astype(np.float32)
+    gx, gy = u * n, v * n
+    ix = np.floor(gx).astype(np.int32)
+    iy = np.floor(gy).astype(np.int32)
+    fx, fy = gx - ix, gy - iy
+    # Log-sum-exp smooth-min over full 5x5 periodic neighborhood (exact symmetry + zero 3x3 boundary steps!)
+    b_min = np.full_like(u, 1e6, dtype=np.float32)
+    bowls = []
+    for dy in (-2, -1, 0, 1, 2):
+        ny = (iy + dy) % n
+        for dx in (-2, -1, 0, 1, 2):
+            nx = (ix + dx) % n
+            ddx = dx + jx[ny, nx] - fx
+            ddy = dy + jy[ny, nx] - fy
+            bowl = z_off[ny, nx] + (ddx * ddx + ddy * ddy) * r_inv2[ny, nx]
+            bowls.append(bowl)
+            b_min = np.minimum(b_min, bowl)
+    acc = np.zeros_like(u, dtype=np.float32)
+    for bowl in bowls:
+        acc += np.exp(np.clip(-beta * (bowl - b_min), -40.0, 0.0))
+    out = b_min - np.log(np.maximum(acc, 1e-12)) / beta
+    # Exact full-range min/max normalization (ZERO percentile flat-disc clipping!)
+    lo, hi = float(out.min()), float(out.max())
+    return ((out - lo) / max(hi - lo, 1e-4)).astype(np.float32)
+
+
+def _periodic_worley_id(u: np.ndarray, v: np.ndarray, n: int, seed: int):
+    """Fast vectorized 100% periodic 2D Worley/Voronoi returning (F1, F2, cell_hash in [0,1])."""
+    rng = np.random.default_rng(seed)
+    jx = rng.uniform(0.14, 0.86, (n, n)).astype(np.float32)
+    jy = rng.uniform(0.14, 0.86, (n, n)).astype(np.float32)
+    ch = rng.uniform(0.0, 1.0, (n, n)).astype(np.float32)
+    gx, gy = u * n, v * n
+    ix = np.floor(gx).astype(np.int32)
+    iy = np.floor(gy).astype(np.int32)
+    fx, fy = gx - ix, gy - iy
+    f1 = np.full_like(u, 1e6, dtype=np.float32)
+    f2 = np.full_like(u, 1e6, dtype=np.float32)
+    cid = np.zeros_like(u, dtype=np.float32)
+    for dy in (-1, 0, 1):
+        ny = (iy + dy) % n
+        for dx in (-1, 0, 1):
+            nx = (ix + dx) % n
+            ddx = dx + jx[ny, nx] - fx
+            ddy = dy + jy[ny, nx] - fy
+            d = np.sqrt(ddx * ddx + ddy * ddy)
+            m1 = d < f1
+            f2 = np.where(m1, f1, np.minimum(f2, d))
+            f1 = np.where(m1, d, f1)
+            cid = np.where(m1, ch[ny, nx], cid)
+    return f1, f2, cid
 
 
 def _lit_preview(N: np.ndarray, ao: np.ndarray, rough: np.ndarray, tint: tuple[float, float, float]) -> np.ndarray:
@@ -269,27 +349,32 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
     v = yy / float(H)
 
     if detail_id == "corrugated_cardboard":
-        # 24 vertical flutes + subtle horizontal paper-liner fibers + occasional slight crush wave
-        flutes = 0.5 + 0.5 * np.sin(2.0 * math.pi * u * 24.0)
-        fibers = _periodic_fbm(H, W, seed + 1, (16, 32, 64))
-        crease = np.exp(-(((v - 0.5) / 0.018) ** 2)) * 0.28
-        h = 0.55 * flutes - crease + 0.08 * fibers
-        cav = np.clip((1.0 - flutes) * 0.7 + crease * 1.5, 0.0, 1.0)
-        ridge = np.clip(flutes ** 2, 0.0, 1.0)
-        return h, 14.0, cav, 0.78, ridge
+        # 24 smooth vertical fluted kraft-liner ripples + subtle recycled cellulose grain (zero cross-hatch burlap weave!)
+        w_wave = 0.008 * _periodic_fbm(H, W, seed + 1, (2, 4))
+        flutes = 0.5 + 0.5 * np.sin(2.0 * math.pi * (u * 24.0 + w_wave))
+        flutes_s = np.power(np.clip(flutes, 0.0, 1.0), 0.72)
+        # Subtle recycled kraft pulp grain (reduced cross-axis noise so vertical flutes read crisp & silky paperboard)
+        fibers = _periodic_fbm(H, W, seed + 2, (16, 32, 64))
+        crush = 0.032 * _periodic_fbm(H, W, seed + 4, (2, 4, 8))
+        h = 0.22 + 0.62 * flutes_s + 0.036 * fibers + crush
+        cav = np.clip((1.0 - flutes_s) * 0.80, 0.0, 1.0)
+        ridge = np.clip(flutes_s ** 1.5, 0.0, 1.0)
+        return h.astype(np.float32), 13.5, cav.astype(np.float32), 0.84, ridge.astype(np.float32)
 
     if detail_id == "knurled_metal_grip":
-        # Classic 45-deg diamond machined knurling: sharp pyramid peaks + recessed V-grooves
+        # Classic 45-deg diamond machined knurling: chamfered flat-topped pyramids + smooth-filleted V-grooves
         a = (u + v) * 14.0
         b = (u - v) * 14.0
-        da = np.abs((a % 1.0) - 0.5) * 2.0
-        db = np.abs((b % 1.0) - 0.5) * 2.0
-        # Flat-topped truncated pyramids (like real lathe-cut knurling)
-        pyr = np.minimum(1.0 - da, 1.0 - db)
-        h = np.clip(pyr * 1.35, 0.0, 0.82)
+        fa = ((a % 1.0) - 0.5) * 2.0
+        fb = ((b % 1.0) - 0.5) * 2.0
+        # C1-smooth abs eliminates razor 1-texel V-notch flips at groove centers
+        da = np.sqrt(fa * fa + 0.018) / math.sqrt(1.018)
+        db = np.sqrt(fb * fb + 0.018) / math.sqrt(1.018)
+        pyr = _smin(1.0 - da, 1.0 - db, 0.08)
+        h = 0.82 * _smoothstep(0.02, 0.66, pyr)
         cav = _smoothstep(0.28, 0.02, h)
         ridge = _smoothstep(0.65, 0.82, h)
-        return h, 14.0, cav, 0.28, ridge
+        return h.astype(np.float32), 14.0, cav.astype(np.float32), 0.28, ridge.astype(np.float32)
 
     if detail_id == "woven_denim_twill":
         # Authentic fine 3x1 diagonal jeans denim twill: dense 56x56 subtle indigo warp & fine diagonal twill cords (ZERO chunky tweed blocks!)
@@ -307,7 +392,7 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         return h.astype(np.float32), 6.5, cav.astype(np.float32), 0.86, ridge.astype(np.float32)
 
     if detail_id == "quilted_leather_stitch":
-        # 4x4 diamond-quilted upholstery leather with plump pillowed domes + crisp saddle-stitch dashes + fine grain
+        # 4x4 diamond-quilted full-grain saddle leather: plump pillows + Voronoi pebble pores + stitch-hole puckering + twisted thread
         a = (u + v) * 4.0
         b = (u - v) * 4.0
         fa = np.abs((a % 1.0) - 0.5) * 2.0
@@ -315,50 +400,85 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         da = 1.0 - fa
         db = 1.0 - fb
         seam_d = np.minimum(da, db)
-        pillow = np.sqrt(np.clip(1.0 - 0.74 * (fa * fa + fb * fb) * 0.5, 0.04, 1.0))
-        seam_cut = np.exp(-((seam_d / 0.045) ** 2))
-        st_a = np.exp(-((da / 0.016) ** 2)) * _smoothstep(0.15, 0.45, np.sin(2.0 * math.pi * b * 10.0))
-        st_b = np.exp(-((db / 0.016) ** 2)) * _smoothstep(0.15, 0.45, np.sin(2.0 * math.pi * a * 10.0))
+        # Organic subtle leather sag/wrinkle modulation so diamonds look hand-upholstered, not rigid polygons
+        sag = 0.025 * _periodic_fbm(H, W, seed + 4, (4, 8, 16))
+        pillow = np.sqrt(np.clip(1.0 - 0.72 * (fa * fa + fb * fb) * 0.5, 0.06, 1.0)) + sag
+        seam_cut = np.exp(-((seam_d / 0.042) ** 2))
+        # Stitch-hole tension puckering radiating softly away from each stitch seam
+        pucker_a = np.exp(-((da / 0.14) ** 2)) * np.cos(2.0 * math.pi * b * 10.0)
+        pucker_b = np.exp(-((db / 0.14) ** 2)) * np.cos(2.0 * math.pi * a * 10.0)
+        pucker = 0.018 * (pucker_a + pucker_b) * (1.0 - seam_cut)
+        # Crisp recessed needle holes + raised 2-ply twisted saddle-stitch dashes
+        st_phase_a = np.sin(2.0 * math.pi * b * 10.0)
+        st_phase_b = np.sin(2.0 * math.pi * a * 10.0)
+        twist_a = 0.85 + 0.15 * np.sin(2.0 * math.pi * b * 50.0)
+        twist_b = 0.85 + 0.15 * np.sin(2.0 * math.pi * a * 50.0)
+        st_a = np.exp(-((da / 0.015) ** 2)) * _smoothstep(0.18, 0.52, st_phase_a) * twist_a
+        st_b = np.exp(-((db / 0.015) ** 2)) * _smoothstep(0.18, 0.52, st_phase_b) * twist_b
         stitches = np.maximum(st_a, st_b)
-        pebble = _periodic_fbm(H, W, seed + 5, (24, 48, 64))
-        h = pillow * (1.0 - 0.52 * seam_cut) + 0.16 * stitches + 0.025 * pebble * (1.0 - 0.7 * seam_cut)
-        cav = np.clip(seam_cut * 1.10, 0.0, 1.0)
-        ridge = np.clip(stitches * 1.2 + _smoothstep(0.76, 0.98, pillow) * 0.45, 0.0, 1.0)
-        return h, 16.5, cav, 0.28, ridge
+        # True Voronoi pebble-grain leather pores (organic cellular hides!)
+        f1_p, f2_p = _periodic_worley(u, v, 44, seed + 5)
+        pore_crease = 1.0 - _smoothstep(0.02, 0.18, f2_p - f1_p)
+        pebble = np.clip(1.0 - 0.55 * pore_crease - 0.25 * f1_p, 0.0, 1.0)
+        h = pillow * (1.0 - 0.48 * seam_cut) + pucker + 0.17 * stitches + 0.036 * pebble * (1.0 - 0.75 * seam_cut)
+        cav = np.clip(seam_cut * 1.05 + 0.12 * pore_crease * (1.0 - seam_cut), 0.0, 1.0)
+        ridge = np.clip(stitches * 1.25 + _smoothstep(0.74, 0.96, pillow) * 0.42, 0.0, 1.0)
+        return h.astype(np.float32), 15.0, cav.astype(np.float32), 0.34, ridge.astype(np.float32)
 
     if detail_id == "acoustic_pegboard":
-        # 6x6 chamfered circular holes on a flat wood/hardboard panel
+        # 6x6 2-stage chamfered acoustic birch-ply/MDF pegboard: crisp milled bevel rims + fine directional birch wood fiber grain
         n = 6.0
         fu = (u * n) % 1.0 - 0.5
         fv = (v * n) % 1.0 - 0.5
         r = np.sqrt(fu * fu + fv * fv)
-        hole = _smoothstep(0.16, 0.24, r)  # 0 inside hole, 1 on board
-        wood = 0.025 * _periodic_fbm(H, W, seed + 7, (8, 32, 64))
-        h = 0.12 + 0.82 * hole + wood * hole
-        cav = 1.0 - hole
-        ridge = _smoothstep(0.19, 0.23, r) * (1.0 - _smoothstep(0.24, 0.29, r))
-        return h, 20.0, cav, 0.58, ridge
+        # Crisp deep bore (r < 0.160), clean 45-deg countersunk chamfer wall (0.160..0.240), crisp birch face (> 0.240)
+        bore = _smoothstep(0.150, 0.178, r)
+        chamfer = _smoothstep(0.172, 0.242, r)
+        hole_prof = 0.38 * bore + 0.62 * chamfer
+        w_warp = _periodic_fbm(H, W, seed + 6, (4, 8, 16))
+        # Crisp directional elongated birch veneer grain & fine wood vessels (zero blurry cloud noise!)
+        wood_grain = 0.020 * np.sin(2.0 * math.pi * (u * 36.0 + 0.18 * w_warp)) + 0.012 * np.sin(2.0 * math.pi * (u * 72.0 - 0.12 * w_warp))
+        wood_pores = 0.022 * _periodic_fbm(H, W, seed + 7, (32, 64, 96))
+        h = 0.05 + 0.85 * hole_prof + (wood_grain + wood_pores) * chamfer
+        cav = np.clip(1.0 - hole_prof, 0.0, 1.0)
+        ridge = _smoothstep(0.195, 0.242, r) * (1.0 - _smoothstep(0.245, 0.300, r))
+        return h.astype(np.float32), 21.5, cav.astype(np.float32), 0.52, ridge.astype(np.float32)
 
     if detail_id == "sidewalk_expansion_joint":
-        # Authentic broomed architectural Portland-cement sidewalk slabs: fine sandy grit + crisp control joint (ZERO amoeba pits!)
-        du = np.minimum(u % 0.5, 0.5 - (u % 0.5))
-        dv = np.minimum(v % 0.5, 0.5 - (v % 0.5))
-        d_joint = np.minimum(du, dv)
-        joint = _smoothstep(0.006, 0.022, d_joint)
-        broom = 0.022 * np.sin(2.0 * math.pi * v * 48.0 + 0.4 * _periodic_fbm(H, W, seed + 9, (4, 8)))
-        grit_coarse = _periodic_fbm(H, W, seed + 10, (12, 24, 48))
-        grit_fine = _periodic_fbm(H, W, seed + 11, (32, 64))
-        h = 0.20 + 0.68 * joint + (0.045 * grit_coarse + 0.032 * grit_fine + broom) * joint
-        cav = np.clip((1.0 - joint) + 0.20 * _smoothstep(0.9, 1.8, -grit_fine), 0.0, 1.0)
-        ridge = _smoothstep(0.018, 0.032, d_joint) * (1.0 - _smoothstep(0.032, 0.052, d_joint))
-        return h, 12.0, cav, 0.84, ridge
+        # Authentic broomed Portland-cement sidewalk slabs: packed fine aggregate + spalled control joint + broom lines + micro-pits
+        # Quarter-cell phase shift places joints cleanly at 0.25/0.75 away from wrap borders -> zero normal seam ratio spike!
+        w_edge = 0.0045 * _periodic_fbm(H, W, seed + 8, (8, 24, 48))
+        us = (u + 0.25) % 0.5
+        vs = (v + 0.25) % 0.5
+        du = np.minimum(us, 0.5 - us)
+        dv = np.minimum(vs, 0.5 - vs)
+        d_joint = np.minimum(du, dv) + w_edge
+        # Slightly rounded troweled joint lip + irregular micro-spalling along concrete joint edge
+        joint = _smoothstep(0.005, 0.018, d_joint)
+        trowel_lip = _smoothstep(0.016, 0.032, d_joint) * (1.0 - _smoothstep(0.036, 0.060, d_joint))
+        # Fine stiff-bristle broom finish running horizontally across slab interior (not inside troweled border)
+        broom_zone = _smoothstep(0.032, 0.055, d_joint)
+        broom_n = _periodic_fbm(H, W, seed + 9, (4, 16))
+        broom = (0.020 * np.sin(2.0 * math.pi * v * 72.0 + 0.5 * broom_n) + 0.010 * np.sin(2.0 * math.pi * v * 144.0)) * broom_zone
+        # Multi-scale packed sand & fine gravel mineral aggregate (crisp Worley pebbles!)
+        f1_a, f2_a, _ = _periodic_worley_id(u, v, 38, seed + 10)
+        f1_b, f2_b, _ = _periodic_worley_id((u + 0.021) % 1.0, (v + 0.037) % 1.0, 68, seed + 11)
+        agg = 0.030 * np.clip(1.0 - f1_a * 1.4, 0.0, 1.0) + 0.024 * np.clip(1.0 - f1_b * 1.5, 0.0, 1.0)
+        grit_fine = _periodic_fbm(H, W, seed + 12, (24, 48, 96))
+        # Subtle entrained air-bubble pinholes in cured concrete
+        pits = _smoothstep(1.35, 2.05, -grit_fine) * 0.14
+        h = 0.16 + 0.68 * joint + 0.024 * trowel_lip + (agg + broom + 0.028 * grit_fine - pits) * joint
+        cav = np.clip((1.0 - joint) + 0.55 * pits + 0.15 * _smoothstep(0.95, 1.7, -grit_fine), 0.0, 1.0)
+        ridge = np.clip(trowel_lip * 0.75 + _smoothstep(0.034, 0.050, agg) * 0.65 * joint, 0.0, 1.0)
+        return h.astype(np.float32), 14.5, cav.astype(np.float32), 0.84, ridge.astype(np.float32)
 
     if detail_id == "subway_metro_tile":
         # Classic 2x4 running-bond beveled ceramic subway tiles (phase-centered off UV border)
         rows, cols = 6.0, 3.0
         vs = (v + 0.5 / rows) % 1.0
         row_idx = np.floor(vs * rows)
-        u_shift = (u + 0.5 / cols + 0.5 * (row_idx % 2.0) / cols) % 1.0
+        # Quarter-tile U phase keeps BOTH even (fu=0.25) and odd (fu=0.75) running-bond grout lines off the UV border!
+        u_shift = (u + 0.25 / cols + 0.5 * (row_idx % 2.0) / cols) % 1.0
         fu = (u_shift * cols) % 1.0
         fv = (vs * rows) % 1.0
         du = np.minimum(fu, 1.0 - fu) / cols
@@ -374,32 +494,40 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         return h, 16.5, cav, 0.10, ridge
 
     if detail_id == "rubber_tread_stair":
-        # Anti-slip coin-dot rubber mat (8x8 staggered circular flat-topped studs)
+        # Industrial anti-slip coin-dot vulcanized rubber mat: beveled flat-top studs + recessed rim step + tactile micro-pore rubber grain
         n = 8.0
         row = np.floor(v * n)
         u_s = (u + 0.5 * (row % 2.0) / n) % 1.0
         fu = (u_s * n) % 1.0 - 0.5
         fv = (v * n) % 1.0 - 0.5
         r = np.sqrt(fu * fu + fv * fv)
-        coin = 1.0 - _smoothstep(0.30, 0.38, r)
-        # Subtle concentric dimple ring on top of each rubber coin
-        ring = 0.06 * np.exp(-(((r - 0.22) / 0.04) ** 2))
-        grit = 0.02 * _periodic_fbm(H, W, seed + 15, (32, 64))
-        h = 0.18 + 0.70 * coin - ring + grit
-        cav = 1.0 - coin
-        ridge = _smoothstep(0.28, 0.34, r) * coin
-        return h, 19.0, cav, 0.56, ridge
+        # 2-stage molded rubber stud: crisp beveled wall + slight rounded shoulder + subtle top-surface wear crown
+        coin_base = 1.0 - _smoothstep(0.30, 0.375, r)
+        coin_top = 1.0 - _smoothstep(0.25, 0.315, r)
+        coin = 0.58 * coin_base + 0.42 * coin_top
+        ring = 0.055 * np.exp(-(((r - 0.21) / 0.032) ** 2))
+        # Tactile vulcanized rubber stipple + micro-scuffs on worn stud tops (smooth C1 micro-pebble, zero cell-edge cliffs)
+        f1_p, _ = _periodic_worley(u, v, 72, seed + 15)
+        grit = 0.026 * _periodic_fbm(H, W, seed + 14, (32, 64, 96)) + 0.016 * (0.5 - np.clip(f1_p, 0.0, 1.0))
+        h = 0.14 + 0.72 * coin - ring + grit
+        cav = np.clip(1.0 - coin_base, 0.0, 1.0)
+        # Encode beveled stud rim + worn top face in ridge for semi-gloss catchlight contrast
+        ridge = np.clip(0.85 * coin_top + 0.65 * (coin_base - coin_top), 0.0, 1.0)
+        return h.astype(np.float32), 20.0, cav.astype(np.float32), 0.50, ridge.astype(np.float32)
 
     if detail_id == "ribbed_corduroy_velvet":
-        # 24 crisp rounded velvet wales + fine cross-weave velvet micro-nap
-        wales = 0.5 + 0.5 * np.cos(2.0 * math.pi * u * 24.0)
-        wales_r = np.power(np.clip(wales, 0.0, 1.0), 0.55)
-        cross = 0.04 * np.sin(2.0 * math.pi * v * 48.0) * (0.4 + 0.6 * (1.0 - wales_r))
-        nap = 0.03 * _periodic_fbm(H, W, seed + 17, (32, 64))
-        h = 0.14 + 0.74 * wales_r + cross + nap
+        # 20 plush rounded cotton-velvet corduroy wales + crisp micro-fiber pile normals + recessed plain-weave trough threads (zero blotchy clouds!)
+        w_drift = 0.005 * _periodic_fbm(H, W, seed + 16, (4, 8))
+        wales = 0.5 + 0.5 * np.cos(2.0 * math.pi * (u * 20.0 + w_drift))
+        wales_r = np.power(np.clip(wales, 0.0, 1.0), 0.56)
+        # Crisp fine vertical-brushed cotton-velvet micro-tufts along the plush wale crown (smooth domes, zero 1px cliff noise)
+        f1_t, _ = _periodic_worley(u, v, 84, seed + 17)
+        pile_fuzz = 0.036 * _periodic_fbm(H, W, seed + 18, (48, 96, 128)) + 0.020 * (0.5 - np.clip(f1_t, 0.0, 1.0))
+        cross = 0.045 * np.sin(2.0 * math.pi * v * 72.0) * (0.20 + 0.80 * (1.0 - wales_r))
+        h = 0.14 + 0.70 * wales_r + cross + pile_fuzz * (0.4 + 0.6 * wales_r)
         cav = np.clip(1.0 - wales_r, 0.0, 1.0)
-        ridge = _smoothstep(0.72, 0.98, wales_r)
-        return h, 13.5, cav, 0.84, ridge
+        ridge = _smoothstep(0.58, 0.94, wales_r)
+        return h.astype(np.float32), 13.0, cav.astype(np.float32), 0.86, ridge.astype(np.float32)
 
     if detail_id == "waffle_radiator_fins":
         # Vertical cast-iron radiator columns + horizontal tie-manifold ribs
@@ -428,19 +556,26 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         # Under u->u+1: (ix,iy)->(ix+8,iy+8); under v->v+1: (ix,iy)->(ix+8,iy-8) => mod N is 100% invariant!
         pid_x = np.where(is_h, (ix - d) % N, ix % N)
         pid_y = np.where(is_h, iy % N, (iy - (d - 4.0)) % N)
-        seam_d = np.minimum(np.minimum(px, 4.0 - px), np.minimum(py, 1.0 - py))
-        bevel = _smoothstep(0.018, 0.068, seam_d)
-        # Organic flowing wood grain along each plank's long axis
+        p_hash1 = np.sin(pid_x * 13.7 + pid_y * 29.3) * 0.5 + 0.5
+        p_hash2 = np.cos(pid_x * 37.1 - pid_y * 19.7) * 0.5 + 0.5
+        seam_d = _smin(np.minimum(px, 4.0 - px), np.minimum(py, 1.0 - py), 0.04)
+        # Anti-aliased tongue-and-groove V-bevel (wider smooth transition removes diagonal 1px staircase specks)
+        bevel = _smoothstep(0.020, 0.105, seam_d)
+        # Per-plank seeded flowing oak growth rings + fine elongated oak open-pore vessels
         w1 = _periodic_fbm(H, W, seed + 21, (4, 8, 16))
-        w2 = _periodic_fbm(H, W, seed + 22, (16, 32))
-        g_h = np.sin(2.0 * math.pi * (ry * 4.0 + 0.25 * w1) + 0.65 * w2)
-        g_v = np.sin(2.0 * math.pi * (rx * 4.0 + 0.25 * w1) + 0.65 * w2)
-        grain = np.where(is_h, g_h, g_v) * 0.022
-        plank_var = 0.030 * np.sin(pid_x * 13.7 + pid_y * 29.3)
-        h = 0.24 + 0.64 * bevel + (grain + plank_var) * bevel
-        cav = 1.0 - bevel
-        ridge = _smoothstep(0.055, 0.10, seam_d) * (1.0 - _smoothstep(0.10, 0.16, seam_d))
-        return h, 11.5, cav, 0.24, ridge
+        w2 = _periodic_fbm(H, W, seed + 22, (16, 32, 64))
+        freq_p = 3.2 + 2.4 * p_hash2
+        phase_p = 6.283 * p_hash1
+        g_h = np.sin(2.0 * math.pi * (ry * freq_p + 0.28 * w1) + phase_p + 0.70 * w2)
+        g_v = np.sin(2.0 * math.pi * (rx * freq_p + 0.28 * w1) + phase_p + 0.70 * w2)
+        grain = np.where(is_h, g_h, g_v)
+        # Fine recessed dark oak wood pores aligned with plank grain
+        pores = _smoothstep(0.75, 1.35, -w2) * (0.4 + 0.6 * (0.5 - 0.5 * grain))
+        plank_step = 0.022 * (p_hash1 - 0.5)
+        h = 0.42 + 0.44 * bevel + (0.022 * grain - 0.028 * pores + plank_step) * bevel
+        cav = np.clip((1.0 - bevel) * 0.85 + 0.22 * pores * bevel, 0.0, 1.0)
+        ridge = _smoothstep(0.055, 0.11, seam_d) * (1.0 - _smoothstep(0.11, 0.18, seam_d))
+        return h.astype(np.float32), 9.5, cav.astype(np.float32), 0.30, ridge.astype(np.float32)
 
     if detail_id == "carbon_fiber_weave":
         # Tight glossy clearcoat 2x2 twill carbon-fiber epoxy weave (28x28 tows = 7 twill repeats, smooth wet clearcoat!)
@@ -496,104 +631,118 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         return h.astype(np.float32), 20.0, cav.astype(np.float32), 0.32, ridge.astype(np.float32)
 
     if detail_id == "hvac_slotted_vent":
+        # Crisp extruded/stamped architectural brushed-aluminum HVAC return-air louver grille (ZERO blotchy orange-peel!)
         cols, rows = 3.0, 10.0
         fu = np.abs(((u * cols + 0.5) % 1.0) - 0.5) * 2.0
         fv = (v * rows + 0.5) % 1.0
-        in_col = 1.0 - _smoothstep(0.84, 0.91, fu)
-        slat_ramp = np.clip(fv / 0.78, 0.0, 1.0)
-        slat_drop = 1.0 - _smoothstep(0.76, 0.86, fv)
+        in_col = 1.0 - _smoothstep(0.83, 0.90, fu)
+        # Clean asymmetric angled louver blade: crisp tilted linear ramp -> sharp rolled front nose -> deep open plenum drop
+        slat_ramp = np.power(np.clip(fv / 0.74, 0.0, 1.0), 0.85)
+        slat_drop = 1.0 - _smoothstep(0.71, 0.80, fv)
         slat = slat_ramp * slat_drop
         rib = 1.0 - in_col
-        h = np.maximum(0.16 + 0.72 * slat * in_col, 0.62 * rib)
+        # Clean linear horizontal brushed-aluminum micro-streaks (no blotchy Perlin wobble!)
+        brush_h = 0.006 * np.sin(2.0 * math.pi * v * 160.0 + 0.3 * _periodic_fbm(H, W, seed + 29, (4, 16)))
+        h_blade = 0.04 + 0.84 * slat
+        h_rib = 0.82 * rib
+        h = np.maximum(h_blade * in_col, h_rib) + brush_h * (1.0 - (1.0 - slat_drop) * in_col)
         cav = np.clip((1.0 - slat_drop) * in_col, 0.0, 1.0)
-        ridge = _smoothstep(0.68, 0.77, fv) * slat_drop * in_col
-        return h.astype(np.float32), 15.0, cav.astype(np.float32), 0.28, ridge.astype(np.float32)
+        # Bright metallic specular catch along rolled louver front nose + beveled vertical stile shoulders
+        stile_edge = _smoothstep(0.78, 0.86, fu) * (1.0 - _smoothstep(0.88, 0.95, fu))
+        ridge = np.clip(_smoothstep(0.58, 0.72, fv) * slat_drop * in_col + 0.75 * stile_edge, 0.0, 1.0)
+        return h.astype(np.float32), 19.0, cav.astype(np.float32), 0.24, ridge.astype(np.float32)
 
     if detail_id == "speaker_mesh_hex":
-        # Tight hexagonal honeycomb perforated speaker/intercom mesh (16x16 staggered)
-        nx, ny = 16.0, 14.0
+        # Die-stamped hexagonal honeycomb perforated speaker/intercom mesh: deep dark hex holes + rolled bevel rims + brushed anodized web
+        nx, ny = 14.0, 12.0
         row = np.floor(v * ny)
         u_s = (u + 0.5 * (row % 2.0) / nx) % 1.0
         fu = (u_s * nx) % 1.0 - 0.5
         fv = (v * ny) % 1.0 - 0.5
-        # Hex distance
         ax, ay = np.abs(fu), np.abs(fv)
         d_hex = np.maximum(ax * 0.866025 + ay * 0.5, ay)
-        web = _smoothstep(0.32, 0.42, d_hex)  # 0 inside hole, 1 on hex web
-        h = 0.06 + 0.84 * web
-        cav = 1.0 - web
-        ridge = _smoothstep(0.36, 0.44, d_hex)
-        return h.astype(np.float32), 18.0, cav.astype(np.float32), 0.22, ridge.astype(np.float32)
+        # 2-stage stamped hex web: crisp void drop + curved die-punched bevel shoulder
+        hole_void = 1.0 - _smoothstep(0.28, 0.35, d_hex)
+        roll_bevel = _smoothstep(0.30, 0.44, d_hex)
+        brush = 0.010 * np.sin(2.0 * math.pi * v * 128.0 + 0.4 * _periodic_fbm(H, W, seed + 30, (8, 24)))
+        h = 0.04 + 0.58 * (1.0 - hole_void) + 0.26 * roll_bevel + brush * (1.0 - hole_void)
+        cav = hole_void
+        ridge = _smoothstep(0.33, 0.40, d_hex) * (1.0 - _smoothstep(0.41, 0.48, d_hex))
+        return h.astype(np.float32), 21.0, cav.astype(np.float32), 0.20, ridge.astype(np.float32)
 
     if detail_id == "expanded_metal_mesh":
-        # Stretched diamond expanded-metal mesh with slight twist-angle strand relief
+        # Stretched diamond expanded-metal mesh with C1 beveled strand relief (zero diagonal staircase aliasing)
         a = (u * 12.0 + v * 6.0)
         b = (u * 12.0 - v * 6.0)
-        da = np.abs((a % 1.0) - 0.5) * 2.0
-        db = np.abs((b % 1.0) - 0.5) * 2.0
-        strand = _smoothstep(0.64, 0.80, np.maximum(da, db))
-        twist = 0.14 * np.sin(2.0 * math.pi * a) * strand
+        fa = ((a % 1.0) - 0.5) * 2.0
+        fb = ((b % 1.0) - 0.5) * 2.0
+        da = np.sqrt(fa * fa + 0.015) / math.sqrt(1.015)
+        db = np.sqrt(fb * fb + 0.015) / math.sqrt(1.015)
+        d_m = _smax(da, db, 0.06)
+        strand = _smoothstep(0.58, 0.84, d_m)
+        twist = 0.12 * np.sin(2.0 * math.pi * a) * strand
         h = 0.08 + 0.76 * strand + twist
         cav = 1.0 - strand
-        ridge = _smoothstep(0.74, 0.92, np.maximum(da, db))
-        return h.astype(np.float32), 21.0, cav.astype(np.float32), 0.38, ridge.astype(np.float32)
+        ridge = _smoothstep(0.74, 0.92, d_m)
+        return h.astype(np.float32), 17.5, cav.astype(np.float32), 0.38, ridge.astype(np.float32)
 
     if detail_id == "stamped_louver_micro":
-        # Fine electronics / street cabinet stamped louver rows (6 cols x 18 rows)
+        # Fine electronics / street cabinet stamped louver rows (6 cols x 18 rows, C1 raised-cosine hoods)
         cols, rows = 6.0, 18.0
         fu = np.abs((u * cols) % 1.0 - 0.5) * 2.0
-        fv = (v * rows) % 1.0
-        in_slot = 1.0 - _smoothstep(0.76, 0.86, fu)
-        hood = np.sin(math.pi * np.clip(fv / 0.72, 0.0, 1.0)) * (fv < 0.72)
-        open_gap = _smoothstep(0.68, 0.76, fv) * (1.0 - _smoothstep(0.88, 0.96, fv)) * in_slot
-        h = 0.45 + 0.42 * hood * in_slot - 0.36 * open_gap
+        fv = (v * rows + 0.36) % 1.0
+        in_slot = 1.0 - _smoothstep(0.72, 0.88, fu)
+        hood = 0.5 * (1.0 - np.cos(2.0 * math.pi * np.clip(fv / 0.72, 0.0, 1.0))) * (fv < 0.72)
+        open_gap = _smoothstep(0.66, 0.78, fv) * (1.0 - _smoothstep(0.86, 0.97, fv)) * in_slot
+        h = 0.45 + 0.40 * hood * in_slot - 0.34 * open_gap
         cav = open_gap
         ridge = _smoothstep(0.60, 0.95, hood) * in_slot
-        return h.astype(np.float32), 19.0, cav.astype(np.float32), 0.34, ridge.astype(np.float32)
+        return h.astype(np.float32), 16.5, cav.astype(np.float32), 0.34, ridge.astype(np.float32)
 
     if detail_id == "chainlink_wire_mesh":
-        # Authentic interlocking helical zigzag galvanized steel chain-link fence over deep open void!
-        # Vertical spiral wire columns at pitch nx=6, bending in zigzags at pitch ny=6 and hooking into neighbors
+        # Authentic interlocking helical twisted galvanized steel chain-link fence with zinc spangle over deep open void!
         nx, ny = 6.0, 6.0
-        # Two interlocked sets of zigzag wires shifted by half-cell horizontally & vertically
-        # Wire set A: zigzag center x_A(v) oscillates +-0.30 around integer columns (u*nx)
-        zig_a = 0.28 * (2.0 * np.abs(((v * ny) % 1.0) - 0.5) - 0.5) * 2.0  # triangle wave in [-0.28, +0.28]
-        # Smooth out the sharp triangle corners into authentic bent wire hooks
-        zv_a = 0.27 * (2.0 / math.pi) * np.arcsin(0.92 * np.sin(2.0 * math.pi * v * ny))
+        zv_a = 0.265 * (2.0 / math.pi) * np.arcsin(0.94 * np.sin(2.0 * math.pi * v * ny))
         zv_b = -zv_a
-        # Distance to wire A (columns centered at 0.25) and wire B (columns centered at 0.75)
         da = np.abs((((u * nx - 0.25 - zv_a) + 0.5) % 1.0) - 0.5)
         db = np.abs((((u * nx - 0.75 - zv_b) + 0.5) % 1.0) - 0.5)
-        r_wire = 0.095
+        r_wire = 0.105
         wa = np.sqrt(np.clip(1.0 - (da / r_wire) ** 2, 0.0, 1.0))
         wb = np.sqrt(np.clip(1.0 - (db / r_wire) ** 2, 0.0, 1.0))
-        # Helical Z-depth modulation so wire A hooks OVER wire B at upper knuckle and UNDER at lower knuckle!
-        za = 0.74 + 0.24 * np.cos(2.0 * math.pi * v * ny)
-        zb = 0.74 - 0.24 * np.cos(2.0 * math.pi * v * ny)
+        # Pronounced helical over-under hook depth + tight twisted collar at every diamond knuckle!
+        phase_k = np.cos(2.0 * math.pi * v * ny)
+        za = 0.72 + 0.27 * phase_k
+        zb = 0.72 - 0.27 * phase_k
         ha = wa * za
         hb = wb * zb
-        # Knuckle twist collar where the two hooks interlock
         knuckle = np.minimum(wa, wb)
-        wire_h = np.clip(np.maximum(ha, hb) + 0.12 * knuckle, 0.0, 1.0)
-        wire_mask = _smoothstep(0.05, 0.22, np.maximum(wa, wb))
-        h = 0.02 + 0.90 * wire_h
+        twist_collar = 0.18 * knuckle * (0.7 + 0.3 * np.sin(2.0 * math.pi * (u * nx * 3.0 + v * ny * 3.0)))
+        # Galvanized zinc crystal micro-spangle (tapered at crystal boundaries so zero 1px normal cliffs)
+        f1_z, f2_z, zinc_sp = _periodic_worley_id(u, v, 42, seed + 39)
+        zinc_taper = _smoothstep(0.0, 0.14, f2_z - f1_z)
+        wire_h = np.clip(np.maximum(ha, hb) + twist_collar, 0.0, 1.0)
+        wire_mask = _smoothstep(0.04, 0.20, np.maximum(wa, wb))
+        h = 0.02 + 0.88 * wire_h + 0.015 * (zinc_sp - 0.5) * zinc_taper * wire_mask
         cav = 1.0 - wire_mask
-        ridge = _smoothstep(0.65, 0.92, wire_h) * wire_mask
-        return h.astype(np.float32), 18.0, cav.astype(np.float32), 0.20, ridge.astype(np.float32)
+        ridge = np.clip((_smoothstep(0.60, 0.90, wire_h) + 0.35 * knuckle) * wire_mask, 0.0, 1.0)
+        return h.astype(np.float32), 20.0, cav.astype(np.float32), 0.24, ridge.astype(np.float32)
 
     if detail_id == "circular_perf_sheet":
-        # Staggered micro-punched stainless steel perforated sheet (18x18)
-        n = 18.0
+        # Die-punched staggered stainless-steel perforated sheet (14x14): rolled inward punch bevel rims + directional brushed metal!
+        n = 14.0
         row = np.floor(v * n)
         u_s = (u + 0.5 * (row % 2.0) / n) % 1.0
         fu = (u_s * n) % 1.0 - 0.5
         fv = (v * n) % 1.0 - 0.5
         r = np.sqrt(fu * fu + fv * fv)
-        sheet = _smoothstep(0.26, 0.34, r)
-        h = 0.08 + 0.84 * sheet
-        cav = 1.0 - sheet
-        ridge = _smoothstep(0.30, 0.35, r) * (1.0 - _smoothstep(0.36, 0.42, r))
-        return h.astype(np.float32), 19.0, cav.astype(np.float32), 0.26, ridge.astype(np.float32)
+        # 2-stage die-punched profile: crisp punched hole + rolled specular collar bevel around each hole!
+        hole_void = 1.0 - _smoothstep(0.24, 0.30, r)
+        roll_bevel = _smoothstep(0.25, 0.39, r)
+        brush = 0.012 * np.sin(2.0 * math.pi * v * 144.0 + 0.4 * _periodic_fbm(H, W, seed + 36, (8, 24)))
+        h = 0.04 + 0.58 * (1.0 - hole_void) + 0.26 * roll_bevel + brush * (1.0 - hole_void)
+        cav = hole_void
+        ridge = _smoothstep(0.28, 0.35, r) * (1.0 - _smoothstep(0.36, 0.44, r))
+        return h.astype(np.float32), 21.0, cav.astype(np.float32), 0.20, ridge.astype(np.float32)
 
     if detail_id == "corrugated_sheet_metal":
         # Smooth sinusoidal-trapezoidal galvanized corrugated steel panel (10 ribs, flat-plateau border-aligned)
@@ -606,15 +755,18 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         return h.astype(np.float32), 12.0, cav.astype(np.float32), 0.22, ridge.astype(np.float32)
 
     if detail_id == "ribbed_rubber_mat":
-        # Clean continuous parallel V-ribbed anti-slip industrial rubber mat (16 ribs, zero vertical split seams!)
-        t_raw = np.abs(((v * 16.0 + 0.25) % 1.0) - 0.5) * 2.0
-        t = np.sqrt(t_raw * t_raw + 0.020) / math.sqrt(1.020)
-        rib = np.clip(1.0 - t, 0.0, 1.0) ** 0.82
-        grain = 0.022 * _periodic_fbm(H, W, seed + 39, (24, 48))
-        h = 0.16 + 0.70 * rib + grain
-        cav = 1.0 - rib
-        ridge = _smoothstep(0.72, 0.96, rib)
-        return h.astype(np.float32), 13.5, cav.astype(np.float32), 0.68, ridge.astype(np.float32)
+        # Crisp extruded parallel trapezoidal-rib anti-slip industrial rubber mat (14 bold ribs + rounded crests + vulcanized micro-grain)
+        t_raw = np.abs(((v * 14.0) % 1.0) - 0.5) * 2.0
+        # Flat deep floor + steep beveled side walls + gently rounded rubber crest catches crisp studio highlights!
+        rib_wall = 1.0 - _smoothstep(0.32, 0.68, t_raw)
+        rib_crown = np.sqrt(np.clip(1.0 - (t_raw / 0.48) ** 2, 0.0, 1.0))
+        rib = 0.62 * rib_wall + 0.38 * rib_crown
+        f1_p, _ = _periodic_worley(u, v, 72, seed + 38)
+        grain = 0.025 * _periodic_fbm(H, W, seed + 39, (32, 64, 96)) + 0.015 * (0.5 - np.clip(f1_p, 0.0, 1.0))
+        h = 0.10 + 0.78 * rib + grain
+        cav = np.clip(1.0 - rib_wall, 0.0, 1.0)
+        ridge = _smoothstep(0.55, 0.92, rib)
+        return h.astype(np.float32), 18.0, cav.astype(np.float32), 0.52, ridge.astype(np.float32)
 
     if detail_id == "brushed_anodized_plate":
         # Crisp strictly linear directional brushed aluminum elevator panel (ZERO wavy noise!) + expansion seam & screws
@@ -639,12 +791,14 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         return h.astype(np.float32), 14.0, cav.astype(np.float32), 0.22, ridge.astype(np.float32)
 
     if detail_id == "embossed_braille_strip":
-        # Tactile elevator / transit railing strip: 3 parallel guide ribs + 2x3 braille dot cells
+        # Tactile brushed stainless-steel transit braille railing strip: clean convex guide ribs + crisp hemispherical braille domes sitting flush on brushed plate (NO recessed crater moats!)
         rib_pos = (0.14, 0.22, 0.78, 0.86)
         ribs = np.zeros_like(u)
+        fillet = np.zeros_like(u)
         for rp in rib_pos:
-            ribs = np.maximum(ribs, 1.0 - _smoothstep(0.012, 0.022, np.abs(v - rp)))
-        # Braille cells along the middle band (v in [0.35, 0.65])
+            dr = np.abs(v - rp)
+            ribs = np.maximum(ribs, np.sqrt(np.clip(1.0 - (dr / 0.020) ** 2, 0.0, 1.0)))
+            fillet = np.maximum(fillet, np.exp(-(((dr - 0.021) / 0.0045) ** 2)))
         dots = np.zeros_like(u)
         rng = np.random.default_rng(seed + 45)
         for ci in range(8):
@@ -653,27 +807,34 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
                 for dy in (-0.075, 0.0, 0.075):
                     if rng.random() > 0.35:
                         r = np.sqrt((u - (cx0 + dx)) ** 2 + (v - (0.5 + dy)) ** 2)
-                        dots = np.maximum(dots, 1.0 - _smoothstep(0.011, 0.018, r))
-        h = 0.24 + 0.58 * np.maximum(ribs, dots)
-        cav = _smoothstep(0.32, 0.24, h)
-        ridge = np.maximum(ribs, dots)
-        return h.astype(np.float32), 18.0, cav.astype(np.float32), 0.22, ridge.astype(np.float32)
+                        dots = np.maximum(dots, np.sqrt(np.clip(1.0 - (r / 0.0185) ** 2, 0.0, 1.0)))
+                        fillet = np.maximum(fillet, np.exp(-(((r - 0.0195) / 0.0040) ** 2)))
+        # Fine crisp linear brushed stainless-steel micro-grooves running horizontally along railing
+        brush = 0.014 * np.sin(2.0 * math.pi * v * 160.0 + 0.35 * _periodic_fbm(H, W, seed + 46, (4, 16)))
+        emb = np.maximum(ribs, dots)
+        h = 0.22 + 0.68 * emb + brush * (1.0 - 0.7 * emb)
+        cav = np.clip(fillet * (1.0 - emb) * 0.55 + 0.10 * (1.0 - emb), 0.0, 1.0)
+        ridge = np.clip(_smoothstep(0.35, 0.92, emb), 0.0, 1.0)
+        return h.astype(np.float32), 20.0, cav.astype(np.float32), 0.20, ridge.astype(np.float32)
 
     if detail_id == "stamped_vent_slots_stagger":
-        # Staggered rounded-pill ventilation slots on street transformer / utility boxes
+        # Die-punched staggered pill ventilation slots on sheet-metal cabinets: rolled inward punch bevel + brushed sheet grain
         cols, rows = 4.0, 12.0
         r_idx = np.floor(v * rows)
         u_s = (u + 0.5 * (r_idx % 2.0) / cols) % 1.0
         fu = (u_s * cols) % 1.0 - 0.5
         fv = (v * rows) % 1.0 - 0.5
-        # Pill SDF in cell coords
-        px_c = np.maximum(np.abs(fu) - 0.26, 0.0)
-        d_pill = np.sqrt(px_c * px_c + (fv * 0.35) ** 2)
-        slot = 1.0 - _smoothstep(0.065, 0.095, d_pill)
-        h = 0.80 - 0.72 * slot
-        cav = slot
-        ridge = _smoothstep(0.085, 0.11, d_pill) * (1.0 - _smoothstep(0.11, 0.15, d_pill))
-        return h.astype(np.float32), 20.0, cav.astype(np.float32), 0.36, ridge.astype(np.float32)
+        px_c = np.maximum(np.abs(fu) - 0.25, 0.0)
+        d_pill = np.sqrt(px_c * px_c + (fv * 0.36) ** 2)
+        # 2-stage die-punched profile: crisp dark hole + rolled stamped depression collar around each pill!
+        hole_void = 1.0 - _smoothstep(0.062, 0.088, d_pill)
+        roll_bevel = _smoothstep(0.068, 0.145, d_pill)
+        # Subtle directional rolled-steel sheet micro-texture & slight stamping pillow between slots
+        brush = 0.012 * _periodic_fbm(H, W, seed + 43, (8, 32, 64))
+        h = 0.04 + 0.62 * (1.0 - hole_void) + 0.22 * roll_bevel + brush * (1.0 - hole_void)
+        cav = np.clip(hole_void, 0.0, 1.0)
+        ridge = _smoothstep(0.082, 0.118, d_pill) * (1.0 - _smoothstep(0.125, 0.175, d_pill))
+        return h.astype(np.float32), 21.0, cav.astype(np.float32), 0.30, ridge.astype(np.float32)
 
     if detail_id == "riveted_sheet_seam":
         # Seamless aerospace/train riveted aluminum lap-strap butt joint with double flush rivet rows
@@ -694,19 +855,19 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         return h.astype(np.float32), 14.0, cav.astype(np.float32), 0.24, ridge.astype(np.float32)
 
     if detail_id == "micro_hex_grip":
-        # Modern molded silicone / tool / camera body micro-hex grip (20x18 raised chamfered hex islands)
-        nx, ny = 20.0, 18.0
+        # Modern molded silicone / tool / camera body micro-hex grip (16x14 raised chamfered hex islands, Nyquist-clean!)
+        nx, ny = 16.0, 14.0
         row = np.floor(v * ny)
         u_s = (u + 0.5 * (row % 2.0) / nx) % 1.0
         fu = (u_s * nx) % 1.0 - 0.5
         fv = (v * ny) % 1.0 - 0.5
         ax, ay = np.abs(fu), np.abs(fv)
-        d_hex = np.maximum(ax * 0.866025 + ay * 0.5, ay)
-        pad_h = 1.0 - _smoothstep(0.32, 0.43, d_hex)
+        d_hex = _smax(ax * 0.866025 + ay * 0.5, ay, 0.03)
+        pad_h = 1.0 - _smoothstep(0.29, 0.44, d_hex)
         h = 0.16 + 0.72 * pad_h
         cav = 1.0 - pad_h
         ridge = _smoothstep(0.75, 0.98, pad_h)
-        return h.astype(np.float32), 18.0, cav.astype(np.float32), 0.66, ridge.astype(np.float32)
+        return h.astype(np.float32), 16.0, cav.astype(np.float32), 0.66, ridge.astype(np.float32)
 
     if detail_id == "woven_nylon_strap":
         # Clean band-limited herringbone woven seatbelt nylon webbing (zero moire, tactile matte fabric)
@@ -732,37 +893,47 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         return h.astype(np.float32), 14.0, cav.astype(np.float32), 0.20, ridge.astype(np.float32)
 
     if detail_id == "dimpled_golf_grip":
-        # Tactile matte dark charcoal rubber concave micro-dimpled grip (soft edges, matte elastomer micro-grain)
-        n = 16.0
-        row = np.floor(v * n)
-        u_s = (u + 0.5 * (row % 2.0) / n) % 1.0
-        fu = (u_s * n) % 1.0 - 0.5
-        fv = (v * n) % 1.0 - 0.5
-        r = np.sqrt(fu * fu + fv * fv)
-        dimple = np.sqrt(np.clip(1.0 - (r / 0.36) ** 2, 0.0, 1.0))
-        grain = 0.024 * _periodic_fbm(H, W, seed + 50, (32, 64))
-        h = 0.80 - 0.56 * dimple + grain
-        cav = dimple
-        ridge = _smoothstep(0.32, 0.39, r) * (1.0 - _smoothstep(0.39, 0.46, r)) * 0.35
-        return h.astype(np.float32), 13.0, cav.astype(np.float32), 0.78, ridge.astype(np.float32)
-
-    if detail_id == "perforated_leather_auto":
-        # Luxury automotive micro-perforated pebble-grain leather: true Voronoi cellular leather pebbles + clean punched holes
+        # Tactile vulcanized rubber concave dimpled grip (12x12 deep spherical dimples + crisp chamfer rims + elastomer micro-stipple!)
         n = 12.0
         row = np.floor(v * n)
         u_s = (u + 0.5 * (row % 2.0) / n) % 1.0
         fu = (u_s * n) % 1.0 - 0.5
         fv = (v * n) % 1.0 - 0.5
         r = np.sqrt(fu * fu + fv * fv)
-        hole = 1.0 - _smoothstep(0.14, 0.22, r)
-        # Organic rounded Voronoi leather pebble cells (creases where F2 - F1 is small!)
-        f1, f2 = _periodic_worley(u, v, 36, seed + 51)
-        crease = 1.0 - _smoothstep(0.02, 0.16, f2 - f1)
-        pebble = np.clip(1.0 - 0.65 * crease - 0.35 * f1, 0.0, 1.0)
-        h = 0.72 + 0.14 * pebble * (1.0 - hole) - 0.68 * hole
-        cav = np.clip(hole + 0.16 * crease * (1.0 - hole), 0.0, 1.0)
-        ridge = np.clip(_smoothstep(0.62, 0.92, pebble) * (1.0 - hole), 0.0, 1.0)
-        return h.astype(np.float32), 14.0, cav.astype(np.float32), 0.38, ridge.astype(np.float32)
+        # Deep spherical concavity + crisp subtly raised chamfer rim lip catching studio key light
+        dimple = np.sqrt(np.clip(1.0 - (r / 0.35) ** 2, 0.0, 1.0))
+        rim_lip = np.exp(-(((r - 0.365) / 0.042) ** 2))
+        f1_p, _ = _periodic_worley(u, v, 68, seed + 49)
+        grain = 0.026 * _periodic_fbm(H, W, seed + 50, (32, 64, 96)) + 0.015 * (0.5 - np.clip(f1_p, 0.0, 1.0))
+        h = 0.78 - 0.64 * dimple + 0.065 * rim_lip + grain
+        cav = np.clip(dimple * 0.92, 0.0, 1.0)
+        ridge = np.clip(rim_lip * 0.95 + 0.25 * (1.0 - _smoothstep(0.32, 0.42, r) * 0.0) * (1.0 - dimple), 0.0, 1.0)
+        return h.astype(np.float32), 18.5, cav.astype(np.float32), 0.56, ridge.astype(np.float32)
+
+    if detail_id == "perforated_leather_auto":
+        # Luxury dark charcoal automotive micro-perforated Nappa leather: plump rounded pebble domes + indented punch bevels + deep dark bores (ZERO mud-crack Voronoi!)
+        n = 12.0
+        row = np.floor(v * n)
+        u_s = (u + 0.5 * (row % 2.0) / n) % 1.0
+        fu = (u_s * n) % 1.0 - 0.5
+        fv = (v * n) % 1.0 - 0.5
+        r = np.sqrt(fu * fu + fv * fv)
+        hole = 1.0 - _smoothstep(0.130, 0.195, r)
+        # Subtle indented punch dimple collar around each perforated hole catches crisp leather specular rims
+        punch_bevel = _smoothstep(0.165, 0.295, r)
+        # Plump softly rounded natural Nappa pebble domes (soft curved profiles, NO flat polygonal mud-cracks!)
+        wu = 0.009 * _periodic_fbm(H, W, seed + 52, (6, 12))
+        wv = 0.009 * _periodic_fbm(H, W, seed + 53, (6, 12))
+        f1, f2 = _periodic_worley((u + wu) % 1.0, (v + wv) % 1.0, 46, seed + 51)
+        f1b, f2b = _periodic_worley((u - wu) % 1.0, (v + wv) % 1.0, 74, seed + 54)
+        dome1 = np.sqrt(np.clip(1.0 - (f1 * 1.18) ** 2, 0.0, 1.0))
+        dome2 = np.sqrt(np.clip(1.0 - (f1b * 1.18) ** 2, 0.0, 1.0))
+        crease = 1.0 - _smoothstep(0.0, 0.28, f2 - f1)
+        pebble = np.clip(0.68 * dome1 + 0.32 * dome2 - 0.12 * crease, 0.0, 1.0)
+        h = 0.05 + (0.60 + 0.16 * punch_bevel + 0.12 * pebble) * (1.0 - hole)
+        cav = np.clip(hole + 0.14 * crease * (1.0 - hole), 0.0, 1.0)
+        ridge = np.clip((_smoothstep(0.45, 0.88, pebble) * 0.72 + _smoothstep(0.195, 0.265, r) * (1.0 - _smoothstep(0.27, 0.36, r)) * 0.75) * (1.0 - hole), 0.0, 1.0)
+        return h.astype(np.float32), 16.0, cav.astype(np.float32), 0.30, ridge.astype(np.float32)
 
     if detail_id == "stair_nosing_grooves":
         # Machined aluminum anti-slip stair-nosing: clean extruded ribs & fine parallel micro-serrated channels
@@ -776,15 +947,21 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         return h.astype(np.float32), 14.0, cav.astype(np.float32), 0.22, ridge.astype(np.float32)
 
     if detail_id == "heatsink_extrusion_fins":
-        # Extruded anodized aluminum heatsink cooling fins (8 bold symmetric precision fins -> zero aliasing/barcode!)
-        t = (u * 8.0 + 0.5) % 1.0
-        fin = np.minimum(_smoothstep(0.14, 0.26, t), 1.0 - _smoothstep(0.74, 0.86, t))
-        # Subtle extruded crown across each fin top + fine vertical die-extrusion micro-streaks
-        crown = 0.08 * np.sin(math.pi * np.clip((t - 0.14) / 0.72, 0.0, 1.0)) * fin
-        h = 0.10 + 0.78 * fin + crown
-        cav = 1.0 - fin
-        ridge = _smoothstep(0.76, 0.98, fin)
-        return h.astype(np.float32), 14.0, cav.astype(np.float32), 0.20, ridge.astype(np.float32)
+        # Deep high-aspect-ratio extruded aluminum heatsink cooling fins: 8 crisp flat-topped chamfered blades + deep dark shadowed cooling slots (flat trough centered on u=0/1 for exact wrap seamlessness!)
+        t = (u * 8.0) % 1.0
+        dt = np.abs(t - 0.5)
+        # Wide crisp 45° extruded flanks (0.12..0.24) let directional light naturally illuminate left flank bright and right flank dark (ZERO symmetric fake borders!)
+        fin_wall = 1.0 - _smoothstep(0.12, 0.24, dt)
+        fin_top = 1.0 - _smoothstep(0.10, 0.14, dt)
+        trough_floor = _smoothstep(0.22, 0.28, dt)
+        fin = 0.72 * fin_wall + 0.28 * fin_top
+        # Clean purely longitudinal vertical extrusion streaks (strictly low-Nyquist u-only harmonics, ZERO cross-hatching!)
+        ext_lines = 0.0022 * (np.sin(2.0 * math.pi * u * 56.0) + 0.6 * np.sin(2.0 * math.pi * u * 96.0 + 1.1))
+        h = 0.02 + 0.92 * fin + ext_lines * fin_top
+        cav = np.clip(0.32 * (1.0 - fin_wall) + 0.68 * trough_floor, 0.0, 1.0)
+        # Keep ridge strictly on flat fin top so left/right angled flanks get pure asymmetric 3D normal shading!
+        ridge = np.clip(fin_top, 0.0, 1.0)
+        return h.astype(np.float32), 32.0, cav.astype(np.float32), 0.16, ridge.astype(np.float32)
 
     if detail_id == "window_blinds_slats":
         # Overlapping horizontal venetian-blind slats (12 phase-centered slats) + twin vertical ladder-cord ribs
@@ -800,41 +977,68 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         return h.astype(np.float32), 14.0, cav.astype(np.float32), 0.28, ridge.astype(np.float32)
 
     if detail_id == "acoustic_slat_wood":
-        # Modern architectural vertical micro-slatted oak acoustic wall paneling over dark felt valleys
-        t = (u * 12.0) % 1.0
-        slat = np.minimum(_smoothstep(0.14, 0.20, t), 1.0 - _smoothstep(0.76, 0.82, t))
-        grain = 0.035 * np.sin(2.0 * math.pi * u * 72.0 + 1.4 * _periodic_fbm(H, W, seed + 61, (8, 16))) * slat
-        felt = 0.04 * _periodic_fbm(H, W, seed + 62, (32, 64)) * (1.0 - slat)
-        h = 0.12 + 0.76 * slat + grain + felt
-        cav = 1.0 - slat
-        ridge = _smoothstep(0.85, 0.99, slat)
-        return h.astype(np.float32), 20.0, cav.astype(np.float32), 0.46, ridge.astype(np.float32)
+        # Architectural vertical micro-slatted oak acoustic wall paneling: per-slat wood grain/vessels + chamfered edges + fuzzy felt
+        n_slats = 12.0
+        sid = np.floor(u * n_slats) % n_slats
+        t = (u * n_slats) % 1.0
+        # 2-stage chamfered oak slat profile: steep felt side walls + crisp micro-chamfered top corners
+        slat_core = np.minimum(_smoothstep(0.13, 0.19, t), 1.0 - _smoothstep(0.77, 0.83, t))
+        slat_top = np.minimum(_smoothstep(0.18, 0.24, t), 1.0 - _smoothstep(0.72, 0.78, t))
+        slat_prof = 0.78 * slat_core + 0.22 * slat_top
+        # Per-slat unique wood-grain phase & cathedral warp + fine vertical oak vessels
+        s_hash = np.sin(sid * 19.3 + 4.1) * 0.5 + 0.5
+        s_hash2 = np.cos(sid * 31.7 + 1.9) * 0.5 + 0.5
+        w_flow = _periodic_fbm(H, W, seed + 61, (4, 8, 16))
+        w_fine = _periodic_fbm(H, W, seed + 62, (16, 48, 96))
+        grain_wave = np.sin(2.0 * math.pi * (u * (48.0 + 24.0 * s_hash2) + 0.16 * w_flow) + 6.283 * s_hash)
+        oak_pores = _smoothstep(0.80, 1.45, -w_fine) * (0.45 + 0.55 * (0.5 - 0.5 * grain_wave))
+        felt_fib = 0.055 * _periodic_fbm(H, W, seed + 63, (32, 64, 96)) * (1.0 - slat_core)
+        slat_step = 0.022 * (s_hash - 0.5)
+        h = 0.08 + 0.76 * slat_prof + (0.028 * grain_wave - 0.030 * oak_pores + slat_step) * slat_top + felt_fib
+        cav = np.clip((1.0 - slat_core) + 0.22 * oak_pores * slat_top, 0.0, 1.0)
+        # Highlight along chamfered oak slat corners
+        chamfer_edge = np.clip(slat_core - slat_top, 0.0, 1.0)
+        ridge = np.clip(chamfer_edge * 1.8 + 0.30 * slat_top * (0.5 + 0.5 * grain_wave), 0.0, 1.0)
+        return h.astype(np.float32), 19.0, cav.astype(np.float32), 0.44, ridge.astype(np.float32)
 
     if detail_id == "drip_tray_sieve_grate":
+        # Brushed stainless-steel espresso drip-tray bridge-lanced grate: rolled punched slot bevels + directional brush grain
         cols, rows = 10.0, 6.0
         r_idx = np.floor(v * rows)
         u_s = (u + 0.5 * (r_idx % 2.0) / cols) % 1.0
         fu = (u_s * cols) % 1.0 - 0.5
         fv = (v * rows) % 1.0 - 0.5
-        py_c = np.maximum(np.abs(fv) - 0.26, 0.0)
+        py_c = np.maximum(np.abs(fv) - 0.25, 0.0)
         d_pill = np.sqrt((fu * 0.62) ** 2 + py_c * py_c)
-        slot = 1.0 - _smoothstep(0.085, 0.125, d_pill)
-        h = 0.84 - 0.76 * slot
-        cav = slot
-        ridge = _smoothstep(0.11, 0.14, d_pill) * (1.0 - _smoothstep(0.14, 0.19, d_pill))
-        return h.astype(np.float32), 21.0, cav.astype(np.float32), 0.22, ridge.astype(np.float32)
+        # 2-stage punched stainless profile: deep dark slot + curved stamped bevel lip
+        slot_void = 1.0 - _smoothstep(0.082, 0.118, d_pill)
+        roll_lip = _smoothstep(0.090, 0.175, d_pill)
+        # Fine brushed stainless-steel micro-lines along horizontal axis (u)
+        brush = 0.016 * np.sin(2.0 * math.pi * v * 128.0 + 0.6 * _periodic_fbm(H, W, seed + 64, (8, 24)))
+        h = 0.04 + 0.60 * (1.0 - slot_void) + 0.24 * roll_lip + brush * (1.0 - slot_void)
+        cav = np.clip(slot_void, 0.0, 1.0)
+        ridge = _smoothstep(0.105, 0.145, d_pill) * (1.0 - _smoothstep(0.150, 0.210, d_pill))
+        return h.astype(np.float32), 21.0, cav.astype(np.float32), 0.20, ridge.astype(np.float32)
 
     if detail_id == "modular_stud_grid":
-        # Precision-molded 8x8 interlocking circular plastic studs with crisp chamfered tops
+        # High-gloss injection-molded 8x8 interlocking ABS plastic studs: crisp chamfered crown + recessed injection-gate ring + smooth curved fillets
         n = 8.0
         fu = (u * n) % 1.0 - 0.5
         fv = (v * n) % 1.0 - 0.5
         r = np.sqrt(fu * fu + fv * fv)
-        stud = 1.0 - _smoothstep(0.28, 0.34, r)
-        h = 0.18 + 0.72 * stud
-        cav = 1.0 - stud
-        ridge = _smoothstep(0.26, 0.31, r) * stud
-        return h.astype(np.float32), 20.0, cav.astype(np.float32), 0.16, ridge.astype(np.float32)
+        # 2-stage molded ABS cylinder: steep wall + rounded glossy top shoulder + faint recessed top mold detail
+        stud_base = 1.0 - _smoothstep(0.28, 0.345, r)
+        stud_top = 1.0 - _smoothstep(0.22, 0.285, r)
+        stud = 0.72 * stud_base + 0.28 * stud_top
+        # Subtle injection-molded circular top bevel lip & tiny center sprue dimple
+        gate_ring = 0.024 * np.exp(-(((r - 0.16) / 0.026) ** 2))
+        sprue = 0.014 * np.exp(-((r / 0.045) ** 2))
+        mold_pol = 0.004 * _periodic_fbm(H, W, seed + 66, (6, 12, 24))
+        h = 0.14 + 0.74 * stud - gate_ring - sprue + mold_pol
+        cav = np.clip(1.0 - stud_base, 0.0, 1.0)
+        # Crisp shoulder catchlight ring around top of each glossy ABS stud
+        ridge = np.clip((stud_base - stud_top) * 1.9 + 0.35 * stud_top, 0.0, 1.0)
+        return h.astype(np.float32), 21.0, cav.astype(np.float32), 0.13, ridge.astype(np.float32)
 
     if detail_id == "waffle_silicone_pad":
         # Everyday kitchen/desk square-waffle molded silicone mat (10x10 phase-centered crisp pockets)
@@ -848,156 +1052,198 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         return h.astype(np.float32), 14.0, cav.astype(np.float32), 0.48, ridge.astype(np.float32)
 
     if detail_id == "keyboard_keycap_grid":
-        # Tight 6x6 grid of sculpted gently-dished matte-plastic keycaps with narrow crisp gaps
+        # Tight 6x6 grid of sculpted PBT keycaps: gently spherical finger dish + micro-stippled PBT texture + crisp chamfer rim
         n = 6.0
         fu = (u * n) % 1.0 - 0.5
         fv = (v * n) % 1.0 - 0.5
-        d_box = np.maximum(np.abs(fu), np.abs(fv))
-        cap = 1.0 - _smoothstep(0.36, 0.46, d_box)
-        # Subtle spherical fingertip dish in the center of each keycap
-        dish = 0.14 * np.exp(-((fu * fu + fv * fv) / 0.08))
-        h = 0.10 + (0.78 - dish) * cap
+        # Soft rounded-square superellipse (p=4) keycap top silhouette (not harsh sharp rectangle!)
+        d_box = ((np.abs(fu) ** 4.0) + (np.abs(fv) ** 4.0)) ** 0.25
+        cap = 1.0 - _smoothstep(0.35, 0.46, d_box)
+        top_lip = 1.0 - _smoothstep(0.29, 0.37, d_box)
+        dish = 0.15 * np.exp(-((fu * fu + fv * fv) / 0.075)) * top_lip
+        pbt_stipple = 0.016 * _periodic_fbm(H, W, seed + 68, (32, 64, 96))
+        h = 0.08 + (0.76 * cap + 0.06 * top_lip - dish) + pbt_stipple * cap
         cav = 1.0 - cap
-        ridge = _smoothstep(0.30, 0.38, d_box) * cap
-        return h.astype(np.float32), 19.0, cav.astype(np.float32), 0.36, ridge.astype(np.float32)
+        ridge = _smoothstep(0.27, 0.35, d_box) * cap
+        return h.astype(np.float32), 18.0, cav.astype(np.float32), 0.38, ridge.astype(np.float32)
 
     if detail_id == "solar_cell_grid":
-        # Monocrystalline solar panel cells (2x2 chamfered-corner cells + silver busbars + micro-fingers)
+        # Monocrystalline/polycrystalline solar panel cells: silicon crystal facets + metallic busbars + crisp micro-fingers
         n = 2.0
         fu = np.abs((u * n) % 1.0 - 0.5) * 2.0
         fv = np.abs((v * n) % 1.0 - 0.5) * 2.0
         cell_gap = np.maximum(np.maximum(fu, fv) - 0.94, (fu + fv) - 1.72)
-        in_cell = 1.0 - _smoothstep(-0.02, 0.02, cell_gap)
+        in_cell = 1.0 - _smoothstep(-0.018, 0.018, cell_gap)
         busbars = np.maximum(
-            1.0 - _smoothstep(0.010, 0.020, np.abs(fu - 0.38)),
-            1.0 - _smoothstep(0.010, 0.020, np.abs(fu - 0.78)),
+            1.0 - _smoothstep(0.012, 0.022, np.abs(fu - 0.38)),
+            1.0 - _smoothstep(0.012, 0.022, np.abs(fu - 0.78)),
         ) * in_cell
-        fingers = (0.5 + 0.5 * np.cos(2.0 * math.pi * v * 96.0)) * in_cell * 0.06
-        h = 0.20 + 0.58 * in_cell + 0.14 * busbars + fingers
+        # Crisp metallic collector micro-fingers running perpendicular to busbars
+        f_wave = 0.5 + 0.5 * np.cos(2.0 * math.pi * v * 72.0)
+        fingers = _smoothstep(0.80, 0.95, f_wave) * in_cell
+        # Subtle polycrystalline silicon wafer crystal facets (smoothly tapered at grain edges -> zero glass-laminate cliff!)
+        f1_s, f2_s, si_facet = _periodic_worley_id(u, v, 10, seed + 69)
+        si_taper = _smoothstep(0.0, 0.10, f2_s - f1_s)
+        h = 0.20 + 0.56 * in_cell + 0.14 * busbars + 0.045 * fingers + 0.010 * (si_facet - 0.5) * si_taper * in_cell
         cav = 1.0 - in_cell
-        ridge = busbars
-        return h.astype(np.float32), 16.0, cav.astype(np.float32), 0.14, ridge.astype(np.float32)
+        ridge = np.clip(busbars + 0.55 * fingers, 0.0, 1.0)
+        return h.astype(np.float32), 14.0, cav.astype(np.float32), 0.10, ridge.astype(np.float32)
 
     if detail_id == "pcb_solder_mask_traces":
-        # Authentic varied electronics PCB: 100% periodic 2x2 distinct Manhattan/45-deg copper trace buses + IC pads + vias!
+        # Authentic asymmetric electronics PCB: non-symmetrical routed copper differential buses + off-center QFP IC pads + smooth ENIG gold pads + drilled vias!
         # Keep v=0 and v=1 strictly flat vertical bus crossings so wrap seam is EXACTLY zero at any resolution (256..2048)!
-        # Vertical 8-track bus with opposite-direction 45-deg bends in upper vs lower half -> varied organic circuit layout!
-        bend_a = np.clip((v - 0.14) / 0.16, 0.0, 1.0) * (1.0 - np.clip((v - 0.36) / 0.12, 0.0, 1.0)) * 0.125
-        bend_b = -np.clip((v - 0.58) / 0.14, 0.0, 1.0) * (1.0 - np.clip((v - 0.78) / 0.12, 0.0, 1.0)) * 0.125
-        u_routed = (u + bend_a + bend_b + 0.03125) % 1.0
-        # 16 vertical copper traces grouped into 4-trace differential pairs with gaps
+        # Asymmetric upper (+2 lanes) vs lower (-1 lane) 45-deg bus jogs: strictly periodic in BOTH u and v (zero wrap seam!)
+        jog_upper = np.clip((v - 0.14) / 0.14, 0.0, 1.0) * (1.0 - np.clip((v - 0.40) / 0.10, 0.0, 1.0)) * 0.125
+        jog_lower = -np.clip((v - 0.56) / 0.14, 0.0, 1.0) * (1.0 - np.clip((v - 0.80) / 0.10, 0.0, 1.0)) * 0.0625
+        u_routed = (u + jog_upper + jog_lower + 0.03125) % 1.0
+        # 16 copper lanes with irregular realistic bus grouping (power rail + differential pairs + clock gaps)
         t_cell = (u_routed * 16.0) % 1.0 - 0.5
-        t_idx = np.floor(u_routed * 16.0).astype(np.int32)
-        bus_keep = ((t_idx % 4) != 3).astype(np.float32)
-        trace_v = (1.0 - _smoothstep(0.15, 0.23, np.abs(t_cell))) * bus_keep
-        # Horizontal cross-buses at v=0.49 and v=0.91 (well away from v=0/1 wrap border!)
-        trace_h1 = (1.0 - _smoothstep(0.008, 0.015, np.abs(v - 0.49))) * _smoothstep(0.12, 0.16, u) * (1.0 - _smoothstep(0.84, 0.88, u))
-        trace_h2 = (1.0 - _smoothstep(0.008, 0.015, np.abs(v - 0.91))) * (1.0 - _smoothstep(0.32, 0.36, np.abs(u - 0.5)))
-        # Asymmetric IC SMD rectangular pad row around v=0.28 and v=0.72 + staggered gold-ringed vias
-        smd_y = np.minimum(np.abs(v - 0.28), np.abs(v - 0.72))
-        smd_x = np.abs(((u * 12.0 + 0.5) % 1.0) - 0.5)
-        smd_mask = ((np.abs(u - 0.27) < 0.14) | (np.abs(u - 0.73) < 0.14)).astype(np.float32)
-        smd_pad = (1.0 - _smoothstep(0.022, 0.032, smd_y)) * (1.0 - _smoothstep(0.22, 0.30, smd_x)) * smd_mask
-        # Staggered via grid (all interior, zero border-crossing!)
+        t_idx = np.floor(u_routed * 16.0).astype(np.int32) % 16
+        bus_keep = np.isin(t_idx, [0, 1, 2, 4, 5, 7, 9, 10, 11, 13, 14]).astype(np.float32)
+        # Sharper etched copper trace shoulder transition (0.14 -> 0.19)
+        trace_v = (1.0 - _smoothstep(0.14, 0.195, np.abs(t_cell))) * bus_keep
+        # Asymmetric interior horizontal routing buses & stub traces (strictly interior -> zero wrap seam!)
+        trace_h1 = (1.0 - _smoothstep(0.007, 0.012, np.abs(v - 0.42))) * _smoothstep(0.08, 0.11, u) * (1.0 - _smoothstep(0.68, 0.71, u))
+        trace_h2 = (1.0 - _smoothstep(0.007, 0.012, np.abs(v - 0.46))) * _smoothstep(0.16, 0.19, u) * (1.0 - _smoothstep(0.84, 0.87, u))
+        trace_h3 = (1.0 - _smoothstep(0.009, 0.015, np.abs(v - 0.84))) * _smoothstep(0.32, 0.35, u) * (1.0 - _smoothstep(0.92, 0.95, u))
+        # Asymmetric off-center SMD QFP pad arrays (different positions/lengths on top-left vs bottom-right!)
+        smd_x = np.abs(((u * 14.0 + 0.5) % 1.0) - 0.5)
+        smd_a = (1.0 - _smoothstep(0.018, 0.025, np.abs(v - 0.24))) * (1.0 - _smoothstep(0.20, 0.27, smd_x)) * ((u > 0.10) & (u < 0.44)).astype(np.float32)
+        smd_b = (1.0 - _smoothstep(0.018, 0.025, np.abs(v - 0.66))) * (1.0 - _smoothstep(0.20, 0.27, smd_x)) * ((u > 0.54) & (u < 0.90)).astype(np.float32)
+        # Larger rectangular power-FET pad on lower-left for authentic PCB component diversity!
+        fet_pad = (1.0 - _smoothstep(0.036, 0.044, np.abs(u - 0.24))) * (1.0 - _smoothstep(0.028, 0.036, np.abs(v - 0.74)))
+        # Asymmetric staggered gold-ringed vias (all interior!)
         via_pts = [
-            (0.12, 0.14), (0.38, 0.16), (0.62, 0.14), (0.88, 0.18),
-            (0.18, 0.42), (0.46, 0.49), (0.54, 0.49), (0.82, 0.42),
-            (0.14, 0.62), (0.42, 0.64), (0.64, 0.62), (0.86, 0.66),
-            (0.24, 0.86), (0.50, 0.91), (0.76, 0.86),
+            (0.11, 0.12), (0.34, 0.14), (0.61, 0.18), (0.85, 0.15),
+            (0.19, 0.38), (0.50, 0.42), (0.76, 0.34), (0.88, 0.46),
+            (0.14, 0.58), (0.41, 0.61), (0.64, 0.52), (0.47, 0.84),
+            (0.72, 0.84), (0.86, 0.88),
         ]
-        pad = smd_pad.copy()
+        pad = np.maximum(np.maximum(smd_a, smd_b), fet_pad)
         hole = np.zeros_like(u)
         for vx, vy in via_pts:
             rv = np.sqrt((u - vx) ** 2 + (v - vy) ** 2)
-            pad = np.maximum(pad, 1.0 - _smoothstep(0.020, 0.027, rv))
-            hole = np.maximum(hole, 1.0 - _smoothstep(0.008, 0.013, rv))
-        traces = np.maximum(trace_v, np.maximum(trace_h1, trace_h2))
-        copper = np.clip(np.maximum(traces * 0.85, pad) * (1.0 - hole), 0.0, 1.0)
-        h = 0.44 + 0.16 * traces + 0.24 * pad - 0.48 * hole
+            pad = np.maximum(pad, 1.0 - _smoothstep(0.018, 0.023, rv))
+            hole = np.maximum(hole, 1.0 - _smoothstep(0.0075, 0.0115, rv))
+        # Authentic 4-layer FR4 PCB stackup: horizontal traces run on an INNER buried copper plane (no top-layer visual short-circuits!), vertical differential buses run on TOP layer!
+        inner_traces = np.maximum(trace_h1, np.maximum(trace_h2, trace_h3))
+        fr4_weave = 0.014 * (np.sin(2.0 * math.pi * u * 64.0) * np.sin(2.0 * math.pi * v * 64.0))
+        top_trace = np.clip(trace_v, 0.0, 1.0)
+        inner_vis = np.clip(inner_traces * (1.0 - top_trace), 0.0, 1.0)
+        pad_exposed = np.clip(pad * (1.0 - hole), 0.0, 1.0)
+        bare_board = np.clip(1.0 - np.maximum(top_trace, pad_exposed), 0.0, 1.0)
+        h = 0.40 + fr4_weave * bare_board + 0.055 * inner_vis * (1.0 - pad_exposed) + 0.23 * top_trace * (1.0 - pad_exposed) + 0.34 * pad_exposed - 0.44 * hole
         cav = hole
-        ridge = copper
-        return h.astype(np.float32), 11.0, cav.astype(np.float32), 0.18, ridge.astype(np.float32)
+        # Encode inner-layer buried traces [0.10..0.22], top-layer copper traces [0.28..0.48], and exposed ENIG gold pads [0.65..1.0] via ridge!
+        ridge = np.clip(np.maximum(inner_vis * 0.20, np.maximum(top_trace * 0.46, pad_exposed * 1.0)) * (1.0 - hole), 0.0, 1.0)
+        return h.astype(np.float32), 16.5, cav.astype(np.float32), 0.14, ridge.astype(np.float32)
 
     if detail_id == "acoustic_pyramid_foam":
-        # Studio convoluted acoustic pyramid foam (8x8 soft-tip pyramids, quarter-cell phase-centered)
+        # Studio open-cell polyurethane acoustic pyramid foam (8x8 pyramids + genuine open-cell Voronoi foam pores!)
         n = 8.0
         fu = np.abs(((u * n + 0.25) % 1.0) - 0.5) * 2.0
         fv = np.abs(((v * n + 0.25) % 1.0) - 0.5) * 2.0
-        pyr = np.clip(1.0 - np.maximum(fu, fv), 0.0, 1.0) ** 0.90
-        pores = 0.035 * _periodic_fbm(H, W, seed + 71, (24, 48))
-        h = 0.14 + 0.76 * pyr + pores
-        cav = 1.0 - pyr
-        ridge = _smoothstep(0.72, 0.96, pyr)
-        return h.astype(np.float32), 15.0, cav.astype(np.float32), 0.84, ridge.astype(np.float32)
+        pyr = np.clip(1.0 - np.maximum(fu, fv), 0.0, 1.0) ** 0.92
+        # Open-cell foam micro-pores: sharp cell walls (f2-f1 small) and concave dark air-bubble pockets (f1 small)
+        f1_p, f2_p = _periodic_worley(u, v, 56, seed + 71)
+        cell_wall = 1.0 - _smoothstep(0.02, 0.16, f2_p - f1_p)
+        pore_pit = 1.0 - _smoothstep(0.08, 0.36, f1_p)
+        foam_tex = 0.048 * cell_wall - 0.042 * pore_pit + 0.022 * _periodic_fbm(H, W, seed + 72, (32, 64))
+        h = 0.14 + 0.74 * pyr + foam_tex
+        cav = np.clip((1.0 - pyr) * 0.85 + 0.35 * pore_pit, 0.0, 1.0)
+        ridge = np.clip(_smoothstep(0.72, 0.96, pyr) * 0.85 + 0.35 * cell_wall, 0.0, 1.0)
+        return h.astype(np.float32), 16.0, cav.astype(np.float32), 0.88, ridge.astype(np.float32)
 
     if detail_id == "terry_velcro_loops":
-        # Authentic soft fibrous terry-cloth towel / fleece loop pile (organic domain-warped yarn loops, ZERO rigid grommets!)
-        wu = 0.030 * _periodic_fbm(H, W, seed + 73, (6, 12, 24))
-        wv = 0.030 * _periodic_fbm(H, W, seed + 74, (6, 12, 24))
+        # Authentic plush woven cotton bath-towel terry cloth: dense 3-layer C-infinity overlapping isotropic curled cotton yarn tufts (~98% plush coverage, ZERO flat voids or diagonal bias!)
+        wu = 0.008 * _periodic_fbm(H, W, seed + 73, (4, 8))
+        wv = 0.008 * _periodic_fbm(H, W, seed + 74, (4, 8))
         uw = (u + wu) % 1.0
         vw = (v + wv) % 1.0
-        # Two overlapping jittered Voronoi loop layers create natural tangled soft yarn tufts & curl crests
-        f1a, f2a = _periodic_worley(uw, vw, 18, seed + 75)
-        f1b, f2b = _periodic_worley((uw + 0.031) % 1.0, (vw + 0.047) % 1.0, 24, seed + 76)
-        curl_a = np.exp(-(((f1a - 0.30) / 0.16) ** 2))
-        curl_b = np.exp(-(((f1b - 0.28) / 0.17) ** 2))
-        tuft = np.maximum(curl_a * 0.90, curl_b * 0.80)
-        fuzz = 0.14 * _periodic_fbm(H, W, seed + 77, (16, 32, 64))
-        h = 0.22 + 0.56 * tuft + fuzz
-        cav = _smoothstep(0.48, 0.20, h)
-        ridge = _smoothstep(0.64, 0.88, h)
-        return h.astype(np.float32), 10.0, cav.astype(np.float32), 0.88, ridge.astype(np.float32)
+        beta_t = 5.5
+        acc = np.zeros_like(u, dtype=np.float32)
+        for nx, ny, off_u, off_v, amp_scale, s_off in (
+            (18, 18, 0.0, 0.0, 1.00, 75),
+            (22, 22, 0.027, 0.033, 0.94, 85),
+            (26, 26, 0.051, 0.019, 0.86, 95),
+        ):
+            rng = np.random.default_rng(seed + s_off)
+            jx = rng.uniform(0.14, 0.86, (ny, nx)).astype(np.float32)
+            jy = rng.uniform(0.14, 0.86, (ny, nx)).astype(np.float32)
+            ang = rng.uniform(0.0, 2.0 * math.pi, (ny, nx)).astype(np.float32)
+            amp = rng.uniform(0.80, 1.05, (ny, nx)).astype(np.float32) * amp_scale
+            gx = ((uw + off_u) % 1.0) * nx
+            gy = ((vw + off_v) % 1.0) * ny
+            ix = np.floor(gx).astype(np.int32)
+            iy = np.floor(gy).astype(np.int32)
+            fx, fy = gx - ix, gy - iy
+            for dy in (-1, 0, 1):
+                ny_i = (iy + dy) % ny
+                for dx in (-1, 0, 1):
+                    nx_i = (ix + dx) % nx
+                    ddx = (dx + jx[ny_i, nx_i]) - fx
+                    ddy = (dy + jy[ny_i, nx_i]) - fy
+                    ca = np.cos(ang[ny_i, nx_i])
+                    sa = np.sin(ang[ny_i, nx_i])
+                    lx = ddx * ca + ddy * sa
+                    ly = -ddx * sa + ddy * ca
+                    # Softly curled plush cotton yarn arch (isotropic random angle, NO diagonal stripe bias!)
+                    ly_b = ly - 0.28 * (lx * lx)
+                    d2 = (lx * 0.92) ** 2 + (ly_b * 1.25) ** 2
+                    lobe = np.exp(-2.2 * d2) * amp[ny_i, nx_i]
+                    acc += np.exp(beta_t * lobe) - 1.0
+        loops = np.log1p(acc) / beta_t
+        lo_l, hi_l = float(loops.min()), float(loops.max())
+        loops = (loops - lo_l) / max(hi_l - lo_l, 1e-4)
+        # Soft isotropic cotton nap micro-fuzz (band-limited to 32 -> zero crunchy normal striping!)
+        fuzz = 0.068 * _periodic_fbm(H, W, seed + 77, (8, 16, 32))
+        h = np.clip(0.16 + 0.72 * loops + fuzz * (0.40 + 0.60 * loops), 0.05, 0.95)
+        cav = _smoothstep(0.56, 0.22, h)
+        ridge = _smoothstep(0.60, 0.88, h)
+        return h.astype(np.float32), 7.6, cav.astype(np.float32), 0.93, ridge.astype(np.float32)
 
     if detail_id == "reeded_coin_milling":
-        # Crisp bright milled golden-brass coin-edge ridges (20 band-limited flutes -> gleaming metallic sheen!)
+        # Crisp bright milled golden-brass coin-edge ridges (20 C1-smooth band-limited flutes -> gleaming metallic sheen!)
         t = 0.5 + 0.5 * np.cos(2.0 * math.pi * u * 20.0)
-        h = 0.14 + 0.76 * (t ** 0.58)
+        # Offset before fractional exponent eliminates infinite-slope valley pinch at t->0
+        h = 0.14 + 0.76 * (((t + 0.04) / 1.04) ** 0.62)
         cav = _smoothstep(0.45, 0.0, t)
         ridge = _smoothstep(0.68, 0.98, t)
-        return h.astype(np.float32), 16.0, cav.astype(np.float32), 0.08, ridge.astype(np.float32)
+        return h.astype(np.float32), 14.5, cav.astype(np.float32), 0.08, ridge.astype(np.float32)
 
     if detail_id == "fluted_reeded_glass":
-        # Architectural vertical fluted privacy glass (12 smooth cylindrical half-round ribs, peak-centered)
+        # Architectural vertical fluted/reeded privacy glass (12 smooth optical cylindrical ribs with crisp Fresnel shoulders)
         fu = ((u * 12.0 + 0.5) % 1.0) - 0.5
-        # Softened cylinder roll-off eliminates infinite-slope cusps & opaque dark valleys
-        rib = np.sqrt(np.clip(1.0 - 0.92 * (fu * 2.0) ** 2, 0.0, 1.0))
-        h = 0.18 + 0.72 * rib
-        cav = _smoothstep(0.45, 0.24, rib)
-        ridge = _smoothstep(0.84, 0.99, rib)
-        return h.astype(np.float32), 11.0, cav.astype(np.float32), 0.06, ridge.astype(np.float32)
+        rib = np.sqrt(np.clip(1.0 - 0.90 * (fu * 2.0) ** 2, 0.0, 1.0))
+        # Subtle optical flute waviness along height (drawn glass micro-ripple)
+        draw_w = 0.008 * _periodic_fbm(H, W, seed + 80, (4, 12))
+        h = 0.16 + 0.76 * rib + draw_w
+        # cav marks deep refractive glass edge-absorption troughs; ridge marks bright cylindrical caustic crown
+        cav = _smoothstep(0.54, 0.28, rib)
+        ridge = _smoothstep(0.82, 0.99, rib)
+        return h.astype(np.float32), 14.5, cav.astype(np.float32), 0.05, ridge.astype(np.float32)
 
     if detail_id == "terrazzo_speckled_stone":
-        # Authentic honed terrazzo: DEAD-FLAT polished cement matrix with sharp angular periodic Voronoi marble chips!
-        rng = np.random.default_rng(seed + 81)
-        n_pts = 96
-        pts_u = rng.uniform(0.0, 1.0, n_pts).astype(np.float32)
-        pts_v = rng.uniform(0.0, 1.0, n_pts).astype(np.float32)
-        # Warp slightly with fine noise so stone chips look hand-crushed & polygonal
-        d1 = np.full((H, W), 10.0, dtype=np.float32)
-        d2 = np.full((H, W), 10.0, dtype=np.float32)
-        cid = np.zeros((H, W), dtype=np.int32)
-        for idx_p, (pu, pv) in enumerate(zip(pts_u, pts_v)):
-            du = np.abs(u - pu); du = np.minimum(du, 1.0 - du)
-            dv = np.abs(v - pv); dv = np.minimum(dv, 1.0 - dv)
-            # L1.6 metric produces sharp angular chiseled polygonal marble facets!
-            dist = (du ** 1.6 + dv ** 1.6) ** (1.0 / 1.6)
-            closer = dist < d1
-            d2 = np.where(closer, d1, np.minimum(d2, dist))
-            d1 = np.where(closer, dist, d1)
-            cid = np.where(closer, idx_p, cid)
-        # Keep ~38% of cells as distinct angular stone chips separated cleanly by cement matrix
-        cell_hash = ((cid.astype(np.int64) * 2654435761) & 0xFFFF).astype(np.float32) / 65535.0
-        is_chip_cell = (cell_hash < 0.42).astype(np.float32)
-        edge_dist = d2 - d1
-        chip_mask = is_chip_cell * _smoothstep(0.008, 0.022, edge_dist)
-        micro = 0.015 * _periodic_fbm(H, W, seed + 82, (16, 32, 64))
-        # Virtually flush honed surface (zero raised camo blobs!)
-        h = 0.54 + 0.028 * chip_mask + micro
-        # Encode chip color bucket smoothly in cav (0 = cement, 0.33/0.66/1.0 = mineral chip kinds)
-        chip_kind = (0.33 + 0.33 * (cid % 3).astype(np.float32)) * chip_mask
-        cav = np.clip(chip_kind, 0.0, 1.0)
+        # Authentic Venetian honed terrazzo: densely packed 3-scale angular marble chips + fine honed cement micro-pitting!
+        uw = (u + 0.006 * _periodic_fbm(H, W, seed + 79, (12, 24))) % 1.0
+        vw = (v + 0.006 * _periodic_fbm(H, W, seed + 80, (12, 24))) % 1.0
+        f1_a, f2_a, cid_a = _periodic_worley_id(uw, vw, 10, seed + 81)
+        f1_b, f2_b, cid_b = _periodic_worley_id((uw + 0.037) % 1.0, (vw + 0.053) % 1.0, 20, seed + 82)
+        f1_c, f2_c, cid_c = _periodic_worley_id((uw + 0.019) % 1.0, (vw + 0.071) % 1.0, 36, seed + 83)
+        # Sharp polygonal chiseled chips via (f2 - f1) border distance across 3 chip sizes (~62% total stone fill!)
+        m_a = (cid_a < 0.44).astype(np.float32) * _smoothstep(0.06, 0.15, f2_a - f1_a)
+        m_b = (cid_b < 0.48).astype(np.float32) * _smoothstep(0.07, 0.17, f2_b - f1_b) * (1.0 - m_a)
+        m_c = (cid_c < 0.52).astype(np.float32) * _smoothstep(0.08, 0.19, f2_c - f1_c) * (1.0 - np.maximum(m_a, m_b))
+        chip_mask = np.clip(m_a + m_b + m_c, 0.0, 1.0)
+        # Encode mineral palette bucket (0.20..1.00) cleanly across all 3 scales
+        bucket = np.where(m_a > 0.5, cid_a / 0.44, np.where(m_b > 0.5, cid_b / 0.48, cid_c / 0.52))
+        cem_grit = _periodic_fbm(H, W, seed + 84, (24, 48, 96))
+        cem_pits = _smoothstep(1.25, 1.95, -cem_grit) * (1.0 - chip_mask)
+        # Dead-flat honed flush surface with subtle micro-pits only in the cement binder
+        h = 0.56 + 0.022 * chip_mask + 0.012 * cem_grit * (1.0 - 0.65 * chip_mask) - 0.065 * cem_pits
+        cav = np.clip(bucket * chip_mask, 0.0, 1.0)
         ridge = chip_mask
-        return h.astype(np.float32), 3.0, cav.astype(np.float32), 0.24, ridge.astype(np.float32)
+        return h.astype(np.float32), 4.0, cav.astype(np.float32), 0.22, ridge.astype(np.float32)
 
     if detail_id == "woven_rattan_cane":
         # Classic Parisian Thonet octagonal cane webbing with true over-under strand interleaving!
@@ -1017,37 +1263,54 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         sd1 = np.sqrt(np.clip(1.0 - (fd1 / 0.22) ** 2, 0.0, 1.0)) * np.where(par_d, 0.84, 0.58)
         sd2 = np.sqrt(np.clip(1.0 - (fd2 / 0.22) ** 2, 0.0, 1.0)) * np.where(par_d, 0.58, 0.84)
         cane = np.maximum.reduce([su, sv, sd1, sd2])
-        fiber = 0.025 * _periodic_fbm(H, W, seed + 86, (16, 48))
-        h = 0.08 + 0.82 * cane + fiber * (cane > 0.1)
-        cav = _smoothstep(0.22, 0.06, cane)
-        ridge = _smoothstep(0.70, 0.92, cane)
-        return h.astype(np.float32), 14.0, cav.astype(np.float32), 0.44, ridge.astype(np.float32)
+        # Directional longitudinal palm-cane silica striations along each strand
+        f_noise = _periodic_fbm(H, W, seed + 86, (16, 48, 96))
+        s_u = np.sin(2.0 * math.pi * fu * 6.0 + 0.5 * f_noise) * (su >= np.maximum(sv, np.maximum(sd1, sd2)))
+        s_v = np.sin(2.0 * math.pi * fv * 6.0 + 0.5 * f_noise) * (sv > np.maximum(su, np.maximum(sd1, sd2)))
+        fiber = 0.022 * f_noise + 0.016 * (s_u + s_v)
+        h = 0.08 + 0.82 * cane + fiber * _smoothstep(0.08, 0.25, cane)
+        cav = _smoothstep(0.24, 0.06, cane)
+        ridge = _smoothstep(0.68, 0.92, cane)
+        return h.astype(np.float32), 14.5, cav.astype(np.float32), 0.42, ridge.astype(np.float32)
 
     if detail_id == "corkboard_pin_surface":
-        # Granulated natural corkboard: multi-scale bark platelets + dark intercellular pits
-        c1 = _periodic_fbm(H, W, seed + 85, (12, 24, 48))
-        c2 = _periodic_fbm(H, W, seed + 86, (24, 48, 96))
-        pits = np.clip((-c2 - 0.85) * 2.2, 0.0, 1.0)
-        h = 0.58 + 0.22 * c1 + 0.10 * c2 - 0.38 * pits
-        cav = np.clip(pits * 1.1, 0.0, 1.0)
-        ridge = _smoothstep(0.68, 0.88, h)
-        return h.astype(np.float32), 18.0, cav.astype(np.float32), 0.86, ridge.astype(np.float32)
+        # Authentic compressed natural corkboard: heavily organic domain-warped bark flakes + subtle compressed joints + sparse torn bark gaps (ZERO straight Voronoi polygons!)
+        wu = 0.028 * _periodic_fbm(H, W, seed + 83, (6, 12, 24)) + 0.010 * _periodic_fbm(H, W, seed + 830, (24, 48))
+        wv = 0.028 * _periodic_fbm(H, W, seed + 84, (6, 12, 24)) + 0.010 * _periodic_fbm(H, W, seed + 840, (24, 48))
+        uw, vw = (u + wu) % 1.0, (v + wv) % 1.0
+        f1_a, f2_a, cid_a = _periodic_worley_id(uw, vw, 18, seed + 85)
+        f1_b, f2_b, cid_b = _periodic_worley_id((uw + 0.041) % 1.0, (vw + 0.029) % 1.0, 32, seed + 86)
+        # Soft narrow compressed bark-granule contacts + sparse irregular torn cork voids + fine interior spongy micro-pits
+        seam_a = 1.0 - _smoothstep(0.004, 0.032, f2_a - f1_a)
+        fine = _periodic_fbm(H, W, seed + 87, (32, 64, 96))
+        micro_spores = _smoothstep(0.95, 1.65, -fine)
+        # Sparse genuine torn bark voids only on ~10% of granules
+        torn_pit = _smoothstep(0.84, 0.96, cid_b) * (1.0 - _smoothstep(0.10, 0.30, f1_b))
+        # Organic spongy bark micro-grain across beveled flake faces (tapered at seams -> zero 1px step cliffs!)
+        taper_a = _smoothstep(0.0, 0.14, f2_a - f1_a)
+        taper_b = _smoothstep(0.0, 0.14, f2_b - f1_b)
+        flake_h = 0.56 + 0.095 * (cid_a - 0.5) * taper_a + 0.065 * (cid_b - 0.5) * taper_b - 0.028 * seam_a - 0.22 * torn_pit - 0.09 * micro_spores + 0.055 * fine
+        h = np.clip(flake_h, 0.10, 0.94)
+        cav = np.clip(0.09 * seam_a + 0.65 * torn_pit + 0.32 * micro_spores, 0.0, 1.0)
+        # Blend two organic bark flake hashes so granules overlap naturally in color!
+        ridge = np.clip(cid_a * 0.62 + cid_b * 0.38, 0.0, 1.0)
+        return h.astype(np.float32), 13.0, cav.astype(np.float32), 0.87, ridge.astype(np.float32)
 
     if detail_id == "hammered_copper_dimple":
-        # Hand-planished hammered copper: 84 densely packed shallow concave hammer-strike facets
-        rng = np.random.default_rng(seed + 89)
-        pts_u = rng.uniform(0.0, 1.0, 84).astype(np.float32)
-        pts_v = rng.uniform(0.0, 1.0, 84).astype(np.float32)
-        dmin = np.full((H, W), 10.0, dtype=np.float32)
-        for pu, pv in zip(pts_u, pts_v):
-            du = np.abs(u - pu); du = np.minimum(du, 1.0 - du)
-            dv = np.abs(v - pv); dv = np.minimum(dv, 1.0 - dv)
-            dmin = np.minimum(dmin, np.sqrt(du * du + dv * dv))
-        # Shallow smooth planished bowl with crisp faceted specular rims
-        h = np.clip(0.24 + 0.66 * np.clip(dmin / 0.085, 0.0, 1.0) ** 1.35, 0.0, 1.0)
-        cav = 1.0 - h
-        ridge = _smoothstep(0.72, 0.92, h)
-        return h.astype(np.float32), 12.5, cav.astype(np.float32), 0.18, ridge.astype(np.float32)
+        # Authentic hand-planished copper: C-infinity 5x5 LogSumExp ball-peen spherical strikes with softly rolled metallic shoulders (ZERO Voronoi crease webs!)
+        wu = 0.014 * _periodic_fbm(H, W, seed + 88, (3, 6))
+        wv = 0.014 * _periodic_fbm(H, W, seed + 89, (3, 6))
+        uw, vw = (u + wu) % 1.0, (v + wv) % 1.0
+        # Primary artisan planishing pass (low beta=2.7 -> luxuriously rolled C-infinity shoulders, ZERO Voronoi creases!)
+        peen_main = _periodic_hammer_peen(uw, vw, 9, seed + 90, beta=2.7)
+        peen_soft = _periodic_hammer_peen((uw + 0.073) % 1.0, (vw + 0.049) % 1.0, 6, seed + 91, beta=2.2)
+        hammered = np.clip(0.84 * peen_main + 0.16 * peen_soft, 0.0, 1.0)
+        # Subtle hand-forged macro-undulation & delicate burnishing variation (ZERO scanlines!)
+        burnish = 0.018 * _periodic_fbm(H, W, seed + 92, (4, 8, 16))
+        h = np.clip(0.18 + 0.72 * hammered + burnish, 0.05, 0.96)
+        cav = np.clip(1.0 - hammered, 0.0, 1.0)
+        ridge = _smoothstep(0.50, 0.88, hammered)
+        return h.astype(np.float32), 13.0, cav.astype(np.float32), 0.16, ridge.astype(np.float32)
 
     if detail_id == "cable_knit_wool":
         # Authentic Fisherman's Aran braided cable-knit sweater: alternating twisted 2-strand rope cables & purl-rib channels!
@@ -1104,103 +1367,147 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         use_a = (ax * ax + ay * ay) < (bx * bx + by * by)
         hx = np.where(use_a, ax, bx)
         hy = np.where(use_a, ay, by)
-        # Exact pointy-top hex apothem distance (0 at center, 0.5 at exact shared hex edge!)
-        d_hex = np.maximum(np.abs(hx), np.abs(hx) * 0.5 + np.abs(hy) * (0.5 * s3))
-        tile = 1.0 - _smoothstep(0.435, 0.482, d_hex)
-        bevel = 1.0 - _smoothstep(0.39, 0.455, d_hex)
+        # Exact pointy-top hex apothem distance with C1 corner rounding (zero 1px corner/grout normal flips!)
+        d_hex = _smax(np.abs(hx), np.abs(hx) * 0.5 + np.abs(hy) * (0.5 * s3), 0.025)
+        tile = 1.0 - _smoothstep(0.415, 0.485, d_hex)
+        bevel = 1.0 - _smoothstep(0.36, 0.455, d_hex)
         h = 0.16 + 0.34 * tile + 0.42 * bevel + 0.018 * _periodic_fbm(H, W, seed + 93, (8, 16)) * tile
         cav = 1.0 - tile
-        ridge = _smoothstep(0.37, 0.43, d_hex) * tile
-        return h.astype(np.float32), 14.0, cav.astype(np.float32), 0.18, ridge.astype(np.float32)
+        ridge = _smoothstep(0.36, 0.43, d_hex) * tile
+        return h.astype(np.float32), 13.5, cav.astype(np.float32), 0.18, ridge.astype(np.float32)
 
     if detail_id == "fine_asphalt_tarmac":
-        # Street fine-aggregate asphalt: dense sharp mineral chips + bitumen binder pores
-        a1 = _periodic_fbm(H, W, seed + 95, (16, 32, 64))
-        a2 = _periodic_fbm(H, W, seed + 96, (32, 64, 96))
-        chips = np.clip(a1 * 0.65 + np.abs(a2) * 0.45, -1.0, 1.5)
-        h = 0.45 + 0.28 * chips
-        cav = _smoothstep(0.42, 0.20, h)
-        ridge = _smoothstep(0.68, 0.88, h)
-        return h.astype(np.float32), 20.0, cav.astype(np.float32), 0.84, ridge.astype(np.float32)
+        # Authentic rolled road asphalt tarmac: continuous dark bitumen-sand bed with densely packed fine C1 mineral aggregate domes (ZERO Voronoi black-crack web!)
+        wu = 0.006 * _periodic_fbm(H, W, seed + 93, (8, 16))
+        wv = 0.006 * _periodic_fbm(H, W, seed + 94, (8, 16))
+        uw, vw = (u + wu) % 1.0, (v + wv) % 1.0
+        f1_a, _, cid_a = _periodic_worley_id(uw, vw, 28, seed + 95)
+        f1_b, _, cid_b = _periodic_worley_id((uw + 0.023) % 1.0, (vw + 0.041) % 1.0, 44, seed + 96)
+        f1_c, _, cid_c = _periodic_worley_id((uw + 0.013) % 1.0, (vw + 0.067) % 1.0, 62, seed + 97)
+        # Smooth rolled aggregate crowns embedded in bituminous mortar (continuous C1 domes, no polygon seam cliffs!)
+        peb_a = (1.0 - _smoothstep(0.06, 0.54, f1_a)) * (0.65 + 0.35 * cid_a)
+        peb_b = (1.0 - _smoothstep(0.05, 0.54, f1_b)) * (0.58 + 0.42 * cid_b) * 0.86
+        peb_c = (1.0 - _smoothstep(0.04, 0.54, f1_c)) * (0.55 + 0.45 * cid_c) * 0.70
+        gravel = _smax(peb_a, _smax(peb_b, peb_c, 0.10), 0.10)
+        road_und = 0.065 * _periodic_fbm(H, W, seed + 98, (4, 8, 16))
+        sand = 0.042 * _periodic_fbm(H, W, seed + 99, (24, 48))
+        h = np.clip(0.32 + 0.48 * gravel + road_und + sand, 0.08, 0.94)
+        # cav = dark recessed bituminous mortar pockets; ridge = exposed rolled basalt/feldspar/quartz stone flecks
+        cav = _smoothstep(0.42, 0.12, gravel)
+        mineral_tone = np.where(peb_a >= peb_b, cid_a, cid_b)
+        ridge = np.clip(_smoothstep(0.28, 0.72, gravel) * (0.35 + 0.65 * mineral_tone), 0.0, 1.0)
+        return h.astype(np.float32), 9.5, cav.astype(np.float32), 0.84, ridge.astype(np.float32)
 
     if detail_id == "venetian_plaster_trowel":
-        # Authentic Italian burnished Venetian lime plaster (Marmorino): smooth sweeping spatula coats, ZERO gouged pits!
-        swirl1 = _periodic_fbm(H, W, seed + 97, (2, 4, 8))
-        swirl2 = _periodic_fbm(H, W, seed + 98, (6, 12, 24))
-        fine = _periodic_fbm(H, W, seed + 101, (24, 48))
-        # Sweeping overlapping curved trowel arcs (subtle burnished coat transitions)
-        arc1 = np.sin(2.0 * math.pi * (u * 2.0 + v * 1.0 + 0.35 * swirl1))
-        arc2 = np.cos(2.0 * math.pi * (u * 1.0 - v * 2.0 + 0.30 * swirl2))
-        coat = 0.5 + 0.30 * arc1 + 0.20 * arc2
-        # Delicate low-relief spatula edge lip + smooth burnished mineral body
-        h = 0.52 + 0.12 * coat + 0.06 * swirl1 + 0.03 * swirl2 + 0.015 * fine
-        cav = _smoothstep(0.56, 0.36, coat + 0.25 * swirl2)
-        ridge = _smoothstep(0.58, 0.82, coat + 0.20 * swirl1)
-        return h.astype(np.float32), 5.0, cav.astype(np.float32), 0.38, ridge.astype(np.float32)
+        # Authentic Italian burnished Marmorino Venetian lime plaster: broad feathered overlapping spatula sweeps with contrast driven by glossy burnish vs matte lime (ZERO Voronoi petal/vein outlines!)
+        w_lo = _periodic_fbm(H, W, seed + 97, (2, 4))
+        w_md = _periodic_fbm(H, W, seed + 98, (4, 8, 16))
+        fine = _periodic_fbm(H, W, seed + 101, (16, 32, 64))
+        # Broad overlapping hand-troweled spatula sweeps via smooth periodic directional cosine-warped passes (100% periodic, zero cell boundary seams!)
+        s1 = 0.5 + 0.5 * np.sin(2.0 * math.pi * (u * 2.0 + v * 1.0) + 1.55 * w_lo + 0.55 * w_md)
+        s2 = 0.5 + 0.5 * np.sin(2.0 * math.pi * (u * 1.0 - v * 2.0 + 0.31) + 1.45 * w_md - 0.85 * w_lo)
+        s3 = 0.5 + 0.5 * np.cos(2.0 * math.pi * (u * 3.0 + v * 2.0 + 0.17) + 1.20 * w_lo + 0.45 * w_md)
+        # Soft overlapping feathered lime-putty coats (NO sharp Voronoi lines!)
+        coat_a = _smoothstep(0.18, 0.82, s1)
+        coat_b = _smoothstep(0.22, 0.78, s2)
+        burnish = np.clip(0.48 * coat_a + 0.34 * coat_b + 0.18 * s3, 0.0, 1.0)
+        # Delicate smooth steel-trowel surface undulation + fine marble-dust micro-grain
+        h = 0.50 + 0.085 * burnish + 0.030 * w_lo + 0.016 * fine
+        # Burnished mirror-smooth spatula passes (ridge) vs chalky matte lime undercoat (cav) -> drives authentic Marmorino gloss/matte sheen!
+        ridge = np.clip(_smoothstep(0.30, 0.78, burnish), 0.0, 1.0)
+        cav = np.clip(_smoothstep(0.62, 0.18, burnish) + 0.15 * _smoothstep(1.4, 2.1, -fine), 0.0, 1.0)
+        return h.astype(np.float32), 4.2, cav.astype(np.float32), 0.34, ridge.astype(np.float32)
 
     if detail_id == "frosted_prism_diffuser":
-        # Office/transit ceiling prismatic acrylic diffuser (20x20 crisp diamond micro-pyramids)
-        a = (u + v) * 20.0
-        b = (u - v) * 20.0
-        da = np.abs((a % 1.0) - 0.5) * 2.0
-        db = np.abs((b % 1.0) - 0.5) * 2.0
-        pyr = np.minimum(1.0 - da, 1.0 - db)
+        # Office/transit ceiling prismatic acrylic diffuser (20x20 C1-beveled diamond micro-pyramids)
+        a = (u + v) * 20.0 + 0.25
+        b = (u - v) * 20.0 + 0.25
+        da = np.sqrt(((a % 1.0) - 0.5) ** 2 + 0.0025) * 2.0
+        db = np.sqrt(((b % 1.0) - 0.5) ** 2 + 0.0025) * 2.0
+        pyr = np.clip(_smin(1.0 - da, 1.0 - db, 0.06), 0.0, 1.0)
         h = 0.14 + 0.78 * pyr
         cav = _smoothstep(0.32, 0.16, h)
         ridge = _smoothstep(0.75, 0.92, h)
         return h.astype(np.float32), 14.0, cav.astype(np.float32), 0.18, ridge.astype(np.float32)
 
     if detail_id == "acoustic_kerf_felt":
-        # Compressed matte heather wool-PET acoustic felt: razor-sharp knife-cut kerf slits (NO pillowed bevels!) + dense micro-fibers
+        # Compressed matte heather wool-PET acoustic felt: crisp CNC-cut straight kerf slits + ultra-fine tangled needle-punched wool micro-fibers (ZERO camo/concrete clouds!)
         cols, rows = 4.0, 12.0
         r_idx = np.floor(v * rows)
         u_s = (u + 0.5 * (r_idx % 2.0) / cols) % 1.0
         fu = (u_s * cols) % 1.0 - 0.5
         fv = (v * rows) % 1.0 - 0.5
+        edge_jit = 0.0035 * _periodic_fbm(H, W, seed + 98, (64, 128))
         px_c = np.maximum(np.abs(fu) - 0.31, 0.0)
-        d_slit = np.sqrt(px_c * px_c + (fv * 0.55) ** 2)
-        # Crisp knife-cut vertical drop without wide shiny pillowed shoulder halos
-        slit = 1.0 - _smoothstep(0.036, 0.056, d_slit)
-        fib_hi = _periodic_fbm(H, W, seed + 99, (48, 96, 128))
-        rng_f = np.random.default_rng(seed + 100)
-        fuzz = rng_f.standard_normal((H, W)).astype(np.float32) * 0.018
-        h = 0.74 - 0.58 * slit + (0.048 * fib_hi + fuzz) * (1.0 - slit)
-        cav = slit
-        ridge = np.clip(0.5 + 0.35 * fib_hi, 0.0, 1.0) * (1.0 - slit)
-        return h.astype(np.float32), 7.5, cav.astype(np.float32), 0.93, ridge.astype(np.float32)
+        d_slit = np.sqrt(px_c * px_c + (fv * 0.56) ** 2) + edge_jit
+        # Crisp narrow felt kerf slit without wide dark halo pinch
+        slit_core = 1.0 - _smoothstep(0.032, 0.054, d_slit)
+        slit_lip = 1.0 - _smoothstep(0.048, 0.074, d_slit)
+        # Ultra-fine uniform tangled wool micro-fibers (smooth C1 domes & strands -> zero 1px cell cliffs!)
+        f1_f1, _, f_tuft1 = _periodic_worley_id(u, v, 96, seed + 100)
+        f1_f2, _, f_tuft2 = _periodic_worley_id((u + 0.011) % 1.0, (v + 0.019) % 1.0, 128, seed + 101)
+        strand_a = np.sin(2.0 * math.pi * (u * 80.0 + v * 40.0) + 1.4 * _periodic_fbm(H, W, seed + 102, (16, 32)))
+        strand_b = np.sin(2.0 * math.pi * (u * 44.0 - v * 88.0) + 1.4 * _periodic_fbm(H, W, seed + 103, (16, 32)))
+        fuzz = 0.018 * (0.5 - np.clip(f1_f1, 0.0, 1.0)) + 0.016 * (0.5 - np.clip(f1_f2, 0.0, 1.0)) + 0.012 * (strand_a + strand_b)
+        h = 0.76 - 0.56 * slit_core - 0.04 * slit_lip + fuzz * (1.0 - slit_core)
+        cav = np.clip(slit_core + 0.06 * slit_lip, 0.0, 1.0)
+        ridge = np.clip(0.50 + 0.25 * (f_tuft1 - 0.5) + 0.22 * (f_tuft2 - 0.5) + 0.14 * strand_a, 0.0, 1.0) * (1.0 - slit_core)
+        return h.astype(np.float32), 9.0, cav.astype(np.float32), 0.94, ridge.astype(np.float32)
 
     if detail_id == "patinated_verdigris_bronze":
-        # Authentic hand-cast hammered bronze with gleaming satin metallic facets + interior crevice cuprite->verdigris patina!
-        f1_b, _ = _periodic_worley(u, v, 8, seed + 110)
-        bowl = np.clip(f1_b / 0.62, 0.0, 1.0) ** 1.35  # concave hammered dimples with crisp specular facet rims!
-        p_mid = _periodic_fbm(H, W, seed + 114, (4, 8, 16))
-        p_fine = _periodic_fbm(H, W, seed + 115, (16, 32, 64))
-        # Crevice accumulation: verdigris collects organically inside scattered hammered bowls & recessed pits across the whole tile!
-        crevice = 0.42 * (1.0 - bowl) + 0.44 * p_mid + 0.26 * p_fine
-        ox_halo = _smoothstep(0.24, 0.64, crevice)
-        verd_crust = _smoothstep(0.42, 0.84, crevice) * (0.60 + 0.40 * _smoothstep(-0.35, 0.75, p_fine))
-        h = 0.24 + 0.64 * bowl * (1.0 - 0.30 * verd_crust) + 0.05 * p_fine * verd_crust
+        # Authentic aged sand-cast architectural bronze: subtle organic cast undulations & fine micro-pitting + gravity-streaked crevice verdigris!
+        cast_lo = _periodic_fbm(H, W, seed + 110, (2, 4, 8))
+        cast_md = _periodic_fbm(H, W, seed + 111, (8, 16, 32))
+        cast_hi = _periodic_fbm(H, W, seed + 112, (32, 64, 96))
+        # Subtle shallow cast corrosion pits & gentle hand-worked bronze surface relief (ZERO raw Voronoi dimples!)
+        pits = _smoothstep(0.70, 1.45, -cast_md - 0.55 * cast_hi)
+        # Vertical rainwater patina streaks (higher freq along u, slow gravity flow along v)
+        drip_u = _periodic_fbm(H, W, seed + 113, (6, 12, 24))
+        drip = 0.5 + 0.5 * np.sin(2.0 * math.pi * (u * 5.0 + 0.18 * cast_lo) + 0.65 * drip_u)
+        # Verdigris & cuprite settle strictly inside recessed troughs, cast pits, and vertical rainwater channels!
+        recess = np.clip(0.45 * _smoothstep(0.45, -0.65, cast_lo) + 0.42 * pits + 0.28 * (drip ** 2.2) * _smoothstep(-0.2, 0.9, cast_md), 0.0, 1.0)
+        ox_halo = _smoothstep(0.24, 0.58, recess + 0.16 * cast_md)
+        verd_crust = _smoothstep(0.46, 0.78, recess + 0.18 * cast_hi)
+        # Raised cast bronze stays smooth satin metal; encrusted verdigris gets powdery micro-rough relief
+        h = 0.62 + 0.10 * cast_lo + 0.04 * cast_md - 0.20 * pits - 0.12 * recess + 0.045 * cast_hi * verd_crust + 0.015 * cast_hi
         cav = np.clip(verd_crust, 0.0, 1.0)
-        ridge = np.clip(ox_halo * (1.0 - verd_crust * 0.75), 0.0, 1.0)
-        return h.astype(np.float32), 13.0, cav.astype(np.float32), 0.16, ridge.astype(np.float32)
+        ridge = np.clip(ox_halo * (1.0 - verd_crust * 0.80), 0.0, 1.0)
+        return h.astype(np.float32), 11.0, cav.astype(np.float32), 0.20, ridge.astype(np.float32)
 
     if detail_id == "carrara_veined_marble":
-        # Authentic polished Italian Carrara marble: virtually flat calcite slab with in-plane mineral veins (zero sunken cracks!)
-        w_lo = _periodic_fbm(H, W, seed + 115, (2, 4))
-        w_md = _periodic_fbm(H, W, seed + 116, (4, 8, 16))
+        # Authentic polished Italian Statuario/Carrara marble: pure phase-warped edge-to-edge sheared geological vein strata + broad smoky mineral diffusion (MATHEMATICALLY ZERO closed oval/kidney loops!)
+        w_lo = _periodic_fbm(H, W, seed + 115, (2, 4, 8))
+        w_md = _periodic_fbm(H, W, seed + 116, (6, 12, 24))
         w_hi = _periodic_fbm(H, W, seed + 117, (16, 32, 64))
-        p1 = u + v + 0.052 * w_lo + 0.018 * w_md + 0.005 * w_hi
-        p2 = u + 2.0 * v - 0.045 * w_lo + 0.016 * w_md + 0.005 * w_hi + 0.31
-        s_main = np.clip(1.0 - np.abs(np.sin(math.pi * p1)), 0.0, 1.0)
-        s_sec = np.clip(1.0 - np.abs(np.sin(math.pi * p2)), 0.0, 1.0)
-        taper1 = np.clip(0.55 + 0.45 * w_lo + 0.20 * w_md, 0.15, 1.0)
-        taper2 = np.clip(0.45 - 0.40 * w_lo + 0.25 * w_md, 0.10, 1.0)
-        sharp_v = np.clip((s_main ** 16.0) * 0.88 * taper1 + (s_sec ** 22.0) * 0.58 * taper2, 0.0, 1.0)
-        cloud_v = np.clip((s_main ** 2.6) * 0.45 * taper1 + (s_sec ** 3.0) * 0.24 * taper2 + np.clip(w_lo * 0.15 + 0.10, 0.0, 0.25), 0.0, 1.0)
-        h = 0.74 - 0.004 * sharp_v + 0.005 * w_md + 0.002 * w_hi
+        w_b  = _periodic_fbm(H, W, seed + 118, (3, 6, 12))
+        # Pure phase-domain warp INSIDE sin() -> monotonic diagonal bedding flow spanning edge-to-edge with ZERO closed isoline ovals!
+        p1 = (u * 1.0 + v * 1.0) + 0.16 * w_lo + 0.052 * w_md + 0.015 * w_hi
+        p2 = (u * 1.0 + v * 1.0 + 0.37) + 0.18 * w_b - 0.058 * w_md + 0.014 * w_hi
+        p3 = (u * 2.0 + v * 1.0 + 0.19) + 0.14 * w_lo + 0.048 * w_b + 0.016 * w_hi
+        r1 = np.abs(np.sin(math.pi * p1))
+        r2 = np.abs(np.sin(math.pi * p2))
+        r3 = np.abs(np.sin(math.pi * p3))
+        taper1 = _smoothstep(-0.75, 0.70, w_lo + 0.35 * w_md)
+        taper2 = _smoothstep(-0.45, 0.85, -w_lo + 0.45 * w_b)
+        taper3 = _smoothstep(-0.15, 0.90, w_md + 0.35 * w_lo)
+        # Layered sharp crystalline vein cores + wispy feathered secondary filaments
+        v_primary = np.exp(-((r1 / 0.055) ** 2)) * (0.42 + 0.58 * taper1)
+        v_secondary = np.exp(-((r2 / 0.036) ** 2)) * (0.20 + 0.80 * taper2) * 0.68
+        v_filament = np.exp(-((r3 / 0.024) ** 2)) * taper3 * 0.48
+        sharp_v = np.clip(v_primary + v_secondary + v_filament, 0.0, 1.0)
+        # Wide layered translucent smoky mineral clouding diffusing softly into warm-white calcite!
+        cloud_v = np.clip(
+            np.exp(-((r1 / 0.38) ** 2)) * 0.60 * (0.40 + 0.60 * taper1)
+            + np.exp(-((r2 / 0.30) ** 2)) * 0.44 * (0.30 + 0.70 * taper2)
+            + np.exp(-((r3 / 0.22) ** 2)) * 0.24 * taper3
+            + np.clip(0.14 + 0.16 * w_lo + 0.08 * w_md, 0.0, 0.32),
+            0.0, 1.0,
+        )
+        # Mirror-polished calcite slab with delicate natural micro-pitting strictly along mineral vein seams
+        h = 0.74 - 0.014 * sharp_v + 0.008 * w_lo + 0.004 * w_md
         cav = cloud_v
         ridge = sharp_v
-        return h.astype(np.float32), 1.2, cav.astype(np.float32), 0.09, ridge.astype(np.float32)
+        return h.astype(np.float32), 2.4, cav.astype(np.float32), 0.06, ridge.astype(np.float32)
 
     if detail_id == "herringbone_tweed_wool":
         # Authentic woven Harris/Donegal herringbone tweed: C1-smooth interlocked warp/weft yarn crossings + fuzzy wool nap
@@ -1246,102 +1553,123 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         return h.astype(np.float32), 12.0, cav.astype(np.float32), 0.84, ridge.astype(np.float32)
 
     if detail_id == "damascus_folded_steel":
-        # Authentic Japanese forged Damascus steel: crisp acid-etched terrace steps + dramatic bright/dark steel bands
+        # Authentic Japanese forged Raindrop/Ladder Damascus steel: dense high-frequency folded micro-layers + crisp acid-etch steps + belt-grind grain!
         f1 = _periodic_fbm(H, W, seed + 123, (2, 4, 8))
         f2 = _periodic_fbm(H, W, seed + 124, (6, 12, 24))
-        phase = 2.0 * math.pi * (u * 12.0 + v * 3.0) + 4.4 * f1 + 0.85 * f2
-        striation = np.clip(0.5 + 0.48 * np.tanh(3.2 * np.sin(phase)) + 0.05 * np.sin(phase * 2.0 + 0.6), 0.0, 1.0)
-        fine_etch = 0.010 * _periodic_fbm(H, W, seed + 125, (32, 64))
-        h = 0.48 + 0.10 * striation + fine_etch
+        # Raindrop forging whorls (periodic Voronoi pools) perturb folded billet layers organically!
+        f1_w, _ = _periodic_worley(u, v, 5, seed + 125)
+        whorl = np.exp(-((f1_w / 0.36) ** 2)) * 2.8
+        # Tight 28-layer forged billet folds with crisp acid-etched topographic terrace steps
+        phase = 2.0 * math.pi * (u * 22.0 + v * 5.0) + 5.2 * f1 + 1.15 * f2 + whorl
+        striation = np.clip(0.5 + 0.49 * np.tanh(3.8 * np.sin(phase)) + 0.08 * np.sin(phase * 2.0 + 0.5), 0.0, 1.0)
+        # Fine directional longitudinal belt-grind micro-scratches across blade face
+        grind = 0.012 * np.sin(2.0 * math.pi * v * 128.0 + 0.5 * f2)
+        fine_etch = 0.014 * _periodic_fbm(H, W, seed + 126, (32, 64, 96)) * (1.0 - striation)
+        h = 0.46 + 0.14 * striation + grind + fine_etch
         cav = 1.0 - striation
         ridge = striation
-        return h.astype(np.float32), 4.0, cav.astype(np.float32), 0.14, ridge.astype(np.float32)
+        return h.astype(np.float32), 6.5, cav.astype(np.float32), 0.15, ridge.astype(np.float32)
 
     if detail_id == "mermaid_fishscale_tile":
-        # Authentic Moroccan Zellige fish-scale tiles: convex glossy domes with cleanly recessed thin grout
+        # Authentic Moroccan Zellige glazed fish-scale tiles: lush pillowed convex glaze domes + handmade kiln ripple + crisp recessed grout!
         nx, ny = 6.0, 10.0
-        tile_h = np.full((H, W), 0.12, dtype=np.float32)
+        tile_h = np.full((H, W), 0.10, dtype=np.float32)
         tile_grout = np.ones((H, W), dtype=np.float32)
         tile_edge = np.zeros((H, W), dtype=np.float32)
         wobble = _periodic_fbm(H, W, seed + 126, (6, 12, 24))
+        glaze_rip = _periodic_fbm(H, W, seed + 1270, (12, 24))
         base_ry = np.floor(v * ny)
         for row_off in (-2, -1, 0, 1, 2):
             ry = base_ry + row_off
             u_s = (u + 0.5 * (ry % 2.0) / nx) % 1.0
+            rx = np.floor(u_s * nx)
             fu = (u_s * nx) % 1.0 - 0.5
             fv = (v * ny - ry) * 0.5
             r = np.sqrt(fu * fu + fv * fv) + 0.008 * wobble
-            inside = r < 0.50
-            grout_rim = _smoothstep(0.43, 0.48, r)
-            dome = np.sqrt(np.clip(1.0 - (r / 0.50) ** 2, 0.0, 1.0))
-            edge_pool = _smoothstep(0.32, 0.43, r) * (1.0 - grout_rim)
-            scale_h = 0.12 + 0.80 * (1.0 - grout_rim) * (0.48 + 0.48 * dome + 0.04 * wobble)
-            tile_h = np.where(inside, scale_h, tile_h)
-            tile_grout = np.where(inside, grout_rim, tile_grout)
-            tile_edge = np.where(inside, edge_pool, tile_edge)
-        h = tile_h
+            # Smooth C1 anti-aliased overlapping mask (eliminates hard binary r < 0.50 cliff!)
+            cov = 1.0 - _smoothstep(0.455, 0.505, r)
+            grout_rim = _smoothstep(0.415, 0.485, r)
+            # Smooth convex ceramic glaze pillow with bounded slope near rim (zero sqrt infinite-slope spike!)
+            dome = np.sqrt(np.clip(1.0 - (r / 0.53) ** 2, 0.04, 1.0))
+            edge_pool = _smoothstep(0.28, 0.43, r) * (1.0 - grout_rim)
+            # Slight per-tile handmade kiln tilt/height variance
+            t_jit = 0.028 * np.sin((rx % nx) * 17.3 + (ry % ny) * 31.7)
+            scale_h = 0.10 + 0.84 * (1.0 - grout_rim) * (0.26 + 0.70 * dome + 0.04 * glaze_rip) + t_jit * (1.0 - grout_rim)
+            tile_h = tile_h * (1.0 - cov) + scale_h * cov
+            tile_grout = tile_grout * (1.0 - cov) + grout_rim * cov
+            tile_edge = tile_edge * (1.0 - cov) + edge_pool * cov
+        h = np.clip(tile_h, 0.05, 0.98)
         cav = tile_grout
         ridge = tile_edge
-        return h.astype(np.float32), 13.0, cav.astype(np.float32), 0.10, ridge.astype(np.float32)
+        return h.astype(np.float32), 14.5, cav.astype(np.float32), 0.09, ridge.astype(np.float32)
 
     if detail_id == "burlap_jute_sackcloth":
-        # Authentic coarse jute burlap: interlocking 3-ply twisted rough fibers + slub irregularity + dark open weave pores
+        # Authentic coarse jute burlap: interlocking 3-ply twisted rough fibers + slub irregularity + dark open weave pores (C1-smooth over/under!)
         n = 12.0
-        jit_u = 0.11 * _periodic_fbm(H, W, seed + 127, (4, 8))
-        jit_v = 0.11 * _periodic_fbm(H, W, seed + 128, (4, 8))
+        jit_u = 0.10 * _periodic_fbm(H, W, seed + 127, (4, 8))
+        jit_v = 0.10 * _periodic_fbm(H, W, seed + 128, (4, 8))
         u_j = u + jit_u * 0.08; v_j = v + jit_v * 0.08
         fu = np.abs((u_j * n) % 1.0 - 0.5) * 2.0
         fv = np.abs((v_j * n) % 1.0 - 0.5) * 2.0
-        ix = np.floor(u_j * n); iy = np.floor(v_j * n)
-        over = ((ix + iy) % 2.0) < 0.5
+        # C1-smooth sinusoidal over-under weave modulation (replaces discontinuous binary step!)
+        weave_mod = np.cos(math.pi * u_j * n) * np.cos(math.pi * v_j * n)
+        over_u = 0.73 + 0.27 * weave_mod
+        over_v = 0.73 - 0.27 * weave_mod
         twist_u = 0.5 + 0.5 * np.sin(2.0 * math.pi * (v_j * n * 3.0 + fu * 1.2))
         twist_v = 0.5 + 0.5 * np.sin(2.0 * math.pi * (u_j * n * 3.0 + fv * 1.2))
-        w_u = 0.56 + 0.14 * _periodic_fbm(H, W, seed + 129, (4, 8))
-        w_v = 0.56 + 0.14 * _periodic_fbm(H, W, seed + 130, (4, 8))
-        yu = np.sqrt(np.clip(1.0 - (fu / w_u) ** 2, 0.0, 1.0)) * (0.72 + 0.28 * twist_u) * np.where(over, 1.0, 0.46)
-        yv = np.sqrt(np.clip(1.0 - (fv / w_v) ** 2, 0.0, 1.0)) * (0.72 + 0.28 * twist_v) * np.where(over, 0.46, 1.0)
-        fibers = 0.11 * _periodic_fbm(H, W, seed + 1300, (32, 64, 128))
-        yarn_h = np.maximum(yu, yv)
+        w_u = 0.56 + 0.12 * _periodic_fbm(H, W, seed + 129, (4, 8))
+        w_v = 0.56 + 0.12 * _periodic_fbm(H, W, seed + 130, (4, 8))
+        prof_u = np.sqrt(np.clip(1.0 - (fu / (w_u * 1.08)) ** 2, 0.02, 1.0)) * (1.0 - _smoothstep(0.80, 1.04, fu / w_u))
+        prof_v = np.sqrt(np.clip(1.0 - (fv / (w_v * 1.08)) ** 2, 0.02, 1.0)) * (1.0 - _smoothstep(0.80, 1.04, fv / w_v))
+        yu = prof_u * (0.74 + 0.26 * twist_u) * over_u
+        yv = prof_v * (0.74 + 0.26 * twist_v) * over_v
+        fibers = 0.085 * _periodic_fbm(H, W, seed + 1300, (24, 48, 64))
+        yarn_h = _smax(yu, yv, 0.06)
         h = 0.10 + 0.80 * yarn_h + fibers * np.clip(yarn_h * 2.5, 0.0, 1.0)
         cav = _smoothstep(0.28, 0.11, h)
         ridge = _smoothstep(0.66, 0.88, h)
-        return h.astype(np.float32), 14.0, cav.astype(np.float32), 0.84, ridge.astype(np.float32)
+        return h.astype(np.float32), 13.5, cav.astype(np.float32), 0.84, ridge.astype(np.float32)
 
     if detail_id == "cast_iron_skillet_pebble":
-        # Authentic Lodge seasoned sand-cast iron: true 3D multi-scale Worley pebble bumps + oiled-iron peaks!
-        f1a, f2a = _periodic_worley(u, v, 28, seed + 131)
-        f1b, f2b = _periodic_worley((u + 0.019) % 1.0, (v + 0.027) % 1.0, 48, seed + 132)
-        peb_a = np.clip(1.0 - (f1a / 0.68) ** 2, 0.0, 1.0) ** 0.75
-        peb_b = np.clip(1.0 - (f1b / 0.68) ** 2, 0.0, 1.0) ** 0.75
-        peb = 0.65 * peb_a + 0.35 * peb_b
-        pits = _smoothstep(0.32, 0.08, peb)
-        crowns = _smoothstep(0.55, 0.88, peb)
-        h = 0.24 + 0.62 * peb
+        # Authentic Lodge seasoned sand-cast iron: fine Nyquist-safe sand-molded micro-pebbles + subtle foundry cast undulation!
+        f1a, _ = _periodic_worley(u, v, 42, seed + 131)
+        f1b, _ = _periodic_worley((u + 0.013) % 1.0, (v + 0.021) % 1.0, 56, seed + 132)
+        peb_a = np.clip(1.0 - (f1a / 0.65) ** 2, 0.0, 1.0) ** 0.85
+        peb_b = np.clip(1.0 - (f1b / 0.65) ** 2, 0.0, 1.0) ** 0.85
+        peb = 0.68 * peb_a + 0.32 * peb_b
+        cast_und = 0.08 * _periodic_fbm(H, W, seed + 133, (4, 8, 16))
+        pits = _smoothstep(0.38, 0.12, peb)
+        crowns = _smoothstep(0.56, 0.88, peb)
+        h = 0.34 + 0.42 * peb + cast_und
         cav = pits
         ridge = crowns
-        return h.astype(np.float32), 10.0, cav.astype(np.float32), 0.30, ridge.astype(np.float32)
+        return h.astype(np.float32), 6.2, cav.astype(np.float32), 0.42, ridge.astype(np.float32)
 
     if detail_id == "tufted_emerald_velvet":
-        # Authentic Chesterfield tufted velvet: plush diamond cushions + crisp radiating button pinch pleats + fine velvet pile
+        # Authentic Chesterfield tufted velvet: plush diamond cushions + sharp radiating cloth tension folds + deep fabric buttons + brushed nap!
         nx, ny = 3.0, 3.0
         a = (u * nx + v * ny) % 1.0 - 0.5
         b = (u * nx - v * ny) % 1.0 - 0.5
         d_btn = np.sqrt(a * a + b * b)
-        # Sharp V-creases running diagonally from button to button + plush dome pillows
-        crease_a = _smoothstep(0.0, 0.14, np.abs(a))
-        crease_b = _smoothstep(0.0, 0.14, np.abs(b))
-        dimple = _smoothstep(0.050, 0.36, d_btn) ** 0.45
-        pillow = (crease_a * crease_b) ** 0.42 * dimple
-        # Prominent radiating fabric pinch pleats converging into each tufted button!
+        # Sharp folded fabric pleats running diagonally between buttons + organic plush cushion sag
+        crease_a = _smoothstep(0.0, 0.11, np.abs(a))
+        crease_b = _smoothstep(0.0, 0.11, np.abs(b))
+        dimple = _smoothstep(0.048, 0.34, d_btn) ** 0.42
+        pillow = (crease_a * crease_b) ** 0.38 * dimple
+        # Sharper, asymmetric radiating cloth tension folds converging into each deep button hole
         ang = np.arctan2(b, a)
-        pleat_env = np.exp(-((d_btn * 3.4) ** 2)) * _smoothstep(0.055, 0.11, d_btn)
-        wrinkle = (0.11 * np.cos(8.0 * ang) + 0.05 * np.cos(16.0 * ang + 0.5)) * pleat_env
-        btn = (1.0 - _smoothstep(0.050, 0.075, d_btn)) * np.sqrt(np.clip(1.0 - (d_btn / 0.08) ** 2, 0.0, 1.0))
-        pile = 0.024 * _periodic_fbm(H, W, seed + 133, (32, 64, 96))
-        h = 0.14 + 0.72 * pillow + 0.28 * btn + wrinkle + pile
-        cav = np.clip((1.0 - pillow) * 0.85 + np.clip(-wrinkle * 3.0, 0.0, 0.35), 0.0, 1.0) * (1.0 - btn)
-        ridge = np.clip(_smoothstep(0.66, 0.90, pillow) + np.clip(wrinkle * 3.0, 0.0, 0.30), 0.0, 1.0)
-        return h.astype(np.float32), 14.5, cav.astype(np.float32), 0.86, ridge.astype(np.float32)
+        pleat_env = np.exp(-((d_btn * 3.0) ** 2)) * _smoothstep(0.052, 0.105, d_btn)
+        wrinkle = (0.14 * np.cos(8.0 * ang) + 0.07 * np.cos(16.0 * ang + 0.45) + 0.035 * np.sin(12.0 * ang)) * pleat_env
+        # Deeply recessed fabric-covered button with dark collar gap
+        btn_collar = np.exp(-(((d_btn - 0.064) / 0.014) ** 2))
+        btn = (1.0 - _smoothstep(0.046, 0.064, d_btn)) * np.sqrt(np.clip(1.0 - (d_btn / 0.068) ** 2, 0.0, 1.0))
+        # Fine brushed velvet micro-nap & subtle crushed-pile patches
+        nap_macro = _periodic_fbm(H, W, seed + 132, (4, 8, 16))
+        pile = 0.032 * _periodic_fbm(H, W, seed + 133, (32, 64, 96)) + 0.015 * nap_macro
+        h = 0.12 + 0.72 * pillow + 0.26 * btn - 0.14 * btn_collar + wrinkle + pile
+        cav = np.clip((1.0 - pillow) * 0.88 + 0.65 * btn_collar + np.clip(-wrinkle * 3.4, 0.0, 0.42), 0.0, 1.0) * (1.0 - btn)
+        ridge = np.clip(_smoothstep(0.62, 0.90, pillow) + np.clip(wrinkle * 3.2, 0.0, 0.35), 0.0, 1.0)
+        return h.astype(np.float32), 16.0, cav.astype(np.float32), 0.90, ridge.astype(np.float32)
 
     if detail_id == "woven_bamboo_tatami":
         # Authentic Japanese igusa rush tatami: 22 clearly rounded cylindrical rush stalks + longitudinal grass striations + warp tuck
@@ -1383,29 +1711,38 @@ def build_daily_detail(detail_id: str, H: int, W: int, seed: int):
         return h.astype(np.float32), 13.0, cav.astype(np.float32), 0.48, ridge.astype(np.float32)
 
     # "gilded_tin_ceiling_tile"
-    # Authentic vintage stamped pressed-tin ceiling tile: crisp embossed rosette medallion + beaded frame + hammered micro-grain
+    # Authentic vintage stamped pressed-tin ceiling tile: crisp C1-embossed rosette medallion + beaded frame + hand-planished patina
     n = 2.0
     fu = (u * n) % 1.0 - 0.5
     fv = (v * n) % 1.0 - 0.5
     ax, ay = np.abs(fu), np.abs(fv)
     r = np.sqrt(fu * fu + fv * fv)
     ang = np.arctan2(fv, fu)
-    d_outer = np.abs(np.maximum(ax, ay) - 0.44)
-    bead_wave = 0.65 + 0.35 * np.cos(2.0 * math.pi * np.where(ax > ay, fv, fu) * 20.0)
-    frame = (1.0 - _smoothstep(0.024, 0.046, d_outer)) * bead_wave
-    inner_f = 1.0 - _smoothstep(0.016, 0.034, np.abs(np.maximum(ax, ay) - 0.34))
+    box_d = _smax(ax, ay, 0.025)
+    d_outer = np.sqrt((box_d - 0.44) ** 2 + 0.00018)
+    w_ax = _smoothstep(-0.04, 0.04, ax - ay)
+    bead_coord = w_ax * fv + (1.0 - w_ax) * fu
+    bead_wave = 0.68 + 0.32 * np.cos(2.0 * math.pi * bead_coord * 18.0)
+    frame = (1.0 - _smoothstep(0.020, 0.052, d_outer)) * bead_wave
+    d_inner = np.sqrt((box_d - 0.34) ** 2 + 0.00018)
+    inner_f = 1.0 - _smoothstep(0.015, 0.042, d_inner)
     petal = 0.5 + 0.5 * np.cos(8.0 * ang)
-    rosette = (1.0 - _smoothstep(0.18, 0.22, r - 0.065 * petal)) * (0.50 + 0.50 * petal)
-    ring = 1.0 - _smoothstep(0.015, 0.030, np.abs(r - 0.12))
-    boss = 1.0 - _smoothstep(0.045, 0.080, r)
+    rosette = (1.0 - _smoothstep(0.165, 0.235, r - 0.065 * petal)) * (0.50 + 0.50 * petal)
+    d_ring = np.sqrt((r - 0.12) ** 2 + 0.00015)
+    ring = 1.0 - _smoothstep(0.014, 0.036, d_ring)
+    boss = 1.0 - _smoothstep(0.040, 0.085, r)
     d_cor = np.sqrt((ax - 0.39) ** 2 + (ay - 0.39) ** 2)
-    corner = 1.0 - _smoothstep(0.025, 0.050, d_cor)
-    relief = np.maximum.reduce([frame * 0.86, inner_f * 0.72, rosette * 0.90, ring * 0.92, boss * 0.98, corner * 0.80])
-    micro = 0.032 * _periodic_fbm(H, W, seed + 141, (16, 32, 64)) + 0.012 * _periodic_fbm(H, W, seed + 142, (64, 128))
+    corner = 1.0 - _smoothstep(0.024, 0.054, d_cor)
+    relief = _smax(frame * 0.86, inner_f * 0.72, 0.05)
+    relief = _smax(relief, rosette * 0.90, 0.05)
+    relief = _smax(relief, ring * 0.92, 0.05)
+    relief = _smax(relief, boss * 0.98, 0.05)
+    relief = _smax(relief, corner * 0.80, 0.05)
+    micro = 0.024 * _periodic_fbm(H, W, seed + 141, (12, 24, 48))
     h = 0.16 + 0.76 * relief + micro
     cav = _smoothstep(0.30, 0.17, h)
     ridge = _smoothstep(0.65, 0.90, h)
-    return h.astype(np.float32), 20.0, cav.astype(np.float32), 0.22, ridge.astype(np.float32)
+    return h.astype(np.float32), 15.5, cav.astype(np.float32), 0.22, ridge.astype(np.float32)
 
 
 def apply_daily_wear(h0, slope_scale, cav0, base_r, ridge0, mat_kind: str, wear_state: str, seed: int):

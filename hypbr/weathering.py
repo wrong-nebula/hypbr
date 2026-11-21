@@ -722,14 +722,14 @@ def predict_neural_weathering_masks(
     `wear` / `dirt` / `moisture` decode heads. Requires optional `depth_pro_2` and trained
     branch patch files (auto-discovered via `patch_dir` or `HYPBR_WEATHER_DIR`).
     """
-    from depth_pro_2.model import INPUT_MULTIPLE, to_normalized_tensor
-
     pdir = Path(patch_dir) if patch_dir else Path(os.environ.get("HYPBR_WEATHER_DIR", ""))
     if not pdir.is_dir():
         raise FileNotFoundError(
             f"Neural weathering patch directory not found: '{pdir}'. "
             "Pass --patch-dir / set HYPBR_WEATHER_DIR, or use default --backend procedural."
         )
+
+    from depth_pro_2.model import INPUT_MULTIPLE, to_normalized_tensor
 
     base = dp.load_depthpro2_no_fov("depthpro2-s", precision=torch.float32)
     if vit_patch is not None and Path(vit_patch).exists():

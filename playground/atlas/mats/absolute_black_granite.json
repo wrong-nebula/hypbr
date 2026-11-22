@@ -72,8 +72,8 @@
   "ior": 1.54,
   "is_metallic": false,
   "roughness_range": [
-   0.176,
-   0.294
+   0.173,
+   0.31
   ],
   "metallic_range": [
    0.0,
@@ -123,11 +123,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.837,
+  "max_seam_ratio": 1.832,
+  "max_seam_outlier": 0.938,
   "seam_ratios": {
-   "height": 1.396,
-   "normal": 1.837,
-   "albedo": 1.41
+   "height": 1.386,
+   "normal": 1.832,
+   "albedo": 1.406
   },
   "normal_unit_error": 0.0009,
   "errors": [],
@@ -136,7 +137,7 @@
  "albedo_mean_srgb": [
   55,
   55,
-  57
+  58
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/absolute_black_granite/albedo_delit.webp",

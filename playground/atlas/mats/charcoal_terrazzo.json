@@ -80,8 +80,8 @@
   "ior": 1.54,
   "is_metallic": false,
   "roughness_range": [
-   0.239,
-   0.38
+   0.235,
+   0.388
   ],
   "metallic_range": [
    0.0,
@@ -131,20 +131,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.428,
+  "max_seam_ratio": 1.429,
+  "max_seam_outlier": 0.84,
   "seam_ratios": {
-   "height": 1.223,
-   "normal": 1.26,
-   "albedo": 1.428
+   "height": 1.219,
+   "normal": 1.265,
+   "albedo": 1.429
   },
   "normal_unit_error": 0.0012,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  138,
+  139,
   128,
-  122
+  121
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/charcoal_terrazzo/albedo_delit.webp",

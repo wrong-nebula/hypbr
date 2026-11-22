@@ -53,8 +53,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.31,
-   0.804
+   0.161,
+   0.902
   ],
   "metallic_range": [
    0.0,
@@ -101,11 +101,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.959,
+  "max_seam_ratio": 0.966,
+  "max_seam_outlier": 0.601,
   "seam_ratios": {
    "height": 0.374,
-   "normal": 0.596,
-   "albedo": 0.959
+   "normal": 0.597,
+   "albedo": 0.966
   },
   "normal_unit_error": 0.0016,
   "errors": [],
@@ -114,7 +115,7 @@
  "albedo_mean_srgb": [
   48,
   49,
-  51
+  52
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/perforated_leather_auto/albedo_delit.webp",

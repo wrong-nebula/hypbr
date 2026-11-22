@@ -54,7 +54,7 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.737,
+   0.741,
    0.851
   ],
   "metallic_range": [
@@ -105,11 +105,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.369,
+  "max_seam_ratio": 1.37,
+  "max_seam_outlier": 0.933,
   "seam_ratios": {
    "height": 1.103,
-   "normal": 1.1,
-   "albedo": 1.369
+   "normal": 1.106,
+   "albedo": 1.37
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -118,7 +119,7 @@
  "albedo_mean_srgb": [
   197,
   191,
-  179
+  180
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/terry_velcro_loops/albedo_delit.webp",

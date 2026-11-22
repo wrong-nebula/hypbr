@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.706,
-   0.843
+   0.808,
+   0.937
   ],
   "metallic_range": [
    0.0,
@@ -123,11 +123,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.764,
+  "max_seam_ratio": 0.765,
+  "max_seam_outlier": 0.607,
   "seam_ratios": {
-   "height": 0.457,
-   "normal": 0.717,
-   "albedo": 0.764
+   "height": 0.462,
+   "normal": 0.716,
+   "albedo": 0.765
   },
   "normal_unit_error": 0.0017,
   "errors": [],
@@ -136,7 +137,7 @@
  "albedo_mean_srgb": [
   206,
   195,
-  175
+  176
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sand_finish_stucco/albedo_delit.webp",

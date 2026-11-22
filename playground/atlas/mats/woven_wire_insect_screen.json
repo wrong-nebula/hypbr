@@ -127,20 +127,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.615,
+  "max_seam_ratio": 0.586,
+  "max_seam_outlier": 0.216,
   "seam_ratios": {
-   "height": 0.092,
-   "normal": 0.615,
-   "albedo": 0.178
+   "height": 0.088,
+   "normal": 0.586,
+   "albedo": 0.202
   },
   "normal_unit_error": 0.002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  114,
-  114,
-  116
+  115,
+  115,
+  117
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/woven_wire_insect_screen/albedo_delit.webp",

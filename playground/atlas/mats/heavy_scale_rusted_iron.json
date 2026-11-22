@@ -129,20 +129,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.824,
+  "max_seam_ratio": 0.814,
+  "max_seam_outlier": 0.595,
   "seam_ratios": {
-   "height": 0.358,
-   "normal": 0.824,
-   "albedo": 0.672
+   "height": 0.373,
+   "normal": 0.814,
+   "albedo": 0.68
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  134,
-  87,
-  40
+  132,
+  88,
+  45
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/heavy_scale_rusted_iron/albedo_delit.webp",

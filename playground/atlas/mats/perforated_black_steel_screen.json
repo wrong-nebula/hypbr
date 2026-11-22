@@ -131,20 +131,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.239,
+  "max_seam_ratio": 0.235,
+  "max_seam_outlier": 0.11,
   "seam_ratios": {
    "height": 0.104,
-   "normal": 0.239,
-   "albedo": 0.11
+   "normal": 0.235,
+   "albedo": 0.117
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  69,
-  69,
-  69
+  70,
+  70,
+  70
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/perforated_black_steel_screen/albedo_delit.webp",

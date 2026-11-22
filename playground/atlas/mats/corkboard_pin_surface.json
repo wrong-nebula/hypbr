@@ -54,8 +54,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.682,
-   0.843
+   0.788,
+   0.945
   ],
   "metallic_range": [
    0.0,
@@ -104,20 +104,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.99,
+  "max_seam_ratio": 0.992,
+  "max_seam_outlier": 0.773,
   "seam_ratios": {
    "height": 0.726,
-   "normal": 0.879,
-   "albedo": 0.99
+   "normal": 0.881,
+   "albedo": 0.992
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  180,
+  181,
   153,
-  119
+  117
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/corkboard_pin_surface/albedo_delit.webp",

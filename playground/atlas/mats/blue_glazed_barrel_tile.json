@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.122,
-   0.565
+   0.09,
+   0.38
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +123,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.699,
+  "max_seam_ratio": 0.675,
+  "max_seam_outlier": 0.569,
   "seam_ratios": {
-   "height": 0.37,
-   "normal": 0.699,
-   "albedo": 0.654
+   "height": 0.39,
+   "normal": 0.675,
+   "albedo": 0.651
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  40,
+  39,
   90,
-  161
+  162
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/blue_glazed_barrel_tile/albedo_delit.webp",

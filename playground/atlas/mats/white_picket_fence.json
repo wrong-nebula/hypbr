@@ -133,20 +133,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.732,
+  "max_seam_ratio": 0.742,
+  "max_seam_outlier": 0.893,
   "seam_ratios": {
-   "height": 0.211,
-   "normal": 0.353,
-   "albedo": 0.732
+   "height": 0.195,
+   "normal": 0.348,
+   "albedo": 0.742
   },
-  "normal_unit_error": 0.0012,
+  "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   140,
-  147,
-  133
+  148,
+  132
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_picket_fence/albedo_delit.webp",

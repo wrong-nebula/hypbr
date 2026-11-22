@@ -74,7 +74,7 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.412,
+   0.416,
    0.58
   ],
   "metallic_range": [
@@ -125,20 +125,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.621,
+  "max_seam_ratio": 1.619,
+  "max_seam_outlier": 0.969,
   "seam_ratios": {
-   "height": 1.553,
-   "normal": 1.591,
-   "albedo": 1.621
+   "height": 1.545,
+   "normal": 1.582,
+   "albedo": 1.619
   },
-  "normal_unit_error": 0.0013,
+  "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  114,
+  116,
   83,
-  79
+  78
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_porphyry_stone/albedo_delit.webp",

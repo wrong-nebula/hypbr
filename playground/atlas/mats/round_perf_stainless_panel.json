@@ -132,20 +132,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.254,
+  "max_seam_ratio": 0.24,
+  "max_seam_outlier": 0.11,
   "seam_ratios": {
-   "height": 0.132,
-   "normal": 0.254,
-   "albedo": 0.122
+   "height": 0.138,
+   "normal": 0.24,
+   "albedo": 0.121
   },
-  "normal_unit_error": 0.0009,
+  "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  173,
-  175,
-  177
+  174,
+  176,
+  178
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/round_perf_stainless_panel/albedo_delit.webp",

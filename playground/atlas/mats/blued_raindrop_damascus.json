@@ -124,20 +124,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.761,
+  "max_seam_ratio": 0.763,
+  "max_seam_outlier": 0.459,
   "seam_ratios": {
-   "height": 0.761,
-   "normal": 0.756,
-   "albedo": 0.689
+   "height": 0.763,
+   "normal": 0.76,
+   "albedo": 0.686
   },
-  "normal_unit_error": 0.0008,
+  "normal_unit_error": 0.0009,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  155,
+  154,
   158,
-  168
+  169
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/blued_raindrop_damascus/albedo_delit.webp",

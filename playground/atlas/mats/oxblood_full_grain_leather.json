@@ -76,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.431,
-   0.698
+   0.345,
+   0.678
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.552,
+  "max_seam_ratio": 1.549,
+  "max_seam_outlier": 0.881,
   "seam_ratios": {
-   "height": 1.528,
-   "normal": 1.535,
-   "albedo": 1.552
+   "height": 1.519,
+   "normal": 1.532,
+   "albedo": 1.549
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   134,
   43,
-  34
+  35
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/oxblood_full_grain_leather/albedo_delit.webp",

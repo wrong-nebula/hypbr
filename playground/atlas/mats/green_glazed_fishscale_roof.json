@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.137,
-   0.631
+   0.094,
+   0.451
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +121,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.559,
+  "max_seam_ratio": 0.563,
+  "max_seam_outlier": 0.382,
   "seam_ratios": {
-   "height": 0.345,
-   "normal": 0.548,
-   "albedo": 0.559
+   "height": 0.352,
+   "normal": 0.539,
+   "albedo": 0.563
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  58,
-  130,
-  81
+  55,
+  131,
+  80
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/green_glazed_fishscale_roof/albedo_delit.webp",

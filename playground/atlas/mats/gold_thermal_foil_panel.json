@@ -134,20 +134,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.496,
+  "max_seam_ratio": 0.503,
+  "max_seam_outlier": 0.071,
   "seam_ratios": {
-   "height": 0.166,
-   "normal": 0.32,
-   "albedo": 0.496
+   "height": 0.169,
+   "normal": 0.319,
+   "albedo": 0.503
   },
   "normal_unit_error": 0.0006,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  234,
+  235,
   211,
-  147
+  142
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gold_thermal_foil_panel/albedo_delit.webp",

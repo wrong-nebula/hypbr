@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.804,
-   0.918
+   0.827,
+   0.933
   ],
   "metallic_range": [
    0.0,
@@ -125,11 +125,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.944,
+  "max_seam_ratio": 0.941,
+  "max_seam_outlier": 0.701,
   "seam_ratios": {
-   "height": 0.734,
-   "normal": 0.944,
-   "albedo": 0.704
+   "height": 0.733,
+   "normal": 0.941,
+   "albedo": 0.705
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -138,7 +139,7 @@
  "albedo_mean_srgb": [
   150,
   152,
-  135
+  134
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/tundra_reindeer_lichen/albedo_delit.webp",

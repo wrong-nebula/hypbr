@@ -54,7 +54,7 @@
   "is_metallic": false,
   "roughness_range": [
    0.204,
-   0.412
+   0.408
   ],
   "metallic_range": [
    0.0,
@@ -103,20 +103,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.996,
+  "max_seam_ratio": 0.993,
+  "max_seam_outlier": 0.631,
   "seam_ratios": {
-   "height": 0.707,
-   "normal": 0.819,
-   "albedo": 0.996
+   "height": 0.705,
+   "normal": 0.807,
+   "albedo": 0.993
   },
   "normal_unit_error": 0.0002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  188,
+  189,
   178,
-  167
+  166
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/terrazzo_speckled_stone/albedo_delit.webp",

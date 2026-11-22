@@ -122,11 +122,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.008,
+  "max_seam_ratio": 1.015,
+  "max_seam_outlier": 0.962,
   "seam_ratios": {
-   "height": 0.858,
-   "normal": 1.008,
-   "albedo": 0.879
+   "height": 0.849,
+   "normal": 1.015,
+   "albedo": 0.882
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -135,7 +136,7 @@
  "albedo_mean_srgb": [
   153,
   140,
-  117
+  118
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wet_tidal_sand/albedo_delit.webp",

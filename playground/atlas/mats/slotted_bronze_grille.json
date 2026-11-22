@@ -132,20 +132,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.126,
+  "max_seam_ratio": 0.116,
+  "max_seam_outlier": 0.066,
   "seam_ratios": {
-   "height": 0.058,
-   "normal": 0.126,
-   "albedo": 0.107
+   "height": 0.057,
+   "normal": 0.116,
+   "albedo": 0.096
   },
-  "normal_unit_error": 0.0011,
+  "normal_unit_error": 0.0012,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  160,
-  133,
-  97
+  158,
+  134,
+  103
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/slotted_bronze_grille/albedo_delit.webp",

@@ -56,7 +56,7 @@
   "is_metallic": true,
   "roughness_range": [
    0.278,
-   0.659
+   0.655
   ],
   "metallic_range": [
    0.369,
@@ -107,11 +107,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.167,
+  "max_seam_ratio": 1.164,
+  "max_seam_outlier": 0.862,
   "seam_ratios": {
-   "height": 1.167,
-   "normal": 1.165,
-   "albedo": 0.88
+   "height": 1.142,
+   "normal": 1.164,
+   "albedo": 0.879
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -120,7 +121,7 @@
  "albedo_mean_srgb": [
   50,
   50,
-  52
+  53
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cast_iron_skillet_pebble/albedo_delit.webp",

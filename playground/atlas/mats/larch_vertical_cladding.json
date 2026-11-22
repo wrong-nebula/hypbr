@@ -79,8 +79,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.647,
-   0.82
+   0.643,
+   0.812
   ],
   "metallic_range": [
    0.0,
@@ -130,20 +130,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.68,
+  "max_seam_ratio": 0.69,
+  "max_seam_outlier": 0.14,
   "seam_ratios": {
-   "height": 0.441,
-   "normal": 0.652,
-   "albedo": 0.68
+   "height": 0.437,
+   "normal": 0.587,
+   "albedo": 0.69
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  180,
-  129,
-  65
+  182,
+  128,
+  56
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/larch_vertical_cladding/albedo_delit.webp",

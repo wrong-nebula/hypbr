@@ -72,7 +72,7 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.761,
+   0.765,
    0.914
   ],
   "metallic_range": [
@@ -122,11 +122,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.297,
+  "max_seam_ratio": 1.292,
+  "max_seam_outlier": 0.982,
   "seam_ratios": {
-   "height": 1.274,
-   "normal": 1.186,
-   "albedo": 1.297
+   "height": 1.275,
+   "normal": 1.188,
+   "albedo": 1.292
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -135,7 +136,7 @@
  "albedo_mean_srgb": [
   138,
   72,
-  43
+  44
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_lava_rock_gravel/albedo_delit.webp",

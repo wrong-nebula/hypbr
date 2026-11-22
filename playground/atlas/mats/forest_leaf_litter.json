@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.773,
-   0.953
+   0.788,
+   0.941
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +125,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.101,
+  "max_seam_ratio": 1.102,
+  "max_seam_outlier": 0.851,
   "seam_ratios": {
-   "height": 0.907,
-   "normal": 1.038,
-   "albedo": 1.101
+   "height": 0.909,
+   "normal": 1.036,
+   "albedo": 1.102
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  134,
+  136,
   95,
-  42
+  36
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/forest_leaf_litter/albedo_delit.webp",

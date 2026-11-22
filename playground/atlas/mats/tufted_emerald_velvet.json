@@ -105,11 +105,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.84,
+  "max_seam_ratio": 1.847,
+  "max_seam_outlier": 0.986,
   "seam_ratios": {
-   "height": 0.807,
-   "normal": 1.84,
-   "albedo": 0.258
+   "height": 0.788,
+   "normal": 1.847,
+   "albedo": 0.248
   },
   "normal_unit_error": 0.0018,
   "errors": [],
@@ -117,8 +118,8 @@
  },
  "albedo_mean_srgb": [
   33,
-  123,
-  90
+  120,
+  93
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/tufted_emerald_velvet/albedo_delit.webp",

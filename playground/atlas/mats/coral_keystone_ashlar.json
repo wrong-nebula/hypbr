@@ -78,8 +78,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.749,
-   0.914
+   0.675,
+   0.91
   ],
   "metallic_range": [
    0.0,
@@ -129,9 +129,10 @@
  "qa": {
   "passed": true,
   "max_seam_ratio": 0.892,
+  "max_seam_outlier": 0.62,
   "seam_ratios": {
-   "height": 0.571,
-   "normal": 0.875,
+   "height": 0.57,
+   "normal": 0.858,
    "albedo": 0.892
   },
   "normal_unit_error": 0.0019,
@@ -141,7 +142,7 @@
  "albedo_mean_srgb": [
   205,
   197,
-  177
+  178
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/coral_keystone_ashlar/albedo_delit.webp",

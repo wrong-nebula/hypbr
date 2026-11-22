@@ -128,20 +128,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.769,
+  "max_seam_ratio": 1.762,
+  "max_seam_outlier": 0.864,
   "seam_ratios": {
-   "height": 1.47,
-   "normal": 1.769,
-   "albedo": 1.292
+   "height": 1.467,
+   "normal": 1.762,
+   "albedo": 1.289
   },
-  "normal_unit_error": 0.0009,
+  "normal_unit_error": 0.001,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   189,
   156,
-  101
+  100
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/osb_strand_board/albedo_delit.webp",

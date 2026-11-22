@@ -76,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.773,
-   0.898
+   0.792,
+   0.886
   ],
   "metallic_range": [
    0.0,
@@ -127,9 +127,10 @@
  "qa": {
   "passed": true,
   "max_seam_ratio": 1.128,
+  "max_seam_outlier": 0.93,
   "seam_ratios": {
-   "height": 1.024,
-   "normal": 0.983,
+   "height": 1.016,
+   "normal": 0.982,
    "albedo": 1.128
   },
   "normal_unit_error": 0.0019,
@@ -139,7 +140,7 @@
  "albedo_mean_srgb": [
   165,
   145,
-  119
+  118
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/dry_dirt_trail/albedo_delit.webp",

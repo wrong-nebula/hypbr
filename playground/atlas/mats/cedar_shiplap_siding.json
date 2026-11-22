@@ -79,8 +79,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.647,
-   0.871
+   0.643,
+   0.863
   ],
   "metallic_range": [
    0.0,
@@ -131,20 +131,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.788,
+  "max_seam_ratio": 0.791,
+  "max_seam_outlier": 0.4,
   "seam_ratios": {
-   "height": 0.522,
-   "normal": 0.605,
-   "albedo": 0.788
+   "height": 0.523,
+   "normal": 0.597,
+   "albedo": 0.791
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  163,
+  161,
   105,
-  62
+  66
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cedar_shiplap_siding/albedo_delit.webp",

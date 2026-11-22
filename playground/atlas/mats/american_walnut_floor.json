@@ -78,8 +78,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.518,
-   0.675
+   0.541,
+   0.694
   ],
   "metallic_range": [
    0.0,
@@ -128,20 +128,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.753,
+  "max_seam_ratio": 0.755,
+  "max_seam_outlier": 0.154,
   "seam_ratios": {
-   "height": 0.415,
-   "normal": 0.459,
-   "albedo": 0.753
+   "height": 0.419,
+   "normal": 0.446,
+   "albedo": 0.755
   },
-  "normal_unit_error": 0.0014,
+  "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   116,
   85,
-  62
+  61
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/american_walnut_floor/albedo_delit.webp",

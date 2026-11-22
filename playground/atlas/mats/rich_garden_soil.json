@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.824,
-   0.918
+   0.792,
+   0.886
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +126,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.999,
+  "max_seam_ratio": 0.998,
+  "max_seam_outlier": 0.844,
   "seam_ratios": {
-   "height": 0.996,
-   "normal": 0.999,
-   "albedo": 0.792
+   "height": 0.99,
+   "normal": 0.998,
+   "albedo": 0.79
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  85,
+  86,
   70,
-  58
+  55
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rich_garden_soil/albedo_delit.webp",

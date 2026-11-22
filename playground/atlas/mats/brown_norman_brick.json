@@ -72,8 +72,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.753,
-   0.937
+   0.698,
+   0.973
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +121,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.506,
+  "max_seam_ratio": 0.484,
+  "max_seam_outlier": 0.21,
   "seam_ratios": {
-   "height": 0.225,
-   "normal": 0.506,
-   "albedo": 0.456
+   "height": 0.235,
+   "normal": 0.484,
+   "albedo": 0.455
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  136,
+  137,
   107,
-  86
+  85
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/brown_norman_brick/albedo_delit.webp",

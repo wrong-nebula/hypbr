@@ -57,7 +57,7 @@
    0.333
   ],
   "metallic_range": [
-   0.957,
+   0.953,
    0.961
   ],
   "transmission": 0.0,
@@ -104,11 +104,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.373,
+  "max_seam_ratio": 0.375,
+  "max_seam_outlier": 0.26,
   "seam_ratios": {
-   "height": 0.152,
-   "normal": 0.211,
-   "albedo": 0.373
+   "height": 0.141,
+   "normal": 0.217,
+   "albedo": 0.375
   },
   "normal_unit_error": 0.0005,
   "errors": [],

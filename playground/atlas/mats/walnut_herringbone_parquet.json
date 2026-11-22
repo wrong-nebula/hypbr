@@ -76,8 +76,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.38,
-   0.592
+   0.4,
+   0.729
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +125,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.921,
+  "max_seam_ratio": 0.922,
+  "max_seam_outlier": 0.985,
   "seam_ratios": {
-   "height": 0.895,
-   "normal": 0.921,
-   "albedo": 0.874
+   "height": 0.897,
+   "normal": 0.922,
+   "albedo": 0.868
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  129,
-  89,
-  52
+  131,
+  88,
+  48
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/walnut_herringbone_parquet/albedo_delit.webp",

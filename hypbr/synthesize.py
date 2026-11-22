@@ -31,6 +31,7 @@ from PIL import Image
 from . import depthpro_pbr as dp          # noqa: E402
 from . import normal_graph as ng          # noqa: E402
 from . import procedural as gd            # noqa: E402
+from .color import linear_to_srgb, linear_to_srgb_torch, linear_to_srgb_u8
 
 
 def _rich_albedo_and_metal(did: str, mat_kind: str, tint: tuple, h: np.ndarray, cav: np.ndarray,
@@ -752,7 +753,7 @@ def _rich_albedo_and_metal(did: str, mat_kind: str, tint: tuple, h: np.ndarray, 
     # Enforce physically plausible dielectric albedo ceiling (~238 sRGB) while allowing bright metals up to 0.95
     alb_max = np.where(met[..., None] > 0.25, 0.95, 0.855).astype(np.float32)
     alb_clamped = np.clip(alb, 0.015, alb_max).astype(np.float32)
-    alb_srgb = np.power(alb_clamped, 1.0 / 2.2)
+    alb_srgb = linear_to_srgb(alb_clamped)
     return (
         np.clip(alb_srgb * 255.0 + 0.5, 0, 255).astype(np.uint8),
         alb_clamped,
@@ -798,7 +799,7 @@ def synthesize_hardops_plate(out_dir: Path, size: int = 512) -> Path:
     w_oil = np.clip(np.power(np.clip(1.0 - ao, 0.0, 1.0), 1.35) * 1.45, 0.0, 1.0)[..., None]
     alb_lin = np.clip(base * (1.0 - w_oil) + oil * w_oil, 0.02, 0.95)
     alb_lin = np.clip(alb_lin * (1.0 - 0.62 * w_edge) + silver * (0.62 * w_edge), 0.02, 0.95)
-    alb_u8 = np.clip(np.power(alb_lin, 1.0 / 2.2) * 255.0 + 0.5, 0, 255).astype(np.uint8)
+    alb_u8 = linear_to_srgb_u8(alb_lin)
 
     rough = np.clip(0.21 + 0.38 * (1.0 - ao) - 0.10 * curv["convex"] + 0.045 * m3 + 0.025 * m1, 0.09, 0.88).astype(np.float32)
     rough = ng.node_roughness_specular_aa(ctx, {"roughness": rough, "normal": n_fin}, strength=0.25, max_boost=0.08)["roughness"]
@@ -1009,7 +1010,7 @@ def render_studio_preview(
         col = diffuse + sheen + spec_ibl + spec_direct
         # Smooth filmic ACES-like highlight roll-off
         col = col / (1.0 + 0.28 * col)
-        out_u8 = torch.clamp(torch.pow(torch.clamp(col, 0.0, 1.0), 1.0 / 2.2) * 255.0 + 0.5, 0.0, 255.0).to(torch.uint8)
+        out_u8 = torch.clamp(linear_to_srgb_torch(col) * 255.0 + 0.5, 0.0, 255.0).to(torch.uint8)
         return out_u8.cpu().numpy()
 
     L1 = np.array([0.48, 0.55, 0.68], np.float32); L1 /= np.linalg.norm(L1)
@@ -1093,7 +1094,7 @@ def render_studio_preview(
 
     col = diffuse + sheen + spec_ibl + spec_direct
     col = col / (1.0 + 0.28 * col)
-    return np.clip(np.power(np.clip(col, 0.0, 1.0), 1.0 / 2.2) * 255.0 + 0.5, 0, 255).astype(np.uint8)
+    return linear_to_srgb_u8(col)
 
 
 def synthesize_material(
@@ -1245,12 +1246,12 @@ def synthesize_material(
         alb_u8, alb_lin, met_u8, r_mod = _rich_albedo_and_metal(material_id, mat_kind, tint, h_n, cav0, ridge0, ao, seed=s_base + 2000)
     else:
         alb_lin, p_met, r_mod = par_out
-        alb_u8 = np.clip(np.power(alb_lin, 1.0 / 2.2) * 255.0 + 0.5, 0, 255).astype(np.uint8)
+        alb_u8 = linear_to_srgb_u8(alb_lin)
         met_u8 = np.clip(p_met * 255.0 + 0.5, 0, 255).astype(np.uint8)
     if cal is not None:
         cal_max = np.where(met_u8[..., None] > 64, 0.95, 0.855).astype(np.float32)
         alb_lin = equalize_albedo(alb_lin, cal["band_gains"], float(cal.get("sat_gain", 1.0)), cal_max)
-        alb_u8 = np.clip(np.power(alb_lin, 1.0 / 2.2) * 255.0 + 0.5, 0, 255).astype(np.uint8)
+        alb_u8 = linear_to_srgb_u8(alb_lin)
         if "rough_std_gain" not in cal:
             base_r = float(base_r) + float(cal.get("rough_shift", 0.0))
 
@@ -1358,7 +1359,7 @@ def synthesize_material(
             alb_lin = alb_lin * (1.0 - edge_scuff[..., None] * 0.32) + scuff_col * (edge_scuff[..., None] * 0.32)
             rough = np.clip(rough + 0.34 * diel_pat + 0.16 * edge_scuff + 0.04 * w_amt * w_micro, 0.08, 0.97).astype(np.float32)
 
-        alb_u8 = np.clip(np.power(np.clip(alb_lin, 0.0, 1.0), 1.0 / 2.2) * 255.0 + 0.5, 0, 255).astype(np.uint8)
+        alb_u8 = linear_to_srgb_u8(alb_lin)
         met_u8 = np.clip(met_f * 255.0 + 0.5, 0, 255).astype(np.uint8)
 
     rough = ng.node_roughness_specular_aa({"circular": True}, {"roughness": rough, "normal": N}, strength=0.25, max_boost=0.08)["roughness"]

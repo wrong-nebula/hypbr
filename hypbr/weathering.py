@@ -32,6 +32,7 @@ from PIL import Image
 from . import depthpro_pbr as dp
 from . import normal_graph as ng
 from . import procedural as gd
+from .color import linear_to_srgb_u8, srgb_u8_to_linear
 
 WEATHER_PRESETS: dict[str, dict[str, float]] = {
     "aged":      {"wear": 0.45, "dirt": 0.45, "wet": 0.00, "moss": 0.00, "rust": 0.15, "dust": 0.25},
@@ -643,7 +644,7 @@ def apply_weathering_maps(
     # Physical dielectric/metallic albedo ceiling enforcement
     alb_max = np.where(m_out[..., None] > 0.25, 0.95, 0.855).astype(np.float32)
     alb = np.clip(alb, 0.015, alb_max).astype(np.float32)
-    alb_u8 = np.clip(np.power(alb, 1.0 / 2.2) * 255.0 + 0.5, 0, 255).astype(np.uint8)
+    alb_u8 = linear_to_srgb_u8(alb)
     met_u8 = np.clip(m_out * 255.0 + 0.5, 0, 255).astype(np.uint8)
 
     # Packed 4-channel RGBA8 weather mask for real-time engine shaders (R=Wear, G=Dirt|Rust, B=Wet, A=Moss)
@@ -828,7 +829,7 @@ def weather_material(
     alb_im = Image.open(src / "albedo_delit.png").convert("RGB")
     size = alb_im.size
     alb_u8_src = np.asarray(alb_im, dtype=np.uint8)
-    alb_lin = np.power(np.clip(alb_u8_src.astype(np.float32) / 255.0, 0.0, 1.0), 2.2)
+    alb_lin = srgb_u8_to_linear(alb_u8_src)
 
     h_n = _load_height_f32(src, size)
     n_im = Image.open(src / "normal.png").convert("RGB")

@@ -18,6 +18,8 @@ import hashlib
 from functools import lru_cache
 from typing import Any
 
+from .color import linear_to_srgb
+
 ATLAS_VERSION = "1.1.0"
 
 # ---------------------------------------------------------------------------
@@ -1453,7 +1455,7 @@ def _title(mid: str) -> str:
 
 
 def _color_tags(rgb_lin: tuple[float, float, float]) -> list[str]:
-    srgb = [max(0.0, min(1.0, c)) ** (1.0 / 2.2) for c in rgb_lin]
+    srgb = [linear_to_srgb(c) for c in rgb_lin]
     h, s, v = colorsys.rgb_to_hsv(*srgb)
     hd = h * 360.0
     if v < 0.22:

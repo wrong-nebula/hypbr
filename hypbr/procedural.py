@@ -34,6 +34,7 @@ from PIL import Image, ImageDraw
 
 from . import depthpro_pbr as dp  # noqa: E402
 from . import normal_graph as ng  # noqa: E402
+from .color import linear_to_srgb
 
 
 # =============================================================================
@@ -256,7 +257,7 @@ def _lit_preview(N: np.ndarray, ao: np.ndarray, rough: np.ndarray, tint: tuple[f
     base = np.array(tint, dtype=np.float32)[None, None, :]
     col = base * (0.20 + 0.78 * ndotl1[..., None] + 0.22 * ndotl2[..., None]) * (0.35 + 0.65 * ao[..., None])
     col += spec[..., None] * (0.4 + 0.6 * ao[..., None])
-    col = np.power(np.clip(col, 0.0, 1.0), 1.0 / 2.2)
+    col = linear_to_srgb(col)
     return np.clip(col * 255.0 + 0.5, 0, 255).astype(np.uint8)
 
 

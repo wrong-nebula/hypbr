@@ -18,6 +18,7 @@ from . import depthpro_pbr as dp
 from . import normal_graph as ng
 from . import procedural as gd
 from .synthesize import render_studio_preview, save_maps_parallel
+from .color import linear_to_srgb_u8, srgb_to_linear
 
 
 def _load_srgb_linear(path: Path, size: tuple[int, int]) -> np.ndarray:
@@ -25,7 +26,7 @@ def _load_srgb_linear(path: Path, size: tuple[int, int]) -> np.ndarray:
     if im.size != size:
         im = im.resize(size, Image.BILINEAR)
     arr = np.asarray(im, dtype=np.float32) / 255.0
-    return np.power(np.clip(arr, 0.0, 1.0), 2.2)
+    return srgb_to_linear(arr)
 
 
 def _load_gray_f32(path: Path, size: tuple[int, int], default: float = 0.5) -> np.ndarray:
@@ -163,7 +164,7 @@ def blend_materials(
     alb_a = _load_srgb_linear(pa / "albedo_delit.png", size)
     alb_b = _load_srgb_linear(pb / "albedo_delit.png", size)
     alb_lin = ((1.0 - m3) * alb_a + m3 * alb_b) * (0.72 + 0.28 * contact_ao[..., None])
-    alb_u8 = np.clip(np.power(np.clip(alb_lin, 0.0, 1.0), 1.0 / 2.2) * 255.0 + 0.5, 0, 255).astype(np.uint8)
+    alb_u8 = linear_to_srgb_u8(alb_lin)
 
     # 2. Height & slope-consistent normal blend with physical step lip & soft-knee slope limit
     n_a = _load_normal_f32(pa / "normal.png", size)

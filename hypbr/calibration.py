@@ -25,6 +25,8 @@ from typing import Any
 
 import numpy as np
 
+from .color import srgb_u8_to_linear
+
 SIGMAS = (1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0)  # band k = G(sigma_{k-1}) - G(sigma_k), sigma_{-1}=0
 N_BANDS = len(SIGMAS)
 _CAL_PATH = Path(__file__).resolve().parent / "data" / "atlas_calibration.json"
@@ -43,8 +45,7 @@ def _gauss_fft(x: np.ndarray, sigma: float) -> np.ndarray:
 
 
 def _srgb_to_lin(a_u8: np.ndarray) -> np.ndarray:
-    c = a_u8.astype(np.float32) / 255.0
-    return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4).astype(np.float32)
+    return srgb_u8_to_linear(a_u8)
 
 
 def _lum(lin: np.ndarray) -> np.ndarray:
@@ -343,7 +344,9 @@ def update_gains(cal: dict[str, Any], targets: dict[str, Any], measured: dict[st
 
     cal = dict(cal)
     cal["band_gains"] = [round(float(g), 3) for g in upd(cal["band_gains"], targets["alb_bands"], measured["bands"], 0.45, 2.6)]
-    cal["sat_gain"] = round(float(np.clip(cal["sat_gain"] * (targets["chroma_var"] / max(measured["chroma_var"], 1e-4)) ** damping, 0.85, 1.2)), 3)
+    # chroma_var responds to sat_gain roughly as gain**1.4..2.6 (not linearly), so a full `damping`
+    # exponent overshoots and oscillates between the clamps; half the exponent converges monotonically.
+    cal["sat_gain"] = round(float(np.clip(cal["sat_gain"] * (targets["chroma_var"] / max(measured["chroma_var"], 1e-4)) ** (0.5 * damping), 0.85, 1.2)), 3)
     if targets.get("slope_bands") and measured.get("slope_bands"):
         cal["height_gains"] = [round(float(g), 3) for g in upd(cal["height_gains"], targets["slope_bands"], measured["slope_bands"], 0.5, 2.0)]
     if targets.get("rough") is not None:

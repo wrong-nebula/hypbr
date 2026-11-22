@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from . import atlas_catalog as ac
+from .color import linear_to_srgb
 
 DEFAULT_BASE_URL = "https://hypbr.vercel.app"
 MAP_FILES: dict[str, str] = {
@@ -746,7 +747,7 @@ def playground_entries(asset_prefix: str | None = "./assets/mats") -> list[dict[
         if tint is None:
             from . import procedural as gd
             tint = next((t for did, _d, _k, t in gd.DAILY_CATALOG if did == e["id"]), (0.28, 0.31, 0.36))
-        srgb = [max(0, min(255, int(round((max(0.0, float(c)) ** (1 / 2.2)) * 255)))) for c in tint]
+        srgb = [max(0, min(255, int(round(linear_to_srgb(float(c)) * 255)))) for c in tint]
         row = {
             "id": e["id"], "name": e["name"], "description": e["description"], "kind": e["kind"],
             "group": cat_names[e["category"]], "category": e["category"], "subcategory": e["subcategory"],

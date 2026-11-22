@@ -130,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.011,
+  "max_seam_ratio": 1.019,
   "seam_ratios": {
    "height": 0.306,
    "normal": 0.384,
-   "albedo": 1.011
+   "albedo": 1.019
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  137,
+  138,
   102,
-  79
+  77
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/horizontal_cedar_fence/albedo_delit.webp",

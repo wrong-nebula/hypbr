@@ -96,27 +96,27 @@
   "wall"
  ],
  "pairs_well_with": [
-  "brushed_anodized_plate",
+  "radial_spun_aluminum",
   "hard_maple_floor",
   "subway_metro_tile",
-  "white_appliance_plastic"
+  "micro_hex_grip"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.002,
+  "max_seam_ratio": 0.996,
   "seam_ratios": {
    "height": 0.707,
    "normal": 0.819,
-   "albedo": 1.002
+   "albedo": 0.996
   },
   "normal_unit_error": 0.0002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  187,
-  177,
-  165
+  189,
+  178,
+  166
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/terrazzo_speckled_stone/albedo_delit.webp",

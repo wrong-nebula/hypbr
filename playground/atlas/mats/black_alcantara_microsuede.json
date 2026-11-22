@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 0.583,
    "normal": 1.078,
-   "albedo": 0.781
+   "albedo": 0.766
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  53,
-  53,
-  53
+  50,
+  50,
+  50
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/black_alcantara_microsuede/albedo_delit.webp",

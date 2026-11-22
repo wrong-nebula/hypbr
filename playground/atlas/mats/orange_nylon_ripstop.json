@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 1.282,
    "normal": 0.567,
-   "albedo": 0.845
+   "albedo": 0.851
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  217,
-  116,
-  38
+  218,
+  117,
+  33
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/orange_nylon_ripstop/albedo_delit.webp",

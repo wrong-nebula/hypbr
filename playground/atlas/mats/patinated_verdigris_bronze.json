@@ -111,16 +111,16 @@
   "seam_ratios": {
    "height": 0.46,
    "normal": 0.83,
-   "albedo": 0.488
+   "albedo": 0.493
   },
   "normal_unit_error": 0.001,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  180,
-  161,
-  119
+  181,
+  162,
+  120
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/patinated_verdigris_bronze/albedo_delit.webp",

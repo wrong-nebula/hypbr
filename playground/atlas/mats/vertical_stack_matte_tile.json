@@ -121,25 +121,25 @@
  "pairs_well_with": [
   "scandinavian_ash_floor",
   "statuario_marble",
-  "brushed_stainless_steel",
+  "brushed_anodized_plate",
   "black_porcelain_slab"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.236,
+  "max_seam_ratio": 0.232,
   "seam_ratios": {
    "height": 0.073,
    "normal": 0.157,
-   "albedo": 0.236
+   "albedo": 0.232
   },
   "normal_unit_error": 0.0006,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  211,
   210,
-  209,
-  204
+  205
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/vertical_stack_matte_tile/albedo_delit.webp",

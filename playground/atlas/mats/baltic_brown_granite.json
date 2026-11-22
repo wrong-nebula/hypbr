@@ -119,10 +119,10 @@
   "wall"
  ],
  "pairs_well_with": [
-  "radial_spun_aluminum",
+  "brushed_aluminum_satin",
   "scandinavian_ash_floor",
   "subway_metro_tile",
-  "dimpled_golf_grip"
+  "textured_dashboard_vinyl"
  ],
  "qa": {
   "passed": true,
@@ -130,7 +130,7 @@
   "seam_ratios": {
    "height": 1.277,
    "normal": 1.884,
-   "albedo": 1.619
+   "albedo": 1.622
   },
   "normal_unit_error": 0.0014,
   "errors": [],
@@ -138,8 +138,8 @@
  },
  "albedo_mean_srgb": [
   105,
-  87,
-  73
+  86,
+  72
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/baltic_brown_granite/albedo_delit.webp",

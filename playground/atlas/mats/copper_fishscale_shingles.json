@@ -117,7 +117,7 @@
   "roofing_tech_scifi"
  ],
  "pairs_well_with": [
-  "offset_bond_terracotta_brick",
+  "adobe_mud_brick",
   "larch_vertical_cladding",
   "terracotta_tadelakt",
   "riveted_bridge_steel_plate"
@@ -128,7 +128,7 @@
   "seam_ratios": {
    "height": 0.336,
    "normal": 0.55,
-   "albedo": 0.491
+   "albedo": 0.487
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -136,8 +136,8 @@
  },
  "albedo_mean_srgb": [
   212,
-  168,
-  146
+  169,
+  147
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/copper_fishscale_shingles/albedo_delit.webp",

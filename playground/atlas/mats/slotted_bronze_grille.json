@@ -126,9 +126,9 @@
  ],
  "pairs_well_with": [
   "rammed_earth_wall",
-  "radial_spun_aluminum",
+  "brushed_aluminum_satin",
   "clear_float_glazing",
-  "reeded_coin_milling"
+  "black_steel_tread_plate"
  ],
  "qa": {
   "passed": true,
@@ -136,16 +136,16 @@
   "seam_ratios": {
    "height": 0.058,
    "normal": 0.126,
-   "albedo": 0.096
+   "albedo": 0.109
   },
   "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  157,
-  132,
-  100
+  160,
+  133,
+  98
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/slotted_bronze_grille/albedo_delit.webp",

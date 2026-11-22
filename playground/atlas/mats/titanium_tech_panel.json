@@ -127,26 +127,26 @@
  ],
  "pairs_well_with": [
   "brushed_titanium_seam_panel",
-  "diamond_tread_plate",
+  "knurled_straight_flutes",
   "black_pcb_solder_mask",
   "gray_solar_glazing"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.901,
+  "max_seam_ratio": 0.904,
   "seam_ratios": {
    "height": 0.173,
    "normal": 0.315,
-   "albedo": 0.901
+   "albedo": 0.904
   },
   "normal_unit_error": 0.0006,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  185,
-  180,
-  172
+  187,
+  181,
+  173
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/titanium_tech_panel/albedo_delit.webp",

@@ -97,25 +97,25 @@
  "pairs_well_with": [
   "dark_brutalist_board_formed",
   "hardops_plate",
-  "radial_spun_aluminum",
+  "anodized_black_aluminum",
   "large_format_ground_block"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.838,
+  "max_seam_ratio": 0.835,
   "seam_ratios": {
    "height": 0.011,
    "normal": 0.041,
-   "albedo": 0.838
+   "albedo": 0.835
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  131,
-  151,
-  158
+  132,
+  152,
+  159
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/waffle_silicone_pad/albedo_delit.webp",

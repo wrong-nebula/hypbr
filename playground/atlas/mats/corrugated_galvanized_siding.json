@@ -130,16 +130,16 @@
   "seam_ratios": {
    "height": 0.134,
    "normal": 1.311,
-   "albedo": 0.629
+   "albedo": 0.632
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  191,
-  194,
-  197
+  192,
+  195,
+  198
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/corrugated_galvanized_siding/albedo_delit.webp",

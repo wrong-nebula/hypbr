@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 1.154,
    "normal": 1.538,
-   "albedo": 1.149
+   "albedo": 1.148
   },
   "normal_unit_error": 0.0012,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  202,
-  205,
-  208
+  203,
+  206,
+  210
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/spangled_galvanized_steel/albedo_delit.webp",

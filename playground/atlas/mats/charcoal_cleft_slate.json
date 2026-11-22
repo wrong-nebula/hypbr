@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 1.168,
    "normal": 1.333,
-   "albedo": 0.91
+   "albedo": 0.912
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  82,
-  85,
-  87
+  81,
+  84,
+  86
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/charcoal_cleft_slate/albedo_delit.webp",

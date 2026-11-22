@@ -122,11 +122,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.686,
+  "max_seam_ratio": 0.674,
   "seam_ratios": {
    "height": 0.214,
    "normal": 0.48,
-   "albedo": 0.686
+   "albedo": 0.674
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -134,8 +134,8 @@
  },
  "albedo_mean_srgb": [
   94,
-  84,
-  96
+  82,
+  95
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/welsh_purple_slate_roof/albedo_delit.webp",

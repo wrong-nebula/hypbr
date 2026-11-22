@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 0.215,
    "normal": 0.462,
-   "albedo": 0.438
+   "albedo": 0.429
   },
   "normal_unit_error": 0.0005,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  69,
-  69,
-  69
+  67,
+  67,
+  67
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/interlocking_gym_tile/albedo_delit.webp",

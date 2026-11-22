@@ -132,7 +132,7 @@
   "seam_ratios": {
    "height": 0.73,
    "normal": 1.165,
-   "albedo": 0.886
+   "albedo": 0.883
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -141,7 +141,7 @@
  "albedo_mean_srgb": [
   104,
   107,
-  69
+  67
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/olive_canvas_duck/albedo_delit.webp",

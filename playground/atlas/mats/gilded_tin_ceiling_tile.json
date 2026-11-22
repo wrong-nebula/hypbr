@@ -102,26 +102,26 @@
   "furniture"
  ],
  "pairs_well_with": [
-  "board_formed_concrete",
+  "sidewalk_expansion_joint",
   "barnwood_reclaimed_planks",
   "white_quartzite_slab",
   "clear_float_glazing"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.181,
+  "max_seam_ratio": 0.208,
   "seam_ratios": {
    "height": 0.022,
    "normal": 0.059,
-   "albedo": 0.181
+   "albedo": 0.208
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  211,
-  183,
+  212,
+  184,
   116
  ],
  "maps": {

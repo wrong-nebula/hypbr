@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 1.046,
    "normal": 0.899,
-   "albedo": 0.849
+   "albedo": 0.851
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  169,
-  152,
-  113
+  171,
+  153,
+  114
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/khaki_chino_twill/albedo_delit.webp",

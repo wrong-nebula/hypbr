@@ -121,24 +121,24 @@
   "anodized_black_aluminum",
   "ebony_stained_oak_floor",
   "beveled_gray_metro_tile",
-  "gray_recycled_plastic_lumber"
+  "white_appliance_plastic"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.94,
+  "max_seam_ratio": 1.935,
   "seam_ratios": {
    "height": 1.84,
    "normal": 1.625,
-   "albedo": 1.94
+   "albedo": 1.935
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  148,
-  148,
-  146
+  149,
+  149,
+  147
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/salt_pepper_granite/albedo_delit.webp",

@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.97,
+  "max_seam_ratio": 0.965,
   "seam_ratios": {
    "height": 0.298,
    "normal": 0.376,
-   "albedo": 0.97
+   "albedo": 0.965
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  202,
-  166,
-  114
+  203,
+  167,
+  115
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gym_maple_strip_floor/albedo_delit.webp",

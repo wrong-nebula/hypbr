@@ -116,27 +116,27 @@
   "ceramic"
  ],
  "pairs_well_with": [
-  "offset_bond_terracotta_brick",
+  "adobe_mud_brick",
   "larch_vertical_cladding",
   "earthen_clay_plaster",
   "riveted_sheet_seam"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.812,
+  "max_seam_ratio": 0.808,
   "seam_ratios": {
    "height": 0.406,
    "normal": 0.78,
-   "albedo": 0.812
+   "albedo": 0.808
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  185,
+  187,
   118,
-  66
+  64
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/spanish_barrel_clay_roof/albedo_delit.webp",

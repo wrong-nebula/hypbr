@@ -123,20 +123,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.768,
+  "max_seam_ratio": 0.764,
   "seam_ratios": {
    "height": 0.457,
    "normal": 0.717,
-   "albedo": 0.768
+   "albedo": 0.764
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  205,
-  194,
-  175
+  206,
+  195,
+  176
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sand_finish_stucco/albedo_delit.webp",

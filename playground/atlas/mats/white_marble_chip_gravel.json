@@ -117,7 +117,7 @@
   "permeable_running_paver",
   "fresh_snow_ground",
   "white_chalk_cliff",
-  "walnut_slat_panel"
+  "acoustic_slat_wood"
  ],
  "qa": {
   "passed": true,
@@ -132,9 +132,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  202,
-  202,
-  199
+  203,
+  203,
+  200
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_marble_chip_gravel/albedo_delit.webp",

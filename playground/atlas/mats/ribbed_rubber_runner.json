@@ -116,7 +116,7 @@
  "pairs_well_with": [
   "polished_concrete_floor",
   "hardops_plate",
-  "brushed_titanium_seam_panel",
+  "brushed_anodized_plate",
   "painted_stack_block"
  ],
  "qa": {
@@ -125,16 +125,16 @@
   "seam_ratios": {
    "height": 1.254,
    "normal": 0.517,
-   "albedo": 0.322
+   "albedo": 0.284
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  61,
-  61,
-  61
+  59,
+  59,
+  59
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/ribbed_rubber_runner/albedo_delit.webp",

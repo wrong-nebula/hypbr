@@ -119,7 +119,7 @@
  ],
  "pairs_well_with": [
   "honey_bath_stone_ashlar",
-  "adobe_mud_brick",
+  "speckled_ivory_brick",
   "tundra_reindeer_lichen",
   "cooled_lava_flow"
  ],
@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 1.563,
    "normal": 1.721,
-   "albedo": 1.279
+   "albedo": 1.286
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  140,
-  135,
-  125
+  141,
+  136,
+  126
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/belgian_block_pavers/albedo_delit.webp",

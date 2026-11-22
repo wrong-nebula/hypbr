@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.889,
+  "max_seam_ratio": 1.887,
   "seam_ratios": {
    "height": 1.811,
    "normal": 1.538,
-   "albedo": 1.889
+   "albedo": 1.887
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  83,
+  82,
   91,
-  65
+  62
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/crocodile_embossed_leather/albedo_delit.webp",

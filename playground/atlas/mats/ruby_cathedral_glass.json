@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 1.481,
    "normal": 1.708,
-   "albedo": 1.55
+   "albedo": 1.548
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  202,
-  68,
-  78
+  203,
+  66,
+  77
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/ruby_cathedral_glass/albedo_delit.webp",

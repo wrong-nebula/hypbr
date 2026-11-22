@@ -117,7 +117,7 @@
  "pairs_well_with": [
   "riveted_aircraft_aluminum",
   "board_formed_concrete",
-  "brushed_anodized_plate",
+  "brushed_satin_copper",
   "glazed_white_brick"
  ],
  "qa": {
@@ -126,14 +126,14 @@
   "seam_ratios": {
    "height": 0.425,
    "normal": 1.72,
-   "albedo": 0.102
+   "albedo": 0.051
   },
   "normal_unit_error": 0.0,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  233,
+  235,
   236,
   236
  ],

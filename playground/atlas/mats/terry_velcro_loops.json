@@ -105,20 +105,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.364,
+  "max_seam_ratio": 1.368,
   "seam_ratios": {
    "height": 1.103,
    "normal": 1.1,
-   "albedo": 1.364
+   "albedo": 1.368
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  196,
-  189,
-  178
+  197,
+  191,
+  179
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/terry_velcro_loops/albedo_delit.webp",

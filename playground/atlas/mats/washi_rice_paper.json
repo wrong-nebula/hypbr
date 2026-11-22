@@ -130,16 +130,16 @@
   "seam_ratios": {
    "height": 0.557,
    "normal": 1.006,
-   "albedo": 0.736
+   "albedo": 0.734
   },
   "normal_unit_error": 0.001,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  216,
-  214,
-  207
+  217,
+  215,
+  208
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/washi_rice_paper/albedo_delit.webp",

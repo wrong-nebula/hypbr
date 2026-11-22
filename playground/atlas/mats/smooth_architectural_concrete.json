@@ -118,7 +118,7 @@
   "ceiling"
  ],
  "pairs_well_with": [
-  "brushed_titanium_seam_panel",
+  "anodized_black_aluminum",
   "bronze_tinted_glazing",
   "acoustic_slat_wood",
   "fresh_black_asphalt"
@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 0.578,
    "normal": 0.912,
-   "albedo": 0.889
+   "albedo": 0.891
   },
   "normal_unit_error": 0.001,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  172,
-  170,
-  166
+  173,
+  171,
+  167
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/smooth_architectural_concrete/albedo_delit.webp",

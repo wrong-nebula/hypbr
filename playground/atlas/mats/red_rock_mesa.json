@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 0.97,
    "normal": 1.364,
-   "albedo": 0.918
+   "albedo": 0.922
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  186,
+  187,
   108,
-  61
+  58
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_rock_mesa/albedo_delit.webp",

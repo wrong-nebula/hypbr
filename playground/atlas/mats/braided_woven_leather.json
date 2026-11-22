@@ -119,7 +119,7 @@
  "pairs_well_with": [
   "ebony_stained_oak_floor",
   "natural_linen_plain",
-  "brushed_aluminum_satin",
+  "anodized_black_aluminum",
   "smoked_oak_chevron_parquet"
  ],
  "qa": {
@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.962,
    "normal": 1.055,
-   "albedo": 0.758
+   "albedo": 0.766
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  129,
+  130,
   93,
-  56
+  53
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/braided_woven_leather/albedo_delit.webp",

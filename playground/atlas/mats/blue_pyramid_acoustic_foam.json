@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 0.99,
    "normal": 2.548,
-   "albedo": 0.914
+   "albedo": 0.931
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  59,
-  83,
-  131
+  56,
+  82,
+  132
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/blue_pyramid_acoustic_foam/albedo_delit.webp",

@@ -123,8 +123,8 @@
  "pairs_well_with": [
   "dark_brutalist_board_formed",
   "diamond_rubber_mat",
-  "brushed_anodized_plate",
-  "keyboard_keycap_grid"
+  "radial_spun_aluminum",
+  "matte_black_abs_plastic"
  ],
  "qa": {
   "passed": true,
@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 1.355,
    "normal": 1.04,
-   "albedo": 0.898
+   "albedo": 0.904
   },
   "normal_unit_error": 0.0006,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  200,
   201,
-  202
+  203,
+  204
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/aluminum_diamond_tread_plate/albedo_delit.webp",

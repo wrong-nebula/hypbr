@@ -124,7 +124,7 @@
   "brushed_satin_copper",
   "barnwood_reclaimed_planks",
   "white_gloss_subway_tile",
-  "micro_hex_grip"
+  "matte_black_abs_plastic"
  ],
  "qa": {
   "passed": true,
@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 1.298,
    "normal": 1.449,
-   "albedo": 1.4
+   "albedo": 1.396
   },
   "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  165,
-  146,
-  140
+  167,
+  148,
+  141
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/classic_venetian_terrazzo/albedo_delit.webp",

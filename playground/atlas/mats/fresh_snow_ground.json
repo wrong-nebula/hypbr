@@ -135,9 +135,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  225,
   227,
-  229
+  228,
+  230
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/fresh_snow_ground/albedo_delit.webp",

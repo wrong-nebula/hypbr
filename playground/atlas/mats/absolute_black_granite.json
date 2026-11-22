@@ -119,7 +119,7 @@
   "brushed_satin_brass",
   "smoked_european_oak_floor",
   "black_gloss_subway_tile",
-  "matte_black_abs_plastic"
+  "keyboard_keycap_grid"
  ],
  "qa": {
   "passed": true,
@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 1.396,
    "normal": 1.837,
-   "albedo": 1.408
+   "albedo": 1.405
   },
   "normal_unit_error": 0.0009,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  58,
-  58,
-  60
+  55,
+  55,
+  57
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/absolute_black_granite/albedo_delit.webp",

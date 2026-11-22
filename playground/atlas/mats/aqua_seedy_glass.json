@@ -116,7 +116,7 @@
  ],
  "pairs_well_with": [
   "brushed_shou_sugi_ban",
-  "anodized_black_aluminum",
+  "brushed_titanium_seam_panel",
   "sage_marmorino_plaster",
   "tumbled_reclaimed_brick"
  ],
@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 1.272,
    "normal": 1.367,
-   "albedo": 1.213
+   "albedo": 1.173
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  197,
+  198,
   224,
-  212
+  213
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/aqua_seedy_glass/albedo_delit.webp",

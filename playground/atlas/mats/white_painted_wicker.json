@@ -130,16 +130,16 @@
   "seam_ratios": {
    "height": 1.509,
    "normal": 1.505,
-   "albedo": 0.864
+   "albedo": 0.859
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  190,
-  188,
-  182
+  192,
+  189,
+  183
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_painted_wicker/albedo_delit.webp",

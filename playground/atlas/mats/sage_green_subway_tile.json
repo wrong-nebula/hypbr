@@ -120,25 +120,25 @@
  "pairs_well_with": [
   "smoked_european_oak_floor",
   "verde_guatemala_marble",
-  "brushed_anodized_plate",
+  "brushed_stainless_steel",
   "polished_white_porcelain"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.372,
+  "max_seam_ratio": 0.38,
   "seam_ratios": {
    "height": 0.108,
    "normal": 0.128,
-   "albedo": 0.372
+   "albedo": 0.38
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  154,
-  172,
-  150
+  156,
+  173,
+  152
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sage_green_subway_tile/albedo_delit.webp",

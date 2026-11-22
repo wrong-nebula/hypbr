@@ -100,7 +100,7 @@
   "sidewalk_expansion_joint",
   "rubber_tread_stair",
   "brushed_stainless_steel",
-  "dimpled_golf_grip"
+  "micro_hex_grip"
  ],
  "qa": {
   "passed": true,
@@ -108,16 +108,16 @@
   "seam_ratios": {
    "height": 0.476,
    "normal": 1.461,
-   "albedo": 1.143
+   "albedo": 1.145
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  190,
-  193,
-  197
+  191,
+  194,
+  199
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/knurled_metal_grip/albedo_delit.webp",

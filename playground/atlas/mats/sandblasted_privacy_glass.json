@@ -115,7 +115,7 @@
   "ceiling"
  ],
  "pairs_well_with": [
-  "brushed_anodized_plate",
+  "brushed_stainless_steel",
   "concrete_look_porcelain",
   "beveled_gray_metro_tile",
   "polished_concrete_floor"
@@ -126,14 +126,14 @@
   "seam_ratios": {
    "height": 0.516,
    "normal": 1.137,
-   "albedo": 0.255
+   "albedo": 0.102
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  230,
+  231,
   232,
   232
  ],

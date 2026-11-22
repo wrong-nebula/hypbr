@@ -124,26 +124,26 @@
   "road"
  ],
  "pairs_well_with": [
-  "speckled_ivory_brick",
+  "black_glazed_brick",
   "pine_needle_duff",
   "white_ash_batten_ceiling",
   "gray_solar_glazing"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.649,
+  "max_seam_ratio": 0.647,
   "seam_ratios": {
    "height": 0.187,
    "normal": 0.359,
-   "albedo": 0.649
+   "albedo": 0.647
   },
   "normal_unit_error": 0.0006,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  202,
-  185,
+  204,
+  187,
   158
  ],
  "maps": {

@@ -117,7 +117,7 @@
   "cooled_lava_flow",
   "white_marble_chip_gravel",
   "tundra_reindeer_lichen",
-  "acoustic_slat_wood"
+  "white_ash_batten_ceiling"
  ],
  "qa": {
   "passed": true,
@@ -125,16 +125,16 @@
   "seam_ratios": {
    "height": 0.84,
    "normal": 0.909,
-   "albedo": 0.595
+   "albedo": 0.599
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  67,
-  67,
-  67
+  65,
+  65,
+  65
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/black_volcanic_sand/albedo_delit.webp",

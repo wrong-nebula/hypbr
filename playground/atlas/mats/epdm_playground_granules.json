@@ -117,8 +117,8 @@
  ],
  "pairs_well_with": [
   "acid_stained_concrete",
-  "knurled_straight_flutes",
-  "brushed_aluminum_satin",
+  "brass_knurl_grip",
+  "brushed_titanium_seam_panel",
   "rough_cinder_block"
  ],
  "qa": {
@@ -127,7 +127,7 @@
   "seam_ratios": {
    "height": 1.307,
    "normal": 1.52,
-   "albedo": 1.327
+   "albedo": 1.325
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -136,7 +136,7 @@
  "albedo_mean_srgb": [
   104,
   94,
-  82
+  81
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/epdm_playground_granules/albedo_delit.webp",

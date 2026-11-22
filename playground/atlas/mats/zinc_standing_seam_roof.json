@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.55,
+  "max_seam_ratio": 0.555,
   "seam_ratios": {
    "height": 0.13,
    "normal": 0.343,
-   "albedo": 0.55
+   "albedo": 0.555
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  171,
-  174,
-  177
+  172,
+  176,
+  179
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/zinc_standing_seam_roof/albedo_delit.webp",

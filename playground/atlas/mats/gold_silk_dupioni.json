@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 0.621,
    "normal": 1.341,
-   "albedo": 0.89
+   "albedo": 0.895
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  194,
-  161,
-  79
+  195,
+  163,
+  78
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gold_silk_dupioni/albedo_delit.webp",

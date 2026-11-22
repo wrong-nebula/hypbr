@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.631,
+  "max_seam_ratio": 0.624,
   "seam_ratios": {
    "height": 0.198,
    "normal": 0.375,
-   "albedo": 0.631
+   "albedo": 0.624
   },
   "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  158,
-  160,
-  162
+  159,
+  162,
+  164
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/riveted_bridge_steel_plate/albedo_delit.webp",

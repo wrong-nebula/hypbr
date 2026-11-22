@@ -115,7 +115,7 @@
   "wall"
  ],
  "pairs_well_with": [
-  "adobe_mud_brick",
+  "speckled_ivory_brick",
   "subway_metro_tile",
   "polished_concrete_floor",
   "polished_white_porcelain"
@@ -126,7 +126,7 @@
   "seam_ratios": {
    "height": 0.219,
    "normal": 0.122,
-   "albedo": 0.089
+   "albedo": 0.065
   },
   "normal_unit_error": 0.0011,
   "errors": [],
@@ -134,8 +134,8 @@
  },
  "albedo_mean_srgb": [
   220,
-  222,
-  223
+  223,
+  224
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/frosted_glass_block/albedo_delit.webp",

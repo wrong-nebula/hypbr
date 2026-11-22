@@ -130,16 +130,16 @@
   "seam_ratios": {
    "height": 1.517,
    "normal": 0.449,
-   "albedo": 0.766
+   "albedo": 0.744
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  145,
   144,
-  143,
-  141
+  142
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_glen_plaid/albedo_delit.webp",

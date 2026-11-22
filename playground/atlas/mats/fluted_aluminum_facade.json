@@ -130,7 +130,7 @@
   "seam_ratios": {
    "height": 0.854,
    "normal": 0.641,
-   "albedo": 0.752
+   "albedo": 0.739
   },
   "normal_unit_error": 0.0018,
   "errors": [],
@@ -139,9 +139,9 @@
   ]
  },
  "albedo_mean_srgb": [
-  227,
   228,
-  229
+  229,
+  230
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/fluted_aluminum_facade/albedo_delit.webp",

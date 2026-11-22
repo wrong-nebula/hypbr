@@ -120,7 +120,7 @@
   "hero_asset"
  ],
  "pairs_well_with": [
-  "brushed_anodized_plate",
+  "brushed_satin_copper",
   "barnwood_reclaimed_planks",
   "bronze_tinted_glazing",
   "black_alcantara_microsuede"
@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 0.526,
    "normal": 0.765,
-   "albedo": 0.748
+   "albedo": 0.75
   },
   "normal_unit_error": 0.0002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  212,
-  197,
-  170
+  213,
+  198,
+  172
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/crema_marfil_marble/albedo_delit.webp",

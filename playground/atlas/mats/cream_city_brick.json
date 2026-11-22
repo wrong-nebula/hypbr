@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.773,
+  "max_seam_ratio": 0.771,
   "seam_ratios": {
    "height": 0.23,
    "normal": 0.407,
-   "albedo": 0.773
+   "albedo": 0.771
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  200,
-  187,
-  164
+  201,
+  189,
+  166
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cream_city_brick/albedo_delit.webp",

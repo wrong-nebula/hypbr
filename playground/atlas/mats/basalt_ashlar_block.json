@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 0.606,
    "normal": 0.93,
-   "albedo": 0.721
+   "albedo": 0.722
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  78,
-  78,
-  80
+  76,
+  76,
+  78
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/basalt_ashlar_block/albedo_delit.webp",

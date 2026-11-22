@@ -117,26 +117,26 @@
  ],
  "pairs_well_with": [
   "coarse_chip_seal_road",
-  "fine_steel_knurl",
-  "micro_hex_grip",
+  "embossed_braille_strip",
+  "gray_recycled_plastic_lumber",
   "white_marble_chip_gravel"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.605,
+  "max_seam_ratio": 0.592,
   "seam_ratios": {
    "height": 0.28,
    "normal": 0.396,
-   "albedo": 0.605
+   "albedo": 0.592
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  54,
-  54,
-  54
+  51,
+  51,
+  51
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/tractor_lug_tread/albedo_delit.webp",

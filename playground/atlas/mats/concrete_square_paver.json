@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.64,
+  "max_seam_ratio": 0.637,
   "seam_ratios": {
    "height": 0.194,
    "normal": 0.379,
-   "albedo": 0.64
+   "albedo": 0.637
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  161,
-  159,
-  154
+  163,
+  160,
+  156
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/concrete_square_paver/albedo_delit.webp",

@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 0.638,
    "normal": 0.916,
-   "albedo": 0.756
+   "albedo": 0.759
   },
   "normal_unit_error": 0.0005,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  218,
   217,
-  216,
-  209
+  210
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_lime_plaster/albedo_delit.webp",

@@ -111,16 +111,16 @@
   "seam_ratios": {
    "height": 1.167,
    "normal": 1.165,
-   "albedo": 0.87
+   "albedo": 0.88
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  53,
-  54,
-  56
+  50,
+  50,
+  52
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cast_iron_skillet_pebble/albedo_delit.webp",

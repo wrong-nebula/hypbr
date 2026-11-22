@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.731,
+  "max_seam_ratio": 0.718,
   "seam_ratios": {
    "height": 0.448,
    "normal": 0.691,
-   "albedo": 0.731
+   "albedo": 0.718
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  158,
-  155,
-  148
+  160,
+  156,
+  149
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/silvered_cedar_cladding/albedo_delit.webp",

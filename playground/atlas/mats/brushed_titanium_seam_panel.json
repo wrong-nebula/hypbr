@@ -138,16 +138,16 @@
   "seam_ratios": {
    "height": 0.899,
    "normal": 1.05,
-   "albedo": 0.736
+   "albedo": 0.734
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  187,
-  183,
-  175
+  189,
+  184,
+  177
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/brushed_titanium_seam_panel/albedo_delit.webp",

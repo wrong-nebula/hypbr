@@ -113,27 +113,27 @@
   "trim"
  ],
  "pairs_well_with": [
-  "concrete_square_paver",
+  "permeable_running_paver",
   "copper_fishscale_shingles",
   "clear_float_glazing",
   "polished_concrete_floor"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.586,
+  "max_seam_ratio": 0.592,
   "seam_ratios": {
    "height": 0.278,
    "normal": 0.408,
-   "albedo": 0.586
+   "albedo": 0.592
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  152,
-  149,
-  145
+  154,
+  150,
+  146
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_thin_brick_veneer/albedo_delit.webp",

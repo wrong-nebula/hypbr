@@ -121,7 +121,7 @@
   "anodized_blue_aluminum",
   "smoked_european_oak_floor",
   "navy_subway_tile",
-  "keyboard_keycap_grid"
+  "dimpled_golf_grip"
  ],
  "qa": {
   "passed": true,
@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 1.683,
    "normal": 1.923,
-   "albedo": 1.602
+   "albedo": 1.605
   },
   "normal_unit_error": 0.0012,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  91,
+  90,
   98,
-  113
+  114
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/blue_pearl_granite/albedo_delit.webp",

@@ -116,7 +116,7 @@
   "wall"
  ],
  "pairs_well_with": [
-  "offset_bond_terracotta_brick",
+  "adobe_mud_brick",
   "subway_metro_tile",
   "rammed_earth_wall",
   "wood_look_porcelain_plank"
@@ -127,15 +127,15 @@
   "seam_ratios": {
    "height": 0.249,
    "normal": 0.158,
-   "albedo": 0.174
+   "albedo": 0.175
   },
   "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  211,
-  176,
+  212,
+  178,
   115
  ],
  "maps": {

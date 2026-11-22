@@ -122,11 +122,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.59,
+  "max_seam_ratio": 0.593,
   "seam_ratios": {
    "height": 0.232,
    "normal": 0.435,
-   "albedo": 0.59
+   "albedo": 0.593
   },
   "normal_unit_error": 0.0018,
   "errors": [],
@@ -134,8 +134,8 @@
  },
  "albedo_mean_srgb": [
   178,
-  131,
-  98
+  132,
+  99
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/offset_bond_terracotta_brick/albedo_delit.webp",

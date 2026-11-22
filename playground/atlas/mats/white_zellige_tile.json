@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.406,
+  "max_seam_ratio": 0.399,
   "seam_ratios": {
    "height": 0.09,
    "normal": 0.187,
-   "albedo": 0.406
+   "albedo": 0.399
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  215,
-  213,
-  207
+  216,
+  214,
+  208
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_zellige_tile/albedo_delit.webp",

@@ -105,16 +105,16 @@
   "seam_ratios": {
    "height": 0.123,
    "normal": 0.421,
-   "albedo": 0.411
+   "albedo": 0.409
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  73,
   75,
-  76,
-  80
+  79
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/ribbed_rubber_mat/albedo_delit.webp",

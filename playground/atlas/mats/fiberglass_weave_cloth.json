@@ -118,10 +118,10 @@
   "mechanical"
  ],
  "pairs_well_with": [
-  "radial_spun_aluminum",
-  "textured_dashboard_vinyl",
+  "brushed_satin_brass",
+  "white_hdpe_cutting_board",
   "distressed_brown_leather",
-  "knurled_metal_grip"
+  "stair_nosing_grooves"
  ],
  "qa": {
   "passed": true,
@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 0.737,
    "normal": 1.011,
-   "albedo": 0.744
+   "albedo": 0.743
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  195,
-  195,
-  190
+  196,
+  196,
+  191
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/fiberglass_weave_cloth/albedo_delit.webp",

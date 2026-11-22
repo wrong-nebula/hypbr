@@ -116,26 +116,26 @@
  ],
  "pairs_well_with": [
   "herringbone_clay_paver",
-  "natural_slate_roof",
+  "charcoal_asphalt_shingle",
   "gray_solar_glazing",
   "polished_concrete_floor"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.52,
+  "max_seam_ratio": 0.524,
   "seam_ratios": {
    "height": 0.236,
    "normal": 0.449,
-   "albedo": 0.52
+   "albedo": 0.524
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  161,
-  113,
-  96
+  162,
+  114,
+  97
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sandblasted_red_brick/albedo_delit.webp",

@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 0.045,
    "normal": 0.539,
-   "albedo": 0.078
+   "albedo": 0.074
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  128,
+  127,
   139,
-  165
+  166
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/bifacial_glass_solar_module/albedo_delit.webp",

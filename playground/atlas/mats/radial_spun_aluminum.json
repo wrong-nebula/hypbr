@@ -129,7 +129,7 @@
   "seam_ratios": {
    "height": 1.358,
    "normal": 1.485,
-   "albedo": 1.0
+   "albedo": 1.007
   },
   "normal_unit_error": 0.0011,
   "errors": [],
@@ -138,9 +138,9 @@
   ]
  },
  "albedo_mean_srgb": [
-  236,
   237,
-  238
+  238,
+  239
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/radial_spun_aluminum/albedo_delit.webp",

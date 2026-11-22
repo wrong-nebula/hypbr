@@ -127,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.42,
+  "max_seam_ratio": 0.415,
   "seam_ratios": {
    "height": 0.116,
    "normal": 0.139,
-   "albedo": 0.42
+   "albedo": 0.415
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  209,
-  201,
-  181
+  211,
+  202,
+  182
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/handmade_cream_subway_tile/albedo_delit.webp",

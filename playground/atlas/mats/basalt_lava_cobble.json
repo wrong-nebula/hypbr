@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.946,
    "normal": 1.922,
-   "albedo": 1.564
+   "albedo": 1.57
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  81,
   79,
-  77
+  78,
+  75
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/basalt_lava_cobble/albedo_delit.webp",

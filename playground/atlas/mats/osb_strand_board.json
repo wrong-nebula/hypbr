@@ -122,9 +122,9 @@
  ],
  "pairs_well_with": [
   "rammed_earth_wall",
-  "reeded_coin_milling",
-  "brushed_titanium_seam_panel",
-  "keyboard_keycap_grid"
+  "aluminum_diamond_tread_plate",
+  "brushed_anodized_plate",
+  "textured_dashboard_vinyl"
  ],
  "qa": {
   "passed": true,
@@ -132,15 +132,15 @@
   "seam_ratios": {
    "height": 1.47,
    "normal": 1.769,
-   "albedo": 1.288
+   "albedo": 1.291
   },
   "normal_unit_error": 0.0009,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  187,
-  155,
+  188,
+  156,
   102
  ],
  "maps": {

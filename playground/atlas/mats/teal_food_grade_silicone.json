@@ -118,8 +118,8 @@
  ],
  "pairs_well_with": [
   "brushed_satin_brass",
-  "forged_carbon_composite",
-  "fine_steel_knurl",
+  "carbon_fiber_weave",
+  "embossed_braille_strip",
   "black_eva_foam_mat"
  ],
  "qa": {
@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.06,
    "normal": 1.151,
-   "albedo": 1.045
+   "albedo": 1.064
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  73,
-  150,
-  146
+  72,
+  151,
+  147
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/teal_food_grade_silicone/albedo_delit.webp",

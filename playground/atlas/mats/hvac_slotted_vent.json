@@ -110,16 +110,16 @@
   "seam_ratios": {
    "height": 0.636,
    "normal": 0.493,
-   "albedo": 0.229
+   "albedo": 0.218
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  156,
-  161,
-  167
+  157,
+  162,
+  168
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/hvac_slotted_vent/albedo_delit.webp",

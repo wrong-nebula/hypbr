@@ -139,9 +139,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
+  143,
   142,
-  141,
-  141
+  142
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/granite_slab_paver/albedo_delit.webp",

@@ -139,9 +139,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  88,
-  88,
-  88
+  87,
+  87,
+  87
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/black_steel_tread_plate/albedo_delit.webp",

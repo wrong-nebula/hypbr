@@ -123,7 +123,7 @@
   "rammed_earth_wall",
   "anodized_black_aluminum",
   "low_e_blue_green_glazing",
-  "reeded_coin_milling"
+  "brass_knurl_grip"
  ],
  "qa": {
   "passed": true,
@@ -131,15 +131,15 @@
   "seam_ratios": {
    "height": 0.084,
    "normal": 0.135,
-   "albedo": 0.071
+   "albedo": 0.089
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  166,
-  141,
+  168,
+  143,
   89
  ],
  "maps": {

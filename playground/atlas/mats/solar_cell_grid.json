@@ -111,9 +111,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  119,
+  118,
   135,
-  168
+  169
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/solar_cell_grid/albedo_delit.webp",

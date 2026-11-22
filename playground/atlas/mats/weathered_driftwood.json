@@ -127,27 +127,27 @@
   "wall"
  ],
  "pairs_well_with": [
-  "gray_microcement",
+  "dark_brutalist_board_formed",
   "fine_steel_knurl",
   "brushed_satin_copper",
-  "micro_hex_grip"
+  "matte_black_abs_plastic"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.924,
+  "max_seam_ratio": 0.927,
   "seam_ratios": {
    "height": 0.481,
    "normal": 0.769,
-   "albedo": 0.924
+   "albedo": 0.927
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  178,
-  170,
-  157
+  179,
+  172,
+  158
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/weathered_driftwood/albedo_delit.webp",

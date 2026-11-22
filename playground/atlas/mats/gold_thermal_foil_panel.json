@@ -128,17 +128,17 @@
  ],
  "pairs_well_with": [
   "brushed_satin_brass",
-  "stair_nosing_grooves",
+  "reeded_coin_milling",
   "black_pcb_solder_mask",
   "clear_float_glazing"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.492,
+  "max_seam_ratio": 0.498,
   "seam_ratios": {
    "height": 0.166,
    "normal": 0.32,
-   "albedo": 0.492
+   "albedo": 0.498
   },
   "normal_unit_error": 0.0006,
   "errors": [],
@@ -146,8 +146,8 @@
  },
  "albedo_mean_srgb": [
   234,
-  210,
-  140
+  211,
+  146
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gold_thermal_foil_panel/albedo_delit.webp",

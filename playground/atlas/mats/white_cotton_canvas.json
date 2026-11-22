@@ -130,16 +130,16 @@
   "seam_ratios": {
    "height": 0.778,
    "normal": 1.188,
-   "albedo": 0.847
+   "albedo": 0.848
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  207,
-  205,
-  198
+  208,
+  206,
+  199
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_cotton_canvas/albedo_delit.webp",

@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 0.582,
    "normal": 1.011,
-   "albedo": 0.669
+   "albedo": 0.676
   },
   "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  190,
-  129,
-  90
+  192,
+  130,
+  89
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/terracotta_tadelakt/albedo_delit.webp",

@@ -129,20 +129,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.775,
+  "max_seam_ratio": 0.767,
   "seam_ratios": {
    "height": 0.438,
    "normal": 0.551,
-   "albedo": 0.775
+   "albedo": 0.767
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  65,
-  58,
-  50
+  61,
+  55,
+  48
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/ebony_stained_oak_floor/albedo_delit.webp",

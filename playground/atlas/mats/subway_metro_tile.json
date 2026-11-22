@@ -98,20 +98,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.036,
+  "max_seam_ratio": 0.04,
   "seam_ratios": {
    "height": 0.029,
    "normal": 0.029,
-   "albedo": 0.036
+   "albedo": 0.04
   },
   "normal_unit_error": 0.001,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  221,
-  221,
-  218
+  222,
+  222,
+  219
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/subway_metro_tile/albedo_delit.webp",

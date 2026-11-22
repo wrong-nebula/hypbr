@@ -116,7 +116,7 @@
   "hero_asset"
  ],
  "pairs_well_with": [
-  "white_hdpe_cutting_board",
+  "micro_hex_grip",
   "aluminum_heatsink_fins",
   "brushed_satin_brass",
   "titanium_tech_panel"
@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 0.072,
    "normal": 0.092,
-   "albedo": 0.06
+   "albedo": 0.056
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  60,
-  58,
-  57
+  56,
+  55,
+  54
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/black_pcb_solder_mask/albedo_delit.webp",

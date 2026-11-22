@@ -117,7 +117,7 @@
   "ground"
  ],
  "pairs_well_with": [
-  "granite_slab_paver",
+  "herringbone_charcoal_paver",
   "sidewalk_expansion_joint",
   "pea_gravel_path",
   "wood_chip_mulch"
@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.01,
    "normal": 1.139,
-   "albedo": 0.804
+   "albedo": 0.81
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  144,
+  142,
   71,
-  51
+  52
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rubberized_running_track/albedo_delit.webp",

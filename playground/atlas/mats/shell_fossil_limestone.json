@@ -121,7 +121,7 @@
   "white_oak_plank_floor",
   "white_board_and_batten",
   "clear_float_glazing",
-  "granite_slab_paver"
+  "travertine_pool_paver"
  ],
  "qa": {
   "passed": true,
@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 1.591,
    "normal": 1.767,
-   "albedo": 1.322
+   "albedo": 1.331
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  200,
-  192,
-  173
+  201,
+  193,
+  175
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/shell_fossil_limestone/albedo_delit.webp",

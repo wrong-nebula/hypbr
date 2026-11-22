@@ -122,10 +122,10 @@
   "wall"
  ],
  "pairs_well_with": [
-  "anodized_black_aluminum",
+  "brushed_anodized_plate",
   "american_walnut_floor",
   "vertical_stack_matte_tile",
-  "matte_black_abs_plastic"
+  "micro_hex_grip"
  ],
  "qa": {
   "passed": true,
@@ -140,9 +140,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  196,
-  190,
-  188
+  197,
+  191,
+  189
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/pastel_memphis_terrazzo/albedo_delit.webp",

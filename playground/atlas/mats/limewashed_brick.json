@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.632,
+  "max_seam_ratio": 0.631,
   "seam_ratios": {
    "height": 0.244,
    "normal": 0.472,
-   "albedo": 0.632
+   "albedo": 0.631
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  197,
-  186,
-  176
+  198,
+  187,
+  178
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/limewashed_brick/albedo_delit.webp",

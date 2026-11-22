@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.79,
+  "max_seam_ratio": 0.788,
   "seam_ratios": {
    "height": 0.522,
    "normal": 0.605,
-   "albedo": 0.79
+   "albedo": 0.788
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  153,
-  108,
-  80
+  163,
+  104,
+  62
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cedar_shiplap_siding/albedo_delit.webp",

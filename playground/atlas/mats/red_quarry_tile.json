@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.528,
+  "max_seam_ratio": 0.534,
   "seam_ratios": {
    "height": 0.145,
    "normal": 0.425,
-   "albedo": 0.528
+   "albedo": 0.534
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  143,
+  144,
   89,
-  71
+  69
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_quarry_tile/albedo_delit.webp",

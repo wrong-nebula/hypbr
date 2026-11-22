@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 0.3,
    "normal": 0.185,
-   "albedo": 0.153
+   "albedo": 0.146
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  220,
-  226,
-  228
+  221,
+  227,
+  229
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rectangular_glass_block/albedo_delit.webp",

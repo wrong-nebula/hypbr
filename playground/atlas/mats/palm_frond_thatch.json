@@ -123,16 +123,16 @@
   "seam_ratios": {
    "height": 0.735,
    "normal": 1.04,
-   "albedo": 0.835
+   "albedo": 0.831
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  144,
-  132,
-  74
+  146,
+  133,
+  72
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/palm_frond_thatch/albedo_delit.webp",

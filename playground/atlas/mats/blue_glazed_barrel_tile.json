@@ -116,7 +116,7 @@
   "ceramic"
  ],
  "pairs_well_with": [
-  "glazed_white_brick",
+  "black_glazed_brick",
   "brushed_shou_sugi_ban",
   "venetian_plaster_trowel",
   "fluted_aluminum_facade"
@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 0.37,
    "normal": 0.699,
-   "albedo": 0.658
+   "albedo": 0.656
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  53,
+  49,
   90,
-  153
+  154
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/blue_glazed_barrel_tile/albedo_delit.webp",

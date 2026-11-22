@@ -97,20 +97,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.935,
+  "max_seam_ratio": 1.956,
   "seam_ratios": {
    "height": 1.029,
    "normal": 0.884,
-   "albedo": 1.935
+   "albedo": 1.956
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  172,
-  136,
-  89
+  173,
+  137,
+  88
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wood_parquet_herringbone/albedo_delit.webp",

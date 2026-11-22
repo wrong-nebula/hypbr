@@ -133,16 +133,16 @@
   "seam_ratios": {
    "height": 1.683,
    "normal": 1.923,
-   "albedo": 1.822
+   "albedo": 1.816
   },
   "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  150,
-  174,
-  178
+  151,
+  175,
+  179
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/recycled_glass_terrazzo/albedo_delit.webp",

@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 0.842,
    "normal": 0.93,
-   "albedo": 0.795
+   "albedo": 0.793
   },
   "normal_unit_error": 0.001,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  195,
   194,
-  193,
-  188
+  189
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/diamond_marble_mosaic/albedo_delit.webp",

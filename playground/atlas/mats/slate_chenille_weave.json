@@ -137,9 +137,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  143,
-  143,
-  147
+  144,
+  144,
+  149
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/slate_chenille_weave/albedo_delit.webp",

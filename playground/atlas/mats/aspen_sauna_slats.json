@@ -134,20 +134,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.782,
+  "max_seam_ratio": 0.773,
   "seam_ratios": {
    "height": 0.23,
    "normal": 0.377,
-   "albedo": 0.782
+   "albedo": 0.773
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  174,
-  157,
-  127
+  175,
+  158,
+  128
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/aspen_sauna_slats/albedo_delit.webp",

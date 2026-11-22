@@ -108,16 +108,16 @@
   "seam_ratios": {
    "height": 0.444,
    "normal": 1.634,
-   "albedo": 0.542
+   "albedo": 0.533
   },
   "normal_unit_error": 0.0,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  220,
   221,
-  223
+  222,
+  224
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/carrara_veined_marble/albedo_delit.webp",

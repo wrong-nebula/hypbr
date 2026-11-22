@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.592,
+  "max_seam_ratio": 0.576,
   "seam_ratios": {
    "height": 0.219,
    "normal": 0.494,
-   "albedo": 0.592
+   "albedo": 0.576
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  211,
+  216,
   126,
-  39
+  34
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/hazard_orange_mech_plate/albedo_delit.webp",

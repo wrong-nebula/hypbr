@@ -123,7 +123,7 @@
   "sidewalk_expansion_joint",
   "brushed_satin_brass",
   "clear_float_glazing",
-  "embossed_braille_strip"
+  "aluminum_diamond_tread_plate"
  ],
  "qa": {
   "passed": true,
@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 0.092,
    "normal": 0.615,
-   "albedo": 0.132
+   "albedo": 0.178
   },
   "normal_unit_error": 0.002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  113,
-  113,
-  115
+  114,
+  114,
+  116
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/woven_wire_insect_screen/albedo_delit.webp",

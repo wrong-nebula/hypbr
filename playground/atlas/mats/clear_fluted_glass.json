@@ -115,27 +115,27 @@
   "furniture"
  ],
  "pairs_well_with": [
-  "radial_spun_aluminum",
+  "brushed_anodized_plate",
   "gym_maple_strip_floor",
   "statuario_marble",
-  "acoustic_slat_wood"
+  "white_ash_batten_ceiling"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.862,
+  "max_seam_ratio": 0.943,
   "seam_ratios": {
    "height": 0.862,
    "normal": 0.368,
-   "albedo": 0.209
+   "albedo": 0.943
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  234,
-  236,
-  236
+  235,
+  238,
+  238
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/clear_fluted_glass/albedo_delit.webp",

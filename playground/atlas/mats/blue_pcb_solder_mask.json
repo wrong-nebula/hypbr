@@ -116,27 +116,27 @@
   "hero_asset"
  ],
  "pairs_well_with": [
-  "micro_hex_grip",
+  "dimpled_golf_grip",
   "aluminum_heatsink_fins",
   "anodized_blue_aluminum",
   "titanium_tech_panel"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.114,
+  "max_seam_ratio": 0.11,
   "seam_ratios": {
    "height": 0.071,
    "normal": 0.091,
-   "albedo": 0.114
+   "albedo": 0.11
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  63,
-  84,
-  147
+  59,
+  82,
+  148
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/blue_pcb_solder_mask/albedo_delit.webp",

@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.596,
+  "max_seam_ratio": 1.597,
   "seam_ratios": {
    "height": 1.533,
    "normal": 1.464,
-   "albedo": 1.596
+   "albedo": 1.597
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  173,
-  195,
-  180
+  175,
+  196,
+  181
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/celadon_crackle_glaze/albedo_delit.webp",

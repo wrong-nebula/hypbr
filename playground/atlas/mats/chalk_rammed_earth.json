@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.592,
    "normal": 1.133,
-   "albedo": 0.794
+   "albedo": 0.797
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  194,
-  186,
-  171
+  195,
+  188,
+  173
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/chalk_rammed_earth/albedo_delit.webp",

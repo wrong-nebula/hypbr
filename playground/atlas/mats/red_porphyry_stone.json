@@ -125,11 +125,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.626,
+  "max_seam_ratio": 1.618,
   "seam_ratios": {
    "height": 1.553,
    "normal": 1.591,
-   "albedo": 1.626
+   "albedo": 1.618
   },
   "normal_unit_error": 0.0013,
   "errors": [],
@@ -137,8 +137,8 @@
  },
  "albedo_mean_srgb": [
   116,
-  84,
-  80
+  83,
+  78
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_porphyry_stone/albedo_delit.webp",

@@ -109,16 +109,16 @@
   "seam_ratios": {
    "height": 0.242,
    "normal": 0.499,
-   "albedo": 0.315
+   "albedo": 0.318
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  164,
-  167,
-  170
+  166,
+  169,
+  172
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/circular_perf_sheet/albedo_delit.webp",

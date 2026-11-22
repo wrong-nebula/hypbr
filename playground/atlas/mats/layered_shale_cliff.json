@@ -121,7 +121,7 @@
  "pairs_well_with": [
   "dry_dirt_trail",
   "pea_gravel_path",
-  "wet_tidal_sand",
+  "white_beach_sand_ripples",
   "white_birch_bark"
  ],
  "qa": {
@@ -130,7 +130,7 @@
   "seam_ratios": {
    "height": 0.945,
    "normal": 0.984,
-   "albedo": 0.928
+   "albedo": 0.932
   },
   "normal_unit_error": 0.0019,
   "errors": [],

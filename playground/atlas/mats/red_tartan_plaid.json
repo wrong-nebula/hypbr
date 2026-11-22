@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 1.545,
    "normal": 0.447,
-   "albedo": 0.748
+   "albedo": 0.754
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  90,
-  57,
-  54
+  89,
+  54,
+  51
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_tartan_plaid/albedo_delit.webp",

@@ -98,7 +98,7 @@
  ],
  "pairs_well_with": [
   "brushed_satin_brass",
-  "glossy_twill_carbon_fiber",
+  "carbon_fiber_weave",
   "knurled_straight_flutes",
   "white_memory_foam"
  ],
@@ -108,7 +108,7 @@
   "seam_ratios": {
    "height": 0.0,
    "normal": 0.042,
-   "albedo": 0.007
+   "albedo": 0.003
   },
   "normal_unit_error": 0.0015,
   "errors": [],
@@ -116,7 +116,7 @@
  },
  "albedo_mean_srgb": [
   88,
-  91,
+  90,
   95
  ],
  "maps": {

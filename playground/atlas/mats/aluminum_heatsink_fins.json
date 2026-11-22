@@ -118,8 +118,8 @@
  ],
  "pairs_well_with": [
   "black_pcb_solder_mask",
-  "matte_black_abs_plastic",
-  "anodized_black_aluminum",
+  "white_hdpe_cutting_board",
+  "brushed_aluminum_satin",
   "gold_thermal_foil_panel"
  ],
  "qa": {
@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.321,
    "normal": 0.456,
-   "albedo": 0.88
+   "albedo": 0.849
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  202,
   203,
-  205
+  205,
+  206
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/aluminum_heatsink_fins/albedo_delit.webp",

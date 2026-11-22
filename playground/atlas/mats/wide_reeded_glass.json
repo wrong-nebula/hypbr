@@ -118,7 +118,7 @@
   "brushed_satin_brass",
   "wide_plank_hickory_floor",
   "charcoal_soapstone",
-  "white_ash_batten_ceiling"
+  "acoustic_slat_wood"
  ],
  "qa": {
   "passed": true,
@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 0.795,
    "normal": 0.441,
-   "albedo": 0.114
+   "albedo": 0.397
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  234,
-  236,
-  236
+  235,
+  237,
+  237
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wide_reeded_glass/albedo_delit.webp",

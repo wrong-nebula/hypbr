@@ -113,27 +113,27 @@
   "stone"
  ],
  "pairs_well_with": [
-  "black_glazed_brick",
+  "roman_brick_long",
   "silvered_cedar_cladding",
   "sand_finish_stucco",
   "corrugated_galvanized_siding"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.766,
+  "max_seam_ratio": 0.752,
   "seam_ratios": {
    "height": 0.204,
    "normal": 0.447,
-   "albedo": 0.766
+   "albedo": 0.752
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  82,
-  84,
-  86
+  80,
+  83,
+  85
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/natural_slate_roof/albedo_delit.webp",

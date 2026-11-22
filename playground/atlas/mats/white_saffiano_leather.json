@@ -118,7 +118,7 @@
  "pairs_well_with": [
   "gym_maple_strip_floor",
   "donegal_tweed_twill",
-  "brushed_anodized_plate",
+  "brushed_aluminum_satin",
   "walnut_herringbone_parquet"
  ],
  "qa": {
@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 1.507,
    "normal": 1.341,
-   "albedo": 1.384
+   "albedo": 1.375
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  204,
   203,
-  201,
-  196
+  198
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_saffiano_leather/albedo_delit.webp",

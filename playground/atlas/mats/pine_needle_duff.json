@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 1.031,
    "normal": 0.966,
-   "albedo": 1.005
+   "albedo": 1.007
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  116,
-  88,
-  58
+  118,
+  87,
+  52
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/pine_needle_duff/albedo_delit.webp",

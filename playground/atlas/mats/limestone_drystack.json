@@ -116,7 +116,7 @@
  ],
  "pairs_well_with": [
   "charred_shou_sugi_ban",
-  "travertine_pool_paver",
+  "concrete_square_paver",
   "natural_slate_roof",
   "fresh_snow_ground"
  ],
@@ -133,9 +133,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  169,
-  162,
-  148
+  171,
+  164,
+  150
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/limestone_drystack/albedo_delit.webp",

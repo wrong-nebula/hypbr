@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.573,
+  "max_seam_ratio": 0.571,
   "seam_ratios": {
    "height": 0.151,
    "normal": 0.394,
-   "albedo": 0.573
+   "albedo": 0.571
   },
   "normal_unit_error": 0.001,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  146,
-  138,
-  129
+  148,
+  139,
+  130
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/permeable_running_paver/albedo_delit.webp",

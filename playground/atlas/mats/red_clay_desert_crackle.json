@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 1.674,
    "normal": 1.336,
-   "albedo": 1.489
+   "albedo": 1.494
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  177,
+  178,
   111,
-  64
+  61
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_clay_desert_crackle/albedo_delit.webp",

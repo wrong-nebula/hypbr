@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.529,
    "normal": 0.775,
-   "albedo": 0.76
+   "albedo": 0.761
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  202,
-  195,
-  176
+  203,
+  196,
+  177
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/honed_fossil_limestone/albedo_delit.webp",

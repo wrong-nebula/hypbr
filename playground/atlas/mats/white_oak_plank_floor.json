@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.681,
+  "max_seam_ratio": 0.663,
   "seam_ratios": {
    "height": 0.384,
    "normal": 0.482,
-   "albedo": 0.681
+   "albedo": 0.663
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  166,
-  130,
-  84
+  167,
+  131,
+  83
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_oak_plank_floor/albedo_delit.webp",

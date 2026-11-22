@@ -122,20 +122,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.694,
+  "max_seam_ratio": 0.688,
   "seam_ratios": {
    "height": 0.363,
    "normal": 0.577,
-   "albedo": 0.694
+   "albedo": 0.688
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  177,
+  178,
   113,
-  66
+  64
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/terracotta_fishscale_roof/albedo_delit.webp",

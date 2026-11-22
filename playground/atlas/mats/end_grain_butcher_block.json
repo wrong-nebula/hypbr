@@ -125,25 +125,25 @@
  ],
  "pairs_well_with": [
   "rammed_earth_wall",
-  "reeded_coin_milling",
+  "knurled_metal_grip",
   "brushed_aluminum_satin",
   "white_hdpe_cutting_board"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.284,
+  "max_seam_ratio": 0.283,
   "seam_ratios": {
    "height": 0.108,
    "normal": 0.065,
-   "albedo": 0.284
+   "albedo": 0.283
   },
   "normal_unit_error": 0.0004,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  180,
-  143,
+  181,
+  145,
   94
  ],
  "maps": {

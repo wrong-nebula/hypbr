@@ -121,7 +121,7 @@
  "pairs_well_with": [
   "wood_chip_mulch",
   "pea_gravel_path",
-  "white_beach_sand_ripples",
+  "desert_sand_ripples",
   "furrowed_oak_bark"
  ],
  "qa": {
@@ -130,16 +130,16 @@
   "seam_ratios": {
    "height": 1.405,
    "normal": 1.397,
-   "albedo": 1.102
+   "albedo": 1.1
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  188,
-  184,
-  172
+  189,
+  185,
+  173
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/limestone_karst_cliff/albedo_delit.webp",

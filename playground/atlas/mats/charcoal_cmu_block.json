@@ -123,11 +123,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.713,
+  "max_seam_ratio": 0.718,
   "seam_ratios": {
    "height": 0.356,
    "normal": 0.674,
-   "albedo": 0.713
+   "albedo": 0.718
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -136,7 +136,7 @@
  "albedo_mean_srgb": [
   94,
   94,
-  92
+  91
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/charcoal_cmu_block/albedo_delit.webp",

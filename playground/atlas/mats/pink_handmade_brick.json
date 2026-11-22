@@ -116,7 +116,7 @@
   "trim"
  ],
  "pairs_well_with": [
-  "herringbone_charcoal_paver",
+  "concrete_square_paver",
   "weathered_gray_shake_roof",
   "bronze_tinted_glazing",
   "exposed_aggregate_concrete"
@@ -134,9 +134,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  188,
-  145,
-  131
+  189,
+  147,
+  132
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/pink_handmade_brick/albedo_delit.webp",

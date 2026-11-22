@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 0.593,
    "normal": 0.886,
-   "albedo": 0.692
+   "albedo": 0.697
   },
   "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  116,
-  95,
-  74
+  117,
+  94,
+  72
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/emperador_dark_marble/albedo_delit.webp",

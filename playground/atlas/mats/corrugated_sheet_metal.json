@@ -108,16 +108,16 @@
   "seam_ratios": {
    "height": 0.022,
    "normal": 0.133,
-   "albedo": 0.098
+   "albedo": 0.102
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  190,
-  193,
-  197
+  191,
+  195,
+  198
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/corrugated_sheet_metal/albedo_delit.webp",

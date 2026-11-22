@@ -117,7 +117,7 @@
  "pairs_well_with": [
   "copper_standing_seam_roof",
   "sidewalk_expansion_joint",
-  "brushed_satin_copper",
+  "brushed_anodized_plate",
   "roman_brick_long"
  ],
  "qa": {
@@ -126,15 +126,15 @@
   "seam_ratios": {
    "height": 0.502,
    "normal": 1.359,
-   "albedo": 0.089
+   "albedo": 0.179
   },
   "normal_unit_error": 0.0,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  161,
-  191,
+  163,
+  192,
   188
  ],
  "maps": {

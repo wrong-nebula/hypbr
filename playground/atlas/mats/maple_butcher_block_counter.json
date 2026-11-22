@@ -146,9 +146,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  196,
-  162,
-  116
+  198,
+  164,
+  117
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/maple_butcher_block_counter/albedo_delit.webp",

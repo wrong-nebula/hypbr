@@ -130,16 +130,16 @@
   "seam_ratios": {
    "height": 0.874,
    "normal": 1.135,
-   "albedo": 0.794
+   "albedo": 0.788
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  108,
-  119,
-  89
+  109,
+  120,
+  90
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/mossy_boulder_rock/albedo_delit.webp",

@@ -120,25 +120,25 @@
  "pairs_well_with": [
   "handmade_cream_subway_tile",
   "crema_marfil_marble",
-  "brushed_anodized_plate",
+  "anodized_black_aluminum",
   "clear_float_glazing"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.393,
+  "max_seam_ratio": 0.4,
   "seam_ratios": {
    "height": 0.348,
    "normal": 0.263,
-   "albedo": 0.393
+   "albedo": 0.4
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  199,
-  199,
-  196
+  200,
+  200,
+  197
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_hex_mosaic_black_grout/albedo_delit.webp",

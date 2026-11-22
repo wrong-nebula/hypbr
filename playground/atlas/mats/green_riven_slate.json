@@ -119,7 +119,7 @@
   "white_oak_plank_floor",
   "charred_shou_sugi_ban",
   "bronze_tinted_glazing",
-  "tumbled_holland_paver"
+  "travertine_pool_paver"
  ],
  "qa": {
   "passed": true,
@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 0.831,
    "normal": 0.859,
-   "albedo": 0.843
+   "albedo": 0.85
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  95,
-  106,
-  93
+  94,
+  107,
+  92
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/green_riven_slate/albedo_delit.webp",

@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 1.245,
    "normal": 1.108,
-   "albedo": 0.82
+   "albedo": 0.822
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  196,
-  137,
-  78
+  197,
+  138,
+  77
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sandstone_canyon_strata/albedo_delit.webp",

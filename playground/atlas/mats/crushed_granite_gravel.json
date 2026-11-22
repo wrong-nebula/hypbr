@@ -120,20 +120,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.495,
+  "max_seam_ratio": 1.5,
   "seam_ratios": {
    "height": 1.253,
    "normal": 1.213,
-   "albedo": 1.495
+   "albedo": 1.5
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  145,
   144,
-  143,
-  142
+  143
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/crushed_granite_gravel/albedo_delit.webp",

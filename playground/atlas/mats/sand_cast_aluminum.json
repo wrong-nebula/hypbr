@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.064,
    "normal": 1.125,
-   "albedo": 0.869
+   "albedo": 0.87
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  216,
   217,
-  218
+  218,
+  219
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sand_cast_aluminum/albedo_delit.webp",

@@ -121,11 +121,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.511,
+  "max_seam_ratio": 1.524,
   "seam_ratios": {
    "height": 1.341,
    "normal": 1.511,
-   "albedo": 1.103
+   "albedo": 1.524
   },
   "normal_unit_error": 0.0013,
   "errors": [],
@@ -133,8 +133,8 @@
  },
  "albedo_mean_srgb": [
   232,
-  235,
-  235
+  236,
+  236
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rain_pattern_glass/albedo_delit.webp",

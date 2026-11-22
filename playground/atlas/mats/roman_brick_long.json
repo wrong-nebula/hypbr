@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.658,
+  "max_seam_ratio": 0.657,
   "seam_ratios": {
    "height": 0.235,
    "normal": 0.403,
-   "albedo": 0.658
+   "albedo": 0.657
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  162,
-  149,
-  134
+  163,
+  150,
+  135
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/roman_brick_long/albedo_delit.webp",

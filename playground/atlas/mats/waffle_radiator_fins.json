@@ -108,16 +108,16 @@
   "seam_ratios": {
    "height": 0.093,
    "normal": 0.832,
-   "albedo": 0.309
+   "albedo": 0.304
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  220,
   219,
-  218,
-  214
+  215
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/waffle_radiator_fins/albedo_delit.webp",

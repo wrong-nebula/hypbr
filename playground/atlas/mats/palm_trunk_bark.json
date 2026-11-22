@@ -106,7 +106,7 @@
   "tropical",
   "trunk",
   "tree",
-  "beige",
+  "brown",
   "warm",
   "matte",
   "bark",
@@ -127,15 +127,15 @@
   "seam_ratios": {
    "height": 1.322,
    "normal": 1.515,
-   "albedo": 1.267
+   "albedo": 1.276
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  149,
-  132,
+  150,
+  133,
   106
  ],
  "maps": {

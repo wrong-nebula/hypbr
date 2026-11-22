@@ -121,7 +121,7 @@
   "hero_asset"
  ],
  "pairs_well_with": [
-  "brushed_anodized_plate",
+  "brushed_stainless_steel",
   "smoked_european_oak_floor",
   "bronze_tinted_glazing",
   "crushed_burgundy_velvet"
@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 0.594,
    "normal": 0.776,
-   "albedo": 0.62
+   "albedo": 0.626
   },
   "normal_unit_error": 0.0002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  64,
-  108,
-  87
+  61,
+  109,
+  86
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/verde_guatemala_marble/albedo_delit.webp",

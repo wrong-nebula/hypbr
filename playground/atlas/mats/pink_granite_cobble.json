@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 1.291,
    "normal": 1.386,
-   "albedo": 1.06
+   "albedo": 1.072
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  158,
-  133,
-  122
+  159,
+  134,
+  123
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/pink_granite_cobble/albedo_delit.webp",

@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 1.605,
    "normal": 2.171,
-   "albedo": 1.949
+   "albedo": 1.954
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  213,
-  204,
-  183
+  214,
+  206,
+  184
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/ivory_crackle_glaze/albedo_delit.webp",

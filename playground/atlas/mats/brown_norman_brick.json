@@ -125,7 +125,7 @@
   "seam_ratios": {
    "height": 0.225,
    "normal": 0.506,
-   "albedo": 0.453
+   "albedo": 0.458
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -134,7 +134,7 @@
  "albedo_mean_srgb": [
   136,
   107,
-  85
+  86
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/brown_norman_brick/albedo_delit.webp",

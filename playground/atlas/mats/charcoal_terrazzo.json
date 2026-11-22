@@ -127,22 +127,22 @@
   "brushed_satin_copper",
   "smoked_european_oak_floor",
   "black_gloss_subway_tile",
-  "white_appliance_plastic"
+  "textured_dashboard_vinyl"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.426,
+  "max_seam_ratio": 1.427,
   "seam_ratios": {
    "height": 1.223,
    "normal": 1.26,
-   "albedo": 1.426
+   "albedo": 1.427
   },
   "normal_unit_error": 0.0012,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  138,
+  139,
   128,
   121
  ],

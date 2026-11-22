@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.842,
+  "max_seam_ratio": 0.844,
   "seam_ratios": {
    "height": 0.35,
    "normal": 0.697,
-   "albedo": 0.842
+   "albedo": 0.844
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  129,
+  130,
   127,
-  122
+  123
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rough_cinder_block/albedo_delit.webp",

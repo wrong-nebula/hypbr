@@ -127,7 +127,7 @@
   "seam_ratios": {
    "height": 1.044,
    "normal": 1.106,
-   "albedo": 0.979
+   "albedo": 0.99
   },
   "normal_unit_error": 0.0013,
   "errors": [],
@@ -135,8 +135,8 @@
  },
  "albedo_mean_srgb": [
   102,
-  139,
-  201
+  140,
+  203
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/anodized_blue_aluminum/albedo_delit.webp",

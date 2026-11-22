@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.382,
    "normal": 0.027,
-   "albedo": 0.003
+   "albedo": 0.007
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  154,
-  166,
-  159
+  155,
+  167,
+  160
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/green_tinted_wired_glass/albedo_delit.webp",

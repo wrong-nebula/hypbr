@@ -86,7 +86,7 @@
   "knurl",
   "straight",
   "flutes",
-  "gray",
+  "white",
   "light",
   "satin",
   "metallic",
@@ -101,7 +101,7 @@
   "raw_pitted_concrete",
   "rubber_tread_stair",
   "brushed_satin_brass",
-  "dimpled_golf_grip"
+  "textured_dashboard_vinyl"
  ],
  "qa": {
   "passed": true,
@@ -109,16 +109,16 @@
   "seam_ratios": {
    "height": 1.142,
    "normal": 0.282,
-   "albedo": 0.341
+   "albedo": 0.302
   },
   "normal_unit_error": 0.002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  189,
-  192,
-  199
+  190,
+  193,
+  200
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/knurled_straight_flutes/albedo_delit.webp",

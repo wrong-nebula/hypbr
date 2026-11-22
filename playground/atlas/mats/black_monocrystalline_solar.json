@@ -117,8 +117,8 @@
  ],
  "pairs_well_with": [
   "riveted_sheet_seam",
-  "natural_slate_roof",
-  "anodized_black_aluminum",
+  "copper_fishscale_shingles",
+  "brushed_anodized_plate",
   "raw_pitted_concrete"
  ],
  "qa": {
@@ -127,15 +127,15 @@
   "seam_ratios": {
    "height": 0.044,
    "normal": 0.544,
-   "albedo": 0.06
+   "albedo": 0.055
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  100,
   101,
-  103,
   108
  ],
  "maps": {

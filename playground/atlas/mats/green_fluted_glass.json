@@ -114,27 +114,27 @@
   "furniture"
  ],
  "pairs_well_with": [
-  "anodized_black_aluminum",
+  "radial_spun_aluminum",
   "hard_maple_floor",
   "verde_guatemala_marble",
   "white_ash_batten_ceiling"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.324,
+  "max_seam_ratio": 1.1,
   "seam_ratios": {
    "height": 0.852,
    "normal": 0.367,
-   "albedo": 1.324
+   "albedo": 1.1
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  173,
-  203,
-  183
+  174,
+  204,
+  185
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/green_fluted_glass/albedo_delit.webp",

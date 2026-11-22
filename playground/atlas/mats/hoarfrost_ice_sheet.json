@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 1.652,
    "normal": 1.53,
-   "albedo": 1.241
+   "albedo": 1.239
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  227,
-  229,
-  231
+  228,
+  230,
+  233
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/hoarfrost_ice_sheet/albedo_delit.webp",

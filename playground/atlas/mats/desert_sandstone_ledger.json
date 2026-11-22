@@ -117,7 +117,7 @@
  "pairs_well_with": [
   "larch_vertical_cladding",
   "chevron_brick_paver",
-  "spanish_barrel_clay_roof",
+  "cedar_shake_roof",
   "rich_garden_soil"
  ],
  "qa": {
@@ -126,15 +126,15 @@
   "seam_ratios": {
    "height": 0.558,
    "normal": 0.783,
-   "albedo": 0.756
+   "albedo": 0.762
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  176,
-  137,
+  177,
+  138,
   96
  ],
  "maps": {

@@ -125,9 +125,9 @@
  ],
  "pairs_well_with": [
   "gray_microcement",
-  "brushed_aluminum_satin",
+  "brushed_anodized_plate",
   "gray_solar_glazing",
-  "stair_nosing_grooves"
+  "diamond_tread_plate"
  ],
  "qa": {
   "passed": true,
@@ -135,16 +135,16 @@
   "seam_ratios": {
    "height": 0.104,
    "normal": 0.239,
-   "albedo": 0.121
+   "albedo": 0.11
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  71,
-  71,
-  71
+  69,
+  69,
+  69
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/perforated_black_steel_screen/albedo_delit.webp",

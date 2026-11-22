@@ -98,7 +98,7 @@
   "brushed_stainless_steel",
   "polished_white_porcelain",
   "white_gloss_subway_tile",
-  "exposed_aggregate_concrete"
+  "board_formed_concrete"
  ],
  "qa": {
   "passed": true,
@@ -113,8 +113,8 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  211,
-  219,
+  212,
+  220,
   224
  ],
  "maps": {

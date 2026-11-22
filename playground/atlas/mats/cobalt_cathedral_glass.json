@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 1.697,
    "normal": 2.465,
-   "albedo": 1.695
+   "albedo": 1.725
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  68,
+  66,
   100,
-  191
+  193
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cobalt_cathedral_glass/albedo_delit.webp",

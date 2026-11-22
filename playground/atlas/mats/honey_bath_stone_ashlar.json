@@ -122,7 +122,7 @@
  ],
  "pairs_well_with": [
   "old_town_cobblestone",
-  "copper_fishscale_shingles",
+  "natural_slate_roof",
   "clear_float_glazing",
   "gray_washed_oak_floor"
  ],
@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 0.594,
    "normal": 0.878,
-   "albedo": 0.81
+   "albedo": 0.807
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  199,
-  177,
-  137
+  201,
+  179,
+  138
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/honey_bath_stone_ashlar/albedo_delit.webp",

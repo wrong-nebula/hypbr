@@ -114,27 +114,27 @@
   "trim"
  ],
  "pairs_well_with": [
-  "concrete_square_paver",
+  "herringbone_charcoal_paver",
   "natural_slate_roof",
   "gray_solar_glazing",
   "exposed_aggregate_concrete"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.68,
+  "max_seam_ratio": 0.675,
   "seam_ratios": {
    "height": 0.197,
    "normal": 0.407,
-   "albedo": 0.68
+   "albedo": 0.675
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  192,
-  183,
-  167
+  193,
+  185,
+  169
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/speckled_ivory_brick/albedo_delit.webp",

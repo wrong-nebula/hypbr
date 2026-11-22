@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.615,
    "normal": 1.141,
-   "albedo": 0.922
+   "albedo": 0.936
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  127,
-  44,
-  61
+  137,
+  33,
+  55
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/crushed_burgundy_velvet/albedo_delit.webp",

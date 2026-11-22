@@ -117,7 +117,7 @@
   "ceiling"
  ],
  "pairs_well_with": [
-  "brushed_stainless_steel",
+  "radial_spun_aluminum",
   "clear_float_glazing",
   "walnut_slat_panel",
   "worn_gray_asphalt"
@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.421,
    "normal": 0.735,
-   "albedo": 0.659
+   "albedo": 0.656
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  151,
-  148,
-  143
+  152,
+  150,
+  145
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/raw_pitted_concrete/albedo_delit.webp",

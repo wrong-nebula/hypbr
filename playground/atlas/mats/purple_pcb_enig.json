@@ -118,25 +118,25 @@
  "pairs_well_with": [
   "textured_dashboard_vinyl",
   "aluminum_heatsink_fins",
-  "brushed_anodized_plate",
+  "anodized_black_aluminum",
   "titanium_tech_panel"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.159,
+  "max_seam_ratio": 0.16,
   "seam_ratios": {
    "height": 0.078,
    "normal": 0.097,
-   "albedo": 0.159
+   "albedo": 0.16
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  107,
-  61,
-  128
+  106,
+  58,
+  129
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/purple_pcb_enig/albedo_delit.webp",

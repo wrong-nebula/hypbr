@@ -116,25 +116,25 @@
  "pairs_well_with": [
   "fresh_black_asphalt",
   "aluminum_diamond_tread_plate",
-  "textured_dashboard_vinyl",
+  "keyboard_keycap_grid",
   "crushed_granite_gravel"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.578,
+  "max_seam_ratio": 0.569,
   "seam_ratios": {
    "height": 0.336,
    "normal": 0.427,
-   "albedo": 0.578
+   "albedo": 0.569
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  54,
-  54,
-  54
+  51,
+  51,
+  51
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/truck_tire_tread/albedo_delit.webp",

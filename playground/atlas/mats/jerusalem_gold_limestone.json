@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.767,
+  "max_seam_ratio": 0.771,
   "seam_ratios": {
    "height": 0.468,
    "normal": 0.705,
-   "albedo": 0.767
+   "albedo": 0.771
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  210,
-  189,
-  142
+  211,
+  190,
+  143
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/jerusalem_gold_limestone/albedo_delit.webp",

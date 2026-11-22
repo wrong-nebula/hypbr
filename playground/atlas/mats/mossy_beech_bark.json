@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 0.82,
    "normal": 0.949,
-   "albedo": 0.731
+   "albedo": 0.73
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  145,
   146,
-  138
+  147,
+  139
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/mossy_beech_bark/albedo_delit.webp",

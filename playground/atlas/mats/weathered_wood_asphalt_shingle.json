@@ -114,18 +114,18 @@
   "roofing_tech_scifi"
  ],
  "pairs_well_with": [
-  "adobe_mud_brick",
+  "glazed_white_brick",
   "white_board_and_batten",
   "spanish_lace_stucco",
   "corrugated_sheet_metal"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.692,
+  "max_seam_ratio": 0.686,
   "seam_ratios": {
    "height": 0.283,
    "normal": 0.512,
-   "albedo": 0.692
+   "albedo": 0.686
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -133,8 +133,8 @@
  },
  "albedo_mean_srgb": [
   116,
-  100,
-  84
+  99,
+  82
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/weathered_wood_asphalt_shingle/albedo_delit.webp",

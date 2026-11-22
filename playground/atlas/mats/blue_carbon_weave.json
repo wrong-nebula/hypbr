@@ -117,7 +117,7 @@
  ],
  "pairs_well_with": [
   "anodized_blue_aluminum",
-  "white_appliance_plastic",
+  "dimpled_golf_grip",
   "braided_woven_leather",
   "knurled_straight_flutes"
  ],
@@ -127,15 +127,15 @@
   "seam_ratios": {
    "height": 0.733,
    "normal": 1.024,
-   "albedo": 0.925
+   "albedo": 0.923
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  52,
-  64,
+  49,
+  61,
   96
  ],
  "maps": {

@@ -98,7 +98,7 @@
   "mechanical"
  ],
  "pairs_well_with": [
-  "anodized_black_aluminum",
+  "brushed_anodized_plate",
   "carbon_fiber_weave",
   "embossed_braille_strip",
   "white_memory_foam"
@@ -116,9 +116,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  217,
+  218,
   94,
-  91
+  90
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/modular_stud_grid/albedo_delit.webp",

@@ -124,7 +124,7 @@
   "sand_finish_stucco",
   "slate_chenille_weave",
   "wide_wale_rust_corduroy",
-  "black_glazed_brick"
+  "roman_brick_long"
  ],
  "qa": {
   "passed": true,
@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 0.456,
    "normal": 0.625,
-   "albedo": 0.619
+   "albedo": 0.613
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  147,
-  140,
-  130
+  148,
+  141,
+  131
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_washed_oak_floor/albedo_delit.webp",

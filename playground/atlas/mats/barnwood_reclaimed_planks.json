@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.693,
+  "max_seam_ratio": 0.685,
   "seam_ratios": {
    "height": 0.412,
    "normal": 0.577,
-   "albedo": 0.693
+   "albedo": 0.685
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  138,
+  139,
   128,
-  116
+  117
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/barnwood_reclaimed_planks/albedo_delit.webp",

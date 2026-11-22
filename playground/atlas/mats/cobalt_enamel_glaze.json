@@ -130,16 +130,16 @@
   "seam_ratios": {
    "height": 0.83,
    "normal": 0.959,
-   "albedo": 0.838
+   "albedo": 0.849
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  64,
+  62,
   94,
-  177
+  178
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cobalt_enamel_glaze/albedo_delit.webp",

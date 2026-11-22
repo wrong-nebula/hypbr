@@ -122,7 +122,7 @@
   "hero_asset"
  ],
  "pairs_well_with": [
-  "brushed_stainless_steel",
+  "brushed_anodized_plate",
   "mahogany_plank_floor",
   "low_e_blue_green_glazing",
   "crushed_burgundy_velvet"
@@ -133,16 +133,16 @@
   "seam_ratios": {
    "height": 1.092,
    "normal": 1.706,
-   "albedo": 1.665
+   "albedo": 1.663
   },
   "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  150,
+  151,
   95,
-  86
+  84
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rosso_levanto_marble/albedo_delit.webp",

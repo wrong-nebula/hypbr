@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 1.232,
    "normal": 1.281,
-   "albedo": 1.126
+   "albedo": 1.129
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  155,
-  92,
-  58
+  156,
+  91,
+  55
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/fibrous_redwood_bark/albedo_delit.webp",

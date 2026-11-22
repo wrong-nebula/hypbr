@@ -129,20 +129,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.771,
+  "max_seam_ratio": 0.763,
   "seam_ratios": {
    "height": 0.255,
    "normal": 0.412,
-   "albedo": 0.771
+   "albedo": 0.763
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  94,
-  76,
-  63
+  93,
+  74,
+  60
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/walnut_slat_panel/albedo_delit.webp",

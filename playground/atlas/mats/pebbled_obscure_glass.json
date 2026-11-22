@@ -125,7 +125,7 @@
   "seam_ratios": {
    "height": 1.613,
    "normal": 1.847,
-   "albedo": 1.607
+   "albedo": 1.712
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -133,8 +133,8 @@
  },
  "albedo_mean_srgb": [
   232,
-  235,
-  235
+  236,
+  236
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/pebbled_obscure_glass/albedo_delit.webp",

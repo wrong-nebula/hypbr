@@ -119,20 +119,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.308,
+  "max_seam_ratio": 1.291,
   "seam_ratios": {
    "height": 0.939,
    "normal": 1.058,
-   "albedo": 1.308
+   "albedo": 1.291
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  56,
-  56,
-  56
+  52,
+  52,
+  52
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/fresh_black_asphalt/albedo_delit.webp",

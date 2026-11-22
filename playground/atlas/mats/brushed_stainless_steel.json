@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.807,
    "normal": 1.467,
-   "albedo": 0.805
+   "albedo": 0.809
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  203,
   204,
-  206
+  206,
+  207
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/brushed_stainless_steel/albedo_delit.webp",

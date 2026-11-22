@@ -117,9 +117,9 @@
   "mechanical"
  ],
  "pairs_well_with": [
-  "brushed_anodized_plate",
+  "radial_spun_aluminum",
   "fiberglass_weave_cloth",
-  "embossed_braille_strip",
+  "brass_knurl_grip",
   "open_cell_gray_foam"
  ],
  "qa": {
@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.051,
    "normal": 1.164,
-   "albedo": 1.096
+   "albedo": 1.094
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  56,
-  56,
-  56
+  53,
+  53,
+  53
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/matte_black_abs_plastic/albedo_delit.webp",

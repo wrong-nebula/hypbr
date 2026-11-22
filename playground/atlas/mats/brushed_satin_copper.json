@@ -117,7 +117,7 @@
  "pairs_well_with": [
   "carrara_veined_marble",
   "bronze_tinted_glazing",
-  "dark_brutalist_board_formed",
+  "rammed_earth_wall",
   "wood_look_porcelain_plank"
  ],
  "qa": {
@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 1.107,
    "normal": 1.109,
-   "albedo": 1.054
+   "albedo": 1.048
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  239,
-  185,
-  160
+  240,
+  187,
+  162
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/brushed_satin_copper/albedo_delit.webp",

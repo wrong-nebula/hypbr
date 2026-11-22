@@ -131,7 +131,7 @@
   "seam_ratios": {
    "height": 1.745,
    "normal": 1.504,
-   "albedo": 1.348
+   "albedo": 1.336
   },
   "normal_unit_error": 0.0018,
   "errors": [],
@@ -139,8 +139,8 @@
  },
  "albedo_mean_srgb": [
   135,
-  138,
-  122
+  139,
+  123
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/grass_joint_flagstone/albedo_delit.webp",

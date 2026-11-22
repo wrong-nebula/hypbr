@@ -119,7 +119,7 @@
  "pairs_well_with": [
   "brushed_aluminum_satin",
   "kevlar_aramid_weave",
-  "aluminum_diamond_tread_plate",
+  "reeded_coin_milling",
   "open_cell_gray_foam"
  ],
  "qa": {
@@ -135,9 +135,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  208,
-  180,
-  52
+  209,
+  182,
+  48
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/safety_yellow_polycarbonate/albedo_delit.webp",

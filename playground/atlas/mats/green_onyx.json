@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 0.602,
    "normal": 0.784,
-   "albedo": 0.638
+   "albedo": 0.64
   },
   "normal_unit_error": 0.0004,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  161,
-  187,
-  128
+  163,
+  188,
+  129
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/green_onyx/albedo_delit.webp",

@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 0.52,
    "normal": 0.785,
-   "albedo": 0.628
+   "albedo": 0.631
   },
   "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  214,
-  213,
-  211
+  215,
+  215,
+  213
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_quartzite_slab/albedo_delit.webp",

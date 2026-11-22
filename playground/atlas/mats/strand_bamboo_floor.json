@@ -129,20 +129,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.739,
+  "max_seam_ratio": 0.742,
   "seam_ratios": {
    "height": 0.36,
    "normal": 0.453,
-   "albedo": 0.739
+   "albedo": 0.742
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  172,
-  135,
-  81
+  173,
+  136,
+  80
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/strand_bamboo_floor/albedo_delit.webp",

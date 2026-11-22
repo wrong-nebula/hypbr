@@ -281,42 +281,27 @@ function computeStats(rough, metal, ao) {
   };
 }
 
-export async function synthesizeStaticMaterial(entry, payload) {
-  const t0 = performance.now();
-  const base = await loadBaseMaterial(entry);
+// Same knees as hypbr.weathering.FADE_IN_KNEES (tests/test_playground_weathering.py checks they match).
+// Below its knee a channel does (intensity / knee) x what it does at the knee: a trace does almost nothing.
+export const FADE_IN_KNEES = Object.freeze({ wear: 0.35, dirt: 0.25, wet: 0.35, moss: 0.35, rust: 0.4, dust: 0.25 });
+
+/**
+ * Pure per-pixel weathering of a decoded base material (no DOM, no fetch), so it can run in Node tests.
+ * `base` holds size, albedoRGBA, normalRGBA and the 8-bit ao/rough/metal/height/curv/cav planes;
+ * `weather` holds the six channel intensities in [0, 1].
+ */
+export function weatherBase(base, entry, weather, seed) {
   const size = base.size;
-  const seed = payload.seed != null ? Number(payload.seed) : Number(entry.default_seed);
-  const wear = clamp01(Number(payload.wear || 0));
-  const dirt = clamp01(Number(payload.dirt || 0));
-  const wet = clamp01(Number(payload.wet || 0));
-  const moss = clamp01(Number(payload.moss || 0));
-  const rust = clamp01(Number(payload.rust || 0));
-  const dust = clamp01(Number(payload.dust || 0));
-  const isWeathered = wear > 1e-4 || dirt > 1e-4 || wet > 1e-4 || moss > 1e-4 || rust > 1e-4 || dust > 1e-4;
-
-  const keyStr = `${entry.id}_${size}_${seed}_${wear.toFixed(2)}_${dirt.toFixed(2)}_${wet.toFixed(2)}_${moss.toFixed(2)}_${rust.toFixed(2)}_${dust.toFixed(2)}`;
-  const cacheKey = hashTag(keyStr);
-
-  if (!isWeathered) {
-    return {
-      id: entry.id,
-      name: entry.name,
-      description: entry.description,
-      kind: entry.kind,
-      group: entry.group,
-      size,
-      seed,
-      weather: { wear: 0, dirt: 0, wet: 0, moss: 0, rust: 0, dust: 0 },
-      is_weathered: false,
-      cached: true,
-      elapsed_ms: Math.round(performance.now() - t0),
-      cache_key: cacheKey,
-      maps: { ...base.freshMaps },
-      verify: entry.verify,
-      static_mode: true,
-    };
+  // Fade-in: build each channel as at its knee, then scale by intensity / knee (see FADE_IN_KNEES).
+  const eff = {};
+  const fade = {};
+  for (const ch of Object.keys(FADE_IN_KNEES)) {
+    const amt = clamp01(Number(weather[ch] || 0));
+    const knee = FADE_IN_KNEES[ch];
+    eff[ch] = amt > 1e-4 ? Math.max(amt, knee) : 0;
+    fade[ch] = amt > 1e-4 ? Math.min(1, amt / knee) : 0;
   }
-
+  const { wear, dirt, wet, moss, rust, dust } = eff;
   // Run physical 6-channel seamless weathering in linear PBR space
   const n = size * size;
   const wLow = periodicFbm(size, [4, 8], seed + 17);
@@ -367,7 +352,7 @@ export async function synthesizeStaticMaterial(entry, payload) {
     let mWear = 0;
     if (wear > 1e-4) {
       const wDrive = convex * (0.65 + 0.55 * wf) + 0.16 * wm - 0.25 * crevice;
-      mWear = smoothstep(0.56 - 0.38 * wear, 0.72 - 0.32 * wear, wDrive) * (0.65 + 0.35 * wear);
+      mWear = smoothstep(0.56 - 0.38 * wear, 0.72 - 0.32 * wear, wDrive) * (0.65 + 0.35 * wear) * fade.wear;
       if (mWear > 1e-3) {
         if (isMetal) {
           // Polished bare metallic edges
@@ -396,7 +381,7 @@ export async function synthesizeStaticMaterial(entry, payload) {
     let mDirt = 0;
     if (dirt > 1e-4) {
       const dDrive = crevice * (0.72 + 0.58 * wl) + 0.24 * wf - 0.32 * convex;
-      mDirt = smoothstep(0.62 - 0.38 * dirt, 0.78 - 0.32 * dirt, dDrive) * (0.70 + 0.30 * dirt);
+      mDirt = smoothstep(0.62 - 0.38 * dirt, 0.78 - 0.32 * dirt, dDrive) * (0.70 + 0.30 * dirt) * fade.dirt;
       if (mDirt > 1e-3) {
         const grimeT = 0.5 + 0.5 * wm;
         const dr = 0.042 + 0.032 * grimeT;
@@ -416,7 +401,7 @@ export async function synthesizeStaticMaterial(entry, payload) {
     let mMoss = 0;
     if (moss > 1e-4) {
       const msDrive = crevice * (0.75 + 0.55 * wl) + 0.38 * basin * wl + 0.22 * wf - 0.38 * convex;
-      mMoss = smoothstep(0.66 - 0.42 * moss, 0.78 - 0.36 * moss, msDrive) * (0.72 + 0.28 * moss);
+      mMoss = smoothstep(0.66 - 0.42 * moss, 0.78 - 0.36 * moss, msDrive) * (0.72 + 0.28 * moss) * fade.moss;
       if (mMoss > 1e-3) {
         const lush = clamp01(0.45 * wf + 0.55 * wm);
         const mr = 0.038 + 0.055 * lush;
@@ -438,7 +423,7 @@ export async function synthesizeStaticMaterial(entry, payload) {
     let mRust = 0;
     if (rust > 1e-4) {
       const rDrive = crevice * (0.76 + 0.60 * wl) + 0.34 * wl * wf + 0.18 * wm - 0.32 * convex;
-      mRust = smoothstep(0.64 - 0.40 * rust, 0.76 - 0.34 * rust, rDrive) * (0.72 + 0.28 * rust);
+      mRust = smoothstep(0.64 - 0.40 * rust, 0.76 - 0.34 * rust, rDrive) * (0.72 + 0.28 * rust) * fade.rust;
       if (mRust > 1e-3) {
         let rr, rgC, rb, rRough;
         if (isCu) {
@@ -483,7 +468,7 @@ export async function synthesizeStaticMaterial(entry, payload) {
     if (dust > 1e-4) {
       const up = smoothstep(0.50, 0.92, flat);
       const duDrive = (isMetal ? 0.72 * crevice : (0.45 * crevice + 0.35 * basin + 0.20 * wl)) * up + 0.18 * wf - 0.28 * convex;
-      mDust = smoothstep(0.58 - 0.34 * dust, 0.70 - 0.30 * dust, duDrive) * (0.62 + 0.38 * dust);
+      mDust = smoothstep(0.58 - 0.34 * dust, 0.70 - 0.30 * dust, duDrive) * (0.62 + 0.38 * dust) * fade.dust;
       if (mDust > 1e-3) {
         const k = (isMetal ? 0.65 : 0.72) * mDust;
         const dr = 0.46 + 0.08 * wm;
@@ -500,8 +485,8 @@ export async function synthesizeStaticMaterial(entry, payload) {
     // 6. Wetness, Capillary Darkening & Basin Puddles
     let mWet = 0;
     if (wet > 1e-4) {
-      const damp = clamp01((0.35 + 0.65 * (0.55 * basin + 0.45 * wl)) * wet * 1.35);
-      const puddle = smoothstep(0.64 - 0.44 * wet, 0.76 - 0.40 * wet, basin * 0.75 + 0.35 * wl) * wet;
+      const damp = clamp01((0.35 + 0.65 * (0.55 * basin + 0.45 * wl)) * wet * 1.35) * fade.wet;
+      const puddle = smoothstep(0.64 - 0.44 * wet, 0.76 - 0.40 * wet, basin * 0.75 + 0.35 * wl) * wet * fade.wet;
       mWet = Math.max(damp * 0.65, puddle);
       // Capillary porosity darkening (non-metals darken strongly when wet)
       const darken = 1 - (isMetal ? 0.14 : 0.46) * damp;
@@ -549,6 +534,48 @@ export async function synthesizeStaticMaterial(entry, payload) {
     outMask[j + 2] = Math.round(clamp01(mWet) * 255);
     outMask[j + 3] = Math.round(clamp01(Math.max(mMoss, 0.25)) * 255);
   }
+
+  return { outAlb, outNrm, outOrm, outMask, outRough, outMetal, outAo };
+}
+
+export async function synthesizeStaticMaterial(entry, payload) {
+  const t0 = performance.now();
+  const base = await loadBaseMaterial(entry);
+  const size = base.size;
+  const seed = payload.seed != null ? Number(payload.seed) : Number(entry.default_seed);
+  const wear = clamp01(Number(payload.wear || 0));
+  const dirt = clamp01(Number(payload.dirt || 0));
+  const wet = clamp01(Number(payload.wet || 0));
+  const moss = clamp01(Number(payload.moss || 0));
+  const rust = clamp01(Number(payload.rust || 0));
+  const dust = clamp01(Number(payload.dust || 0));
+  const isWeathered = wear > 1e-4 || dirt > 1e-4 || wet > 1e-4 || moss > 1e-4 || rust > 1e-4 || dust > 1e-4;
+
+  const keyStr = `${entry.id}_${size}_${seed}_${wear.toFixed(2)}_${dirt.toFixed(2)}_${wet.toFixed(2)}_${moss.toFixed(2)}_${rust.toFixed(2)}_${dust.toFixed(2)}`;
+  const cacheKey = hashTag(keyStr);
+
+  if (!isWeathered) {
+    return {
+      id: entry.id,
+      name: entry.name,
+      description: entry.description,
+      kind: entry.kind,
+      group: entry.group,
+      size,
+      seed,
+      weather: { wear: 0, dirt: 0, wet: 0, moss: 0, rust: 0, dust: 0 },
+      is_weathered: false,
+      cached: true,
+      elapsed_ms: Math.round(performance.now() - t0),
+      cache_key: cacheKey,
+      maps: { ...base.freshMaps },
+      verify: entry.verify,
+      static_mode: true,
+    };
+  }
+
+  const { outAlb, outNrm, outOrm, outMask, outRough, outMetal, outAo } =
+    weatherBase(base, entry, { wear, dirt, wet, moss, rust, dust }, seed);
 
   const urls = [];
   const [albUrl, nrmUrl, roughUrl, metUrl, aoUrl, ormUrl, maskUrl] = await Promise.all([

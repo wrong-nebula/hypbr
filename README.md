@@ -13,7 +13,7 @@
 
 - **500-Material Agent Atlas**: 69 hand-tuned flagship generators + 431 curated parametric materials from 28 periodic generator families across 10 scene categories (masonry, wood, stone/marble/concrete, tiles, metals, fabrics, terrain, glass, rubber/roads, roofing/tech/sci-fi). Every material passes `hypbr.verify` (zero wrap seams, finite maps, physical ranges). v1.1 adds a seamless micro-detail pass (mineral grain, aggregate speckle, wood fibers, brush streaks, textile fuzz), organic ground cover (leaf litter, needles, mulch, grass, moss, lichen, soil, snow) and a gated multi-scale marble vein network.
 - **Reference-Photo Calibration**: 400 of the 500 materials are calibrated against 449 real CC0 photogrammetry / photometric-stereo scans (Poly Haven, ambientCG). A closed-loop fitter matches each material's multi-scale albedo contrast spectrum, chroma variation, relief (normal-slope) spectrum and roughness mean/variance to color-weighted matching scans, applied as exactly periodic FFT band equalizers inside `synthesize_material` (`calibrated=False` reproduces the uncalibrated output). Refit with `hypbr atlas calibrate --refs <scan dirs> --baked <uncalibrated bake>`.
-- **Exact Periodic Procedural Synthesis**: Pure NumPy/PyTorch circular-padded microstructure generators across metals, stones, ceramics, fabrics, wood, and hard-surface panels — ~0.35s per material with `0.00 px` seam error.
+- **Exact Periodic Procedural Synthesis**: Pure NumPy/PyTorch circular-padded microstructure generators across metals, stones, ceramics, fabrics, wood, and hard-surface panels with `0.00 px` seam error — about 1 s per material at 512px and 11–13 s at 2048px on CPU (see [Performance](#performance)).
 - **47-Node Composable PBR Graph**: Editable JSON node graph with analytic bevels, Weickert structure tensors, Reoriented Normal Mapping (RNM), 8-azimuth Horizon-Based Ambient Occlusion (HBAO) + Bent Normals, and Kaplanyan/Toksvig Specular Anti-Aliasing.
 - **Optional Neural Photo-to-PBR**: Calibrate real macro photographs through **Apple Depth Pro** (metric depth prior) and **DeepBump ONNX** (micro-relief tangent normals) before feeding into the circular-padded 47-node graph.
 
@@ -70,6 +70,19 @@ For neural photo-to-PBR (`hypbr photo`), also install the optional neural extras
 ```bash
 pip install -e ".[neural]"
 ```
+
+## Performance
+
+Measured on CPU (Apple Silicon, `HYPBR_DEVICE=cpu`, 4 threads):
+
+| Resolution | Time per material |
+|---|---|
+| 512 × 512 | ~1 s |
+| 2048 × 2048 | ~11–13 s |
+
+- Large-radius Gaussian blurs run as exact FFT convolutions, so cost no longer grows with the blur radius.
+- Per-pixel kernels (Worley cells, studio preview) run in row bands on a small thread pool. Set `HYPBR_THREADS=N` (default `min(4, cpu_count)`, `1` disables). Output is bit-identical for any thread count.
+- `HYPBR_DEVICE=cpu|mps|cuda` selects the torch device for the remaining GPU-capable kernels.
 
 ## Quick Start (CLI)
 
@@ -239,7 +252,7 @@ Every material synthesis writes a clean, renderer-ready directory compatible wit
 - [`hypbr/normal_graph.py`](hypbr/normal_graph.py): Composable 47-node PBR graph engine (RNM blending, Weickert structure tensors, analytic SDF bevels, GPU-accelerated 8-azimuth HBAO + bent normals, Toksvig Specular AA, ORM packing).
 - [`hypbr/synthesize.py`](hypbr/synthesize.py): High-level material synthesis API combining periodic heightfields, physically based multi-tone albedo/metallic rules, and the 15-map export pipeline.
 - [`hypbr/weightcode.py`](hypbr/weightcode.py): Zero-training analytic weight surgery (exact 9-mode orthonormal 3×3 spatial kernel filtering, SVD energy shrinkage, circular Conv2d padding, and 4-quadrant partition-of-unity tileable blending).
-- [`hypbr/depthpro_pbr.py`](hypbr/depthpro_pbr.py): Optional Apple Depth Pro + DeepBump ONNX neural relief extractor with 4-rotation perspective cancellation and GPU-accelerated Gaussian/HBAO kernels (`HYPBR_DEVICE=cpu|mps|cuda`).
+- [`hypbr/depthpro_pbr.py`](hypbr/depthpro_pbr.py): Optional Apple Depth Pro + DeepBump ONNX neural relief extractor with 4-rotation perspective cancellation, exact FFT Gaussian blurs and GPU-accelerated HBAO kernels (`HYPBR_DEVICE=cpu|mps|cuda`).
 - [`hypbr/exporters.py`](hypbr/exporters.py): Zero-dependency engine & standard exporters (`unity`, `unity-hdrp`, `godot`, `unreal`, `blender`, `threejs`, `gltf`, `glb`, `vulkan`, `materialx`, `usd`).
 - [`hypbr/blend.py`](hypbr/blend.py): Physically based 16-bit HeightLerp / cavity material blending (`hypbr blend`) with linear-light albedo mixing and recomputed HBAO/curvature/ORM.
 - [`hypbr/preview.py`](hypbr/preview.py): Zero-dependency local interactive Three.js PBR studio viewer (`hypbr preview`) with per-channel inspection, tiling, and displacement controls.

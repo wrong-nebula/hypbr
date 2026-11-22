@@ -31,6 +31,7 @@ from PIL import Image
 from . import depthpro_pbr as dp          # noqa: E402
 from . import normal_graph as ng          # noqa: E402
 from . import procedural as gd            # noqa: E402
+from ._parallel import map_rows, row_slices
 from .color import linear_to_srgb, linear_to_srgb_torch, linear_to_srgb_u8
 
 
@@ -1013,6 +1014,20 @@ def render_studio_preview(
         out_u8 = torch.clamp(linear_to_srgb_torch(col) * 255.0 + 0.5, 0.0, 255.0).to(torch.uint8)
         return out_u8.cpu().numpy()
 
+    # CPU: purely per-pixel shading, so row bands on the shared thread pool are bit-identical
+    parts = map_rows(lambda sl: _studio_preview_cpu(alb_lin[sl], N[sl], rough[sl], met[sl], ao[sl]),
+                     row_slices(rough.shape[0], rough.shape[1]))
+    return parts[0] if len(parts) == 1 else np.concatenate(parts, axis=0)
+
+
+def _studio_preview_cpu(
+    alb_lin: np.ndarray,
+    N: np.ndarray,
+    rough: np.ndarray,
+    met: np.ndarray,
+    ao: np.ndarray,
+) -> np.ndarray:
+    """NumPy reference path of `render_studio_preview` for one band of rows."""
     L1 = np.array([0.48, 0.55, 0.68], np.float32); L1 /= np.linalg.norm(L1)
     L2 = np.array([-0.62, -0.25, 0.74], np.float32); L2 /= np.linalg.norm(L2)
     L3 = np.array([-0.30, 0.76, 0.58], np.float32); L3 /= np.linalg.norm(L3)

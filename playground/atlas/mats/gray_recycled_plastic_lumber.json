@@ -119,8 +119,8 @@
  ],
  "pairs_well_with": [
   "radial_spun_aluminum",
-  "carbon_fiber_weave",
-  "diamond_tread_plate",
+  "fiberglass_weave_cloth",
+  "knurled_straight_flutes",
   "black_eva_foam_mat"
  ],
  "qa": {
@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 1.063,
    "normal": 1.12,
-   "albedo": 1.081
+   "albedo": 1.074
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  136,
-  136,
-  134
+  138,
+  138,
+  135
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_recycled_plastic_lumber/albedo_delit.webp",

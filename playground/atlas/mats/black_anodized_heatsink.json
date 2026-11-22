@@ -118,7 +118,7 @@
  "pairs_well_with": [
   "black_pcb_solder_mask",
   "white_appliance_plastic",
-  "brushed_anodized_plate",
+  "anodized_black_aluminum",
   "scifi_corridor_floor_panel"
  ],
  "qa": {
@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 1.301,
    "normal": 0.541,
-   "albedo": 0.278
+   "albedo": 0.305
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  65,
-  65,
-  68
+  63,
+  63,
+  65
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/black_anodized_heatsink/albedo_delit.webp",

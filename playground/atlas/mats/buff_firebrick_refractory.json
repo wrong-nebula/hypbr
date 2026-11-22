@@ -135,9 +135,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  191,
-  172,
-  140
+  192,
+  173,
+  142
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/buff_firebrick_refractory/albedo_delit.webp",

@@ -110,16 +110,16 @@
   "seam_ratios": {
    "height": 0.343,
    "normal": 0.756,
-   "albedo": 0.276
+   "albedo": 0.275
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  171,
-  173,
-  177
+  172,
+  174,
+  178
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/drip_tray_sieve_grate/albedo_delit.webp",

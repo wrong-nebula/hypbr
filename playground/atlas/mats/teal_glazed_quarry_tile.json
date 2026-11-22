@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.312,
+  "max_seam_ratio": 0.325,
   "seam_ratios": {
    "height": 0.138,
    "normal": 0.272,
-   "albedo": 0.312
+   "albedo": 0.325
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  90,
-  146,
-  150
+  91,
+  147,
+  151
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/teal_glazed_quarry_tile/albedo_delit.webp",

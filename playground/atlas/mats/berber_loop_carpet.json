@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.27,
    "normal": 1.301,
-   "albedo": 0.698
+   "albedo": 0.692
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  187,
-  175,
-  153
+  188,
+  177,
+  155
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/berber_loop_carpet/albedo_delit.webp",

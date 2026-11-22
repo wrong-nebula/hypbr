@@ -97,7 +97,7 @@
  "pairs_well_with": [
   "handmade_cream_subway_tile",
   "arabescato_marble",
-  "brushed_aluminum_satin",
+  "brushed_titanium_seam_panel",
   "low_e_blue_green_glazing"
  ],
  "qa": {
@@ -106,7 +106,7 @@
   "seam_ratios": {
    "height": 0.333,
    "normal": 0.723,
-   "albedo": 0.441
+   "albedo": 0.457
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -114,8 +114,8 @@
  },
  "albedo_mean_srgb": [
   97,
-  149,
-  156
+  150,
+  157
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/mermaid_fishscale_tile/albedo_delit.webp",

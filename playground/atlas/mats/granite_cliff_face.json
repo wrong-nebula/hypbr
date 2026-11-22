@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.821,
    "normal": 1.085,
-   "albedo": 0.872
+   "albedo": 0.868
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  162,
-  158,
-  154
+  163,
+  160,
+  156
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/granite_cliff_face/albedo_delit.webp",

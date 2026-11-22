@@ -120,25 +120,25 @@
  "pairs_well_with": [
   "scandinavian_ash_floor",
   "carrara_veined_marble",
-  "brushed_stainless_steel",
+  "brushed_titanium_seam_panel",
   "black_porcelain_slab"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.292,
+  "max_seam_ratio": 0.296,
   "seam_ratios": {
    "height": 0.113,
    "normal": 0.129,
-   "albedo": 0.292
+   "albedo": 0.296
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  219,
-  219,
-  216
+  220,
+  220,
+  217
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_gloss_subway_tile/albedo_delit.webp",

@@ -125,26 +125,26 @@
  ],
  "pairs_well_with": [
   "brushed_aluminum_satin",
-  "embossed_braille_strip",
+  "black_steel_tread_plate",
   "black_pcb_solder_mask",
   "gray_solar_glazing"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.609,
+  "max_seam_ratio": 0.606,
   "seam_ratios": {
    "height": 0.187,
    "normal": 0.48,
-   "albedo": 0.609
+   "albedo": 0.606
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  212,
   213,
-  215
+  215,
+  216
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_starship_armor/albedo_delit.webp",

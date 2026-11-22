@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 0.638,
    "normal": 0.761,
-   "albedo": 0.691
+   "albedo": 0.698
   },
   "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  215,
-  215,
-  215
+  216,
+  216,
+  216
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/arabescato_marble/albedo_delit.webp",

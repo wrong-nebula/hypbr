@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.568,
    "normal": 1.074,
-   "albedo": 0.792
+   "albedo": 0.789
   },
   "normal_unit_error": 0.0004,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  217,
-  217,
-  214
+  218,
+  218,
+  215
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/orange_peel_drywall/albedo_delit.webp",

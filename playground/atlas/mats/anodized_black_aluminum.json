@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.319,
+  "max_seam_ratio": 1.324,
   "seam_ratios": {
    "height": 1.245,
    "normal": 1.014,
-   "albedo": 1.319
+   "albedo": 1.324
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  74,
-  74,
-  77
+  73,
+  73,
+  76
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/anodized_black_aluminum/albedo_delit.webp",

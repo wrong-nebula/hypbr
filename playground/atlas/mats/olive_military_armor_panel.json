@@ -127,17 +127,17 @@
  ],
  "pairs_well_with": [
   "brushed_titanium_seam_panel",
-  "brass_knurl_grip",
+  "knurled_metal_grip",
   "pcb_solder_mask_traces",
   "low_e_blue_green_glazing"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.619,
+  "max_seam_ratio": 0.618,
   "seam_ratios": {
    "height": 0.258,
    "normal": 0.531,
-   "albedo": 0.619
+   "albedo": 0.618
   },
   "normal_unit_error": 0.0009,
   "errors": [],
@@ -146,7 +146,7 @@
  "albedo_mean_srgb": [
   92,
   100,
-  67
+  65
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/olive_military_armor_panel/albedo_delit.webp",

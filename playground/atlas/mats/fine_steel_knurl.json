@@ -124,7 +124,7 @@
   "board_formed_concrete",
   "epdm_playground_granules",
   "brushed_stainless_steel",
-  "dimpled_golf_grip"
+  "micro_hex_grip"
  ],
  "qa": {
   "passed": true,
@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 1.014,
    "normal": 1.411,
-   "albedo": 1.209
+   "albedo": 1.287
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  177,
   178,
-  179
+  180,
+  181
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/fine_steel_knurl/albedo_delit.webp",

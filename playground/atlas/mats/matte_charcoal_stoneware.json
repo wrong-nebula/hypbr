@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.893,
    "normal": 1.076,
-   "albedo": 0.85
+   "albedo": 0.862
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  96,
   95,
-  93
+  95,
+  92
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/matte_charcoal_stoneware/albedo_delit.webp",

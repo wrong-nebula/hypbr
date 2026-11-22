@@ -114,26 +114,26 @@
   "wood"
  ],
  "pairs_well_with": [
-  "speckled_ivory_brick",
+  "charcoal_ironspot_brick",
   "silvered_cedar_cladding",
   "sand_finish_stucco",
   "riveted_aircraft_aluminum"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.762,
+  "max_seam_ratio": 0.755,
   "seam_ratios": {
    "height": 0.244,
    "normal": 0.51,
-   "albedo": 0.762
+   "albedo": 0.755
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  142,
-  139,
+  143,
+  140,
   133
  ],
  "maps": {

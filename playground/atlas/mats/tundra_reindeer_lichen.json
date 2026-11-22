@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 0.734,
    "normal": 0.944,
-   "albedo": 0.702
+   "albedo": 0.705
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  149,
   150,
-  133
+  152,
+  135
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/tundra_reindeer_lichen/albedo_delit.webp",

@@ -130,16 +130,16 @@
   "seam_ratios": {
    "height": 0.138,
    "normal": 1.282,
-   "albedo": 0.557
+   "albedo": 0.556
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  138,
-  93,
-  52
+  140,
+  92,
+  48
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rusty_corrugated_roofing/albedo_delit.webp",

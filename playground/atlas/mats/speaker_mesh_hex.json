@@ -109,16 +109,16 @@
   "seam_ratios": {
    "height": 0.159,
    "normal": 0.495,
-   "albedo": 0.262
+   "albedo": 0.266
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  130,
-  134,
-  140
+  131,
+  135,
+  141
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/speaker_mesh_hex/albedo_delit.webp",

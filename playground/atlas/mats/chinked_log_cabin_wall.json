@@ -124,26 +124,26 @@
  ],
  "pairs_well_with": [
   "rammed_earth_wall",
-  "reeded_coin_milling",
+  "hardops_plate",
   "radial_spun_aluminum",
-  "white_appliance_plastic"
+  "micro_hex_grip"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.996,
+  "max_seam_ratio": 0.993,
   "seam_ratios": {
    "height": 0.34,
    "normal": 0.532,
-   "albedo": 0.996
+   "albedo": 0.993
   },
   "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  167,
-  136,
-  105
+  168,
+  137,
+  106
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/chinked_log_cabin_wall/albedo_delit.webp",

@@ -118,7 +118,7 @@
   "ceiling"
  ],
  "pairs_well_with": [
-  "brushed_anodized_plate",
+  "brushed_stainless_steel",
   "low_e_blue_green_glazing",
   "white_ash_batten_ceiling",
   "wet_night_asphalt"
@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 0.637,
    "normal": 1.074,
-   "albedo": 0.907
+   "albedo": 0.903
   },
   "normal_unit_error": 0.0004,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  182,
-  180,
-  175
+  183,
+  181,
+  177
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_microcement/albedo_delit.webp",

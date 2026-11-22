@@ -120,7 +120,7 @@
   "white_oak_plank_floor",
   "charred_shou_sugi_ban",
   "bronze_tinted_glazing",
-  "travertine_pool_paver"
+  "tumbled_holland_paver"
  ],
  "qa": {
   "passed": true,
@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.694,
    "normal": 1.391,
-   "albedo": 1.606
+   "albedo": 1.596
   },
   "normal_unit_error": 0.0009,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  70,
-  70,
-  72
+  68,
+  68,
+  71
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/honed_basalt_slab/albedo_delit.webp",

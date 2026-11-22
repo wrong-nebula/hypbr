@@ -116,8 +116,8 @@
  "pairs_well_with": [
   "corrugated_sheet_metal",
   "polished_concrete_floor",
-  "brushed_satin_brass",
-  "buff_firebrick_refractory"
+  "brushed_satin_copper",
+  "black_glazed_brick"
  ],
  "qa": {
   "passed": true,
@@ -125,16 +125,16 @@
   "seam_ratios": {
    "height": 0.567,
    "normal": 1.384,
-   "albedo": 0.204
+   "albedo": 0.23
   },
   "normal_unit_error": 0.0,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  119,
-  122,
-  124
+  120,
+  123,
+  125
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_solar_glazing/albedo_delit.webp",

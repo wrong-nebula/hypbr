@@ -104,16 +104,16 @@
   "seam_ratios": {
    "height": 0.567,
    "normal": 0.569,
-   "albedo": 0.438
+   "albedo": 0.44
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  50,
-  119,
-  79
+  46,
+  120,
+  78
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/pcb_solder_mask_traces/albedo_delit.webp",

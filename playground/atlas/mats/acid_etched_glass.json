@@ -114,7 +114,7 @@
   "ceiling"
  ],
  "pairs_well_with": [
-  "brushed_stainless_steel",
+  "anodized_black_aluminum",
   "black_porcelain_slab",
   "handmade_cream_subway_tile",
   "gray_microcement"
@@ -125,14 +125,14 @@
   "seam_ratios": {
    "height": 0.548,
    "normal": 1.076,
-   "albedo": 0.166
+   "albedo": 0.281
   },
   "normal_unit_error": 0.001,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  230,
+  231,
   232,
   232
  ],

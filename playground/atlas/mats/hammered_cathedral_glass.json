@@ -125,16 +125,16 @@
   "seam_ratios": {
    "height": 1.508,
    "normal": 1.727,
-   "albedo": 1.024
+   "albedo": 1.393
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  229,
-  234,
-  234
+  230,
+  235,
+  235
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/hammered_cathedral_glass/albedo_delit.webp",

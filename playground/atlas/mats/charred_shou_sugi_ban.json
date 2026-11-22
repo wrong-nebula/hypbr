@@ -129,20 +129,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.886,
+  "max_seam_ratio": 0.876,
   "seam_ratios": {
    "height": 0.457,
    "normal": 0.558,
-   "albedo": 0.886
+   "albedo": 0.876
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  59,
-  55,
-  52
+  56,
+  52,
+  49
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/charred_shou_sugi_ban/albedo_delit.webp",

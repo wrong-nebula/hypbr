@@ -114,7 +114,7 @@
   "ground"
  ],
  "pairs_well_with": [
-  "concrete_square_paver",
+  "granite_slab_paver",
   "dark_brutalist_board_formed",
   "pea_gravel_path",
   "fresh_snow_ground"
@@ -125,14 +125,14 @@
   "seam_ratios": {
    "height": 0.998,
    "normal": 1.119,
-   "albedo": 0.884
+   "albedo": 0.889
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  96,
+  95,
   94,
   93
  ],

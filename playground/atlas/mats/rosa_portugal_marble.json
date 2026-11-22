@@ -122,7 +122,7 @@
   "hero_asset"
  ],
  "pairs_well_with": [
-  "brushed_aluminum_satin",
+  "brushed_anodized_plate",
   "scandinavian_ash_floor",
   "clear_float_glazing",
   "chunky_oatmeal_knit"
@@ -133,16 +133,16 @@
   "seam_ratios": {
    "height": 0.722,
    "normal": 1.015,
-   "albedo": 0.853
+   "albedo": 0.861
   },
   "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  206,
-  174,
-  163
+  207,
+  175,
+  164
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rosa_portugal_marble/albedo_delit.webp",

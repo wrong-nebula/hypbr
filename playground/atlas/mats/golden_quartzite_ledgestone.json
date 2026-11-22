@@ -116,7 +116,7 @@
  "pairs_well_with": [
   "brushed_shou_sugi_ban",
   "tumbled_holland_paver",
-  "weathered_gray_shake_roof",
+  "copper_fishscale_shingles",
   "wood_chip_mulch"
  ],
  "qa": {
@@ -125,15 +125,15 @@
   "seam_ratios": {
    "height": 0.563,
    "normal": 0.952,
-   "albedo": 0.874
+   "albedo": 0.877
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  158,
-  144,
+  159,
+  146,
   121
  ],
  "maps": {

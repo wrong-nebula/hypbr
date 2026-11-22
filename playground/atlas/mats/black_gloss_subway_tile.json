@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 0.098,
    "normal": 0.114,
-   "albedo": 0.07
+   "albedo": 0.075
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  57,
-  57,
-  60
+  54,
+  54,
+  57
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/black_gloss_subway_tile/albedo_delit.webp",

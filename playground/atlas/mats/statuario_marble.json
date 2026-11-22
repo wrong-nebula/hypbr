@@ -121,7 +121,7 @@
   "hero_asset"
  ],
  "pairs_well_with": [
-  "anodized_black_aluminum",
+  "brushed_titanium_seam_panel",
   "american_walnut_floor",
   "clear_float_glazing",
   "cable_knit_wool"
@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 0.661,
    "normal": 0.926,
-   "albedo": 0.704
+   "albedo": 0.706
   },
   "normal_unit_error": 0.0002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  221,
   222,
-  221
+  222,
+  222
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/statuario_marble/albedo_delit.webp",

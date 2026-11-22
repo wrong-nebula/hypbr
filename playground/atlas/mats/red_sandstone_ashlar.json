@@ -132,7 +132,7 @@
   "seam_ratios": {
    "height": 0.614,
    "normal": 0.848,
-   "albedo": 0.786
+   "albedo": 0.782
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -140,8 +140,8 @@
  },
  "albedo_mean_srgb": [
   165,
-  121,
-  97
+  122,
+  98
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_sandstone_ashlar/albedo_delit.webp",

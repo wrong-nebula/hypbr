@@ -123,16 +123,16 @@
   "seam_ratios": {
    "height": 1.73,
    "normal": 1.722,
-   "albedo": 1.457
+   "albedo": 1.459
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  147,
-  145,
-  139
+  148,
+  146,
+  140
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_silt_mudcrack/albedo_delit.webp",

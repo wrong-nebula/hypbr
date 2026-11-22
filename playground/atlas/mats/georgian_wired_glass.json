@@ -115,7 +115,7 @@
  "pairs_well_with": [
   "large_format_ground_block",
   "riveted_sheet_seam",
-  "brushed_stainless_steel",
+  "brushed_satin_brass",
   "smooth_architectural_concrete"
  ],
  "qa": {
@@ -131,9 +131,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  201,
   203,
-  203
+  204,
+  204
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/georgian_wired_glass/albedo_delit.webp",

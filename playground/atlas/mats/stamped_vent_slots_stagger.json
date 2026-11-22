@@ -105,20 +105,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.254,
+  "max_seam_ratio": 0.308,
   "seam_ratios": {
    "height": 0.137,
    "normal": 0.084,
-   "albedo": 0.254
+   "albedo": 0.308
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  138,
-  143,
-  139
+  139,
+  144,
+  141
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/stamped_vent_slots_stagger/albedo_delit.webp",

@@ -114,9 +114,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  71,
-  87,
-  76
+  69,
+  86,
+  75
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/woven_nylon_strap/albedo_delit.webp",

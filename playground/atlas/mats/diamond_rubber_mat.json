@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 1.318,
    "normal": 1.032,
-   "albedo": 1.081
+   "albedo": 1.071
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  57,
-  57,
-  57
+  54,
+  54,
+  54
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/diamond_rubber_mat/albedo_delit.webp",

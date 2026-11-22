@@ -109,16 +109,16 @@
   "seam_ratios": {
    "height": 0.022,
    "normal": 0.129,
-   "albedo": 0.113
+   "albedo": 0.099
   },
   "normal_unit_error": 0.0005,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  180,
-  185,
-  191
+  182,
+  187,
+  192
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/diamond_tread_plate/albedo_delit.webp",

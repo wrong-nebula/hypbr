@@ -118,7 +118,7 @@
   "ceiling"
  ],
  "pairs_well_with": [
-  "radial_spun_aluminum",
+  "brushed_titanium_seam_panel",
   "gray_solar_glazing",
   "aspen_sauna_slats",
   "sealcoat_parking_tarmac"
@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 0.632,
    "normal": 1.005,
-   "albedo": 0.849
+   "albedo": 0.855
   },
   "normal_unit_error": 0.0002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  163,
-  161,
-  156
+  164,
+  162,
+  157
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/polished_concrete_floor/albedo_delit.webp",

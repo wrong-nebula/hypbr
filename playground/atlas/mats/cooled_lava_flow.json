@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 1.285,
    "normal": 1.417,
-   "albedo": 1.069
+   "albedo": 1.084
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  73,
-  61,
-  53
+  70,
+  58,
+  50
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cooled_lava_flow/albedo_delit.webp",

@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.105,
    "normal": 0.886,
-   "albedo": 1.102
+   "albedo": 1.097
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  231,
-  201,
-  140
+  232,
+  202,
+  142
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/brushed_satin_brass/albedo_delit.webp",

@@ -104,16 +104,16 @@
   "seam_ratios": {
    "height": 0.233,
    "normal": 0.798,
-   "albedo": 0.201
+   "albedo": 0.23
   },
   "normal_unit_error": 0.0012,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  212,
-  212,
-  211
+  213,
+  214,
+  212
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/hex_mosaic_tile/albedo_delit.webp",

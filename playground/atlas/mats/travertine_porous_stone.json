@@ -104,16 +104,16 @@
   "seam_ratios": {
    "height": 0.368,
    "normal": 0.638,
-   "albedo": 0.547
+   "albedo": 0.54
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  191,
-  176,
-  153
+  192,
+  178,
+  156
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/travertine_porous_stone/albedo_delit.webp",

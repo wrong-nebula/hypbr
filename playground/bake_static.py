@@ -50,7 +50,7 @@ for cand in REPO_CANDIDATES:
 import numpy as np  # noqa: E402
 from PIL import Image  # noqa: E402
 
-BAKE_VERSION = 3
+BAKE_VERSION = 4  # v4: exact sRGB albedo encoding (was gamma 2.2)
 PARAMETRIC_CODE_VERSION = 5  # v1.1 detail pass, ground cover, marble veins, strata cliffs, textiles, wicker
 Q_MAPS = 86
 Q_NORMAL = 88

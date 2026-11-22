@@ -94,7 +94,7 @@
  ],
  "pairs_well_with": [
   "black_pcb_solder_mask",
-  "gray_recycled_plastic_lumber",
+  "matte_black_abs_plastic",
   "brushed_aluminum_satin",
   "white_starship_armor"
  ],
@@ -104,16 +104,16 @@
   "seam_ratios": {
    "height": 0.0,
    "normal": 0.155,
-   "albedo": 0.0
+   "albedo": 0.149
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  103,
-  107,
-  112
+  104,
+  108,
+  114
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/heatsink_extrusion_fins/albedo_delit.webp",

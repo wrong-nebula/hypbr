@@ -122,20 +122,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.307,
+  "max_seam_ratio": 1.296,
   "seam_ratios": {
    "height": 1.274,
    "normal": 1.186,
-   "albedo": 1.307
+   "albedo": 1.296
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  131,
-  77,
-  58
+  138,
+  72,
+  44
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_lava_rock_gravel/albedo_delit.webp",

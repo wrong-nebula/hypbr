@@ -133,16 +133,16 @@
   "seam_ratios": {
    "height": 0.382,
    "normal": 0.813,
-   "albedo": 0.735
+   "albedo": 0.752
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  140,
-  87,
-  44
+  143,
+  85,
+  35
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/corten_weathering_steel/albedo_delit.webp",

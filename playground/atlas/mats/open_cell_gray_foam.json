@@ -115,7 +115,7 @@
  ],
  "pairs_well_with": [
   "slate_chenille_weave",
-  "gray_recycled_plastic_lumber",
+  "white_appliance_plastic",
   "coin_stud_rubber_flooring",
   "chalk_rammed_earth"
  ],
@@ -125,16 +125,16 @@
   "seam_ratios": {
    "height": 1.129,
    "normal": 1.325,
-   "albedo": 1.118
+   "albedo": 1.12
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  140,
-  140,
-  140
+  141,
+  141,
+  141
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/open_cell_gray_foam/albedo_delit.webp",

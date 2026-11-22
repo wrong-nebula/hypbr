@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 0.847,
    "normal": 0.88,
-   "albedo": 0.805
+   "albedo": 0.806
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  131,
+  132,
   105,
-  77
+  76
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/smoked_oak_chevron_parquet/albedo_delit.webp",

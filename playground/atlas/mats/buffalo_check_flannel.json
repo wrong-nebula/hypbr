@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 1.517,
    "normal": 0.55,
-   "albedo": 0.684
+   "albedo": 0.668
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  113,
-  45,
-  45
+  114,
+  40,
+  40
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/buffalo_check_flannel/albedo_delit.webp",

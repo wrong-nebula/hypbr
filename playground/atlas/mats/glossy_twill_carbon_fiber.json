@@ -119,9 +119,9 @@
  ],
  "pairs_well_with": [
   "anodized_black_aluminum",
-  "keyboard_keycap_grid",
+  "textured_dashboard_vinyl",
   "tan_reptile_scale_leather",
-  "black_steel_tread_plate"
+  "knurled_metal_grip"
  ],
  "qa": {
   "passed": true,
@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 0.732,
    "normal": 1.013,
-   "albedo": 0.962
+   "albedo": 0.955
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  59,
-  59,
-  61
+  56,
+  56,
+  58
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/glossy_twill_carbon_fiber/albedo_delit.webp",

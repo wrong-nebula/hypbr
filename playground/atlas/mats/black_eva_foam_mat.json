@@ -116,7 +116,7 @@
  ],
  "pairs_well_with": [
   "black_denim_twill",
-  "dimpled_golf_grip",
+  "textured_dashboard_vinyl",
   "ribbed_rubber_mat",
   "smooth_architectural_concrete"
  ],
@@ -133,9 +133,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  68,
-  68,
-  68
+  66,
+  66,
+  66
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/black_eva_foam_mat/albedo_delit.webp",

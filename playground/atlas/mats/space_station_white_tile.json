@@ -125,27 +125,27 @@
   "mechanical"
  ],
  "pairs_well_with": [
-  "brushed_anodized_plate",
-  "knurled_metal_grip",
+  "anodized_black_aluminum",
+  "stair_nosing_grooves",
   "black_pcb_solder_mask",
   "low_e_blue_green_glazing"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.343,
+  "max_seam_ratio": 0.348,
   "seam_ratios": {
    "height": 0.159,
    "normal": 0.215,
-   "albedo": 0.343
+   "albedo": 0.348
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  210,
-  210,
-  207
+  211,
+  211,
+  208
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/space_station_white_tile/albedo_delit.webp",

@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.427,
+  "max_seam_ratio": 0.435,
   "seam_ratios": {
    "height": 0.065,
    "normal": 0.095,
-   "albedo": 0.427
+   "albedo": 0.435
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  210,
-  176,
-  170
+  211,
+  178,
+  172
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/elongated_blush_subway_tile/albedo_delit.webp",

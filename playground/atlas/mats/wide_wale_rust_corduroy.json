@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.087,
    "normal": 1.022,
-   "albedo": 0.752
+   "albedo": 0.753
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  163,
+  165,
   89,
-  40
+  35
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wide_wale_rust_corduroy/albedo_delit.webp",

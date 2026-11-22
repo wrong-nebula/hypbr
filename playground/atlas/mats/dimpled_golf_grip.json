@@ -87,7 +87,8 @@
   "dimpled",
   "grip",
   "rubber",
-  "gray",
+  "blue",
+  "cool",
   "matte",
   "molded_plastic",
   "rubber_polymers_roads",
@@ -96,27 +97,27 @@
   "mechanical"
  ],
  "pairs_well_with": [
-  "brushed_satin_copper",
-  "carbon_fiber_weave",
+  "anodized_blue_aluminum",
+  "blue_carbon_weave",
   "brass_knurl_grip",
   "black_eva_foam_mat"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.436,
+  "max_seam_ratio": 0.441,
   "seam_ratios": {
    "height": 0.1,
    "normal": 0.34,
-   "albedo": 0.436
+   "albedo": 0.441
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  59,
-  61,
-  65
+  56,
+  58,
+  62
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/dimpled_golf_grip/albedo_delit.webp",

@@ -120,25 +120,25 @@
  "pairs_well_with": [
   "black_gloss_subway_tile",
   "arabescato_marble",
-  "radial_spun_aluminum",
+  "brushed_anodized_plate",
   "low_e_blue_green_glazing"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.455,
+  "max_seam_ratio": 0.449,
   "seam_ratios": {
    "height": 0.256,
    "normal": 0.314,
-   "albedo": 0.455
+   "albedo": 0.449
   },
   "normal_unit_error": 0.0006,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  178,
-  174,
-  166
+  180,
+  176,
+  167
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/large_hex_cement_tile/albedo_delit.webp",

@@ -121,7 +121,7 @@
   "hero_asset"
  ],
  "pairs_well_with": [
-  "brushed_satin_copper",
+  "brushed_stainless_steel",
   "barnwood_reclaimed_planks",
   "gray_solar_glazing",
   "charcoal_commercial_carpet"
@@ -132,7 +132,7 @@
   "seam_ratios": {
    "height": 0.797,
    "normal": 1.048,
-   "albedo": 0.947
+   "albedo": 0.95
   },
   "normal_unit_error": 0.0002,
   "errors": [],

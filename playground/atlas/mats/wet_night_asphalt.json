@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 1.081,
    "normal": 1.253,
-   "albedo": 0.862
+   "albedo": 0.86
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  51,
-  51,
-  54
+  47,
+  47,
+  51
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wet_night_asphalt/albedo_delit.webp",

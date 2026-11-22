@@ -122,7 +122,7 @@
   "brushed_stainless_steel",
   "matte_black_abs_plastic",
   "cognac_pebble_leather",
-  "diamond_tread_plate"
+  "reeded_coin_milling"
  ],
  "qa": {
   "passed": true,
@@ -130,15 +130,15 @@
   "seam_ratios": {
    "height": 0.725,
    "normal": 1.03,
-   "albedo": 0.788
+   "albedo": 0.777
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  186,
-  165,
+  188,
+  166,
   91
  ],
  "maps": {

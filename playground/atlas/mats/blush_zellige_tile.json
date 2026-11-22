@@ -121,25 +121,25 @@
  "pairs_well_with": [
   "charcoal_venetian_plaster",
   "glazed_terracotta_brick_tile",
-  "brushed_anodized_plate",
+  "brushed_titanium_seam_panel",
   "hard_maple_floor"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.49,
+  "max_seam_ratio": 0.492,
   "seam_ratios": {
    "height": 0.125,
    "normal": 0.194,
-   "albedo": 0.49
+   "albedo": 0.492
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  207,
-  171,
-  164
+  208,
+  173,
+  166
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/blush_zellige_tile/albedo_delit.webp",

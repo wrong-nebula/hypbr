@@ -104,16 +104,16 @@
   "seam_ratios": {
    "height": 0.513,
    "normal": 0.968,
-   "albedo": 0.454
+   "albedo": 0.45
   },
   "normal_unit_error": 0.0001,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  222,
-  215,
-  204
+  223,
+  216,
+  205
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/venetian_plaster_trowel/albedo_delit.webp",

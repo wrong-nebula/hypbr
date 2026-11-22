@@ -121,7 +121,7 @@
   "hero_asset"
  ],
  "pairs_well_with": [
-  "brushed_stainless_steel",
+  "anodized_black_aluminum",
   "ebony_stained_oak_floor",
   "gray_solar_glazing",
   "terry_velcro_loops"
@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 0.48,
    "normal": 0.743,
-   "albedo": 0.606
+   "albedo": 0.614
   },
   "normal_unit_error": 0.0002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  69,
-  69,
-  72
+  67,
+  67,
+  70
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/nero_marquina_marble/albedo_delit.webp",

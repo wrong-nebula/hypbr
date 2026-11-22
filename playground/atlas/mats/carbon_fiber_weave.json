@@ -95,7 +95,7 @@
  ],
  "pairs_well_with": [
   "brushed_satin_copper",
-  "dimpled_golf_grip",
+  "keyboard_keycap_grid",
   "perforated_leather_auto",
   "stair_nosing_grooves"
  ],
@@ -105,16 +105,16 @@
   "seam_ratios": {
    "height": 0.058,
    "normal": 0.122,
-   "albedo": 0.0
+   "albedo": 0.026
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  90,
-  94,
-  102
+  89,
+  93,
+  101
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/carbon_fiber_weave/albedo_delit.webp",

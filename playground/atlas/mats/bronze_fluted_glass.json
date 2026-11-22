@@ -123,20 +123,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.481,
+  "max_seam_ratio": 1.061,
   "seam_ratios": {
    "height": 0.858,
    "normal": 0.376,
-   "albedo": 1.481
+   "albedo": 1.061
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  182,
-  157,
-  125
+  184,
+  158,
+  126
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/bronze_fluted_glass/albedo_delit.webp",

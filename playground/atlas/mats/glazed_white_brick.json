@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 0.232,
    "normal": 0.445,
-   "albedo": 0.416
+   "albedo": 0.417
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  209,
   210,
-  208
+  211,
+  209
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/glazed_white_brick/albedo_delit.webp",

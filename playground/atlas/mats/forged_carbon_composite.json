@@ -119,26 +119,26 @@
  ],
  "pairs_well_with": [
   "brushed_titanium_seam_panel",
-  "dimpled_golf_grip",
+  "keyboard_keycap_grid",
   "oxblood_full_grain_leather",
-  "brass_knurl_grip"
+  "diamond_tread_plate"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.371,
+  "max_seam_ratio": 1.39,
   "seam_ratios": {
    "height": 1.052,
    "normal": 1.365,
-   "albedo": 1.371
+   "albedo": 1.39
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  68,
-  68,
-  68
+  66,
+  66,
+  66
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/forged_carbon_composite/albedo_delit.webp",

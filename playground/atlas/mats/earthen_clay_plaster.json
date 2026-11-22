@@ -123,20 +123,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.847,
+  "max_seam_ratio": 0.846,
   "seam_ratios": {
    "height": 0.552,
    "normal": 0.816,
-   "albedo": 0.847
+   "albedo": 0.846
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  183,
-  157,
-  127
+  184,
+  159,
+  128
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/earthen_clay_plaster/albedo_delit.webp",

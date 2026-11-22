@@ -122,20 +122,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.663,
+  "max_seam_ratio": 0.66,
   "seam_ratios": {
    "height": 0.23,
    "normal": 0.477,
-   "albedo": 0.663
+   "albedo": 0.66
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  209,
-  209,
-  207
+  210,
+  210,
+  208
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/painted_white_brick/albedo_delit.webp",

@@ -130,16 +130,16 @@
   "seam_ratios": {
    "height": 0.541,
    "normal": 0.888,
-   "albedo": 0.853
+   "albedo": 0.846
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  149,
   147,
-  146,
-  145
+  146
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_granite_ashlar/albedo_delit.webp",

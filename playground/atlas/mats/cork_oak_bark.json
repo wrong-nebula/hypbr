@@ -133,9 +133,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  162,
-  129,
-  91
+  164,
+  130,
+  90
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cork_oak_bark/albedo_delit.webp",

@@ -117,9 +117,9 @@
   "hero_asset"
  ],
  "pairs_well_with": [
-  "gray_recycled_plastic_lumber",
+  "keyboard_keycap_grid",
   "aluminum_heatsink_fins",
-  "anodized_black_aluminum",
+  "radial_spun_aluminum",
   "titanium_tech_panel"
  ],
  "qa": {
@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.079,
    "normal": 0.097,
-   "albedo": 0.085
+   "albedo": 0.089
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  159,
-  62,
-  60
+  161,
+  58,
+  56
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_pcb_hasl/albedo_delit.webp",

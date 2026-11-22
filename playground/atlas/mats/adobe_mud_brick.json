@@ -110,7 +110,7 @@
   "earth",
   "pueblo",
   "brick",
-  "beige",
+  "orange",
   "warm",
   "matte",
   "architectural_masonry",
@@ -119,8 +119,8 @@
   "trim"
  ],
  "pairs_well_with": [
-  "travertine_pool_paver",
-  "charcoal_asphalt_shingle",
+  "chevron_brick_paver",
+  "spanish_barrel_clay_roof",
   "clear_float_glazing",
   "rammed_earth_wall"
  ],
@@ -137,9 +137,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  163,
-  132,
-  97
+  164,
+  133,
+  96
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/adobe_mud_brick/albedo_delit.webp",

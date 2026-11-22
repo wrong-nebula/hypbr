@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 1.271,
    "normal": 1.114,
-   "albedo": 0.925
+   "albedo": 0.923
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  219,
   218,
-  217,
-  214
+  215
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/salt_flat_crust/albedo_delit.webp",

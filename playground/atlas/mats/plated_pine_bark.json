@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 0.897,
    "normal": 1.019,
-   "albedo": 0.868
+   "albedo": 0.873
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  144,
+  145,
   101,
-  66
+  64
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/plated_pine_bark/albedo_delit.webp",

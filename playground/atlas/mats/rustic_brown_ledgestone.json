@@ -116,25 +116,25 @@
  "pairs_well_with": [
   "white_board_and_batten",
   "concrete_square_paver",
-  "copper_fishscale_shingles",
+  "weathered_wood_asphalt_shingle",
   "wet_peat_bog_mud"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.803,
+  "max_seam_ratio": 0.785,
   "seam_ratios": {
    "height": 0.59,
    "normal": 0.72,
-   "albedo": 0.803
+   "albedo": 0.785
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  127,
+  128,
   105,
-  79
+  78
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rustic_brown_ledgestone/albedo_delit.webp",

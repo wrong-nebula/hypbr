@@ -117,7 +117,7 @@
   "ceiling"
  ],
  "pairs_well_with": [
-  "brushed_titanium_seam_panel",
+  "brushed_anodized_plate",
   "clear_float_glazing",
   "white_picket_fence",
   "coarse_chip_seal_road"
@@ -128,14 +128,14 @@
   "seam_ratios": {
    "height": 0.737,
    "normal": 0.791,
-   "albedo": 0.643
+   "albedo": 0.645
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  122,
+  123,
   121,
   118
  ],

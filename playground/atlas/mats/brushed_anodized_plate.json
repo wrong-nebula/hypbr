@@ -112,16 +112,16 @@
   "seam_ratios": {
    "height": 0.546,
    "normal": 0.576,
-   "albedo": 0.272
+   "albedo": 0.261
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  211,
-  214,
-  218
+  212,
+  215,
+  219
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/brushed_anodized_plate/albedo_delit.webp",

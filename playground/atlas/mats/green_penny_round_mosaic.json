@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 1.01,
    "normal": 0.929,
-   "albedo": 0.864
+   "albedo": 0.874
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  141,
-  174,
-  156
+  142,
+  175,
+  157
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/green_penny_round_mosaic/albedo_delit.webp",

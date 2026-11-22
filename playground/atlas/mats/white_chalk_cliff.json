@@ -121,7 +121,7 @@
  "pairs_well_with": [
   "forest_leaf_litter",
   "white_marble_chip_gravel",
-  "white_beach_sand_ripples",
+  "wet_tidal_sand",
   "palm_trunk_bark"
  ],
  "qa": {
@@ -130,16 +130,16 @@
   "seam_ratios": {
    "height": 1.495,
    "normal": 1.408,
-   "albedo": 1.2
+   "albedo": 1.208
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  214,
   213,
-  211,
-  205
+  206
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_chalk_cliff/albedo_delit.webp",

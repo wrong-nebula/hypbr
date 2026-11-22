@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 0.979,
    "normal": 1.116,
-   "albedo": 1.008
+   "albedo": 1.012
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  84,
-  123,
-  38
+  83,
+  124,
+  33
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cushion_moss/albedo_delit.webp",

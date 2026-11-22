@@ -116,7 +116,7 @@
   "wall"
  ],
  "pairs_well_with": [
-  "roman_brick_long",
+  "buff_firebrick_refractory",
   "subway_metro_tile",
   "exposed_aggregate_concrete",
   "warm_beige_porcelain_floor"
@@ -127,15 +127,15 @@
   "seam_ratios": {
    "height": 0.296,
    "normal": 0.143,
-   "albedo": 0.152
+   "albedo": 0.157
   },
   "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  220,
-  226,
+  221,
+  227,
   228
  ],
  "maps": {

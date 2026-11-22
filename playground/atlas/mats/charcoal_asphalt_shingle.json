@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.766,
+  "max_seam_ratio": 0.748,
   "seam_ratios": {
    "height": 0.219,
    "normal": 0.532,
-   "albedo": 0.766
+   "albedo": 0.748
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  76,
-  76,
-  76
+  74,
+  74,
+  74
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/charcoal_asphalt_shingle/albedo_delit.webp",

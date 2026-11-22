@@ -121,25 +121,25 @@
  "pairs_well_with": [
   "hard_maple_floor",
   "charcoal_soapstone",
-  "brushed_titanium_seam_panel",
+  "brushed_stainless_steel",
   "concrete_look_porcelain"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.494,
+  "max_seam_ratio": 0.499,
   "seam_ratios": {
    "height": 0.086,
    "normal": 0.133,
-   "albedo": 0.494
+   "albedo": 0.499
   },
   "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  172,
-  174,
-  175
+  173,
+  175,
+  177
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/beveled_gray_metro_tile/albedo_delit.webp",

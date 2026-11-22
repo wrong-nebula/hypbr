@@ -129,9 +129,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  166,
-  147,
-  101
+  168,
+  148,
+  100
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/reed_thatch_roof/albedo_delit.webp",

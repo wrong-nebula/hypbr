@@ -123,19 +123,19 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.594,
+  "max_seam_ratio": 0.597,
   "seam_ratios": {
    "height": 0.116,
    "normal": 0.19,
-   "albedo": 0.594
+   "albedo": 0.597
   },
   "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  204,
-  190,
+  205,
+  191,
   167
  ],
  "maps": {

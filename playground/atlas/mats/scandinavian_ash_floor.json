@@ -141,9 +141,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  191,
-  172,
-  142
+  192,
+  174,
+  144
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/scandinavian_ash_floor/albedo_delit.webp",

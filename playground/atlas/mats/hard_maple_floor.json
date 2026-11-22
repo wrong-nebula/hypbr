@@ -129,20 +129,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.575,
+  "max_seam_ratio": 0.571,
   "seam_ratios": {
    "height": 0.424,
    "normal": 0.487,
-   "albedo": 0.575
+   "albedo": 0.571
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  196,
-  163,
-  120
+  197,
+  164,
+  121
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/hard_maple_floor/albedo_delit.webp",

@@ -116,26 +116,26 @@
   "furniture"
  ],
  "pairs_well_with": [
-  "brushed_anodized_plate",
+  "anodized_black_aluminum",
   "rustic_pine_plank_floor",
   "honey_onyx",
   "teak_louver_screen"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.829,
+  "max_seam_ratio": 1.394,
   "seam_ratios": {
    "height": 0.829,
    "normal": 0.437,
-   "albedo": 0.289
+   "albedo": 1.394
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  218,
-  173,
+  219,
+  174,
   93
  ],
  "maps": {

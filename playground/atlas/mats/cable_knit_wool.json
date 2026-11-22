@@ -105,20 +105,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.683,
+  "max_seam_ratio": 0.668,
   "seam_ratios": {
    "height": 0.652,
    "normal": 0.664,
-   "albedo": 0.683
+   "albedo": 0.668
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  194,
-  184,
-  169
+  195,
+  186,
+  171
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cable_knit_wool/albedo_delit.webp",

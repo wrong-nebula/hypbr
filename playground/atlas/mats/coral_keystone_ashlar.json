@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.895,
+  "max_seam_ratio": 0.892,
   "seam_ratios": {
    "height": 0.571,
    "normal": 0.875,
-   "albedo": 0.895
+   "albedo": 0.892
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  204,
-  195,
-  176
+  205,
+  197,
+  177
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/coral_keystone_ashlar/albedo_delit.webp",

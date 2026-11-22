@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 1.216,
    "normal": 2.254,
-   "albedo": 0.878
+   "albedo": 0.873
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  199,
-  188,
-  169
+  200,
+  190,
+  170
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/chunky_oatmeal_knit/albedo_delit.webp",

@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.593,
+  "max_seam_ratio": 0.589,
   "seam_ratios": {
    "height": 0.398,
    "normal": 0.505,
-   "albedo": 0.593
+   "albedo": 0.589
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  189,
   188,
-  187,
-  185
+  186
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_marble_ledger/albedo_delit.webp",

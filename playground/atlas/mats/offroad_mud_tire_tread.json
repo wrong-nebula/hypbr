@@ -116,26 +116,26 @@
  ],
  "pairs_well_with": [
   "sealcoat_parking_tarmac",
-  "diamond_tread_plate",
-  "gray_recycled_plastic_lumber",
+  "fine_steel_knurl",
+  "white_appliance_plastic",
   "white_marble_chip_gravel"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.69,
+  "max_seam_ratio": 0.699,
   "seam_ratios": {
    "height": 0.289,
    "normal": 0.442,
-   "albedo": 0.69
+   "albedo": 0.699
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  55,
-  55,
-  55
+  51,
+  51,
+  51
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/offroad_mud_tire_tread/albedo_delit.webp",

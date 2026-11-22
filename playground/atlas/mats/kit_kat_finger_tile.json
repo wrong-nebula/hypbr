@@ -120,25 +120,25 @@
  "pairs_well_with": [
   "white_gloss_subway_tile",
   "calacatta_gold_marble",
-  "brushed_anodized_plate",
+  "radial_spun_aluminum",
   "clear_float_glazing"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.301,
+  "max_seam_ratio": 0.298,
   "seam_ratios": {
    "height": 0.075,
    "normal": 0.1,
-   "albedo": 0.301
+   "albedo": 0.298
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  213,
-  213,
-  210
+  214,
+  214,
+  211
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/kit_kat_finger_tile/albedo_delit.webp",

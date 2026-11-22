@@ -125,16 +125,16 @@
   "seam_ratios": {
    "height": 0.932,
    "normal": 1.029,
-   "albedo": 0.746
+   "albedo": 0.748
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  221,
-  216,
-  204
+  222,
+  217,
+  205
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_beach_sand_ripples/albedo_delit.webp",

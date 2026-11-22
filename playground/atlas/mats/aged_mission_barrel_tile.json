@@ -115,7 +115,7 @@
   "ceramic"
  ],
  "pairs_well_with": [
-  "offset_bond_terracotta_brick",
+  "adobe_mud_brick",
   "pine_tongue_groove_ceiling",
   "terracotta_tadelakt",
   "zinc_standing_seam_roof"
@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 0.38,
    "normal": 0.777,
-   "albedo": 0.73
+   "albedo": 0.721
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  171,
-  126,
-  84
+  173,
+  127,
+  83
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/aged_mission_barrel_tile/albedo_delit.webp",

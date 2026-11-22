@@ -129,11 +129,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.539,
+  "max_seam_ratio": 0.528,
   "seam_ratios": {
    "height": 0.284,
    "normal": 0.401,
-   "albedo": 0.539
+   "albedo": 0.528
   },
   "normal_unit_error": 0.0015,
   "errors": [],
@@ -142,7 +142,7 @@
  "albedo_mean_srgb": [
   121,
   104,
-  84
+  83
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/oak_acoustic_slat_wall/albedo_delit.webp",

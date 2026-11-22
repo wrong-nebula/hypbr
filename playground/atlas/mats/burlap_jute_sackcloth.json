@@ -107,16 +107,16 @@
   "seam_ratios": {
    "height": 0.564,
    "normal": 0.649,
-   "albedo": 0.523
+   "albedo": 0.529
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  178,
-  153,
-  118
+  179,
+  155,
+  120
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/burlap_jute_sackcloth/albedo_delit.webp",

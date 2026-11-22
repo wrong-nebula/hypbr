@@ -107,7 +107,7 @@
   "seam_ratios": {
    "height": 0.87,
    "normal": 1.199,
-   "albedo": 1.01
+   "albedo": 1.005
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -116,7 +116,7 @@
  "albedo_mean_srgb": [
   89,
   107,
-  139
+  140
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/woven_denim_twill/albedo_delit.webp",

@@ -118,7 +118,7 @@
   "granite_cliff_face",
   "crushed_granite_gravel",
   "wet_peat_bog_mud",
-  "white_picket_fence"
+  "acoustic_slat_wood"
  ],
  "qa": {
   "passed": true,
@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 0.858,
    "normal": 1.008,
-   "albedo": 0.882
+   "albedo": 0.881
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  150,
-  139,
-  119
+  152,
+  140,
+  120
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wet_tidal_sand/albedo_delit.webp",

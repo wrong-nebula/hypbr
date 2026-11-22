@@ -122,10 +122,10 @@
   "wall"
  ],
  "pairs_well_with": [
-  "brushed_anodized_plate",
+  "radial_spun_aluminum",
   "ebony_stained_oak_floor",
   "handmade_cream_subway_tile",
-  "textured_dashboard_vinyl"
+  "keyboard_keycap_grid"
  ],
  "qa": {
   "passed": true,
@@ -133,16 +133,16 @@
   "seam_ratios": {
    "height": 1.663,
    "normal": 1.547,
-   "albedo": 1.492
+   "albedo": 1.489
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  138,
-  138,
-  138
+  139,
+  139,
+  139
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/epoxy_flake_garage_floor/albedo_delit.webp",

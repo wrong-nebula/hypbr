@@ -130,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.743,
+  "max_seam_ratio": 0.726,
   "seam_ratios": {
    "height": 0.459,
    "normal": 0.663,
-   "albedo": 0.743
+   "albedo": 0.726
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  92,
-  76,
-  61
+  91,
+  75,
+  59
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/brushed_shou_sugi_ban/albedo_delit.webp",

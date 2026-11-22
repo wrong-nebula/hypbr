@@ -99,10 +99,10 @@
   "prop"
  ],
  "pairs_well_with": [
-  "sidewalk_expansion_joint",
+  "gray_microcement",
   "ribbed_rubber_mat",
   "brushed_satin_brass",
-  "textured_dashboard_vinyl"
+  "white_hdpe_cutting_board"
  ],
  "qa": {
   "passed": true,
@@ -117,9 +117,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  137,
-  143,
-  152
+  138,
+  144,
+  153
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/hardops_plate/albedo_delit.webp",

@@ -116,26 +116,26 @@
  ],
  "pairs_well_with": [
   "fine_asphalt_tarmac",
-  "knurled_metal_grip",
+  "hardops_plate",
   "matte_black_abs_plastic",
   "pea_gravel_path"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.575,
+  "max_seam_ratio": 0.571,
   "seam_ratios": {
    "height": 0.447,
    "normal": 0.506,
-   "albedo": 0.575
+   "albedo": 0.571
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  54,
-  54,
-  54
+  51,
+  51,
+  51
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/fine_bicycle_tire_tread/albedo_delit.webp",

@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.542,
+  "max_seam_ratio": 0.533,
   "seam_ratios": {
    "height": 0.28,
    "normal": 0.339,
-   "albedo": 0.542
+   "albedo": 0.533
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  168,
+  170,
   122,
-  95
+  94
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/terracotta_hex_tile/albedo_delit.webp",

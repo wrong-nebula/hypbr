@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.712,
+  "max_seam_ratio": 0.713,
   "seam_ratios": {
    "height": 0.231,
    "normal": 0.422,
-   "albedo": 0.712
+   "albedo": 0.713
   },
   "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  172,
   170,
-  168,
-  164
+  165
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/concrete_look_porcelain/albedo_delit.webp",

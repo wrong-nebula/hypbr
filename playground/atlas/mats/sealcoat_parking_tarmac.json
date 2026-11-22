@@ -113,7 +113,7 @@
   "ground"
  ],
  "pairs_well_with": [
-  "herringbone_charcoal_paver",
+  "concrete_square_paver",
   "smooth_architectural_concrete",
   "crushed_granite_gravel",
   "tundra_reindeer_lichen"
@@ -124,16 +124,16 @@
   "seam_ratios": {
    "height": 0.995,
    "normal": 1.126,
-   "albedo": 0.751
+   "albedo": 0.747
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  63,
-  63,
-  66
+  61,
+  61,
+  64
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sealcoat_parking_tarmac/albedo_delit.webp",

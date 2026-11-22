@@ -115,7 +115,7 @@
   "ceiling"
  ],
  "pairs_well_with": [
-  "brushed_satin_brass",
+  "radial_spun_aluminum",
   "black_porcelain_slab",
   "white_gloss_subway_tile",
   "exposed_aggregate_concrete"
@@ -126,7 +126,7 @@
   "seam_ratios": {
    "height": 0.533,
    "normal": 1.107,
-   "albedo": 0.115
+   "albedo": 0.23
   },
   "normal_unit_error": 0.0008,
   "errors": [],

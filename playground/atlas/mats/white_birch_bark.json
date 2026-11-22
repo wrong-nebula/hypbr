@@ -125,16 +125,16 @@
   "seam_ratios": {
    "height": 0.944,
    "normal": 1.245,
-   "albedo": 1.192
+   "albedo": 1.201
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  209,
-  205,
-  196
+  210,
+  206,
+  198
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_birch_bark/albedo_delit.webp",

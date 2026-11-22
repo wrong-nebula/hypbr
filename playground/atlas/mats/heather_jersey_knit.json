@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.994,
    "normal": 1.361,
-   "albedo": 0.872
+   "albedo": 0.877
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  152,
-  152,
-  154
+  153,
+  153,
+  156
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/heather_jersey_knit/albedo_delit.webp",

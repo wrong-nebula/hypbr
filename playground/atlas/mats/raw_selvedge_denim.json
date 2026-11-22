@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 1.049,
    "normal": 0.95,
-   "albedo": 0.984
+   "albedo": 0.98
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  71,
-  87,
-  119
+  73,
+  86,
+  112
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/raw_selvedge_denim/albedo_delit.webp",

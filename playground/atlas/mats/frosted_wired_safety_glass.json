@@ -115,7 +115,7 @@
  "pairs_well_with": [
   "large_format_ground_block",
   "corrugated_sheet_metal",
-  "brushed_satin_copper",
+  "brushed_stainless_steel",
   "chalk_rammed_earth"
  ],
  "qa": {
@@ -131,9 +131,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  199,
-  201,
-  201
+  200,
+  202,
+  202
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/frosted_wired_safety_glass/albedo_delit.webp",

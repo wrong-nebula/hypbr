@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.992,
+  "max_seam_ratio": 1.959,
   "seam_ratios": {
    "height": 1.192,
    "normal": 1.49,
-   "albedo": 1.992
+   "albedo": 1.959
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  153,
-  184,
-  202
+  154,
+  185,
+  203
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/glacier_blue_ice/albedo_delit.webp",

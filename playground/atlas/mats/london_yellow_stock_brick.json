@@ -123,20 +123,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.845,
+  "max_seam_ratio": 0.849,
   "seam_ratios": {
    "height": 0.239,
    "normal": 0.417,
-   "albedo": 0.845
+   "albedo": 0.849
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  170,
-  146,
-  107
+  171,
+  147,
+  108
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/london_yellow_stock_brick/albedo_delit.webp",

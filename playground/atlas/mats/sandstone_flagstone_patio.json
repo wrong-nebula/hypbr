@@ -130,16 +130,16 @@
   "seam_ratios": {
    "height": 1.292,
    "normal": 1.403,
-   "albedo": 1.057
+   "albedo": 1.064
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  183,
-  165,
-  140
+  184,
+  166,
+  141
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sandstone_flagstone_patio/albedo_delit.webp",

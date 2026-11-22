@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 0.983,
    "normal": 0.996,
-   "albedo": 0.888
+   "albedo": 0.885
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  143,
-  130,
-  110
+  144,
+  131,
+  111
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/donegal_tweed_twill/albedo_delit.webp",

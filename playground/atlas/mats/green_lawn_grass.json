@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.063,
+  "max_seam_ratio": 1.065,
   "seam_ratios": {
    "height": 1.042,
    "normal": 1.061,
-   "albedo": 1.063
+   "albedo": 1.065
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  72,
-  116,
-  39
+  71,
+  117,
+  34
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/green_lawn_grass/albedo_delit.webp",

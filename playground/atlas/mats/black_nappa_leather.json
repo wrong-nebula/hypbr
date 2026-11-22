@@ -118,25 +118,25 @@
  "pairs_well_with": [
   "american_walnut_floor",
   "black_denim_twill",
-  "brushed_satin_copper",
+  "brushed_anodized_plate",
   "walnut_herringbone_parquet"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.637,
+  "max_seam_ratio": 1.639,
   "seam_ratios": {
    "height": 1.609,
    "normal": 1.483,
-   "albedo": 1.637
+   "albedo": 1.639
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  57,
-  57,
-  57
+  54,
+  54,
+  54
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/black_nappa_leather/albedo_delit.webp",

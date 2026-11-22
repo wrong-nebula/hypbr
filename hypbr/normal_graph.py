@@ -38,6 +38,7 @@ import torch.nn.functional as F
 from PIL import Image, ImageDraw
 
 from . import depthpro_pbr as dp  # noqa: E402
+from .color import linear_to_srgb, srgb_to_linear
 
 
 # =============================================================================
@@ -950,7 +951,7 @@ def node_roughness_physical(
     """
     circ = ctx.get("circular", False)
     rgb = inputs["rgb"].astype(np.float32) / 255.0
-    lin = np.power(np.clip(rgb, 0.0, 1.0), 2.2)
+    lin = srgb_to_linear(rgb)
     lum = 0.2126 * lin[..., 0] + 0.7152 * lin[..., 1] + 0.0722 * lin[..., 2]
     mx, mn = lin.max(axis=-1), lin.min(axis=-1)
     sat = (mx - mn) / (mx + 1e-4)
@@ -1015,7 +1016,7 @@ def node_albedo_delight(ctx: dict, inputs: dict, shadow_lift: float = 0.65, ao_r
     exact chromaticity so engine lighting never double-shadows."""
     circ = ctx.get("circular", False)
     rgb = inputs["rgb"].astype(np.float32) / 255.0
-    lin = np.power(np.clip(rgb, 0.0, 1.0), 2.2)
+    lin = srgb_to_linear(rgb)
     lum = 0.2126 * lin[..., 0] + 0.7152 * lin[..., 1] + 0.0722 * lin[..., 2]
 
     # Estimate low-frequency uneven illumination gradient across the photo
@@ -1035,7 +1036,7 @@ def node_albedo_delight(ctx: dict, inputs: dict, shadow_lift: float = 0.65, ao_r
 
     delit_lin = np.clip(lin / shading[..., None], 0.0, 1.0)
     # Preserve exact mean exposure
-    delit_srgb = np.power(delit_lin, 1.0 / 2.2)
+    delit_srgb = linear_to_srgb(delit_lin)
     u8 = np.clip(delit_srgb * 255.0 + 0.5, 0, 255).astype(np.uint8)
     return {"albedo": delit_srgb.astype(np.float32), "albedo_u8": u8}
 
@@ -1055,7 +1056,7 @@ def node_metallic_physical(
     - Metal / painted-metal presets expose bare metal on convex worn ridges (+edge_wear_metal)
       while demetallizing recessed dirty cavities (-cavity_demetal) and warm orange oxide rust (-oxide_demetal)."""
     rgb = inputs["rgb"].astype(np.float32) / 255.0
-    lin = np.power(np.clip(rgb, 0.0, 1.0), 2.2)
+    lin = srgb_to_linear(rgb)
     ao = np.clip(inputs["ao"].astype(np.float32), 0.0, 1.0)
     conv = np.clip(inputs["convex"].astype(np.float32), 0.0, 1.0)
 
@@ -1497,7 +1498,7 @@ def node_albedo_delight_v13(
       3. Suppresses achromatic white-clipped specular glints without desaturating colored albedo."""
     circ = ctx.get("circular", False)
     rgb = inputs["rgb"].astype(np.float32) / 255.0
-    lin = np.power(np.clip(rgb, 0.0, 1.0), 2.2)
+    lin = srgb_to_linear(rgb)
     lum = 0.2126 * lin[..., 0] + 0.7152 * lin[..., 1] + 0.0722 * lin[..., 2]
     N = inputs["normal"].astype(np.float32)
     ao = np.clip(inputs["ao"].astype(np.float32), 0.18, 1.0)
@@ -1535,7 +1536,7 @@ def node_albedo_delight_v13(
         w_sp = (glint * float(spec_suppress))[..., None]
         delit_lin = np.clip(delit_lin * (1.0 - w_sp) + np.minimum(delit_lin, blur_lin) * w_sp, 0.0, 1.0)
 
-    delit_srgb = np.power(np.clip(delit_lin, 0.0, 1.0), 1.0 / 2.2)
+    delit_srgb = linear_to_srgb(delit_lin)
     u8 = np.clip(delit_srgb * 255.0 + 0.5, 0, 255).astype(np.uint8)
     return {"albedo": delit_srgb.astype(np.float32), "albedo_u8": u8}
 

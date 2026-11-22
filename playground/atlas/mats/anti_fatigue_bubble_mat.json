@@ -117,8 +117,8 @@
  ],
  "pairs_well_with": [
   "sidewalk_expansion_joint",
-  "stair_nosing_grooves",
-  "radial_spun_aluminum",
+  "fine_steel_knurl",
+  "brushed_aluminum_satin",
   "split_face_block"
  ],
  "qa": {
@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 0.352,
    "normal": 0.42,
-   "albedo": 0.399
+   "albedo": 0.391
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  56,
-  56,
-  56
+  52,
+  52,
+  52
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/anti_fatigue_bubble_mat/albedo_delit.webp",

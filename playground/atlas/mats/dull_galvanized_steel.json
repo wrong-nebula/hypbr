@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 1.356,
    "normal": 1.818,
-   "albedo": 1.227
+   "albedo": 1.224
   },
   "normal_unit_error": 0.0012,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  178,
   179,
-  181
+  181,
+  182
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/dull_galvanized_steel/albedo_delit.webp",

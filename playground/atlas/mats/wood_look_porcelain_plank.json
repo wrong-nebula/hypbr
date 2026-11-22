@@ -121,26 +121,26 @@
  ],
  "pairs_well_with": [
   "spanish_lace_stucco",
-  "anodized_black_aluminum",
+  "brushed_aluminum_satin",
   "bronze_tinted_glazing",
   "oak_acoustic_slat_wall"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.508,
+  "max_seam_ratio": 0.506,
   "seam_ratios": {
    "height": 0.12,
    "normal": 0.164,
-   "albedo": 0.508
+   "albedo": 0.506
   },
   "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  171,
-  137,
-  96
+  173,
+  138,
+  93
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wood_look_porcelain_plank/albedo_delit.webp",

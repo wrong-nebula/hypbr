@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 0.089,
    "normal": 0.117,
-   "albedo": 0.109
+   "albedo": 0.108
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  68,
-  81,
-  113
+  65,
+  79,
+  114
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/navy_subway_tile/albedo_delit.webp",

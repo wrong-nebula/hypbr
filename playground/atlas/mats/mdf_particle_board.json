@@ -122,9 +122,9 @@
  ],
  "pairs_well_with": [
   "raw_pitted_concrete",
-  "aluminum_diamond_tread_plate",
+  "stair_nosing_grooves",
   "brushed_satin_copper",
-  "white_hdpe_cutting_board"
+  "gray_recycled_plastic_lumber"
  ],
  "qa": {
   "passed": true,
@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 1.442,
    "normal": 1.522,
-   "albedo": 1.286
+   "albedo": 1.284
   },
   "normal_unit_error": 0.0009,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  182,
-  155,
-  113
+  184,
+  156,
+  114
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/mdf_particle_board/albedo_delit.webp",

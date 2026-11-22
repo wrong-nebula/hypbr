@@ -118,8 +118,8 @@
  ],
  "pairs_well_with": [
   "anodized_black_aluminum",
-  "fiberglass_weave_cloth",
-  "brass_knurl_grip",
+  "forged_carbon_composite",
+  "stair_nosing_grooves",
   "white_memory_foam"
  ],
  "qa": {
@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.058,
    "normal": 1.15,
-   "albedo": 1.011
+   "albedo": 1.005
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  205,
-  205,
-  203
+  206,
+  206,
+  204
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_hdpe_cutting_board/albedo_delit.webp",

@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.369,
+  "max_seam_ratio": 1.075,
   "seam_ratios": {
    "height": 0.857,
    "normal": 0.365,
-   "albedo": 1.369
+   "albedo": 1.075
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  134,
-  137,
-  139
+  135,
+  138,
+  140
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/smoked_gray_fluted_glass/albedo_delit.webp",

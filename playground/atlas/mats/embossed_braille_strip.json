@@ -102,24 +102,24 @@
   "chalk_rammed_earth",
   "ribbed_rubber_mat",
   "radial_spun_aluminum",
-  "micro_hex_grip"
+  "white_appliance_plastic"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.068,
+  "max_seam_ratio": 1.073,
   "seam_ratios": {
    "height": 0.472,
    "normal": 1.036,
-   "albedo": 1.068
+   "albedo": 1.073
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  206,
-  211,
-  217
+  208,
+  212,
+  218
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/embossed_braille_strip/albedo_delit.webp",

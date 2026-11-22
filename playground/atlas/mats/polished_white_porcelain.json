@@ -135,9 +135,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  223,
-  223,
-  222
+  224,
+  224,
+  223
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/polished_white_porcelain/albedo_delit.webp",

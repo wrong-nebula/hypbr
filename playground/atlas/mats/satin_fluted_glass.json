@@ -115,7 +115,7 @@
   "furniture"
  ],
  "pairs_well_with": [
-  "brushed_titanium_seam_panel",
+  "brushed_anodized_plate",
   "barnwood_reclaimed_planks",
   "statuario_marble",
   "aspen_sauna_slats"
@@ -126,14 +126,14 @@
   "seam_ratios": {
    "height": 0.853,
    "normal": 0.359,
-   "albedo": 0.605
+   "albedo": 0.24
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  229,
+  230,
   232,
   232
  ],

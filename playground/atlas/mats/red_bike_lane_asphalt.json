@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 1.09,
    "normal": 1.167,
-   "albedo": 0.847
+   "albedo": 0.841
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  127,
-  63,
-  55
+  123,
+  64,
+  57
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_bike_lane_asphalt/albedo_delit.webp",

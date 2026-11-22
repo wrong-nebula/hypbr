@@ -103,24 +103,24 @@
   "smooth_architectural_concrete",
   "ribbed_rubber_mat",
   "radial_spun_aluminum",
-  "keyboard_keycap_grid"
+  "gray_recycled_plastic_lumber"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.086,
+  "max_seam_ratio": 1.108,
   "seam_ratios": {
    "height": 0.786,
    "normal": 0.949,
-   "albedo": 1.086
+   "albedo": 1.108
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  199,
-  202,
-  206
+  201,
+  204,
+  207
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/stair_nosing_grooves/albedo_delit.webp",

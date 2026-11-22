@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.156,
    "normal": 0.828,
-   "albedo": 0.781
+   "albedo": 0.777
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  209,
-  200,
-  178
+  211,
+  201,
+  180
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/fine_wale_cream_corduroy/albedo_delit.webp",

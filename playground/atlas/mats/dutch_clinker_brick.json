@@ -115,7 +115,7 @@
   "trim"
  ],
  "pairs_well_with": [
-  "permeable_running_paver",
+  "travertine_pool_paver",
   "welsh_purple_slate_roof",
   "bronze_tinted_glazing",
   "acid_stained_concrete"
@@ -126,15 +126,15 @@
   "seam_ratios": {
    "height": 0.243,
    "normal": 0.465,
-   "albedo": 0.404
+   "albedo": 0.411
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  119,
-  86,
+  118,
+  85,
   68
  ],
  "maps": {

@@ -117,27 +117,27 @@
   "mechanical"
  ],
  "pairs_well_with": [
-  "brushed_satin_copper",
-  "carbon_fiber_weave",
-  "stair_nosing_grooves",
+  "brushed_anodized_plate",
+  "forged_carbon_composite",
+  "black_steel_tread_plate",
   "open_cell_gray_foam"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.134,
+  "max_seam_ratio": 1.132,
   "seam_ratios": {
    "height": 1.122,
    "normal": 1.094,
-   "albedo": 1.134
+   "albedo": 1.132
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  180,
-  52,
-  47
+  182,
+  48,
+  43
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/glossy_red_polymer/albedo_delit.webp",

@@ -92,17 +92,17 @@
  ],
  "pairs_well_with": [
   "granite_slab_paver",
-  "smooth_architectural_concrete",
+  "exposed_aggregate_concrete",
   "pea_gravel_path",
   "tundra_reindeer_lichen"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.148,
+  "max_seam_ratio": 1.154,
   "seam_ratios": {
    "height": 1.061,
    "normal": 1.042,
-   "albedo": 1.148
+   "albedo": 1.154
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -110,7 +110,7 @@
  },
  "albedo_mean_srgb": [
   99,
-  100,
+  99,
   101
  ],
  "maps": {

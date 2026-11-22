@@ -94,16 +94,16 @@
  "pairs_well_with": [
   "subway_metro_tile",
   "statuario_marble",
-  "brushed_titanium_seam_panel",
+  "brushed_anodized_plate",
   "low_e_blue_green_glazing"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.151,
+  "max_seam_ratio": 0.159,
   "seam_ratios": {
    "height": 0.041,
    "normal": 0.121,
-   "albedo": 0.151
+   "albedo": 0.159
   },
   "normal_unit_error": 0.0014,
   "errors": [],
@@ -111,8 +111,8 @@
  },
  "albedo_mean_srgb": [
   155,
-  181,
-  182
+  182,
+  183
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/penny_round_mosaic/albedo_delit.webp",

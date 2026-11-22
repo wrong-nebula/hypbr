@@ -135,9 +135,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  162,
+  163,
   108,
-  56
+  53
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cognac_pebble_leather/albedo_delit.webp",

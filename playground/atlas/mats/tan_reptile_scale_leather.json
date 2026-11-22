@@ -120,7 +120,7 @@
  "pairs_well_with": [
   "smoked_european_oak_floor",
   "black_denim_twill",
-  "anodized_black_aluminum",
+  "brushed_satin_copper",
   "white_oiled_chevron_parquet"
  ],
  "qa": {
@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 1.445,
    "normal": 1.517,
-   "albedo": 1.375
+   "albedo": 1.376
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  187,
-  176,
-  148
+  188,
+  177,
+  150
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/tan_reptile_scale_leather/albedo_delit.webp",

@@ -130,16 +130,16 @@
   "seam_ratios": {
    "height": 0.716,
    "normal": 1.14,
-   "albedo": 0.854
+   "albedo": 0.849
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  196,
-  186,
-  169
+  197,
+  187,
+  170
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/oatmeal_speckled_stoneware/albedo_delit.webp",

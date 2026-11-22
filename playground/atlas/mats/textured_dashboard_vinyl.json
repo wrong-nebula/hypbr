@@ -119,7 +119,7 @@
  "pairs_well_with": [
   "brushed_titanium_seam_panel",
   "glossy_twill_carbon_fiber",
-  "black_steel_tread_plate",
+  "diamond_tread_plate",
   "white_memory_foam"
  ],
  "qa": {
@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.063,
    "normal": 1.174,
-   "albedo": 1.108
+   "albedo": 1.112
   },
   "normal_unit_error": 0.002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  84,
-  84,
-  86
+  83,
+  83,
+  85
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/textured_dashboard_vinyl/albedo_delit.webp",

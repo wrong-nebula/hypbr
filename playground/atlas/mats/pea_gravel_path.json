@@ -117,24 +117,24 @@
   "tumbled_holland_paver",
   "dry_dirt_trail",
   "white_chalk_cliff",
-  "white_ash_batten_ceiling"
+  "walnut_slat_panel"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.283,
+  "max_seam_ratio": 1.29,
   "seam_ratios": {
    "height": 1.25,
    "normal": 1.205,
-   "albedo": 1.283
+   "albedo": 1.29
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  165,
-  153,
-  136
+  166,
+  154,
+  137
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/pea_gravel_path/albedo_delit.webp",

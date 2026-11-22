@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 1.891,
    "normal": 1.81,
-   "albedo": 1.678
+   "albedo": 1.677
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  164,
-  159,
-  151
+  166,
+  160,
+  152
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/exposed_aggregate_concrete/albedo_delit.webp",

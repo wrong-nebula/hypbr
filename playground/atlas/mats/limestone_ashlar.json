@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.878,
+  "max_seam_ratio": 0.882,
   "seam_ratios": {
    "height": 0.578,
    "normal": 0.812,
-   "albedo": 0.878
+   "albedo": 0.882
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  195,
-  187,
-  168
+  196,
+  188,
+  169
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/limestone_ashlar/albedo_delit.webp",

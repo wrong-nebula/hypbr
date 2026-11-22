@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.164,
+  "max_seam_ratio": 1.167,
   "seam_ratios": {
    "height": 1.143,
    "normal": 1.085,
-   "albedo": 1.164
+   "albedo": 1.167
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  170,
-  108,
-  76
+  169,
+  110,
+  79
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_laterite_soil/albedo_delit.webp",

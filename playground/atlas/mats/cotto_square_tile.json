@@ -139,9 +139,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  185,
-  137,
-  102
+  186,
+  138,
+  103
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cotto_square_tile/albedo_delit.webp",

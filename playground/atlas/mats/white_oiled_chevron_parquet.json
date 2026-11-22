@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 0.846,
    "normal": 0.881,
-   "albedo": 0.798
+   "albedo": 0.802
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  197,
-  183,
-  158
+  198,
+  184,
+  160
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_oiled_chevron_parquet/albedo_delit.webp",

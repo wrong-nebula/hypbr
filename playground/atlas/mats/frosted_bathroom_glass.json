@@ -114,7 +114,7 @@
   "ceiling"
  ],
  "pairs_well_with": [
-  "radial_spun_aluminum",
+  "brushed_anodized_plate",
   "polished_white_porcelain",
   "black_gloss_subway_tile",
   "gray_microcement"
@@ -125,14 +125,14 @@
   "seam_ratios": {
    "height": 0.527,
    "normal": 1.182,
-   "albedo": 0.14
+   "albedo": 0.217
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  227,
+  228,
   232,
   232
  ],

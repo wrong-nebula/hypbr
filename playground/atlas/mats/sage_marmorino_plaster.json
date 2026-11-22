@@ -134,9 +134,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  159,
-  172,
-  150
+  161,
+  174,
+  151
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sage_marmorino_plaster/albedo_delit.webp",

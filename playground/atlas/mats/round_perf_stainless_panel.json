@@ -128,7 +128,7 @@
   "exposed_aggregate_concrete",
   "brushed_stainless_steel",
   "bronze_tinted_glazing",
-  "hardops_plate"
+  "embossed_braille_strip"
  ],
  "qa": {
   "passed": true,
@@ -136,16 +136,16 @@
   "seam_ratios": {
    "height": 0.132,
    "normal": 0.254,
-   "albedo": 0.122
+   "albedo": 0.123
   },
   "normal_unit_error": 0.0009,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  171,
-  173,
-  174
+  174,
+  175,
+  176
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/round_perf_stainless_panel/albedo_delit.webp",

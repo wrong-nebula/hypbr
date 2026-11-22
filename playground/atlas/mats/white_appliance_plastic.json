@@ -118,8 +118,8 @@
  ],
  "pairs_well_with": [
   "brushed_stainless_steel",
-  "forged_carbon_composite",
-  "hardops_plate",
+  "glossy_twill_carbon_fiber",
+  "fine_steel_knurl",
   "black_eva_foam_mat"
  ],
  "qa": {
@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.123,
    "normal": 1.151,
-   "albedo": 1.108
+   "albedo": 1.115
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  215,
-  215,
-  213
+  216,
+  216,
+  214
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_appliance_plastic/albedo_delit.webp",

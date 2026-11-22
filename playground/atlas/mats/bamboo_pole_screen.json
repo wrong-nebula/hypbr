@@ -134,20 +134,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.608,
+  "max_seam_ratio": 0.61,
   "seam_ratios": {
    "height": 0.221,
    "normal": 0.417,
-   "albedo": 0.608
+   "albedo": 0.61
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  164,
-  144,
-  87
+  165,
+  145,
+  86
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/bamboo_pole_screen/albedo_delit.webp",

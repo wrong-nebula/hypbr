@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 1.192,
    "normal": 1.334,
-   "albedo": 0.633
+   "albedo": 0.629
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  211,
-  208,
-  201
+  213,
+  209,
+  202
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/hammered_nickel_silver/albedo_delit.webp",

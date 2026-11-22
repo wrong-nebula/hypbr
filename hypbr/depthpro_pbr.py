@@ -33,6 +33,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from PIL import Image, ImageDraw
 
+from .color import srgb_to_linear
+
 PKG_DIR = Path(__file__).resolve().parent
 CACHE_DIR = Path(os.environ.get("HYPBR_CACHE_DIR", Path.home() / ".cache" / "hypbr"))
 NEON_PATCH = Path(os.environ.get("HYPBR_DEPTHPRO_PATCH", PKG_DIR / "weights" / "wsp_depthpro2_s_pbr.pt"))
@@ -125,6 +127,37 @@ def detrend_surface(h: np.ndarray, degree: int = 2) -> np.ndarray:
     return (h - (A @ coef).reshape(H, W)).astype(np.float32)
 
 
+_FFT_BLUR_MIN_RAD = 16  # below this a separable spatial conv is as fast as the FFT
+
+
+def _wrapped_kernel_fft(ker: np.ndarray, n: int, real: bool) -> np.ndarray:
+    """Spectrum of a symmetric 1-D kernel wrapped onto a period of `n` samples."""
+    rad = (ker.size - 1) // 2
+    k = np.zeros(n, dtype=np.float64)
+    np.add.at(k, np.arange(-rad, rad + 1) % n, ker.astype(np.float64))
+    return (np.fft.rfft(k) if real else np.fft.fft(k)).real
+
+
+def _gaussian_blur_fft(arr: np.ndarray, ker: np.ndarray, circular: bool) -> np.ndarray:
+    """Same result as the separable spatial conv below, in O(N log N) for any radius.
+
+    Circular mode convolves on the torus directly; reflect mode reflect-pads by the kernel
+    radius first, so the wrap-around of the padded FFT never reaches the kept region.
+    """
+    rad = (ker.size - 1) // 2
+    a = np.asarray(arr, dtype=np.float32)
+    if not circular:
+        a = np.pad(a, rad, mode="reflect")
+    H, W = a.shape
+    spec = np.fft.rfft2(a)
+    spec *= _wrapped_kernel_fft(ker, H, real=False)[:, None]
+    spec *= _wrapped_kernel_fft(ker, W, real=True)[None, :]
+    out = np.fft.irfft2(spec, s=(H, W))
+    if not circular:
+        out = out[rad:-rad, rad:-rad]
+    return np.ascontiguousarray(out, dtype=np.float32)
+
+
 @torch.no_grad()
 def gaussian_blur_np(arr: np.ndarray, sigma: float, circular: bool = False) -> np.ndarray:
     if sigma <= 0.1:
@@ -133,6 +166,8 @@ def gaussian_blur_np(arr: np.ndarray, sigma: float, circular: bool = False) -> n
     xs = np.arange(-rad, rad + 1, dtype=np.float32)
     ker = np.exp(-0.5 * (xs / sigma) ** 2)
     ker /= ker.sum()
+    if rad >= _FFT_BLUR_MIN_RAD or rad >= min(arr.shape[0], arr.shape[1]):
+        return _gaussian_blur_fft(arr, ker, circular)
     use_gpu = (DEVICE.type != "cpu") and (arr.size >= 262144) and (rad < min(arr.shape[0], arr.shape[1]))
     dev = DEVICE if use_gpu else torch.device("cpu")
     t = torch.from_numpy(np.ascontiguousarray(arr, dtype=np.float32)).to(dev)[None, None]
@@ -269,7 +304,7 @@ def height_to_ao(h: np.ndarray, strength: float = 1.5, circular: bool = False) -
 
 def v2_micro_relief(rgb_u8: np.ndarray, circular: bool = False) -> tuple[np.ndarray, np.ndarray]:
     rgb = rgb_u8.astype(np.float32) / 255.0
-    lin = np.power(np.clip(rgb, 0.0, 1.0), 2.2)
+    lin = srgb_to_linear(rgb)
     lum = 0.2126 * lin[..., 0] + 0.7152 * lin[..., 1] + 0.0722 * lin[..., 2]
     log_l = np.log(lum + 0.03)
 
@@ -398,7 +433,7 @@ def _run_deepbump_batch(named_rgbs: dict[str, np.ndarray]) -> tuple[dict[str, np
 def retinex_flat_plateau_gate(rgb_u8: np.ndarray, circular: bool = False) -> tuple[np.ndarray, float]:
     """Retinex/SAIL step-edge & chromaticity flat-paint suppressor (crushes flat_ratio from 0.70 -> 0.16)."""
     rgb = rgb_u8.astype(np.float32) / 255.0
-    lin = np.power(np.clip(rgb, 0.0, 1.0), 2.2)
+    lin = srgb_to_linear(rgb)
     lum = 0.2126 * lin[..., 0] + 0.7152 * lin[..., 1] + 0.0722 * lin[..., 2]
     log_l = np.log(lum + 0.03)
     s = lin.sum(axis=-1) + 0.05

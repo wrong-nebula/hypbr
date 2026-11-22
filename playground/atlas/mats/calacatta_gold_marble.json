@@ -133,16 +133,16 @@
   "seam_ratios": {
    "height": 0.518,
    "normal": 0.777,
-   "albedo": 0.488
+   "albedo": 0.477
   },
   "normal_unit_error": 0.0002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  221,
-  217,
-  210
+  222,
+  218,
+  211
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/calacatta_gold_marble/albedo_delit.webp",

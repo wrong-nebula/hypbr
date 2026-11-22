@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 0.041,
    "normal": 0.545,
-   "albedo": 0.109
+   "albedo": 0.104
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  128,
-  143,
-  176
+  127,
+  144,
+  177
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/polycrystalline_solar_array/albedo_delit.webp",

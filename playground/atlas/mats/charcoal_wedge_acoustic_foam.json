@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.333,
    "normal": 0.655,
-   "albedo": 0.8
+   "albedo": 0.766
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  68,
-  68,
-  71
+  66,
+  66,
+  69
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/charcoal_wedge_acoustic_foam/albedo_delit.webp",

@@ -129,20 +129,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.691,
+  "max_seam_ratio": 0.697,
   "seam_ratios": {
    "height": 0.423,
    "normal": 0.536,
-   "albedo": 0.691
+   "albedo": 0.697
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  133,
-  85,
-  65
+  143,
+  80,
+  47
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/mahogany_plank_floor/albedo_delit.webp",

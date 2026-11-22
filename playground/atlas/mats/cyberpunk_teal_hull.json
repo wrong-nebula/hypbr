@@ -125,8 +125,8 @@
   "mechanical"
  ],
  "pairs_well_with": [
-  "brushed_aluminum_satin",
-  "knurled_straight_flutes",
+  "brushed_anodized_plate",
+  "aluminum_diamond_tread_plate",
   "black_pcb_solder_mask",
   "low_e_blue_green_glazing"
  ],
@@ -136,16 +136,16 @@
   "seam_ratios": {
    "height": 0.199,
    "normal": 0.5,
-   "albedo": 0.405
+   "albedo": 0.41
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  38,
-  152,
-  157
+  33,
+  154,
+  158
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cyberpunk_teal_hull/albedo_delit.webp",

@@ -129,15 +129,15 @@
   "seam_ratios": {
    "height": 0.97,
    "normal": 0.914,
-   "albedo": 0.801
+   "albedo": 0.808
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  93,
-  93,
+  92,
+  92,
   92
  ],
  "maps": {

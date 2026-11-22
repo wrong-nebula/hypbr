@@ -2,8 +2,8 @@
  "materials": {
   "acoustic_kerf_felt": {
    "albedo_delit": [
-    143.889,
-    31.462
+    144.828,
+    32.667
    ],
    "height": [
     214.424,
@@ -20,8 +20,8 @@
   },
   "acoustic_pegboard": {
    "albedo_delit": [
-    162.135,
-    40.261
+    163.086,
+    41.407
    ],
    "height": [
     208.923,
@@ -38,8 +38,8 @@
   },
   "acoustic_pyramid_foam": {
    "albedo_delit": [
-    65.553,
-    6.485
+    63.396,
+    6.978
    ],
    "height": [
     101.042,
@@ -56,8 +56,8 @@
   },
   "acoustic_slat_wood": {
    "albedo_delit": [
-    125.45,
-    45.555
+    125.662,
+    46.815
    ],
    "height": [
     163.14,
@@ -74,8 +74,8 @@
   },
   "brushed_anodized_plate": {
    "albedo_delit": [
-    214.462,
-    7.979
+    215.508,
+    7.849
    ],
    "height": [
     238.985,
@@ -92,8 +92,8 @@
   },
   "burlap_jute_sackcloth": {
    "albedo_delit": [
-    153.56,
-    45.752
+    154.314,
+    46.82
    ],
    "height": [
     116.837,
@@ -110,8 +110,8 @@
   },
   "cable_knit_wool": {
    "albedo_delit": [
-    184.971,
-    22.453
+    186.298,
+    22.346
    ],
    "height": [
     96.509,
@@ -128,8 +128,8 @@
   },
   "carbon_fiber_weave": {
    "albedo_delit": [
-    95.115,
-    44.481
+    93.917,
+    46.685
    ],
    "height": [
     192.75,
@@ -146,8 +146,8 @@
   },
   "carrara_veined_marble": {
    "albedo_delit": [
-    221.34,
-    11.752
+    222.239,
+    11.582
    ],
    "height": [
     106.928,
@@ -164,8 +164,8 @@
   },
   "cast_iron_skillet_pebble": {
    "albedo_delit": [
-    54.456,
-    11.599
+    51.181,
+    12.715
    ],
    "height": [
     137.669,
@@ -182,8 +182,8 @@
   },
   "chainlink_wire_mesh": {
    "albedo_delit": [
-    115.702,
-    70.78
+    114.532,
+    72.696
    ],
    "height": [
     60.046,
@@ -200,8 +200,8 @@
   },
   "circular_perf_sheet": {
    "albedo_delit": [
-    176.534,
-    63.17
+    176.822,
+    64.674
    ],
    "height": [
     186.274,
@@ -218,8 +218,8 @@
   },
   "corkboard_pin_surface": {
    "albedo_delit": [
-    150.275,
-    29.405
+    151.413,
+    29.763
    ],
    "height": [
     148.088,
@@ -236,8 +236,8 @@
   },
   "corrugated_cardboard": {
    "albedo_delit": [
-    163.039,
-    23.474
+    164.371,
+    23.588
    ],
    "height": [
     138.768,
@@ -254,8 +254,8 @@
   },
   "corrugated_sheet_metal": {
    "albedo_delit": [
-    193.465,
-    8.569
+    194.813,
+    8.478
    ],
    "height": [
     128.895,
@@ -272,8 +272,8 @@
   },
   "damascus_folded_steel": {
    "albedo_delit": [
-    175.243,
-    54.941
+    175.976,
+    55.022
    ],
    "height": [
     144.806,
@@ -290,8 +290,8 @@
   },
   "diamond_tread_plate": {
    "albedo_delit": [
-    185.78,
-    7.322
+    187.205,
+    7.275
    ],
    "height": [
     24.922,
@@ -308,8 +308,8 @@
   },
   "dimpled_golf_grip": {
    "albedo_delit": [
-    61.729,
-    4.889
+    59.254,
+    5.309
    ],
    "height": [
     167.929,
@@ -326,8 +326,8 @@
   },
   "drip_tray_sieve_grate": {
    "albedo_delit": [
-    183.723,
-    63.541
+    184.011,
+    64.857
    ],
    "height": [
     190.649,
@@ -344,8 +344,8 @@
   },
   "embossed_braille_strip": {
    "albedo_delit": [
-    211.718,
-    7.424
+    212.813,
+    7.289
    ],
    "height": [
     43.559,
@@ -362,8 +362,8 @@
   },
   "expanded_metal_mesh": {
    "albedo_delit": [
-    118.951,
-    62.728
+    118.21,
+    64.905
    ],
    "height": [
     110.352,
@@ -380,8 +380,8 @@
   },
   "fine_asphalt_tarmac": {
    "albedo_delit": [
-    99.525,
-    15.813
+    99.435,
+    16.433
    ],
    "height": [
     123.712,
@@ -398,8 +398,8 @@
   },
   "fluted_reeded_glass": {
    "albedo_delit": [
-    203.605,
-    18.168
+    204.784,
+    17.983
    ],
    "height": [
     182.041,
@@ -416,8 +416,8 @@
   },
   "frosted_prism_diffuser": {
    "albedo_delit": [
-    218.63,
-    5.141
+    219.596,
+    5.067
    ],
    "height": [
     93.055,
@@ -434,8 +434,8 @@
   },
   "gilded_tin_ceiling_tile": {
    "albedo_delit": [
-    177.733,
-    49.068
+    178.611,
+    49.098
    ],
    "height": [
     101.241,
@@ -452,8 +452,8 @@
   },
   "hammered_copper_dimple": {
    "albedo_delit": [
-    182.5,
-    37.151
+    183.64,
+    36.893
    ],
    "height": [
     95.96,
@@ -470,8 +470,8 @@
   },
   "hardops_plate": {
    "albedo_delit": [
-    147.09,
-    14.103
+    148.377,
+    14.249
    ],
    "height": [
     70.945,
@@ -488,8 +488,8 @@
   },
   "heatsink_extrusion_fins": {
    "albedo_delit": [
-    115.208,
-    76.712
+    113.625,
+    78.91
    ],
    "height": [
     83.125,
@@ -506,8 +506,8 @@
   },
   "herringbone_tweed_wool": {
    "albedo_delit": [
-    145.659,
-    22.512
+    146.841,
+    22.817
    ],
    "height": [
     122.606,
@@ -524,8 +524,8 @@
   },
   "hex_mosaic_tile": {
    "albedo_delit": [
-    211.64,
-    27.781
+    212.593,
+    27.555
    ],
    "height": [
     176.473,
@@ -542,8 +542,8 @@
   },
   "hvac_slotted_vent": {
    "albedo_delit": [
-    173.507,
-    55.836
+    174.027,
+    57.395
    ],
    "height": [
     128.389,
@@ -560,8 +560,8 @@
   },
   "keyboard_keycap_grid": {
    "albedo_delit": [
-    91.447,
-    20.297
+    90.854,
+    21.495
    ],
    "height": [
     144.34,
@@ -578,8 +578,8 @@
   },
   "knurled_metal_grip": {
    "albedo_delit": [
-    195.139,
-    10.644
+    196.466,
+    10.523
    ],
    "height": [
     113.506,
@@ -596,8 +596,8 @@
   },
   "knurled_straight_flutes": {
    "albedo_delit": [
-    194.968,
-    10.171
+    196.296,
+    10.065
    ],
    "height": [
     152.375,
@@ -614,8 +614,8 @@
   },
   "mermaid_fishscale_tile": {
    "albedo_delit": [
-    129.436,
-    44.625
+    129.722,
+    46.208
    ],
    "height": [
     182.521,
@@ -632,8 +632,8 @@
   },
   "micro_hex_grip": {
    "albedo_delit": [
-    83.728,
-    4.794
+    82.885,
+    5.085
    ],
    "height": [
     122.117,
@@ -650,8 +650,8 @@
   },
   "modular_stud_grid": {
    "albedo_delit": [
-    134.461,
-    59.036
+    134.576,
+    59.673
    ],
    "height": [
     74.744,
@@ -668,8 +668,8 @@
   },
   "patinated_verdigris_bronze": {
    "albedo_delit": [
-    153.645,
-    39.279
+    154.622,
+    39.702
    ],
    "height": [
     157.288,
@@ -686,8 +686,8 @@
   },
   "pcb_solder_mask_traces": {
    "albedo_delit": [
-    81.84,
-    40.048
+    80.102,
+    41.982
    ],
    "height": [
     43.444,
@@ -704,8 +704,8 @@
   },
   "penny_round_mosaic": {
    "albedo_delit": [
-    169.864,
-    45.239
+    170.781,
+    45.862
    ],
    "height": [
     112.564,
@@ -722,8 +722,8 @@
   },
   "perforated_leather_auto": {
    "albedo_delit": [
-    53.388,
-    6.415
+    50.102,
+    7.105
    ],
    "height": [
     223.867,
@@ -740,8 +740,8 @@
   },
   "quilted_leather_stitch": {
    "albedo_delit": [
-    109.024,
-    29.25
+    109.103,
+    30.202
    ],
    "height": [
     188.002,
@@ -758,8 +758,8 @@
   },
   "reeded_coin_milling": {
    "albedo_delit": [
-    189.292,
-    46.789
+    190.193,
+    46.64
    ],
    "height": [
     143.812,
@@ -776,8 +776,8 @@
   },
   "ribbed_corduroy_velvet": {
    "albedo_delit": [
-    112.82,
-    29.432
+    113.039,
+    30.418
    ],
    "height": [
     149.595,
@@ -794,8 +794,8 @@
   },
   "ribbed_rubber_mat": {
    "albedo_delit": [
-    76.806,
-    4.313
+    75.522,
+    4.609
    ],
    "height": [
     118.822,
@@ -812,8 +812,8 @@
   },
   "riveted_sheet_seam": {
    "albedo_delit": [
-    202.433,
-    6.0
+    203.682,
+    5.925
    ],
    "height": [
     57.753,
@@ -830,8 +830,8 @@
   },
   "rubber_tread_stair": {
    "albedo_delit": [
-    95.613,
-    3.93
+    95.433,
+    4.117
    ],
    "height": [
     87.674,
@@ -848,8 +848,8 @@
   },
   "sidewalk_expansion_joint": {
    "albedo_delit": [
-    180.914,
-    24.62
+    182.216,
+    24.775
    ],
    "height": [
     207.655,
@@ -866,8 +866,8 @@
   },
   "solar_cell_grid": {
    "albedo_delit": [
-    135.972,
-    55.174
+    136.177,
+    56.243
    ],
    "height": [
     173.871,
@@ -884,8 +884,8 @@
   },
   "speaker_mesh_hex": {
    "albedo_delit": [
-    146.022,
-    63.68
+    145.977,
+    65.578
    ],
    "height": [
     154.904,
@@ -902,8 +902,8 @@
   },
   "stair_nosing_grooves": {
    "albedo_delit": [
-    202.713,
-    10.042
+    203.945,
+    9.89
    ],
    "height": [
     97.344,
@@ -920,8 +920,8 @@
   },
   "stamped_louver_micro": {
    "albedo_delit": [
-    147.049,
-    39.9
+    147.807,
+    41.557
    ],
    "height": [
     138.506,
@@ -938,8 +938,8 @@
   },
   "stamped_vent_slots_stagger": {
    "albedo_delit": [
-    147.58,
-    57.07
+    147.784,
+    59.082
    ],
    "height": [
     172.648,
@@ -956,8 +956,8 @@
   },
   "street_storm_grate": {
    "albedo_delit": [
-    129.269,
-    64.853
+    128.74,
+    67.081
    ],
    "height": [
     136.922,
@@ -974,8 +974,8 @@
   },
   "subway_metro_tile": {
    "albedo_delit": [
-    220.218,
-    26.394
+    221.042,
+    26.18
    ],
    "height": [
     177.408,
@@ -992,8 +992,8 @@
   },
   "terrazzo_speckled_stone": {
    "albedo_delit": [
-    178.169,
-    42.691
+    179.228,
+    42.809
    ],
    "height": [
     220.545,
@@ -1010,8 +1010,8 @@
   },
   "terry_velcro_loops": {
    "albedo_delit": [
-    187.657,
-    16.581
+    189.015,
+    16.515
    ],
    "height": [
     131.043,
@@ -1028,8 +1028,8 @@
   },
   "travertine_porous_stone": {
    "albedo_delit": [
-    173.872,
-    21.337
+    175.247,
+    21.37
    ],
    "height": [
     195.717,
@@ -1046,8 +1046,8 @@
   },
   "tufted_emerald_velvet": {
    "albedo_delit": [
-    87.478,
-    33.866
+    86.271,
+    35.967
    ],
    "height": [
     188.987,
@@ -1064,8 +1064,8 @@
   },
   "venetian_plaster_trowel": {
    "albedo_delit": [
-    213.963,
-    8.302
+    215.019,
+    8.151
    ],
    "height": [
     111.568,
@@ -1082,8 +1082,8 @@
   },
   "waffle_cotton_linen": {
    "albedo_delit": [
-    170.219,
-    10.366
+    171.688,
+    10.37
    ],
    "height": [
     165.857,
@@ -1100,8 +1100,8 @@
   },
   "waffle_radiator_fins": {
    "albedo_delit": [
-    217.065,
-    7.079
+    218.061,
+    6.944
    ],
    "height": [
     129.985,
@@ -1118,8 +1118,8 @@
   },
   "waffle_silicone_pad": {
    "albedo_delit": [
-    146.995,
-    11.665
+    148.295,
+    11.823
    ],
    "height": [
     111.017,
@@ -1136,8 +1136,8 @@
   },
   "window_blinds_slats": {
    "albedo_delit": [
-    211.687,
-    6.848
+    212.788,
+    6.727
    ],
    "height": [
     130.209,
@@ -1154,8 +1154,8 @@
   },
   "wood_parquet_herringbone": {
    "albedo_delit": [
-    134.515,
-    31.073
+    135.344,
+    31.728
    ],
    "height": [
     200.617,
@@ -1172,8 +1172,8 @@
   },
   "woven_bamboo_tatami": {
    "albedo_delit": [
-    172.799,
-    23.372
+    174.151,
+    23.434
    ],
    "height": [
     167.49,
@@ -1190,8 +1190,8 @@
   },
   "woven_denim_twill": {
    "albedo_delit": [
-    105.133,
-    29.163
+    105.032,
+    30.356
    ],
    "height": [
     138.404,
@@ -1208,8 +1208,8 @@
   },
   "woven_nylon_strap": {
    "albedo_delit": [
-    79.411,
-    16.787
+    78.155,
+    17.773
    ],
    "height": [
     139.812,
@@ -1226,8 +1226,8 @@
   },
   "woven_rattan_cane": {
    "albedo_delit": [
-    147.196,
-    46.845
+    147.837,
+    47.945
    ],
    "height": [
     116.789,

@@ -125,16 +125,16 @@
   "seam_ratios": {
    "height": 0.382,
    "normal": 0.637,
-   "albedo": 0.488
+   "albedo": 0.487
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  84,
   85,
-  86,
-  89
+  88
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/charcoal_slate_ledgestone/albedo_delit.webp",

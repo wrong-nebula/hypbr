@@ -87,7 +87,7 @@
   "reeded",
   "milling",
   "coin",
-  "orange",
+  "yellow",
   "warm",
   "satin",
   "metallic",
@@ -99,10 +99,10 @@
   "prop"
  ],
  "pairs_well_with": [
-  "rammed_earth_wall",
+  "smooth_architectural_concrete",
   "rubber_tread_stair",
   "brushed_satin_copper",
-  "matte_black_abs_plastic"
+  "keyboard_keycap_grid"
  ],
  "qa": {
   "passed": true,
@@ -110,16 +110,16 @@
   "seam_ratios": {
    "height": 0.151,
    "normal": 1.178,
-   "albedo": 0.098
+   "albedo": 0.117
   },
   "normal_unit_error": 0.002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  230,
-  204,
-  143
+  231,
+  205,
+  144
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/reeded_coin_milling/albedo_delit.webp",

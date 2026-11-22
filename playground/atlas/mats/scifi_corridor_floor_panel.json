@@ -125,26 +125,26 @@
  ],
  "pairs_well_with": [
   "brushed_satin_brass",
-  "fine_steel_knurl",
+  "diamond_tread_plate",
   "black_pcb_solder_mask",
   "bronze_tinted_glazing"
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.306,
+  "max_seam_ratio": 0.299,
   "seam_ratios": {
    "height": 0.147,
    "normal": 0.251,
-   "albedo": 0.306
+   "albedo": 0.299
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  149,
   151,
-  156
+  153,
+  157
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/scifi_corridor_floor_panel/albedo_delit.webp",

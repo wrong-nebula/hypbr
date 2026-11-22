@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.761,
    "normal": 0.756,
-   "albedo": 0.693
+   "albedo": 0.688
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  153,
-  157,
-  167
+  155,
+  158,
+  168
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/blued_raindrop_damascus/albedo_delit.webp",

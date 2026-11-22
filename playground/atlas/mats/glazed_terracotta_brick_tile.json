@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.3,
+  "max_seam_ratio": 0.302,
   "seam_ratios": {
    "height": 0.085,
    "normal": 0.268,
-   "albedo": 0.3
+   "albedo": 0.302
   },
   "normal_unit_error": 0.0009,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  181,
-  132,
-  98
+  182,
+  133,
+  100
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/glazed_terracotta_brick_tile/albedo_delit.webp",

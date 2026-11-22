@@ -72,8 +72,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.663,
-   0.867
+   0.675,
+   0.863
   ],
   "metallic_range": [
    0.0,
@@ -124,11 +124,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.156,
+  "max_seam_ratio": 1.15,
+  "max_seam_outlier": 0.872,
   "seam_ratios": {
-   "height": 1.156,
+   "height": 1.15,
    "normal": 0.828,
-   "albedo": 0.775
+   "albedo": 0.773
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -137,7 +138,7 @@
  "albedo_mean_srgb": [
   210,
   201,
-  180
+  181
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/fine_wale_cream_corduroy/albedo_delit.webp",

@@ -74,7 +74,7 @@
   "is_metallic": false,
   "roughness_range": [
    0.761,
-   0.922
+   0.953
   ],
   "metallic_range": [
    0.0,
@@ -124,11 +124,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.675,
+  "max_seam_ratio": 0.672,
+  "max_seam_outlier": 0.392,
   "seam_ratios": {
-   "height": 0.253,
-   "normal": 0.535,
-   "albedo": 0.675
+   "height": 0.257,
+   "normal": 0.504,
+   "albedo": 0.672
   },
   "normal_unit_error": 0.0018,
   "errors": [],
@@ -137,7 +138,7 @@
  "albedo_mean_srgb": [
   192,
   173,
-  142
+  141
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/buff_firebrick_refractory/albedo_delit.webp",

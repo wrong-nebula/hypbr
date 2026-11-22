@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.757,
-   0.953
+   0.784,
+   0.941
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +126,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.966,
+  "max_seam_ratio": 0.967,
+  "max_seam_outlier": 0.684,
   "seam_ratios": {
-   "height": 0.741,
-   "normal": 0.965,
-   "albedo": 0.966
+   "height": 0.751,
+   "normal": 0.967,
+   "albedo": 0.967
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  173,
+  174,
   113,
-  50
+  45
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/autumn_maple_leaves/albedo_delit.webp",

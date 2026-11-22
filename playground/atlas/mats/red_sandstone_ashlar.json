@@ -79,7 +79,7 @@
   "is_metallic": false,
   "roughness_range": [
    0.671,
-   0.914
+   0.91
   ],
   "metallic_range": [
    0.0,
@@ -128,20 +128,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.848,
+  "max_seam_ratio": 0.83,
+  "max_seam_outlier": 0.481,
   "seam_ratios": {
-   "height": 0.614,
-   "normal": 0.848,
-   "albedo": 0.782
+   "height": 0.615,
+   "normal": 0.83,
+   "albedo": 0.787
   },
-  "normal_unit_error": 0.0019,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  165,
-  122,
-  98
+  166,
+  121,
+  97
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_sandstone_ashlar/albedo_delit.webp",

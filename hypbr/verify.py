@@ -28,24 +28,52 @@ CORE_MAPS = (
 )
 
 
-def _seam_metrics(arr: np.ndarray) -> dict[str, float]:
-    """Compare wrap-around border jump against mean interior 1-pixel gradient."""
+# A wrap seam is judged per axis: the jump across the tile border is compared with the jumps across
+# every other row/column of the same map. A tileable texture's border is just another line (score ~1);
+# a seam is a border line that stands out from all of them. Comparing against the image-average
+# gradient instead flags materials whose ridges or mortar lines simply land on the border.
+FLAT_SEAM_FLOOR = 1.5 / 255.0  # mean border jumps below ~1.5 8-bit levels are invisible on any material
+
+
+def _line_jumps(x: np.ndarray, axis: int) -> np.ndarray:
+    """Mean |line_i - line_{i-1}| along `axis` for every line i; index 0 is the wrap-around border."""
+    d = np.abs(x - np.roll(x, 1, axis=axis))
+    other = tuple(i for i in range(x.ndim) if i != axis)
+    return d.mean(axis=other)
+
+
+def _seam_metrics(arr: np.ndarray) -> dict[str, Any]:
+    """Border-vs-interior wrap metrics (per axis plus the legacy averaged ratio)."""
     x = arr.astype(np.float32)
     if x.max() > 1.0:
         x = x / 255.0
-    border_v = float(np.mean(np.abs(x[0, ...] - x[-1, ...])))
-    border_h = float(np.mean(np.abs(x[:, 0, ...] - x[:, -1, ...])))
-    interior_v = float(np.mean(np.abs(x[1:, ...] - x[:-1, ...])))
-    interior_h = float(np.mean(np.abs(x[:, 1:, ...] - x[:, :-1, ...])))
-
-    border_l1 = 0.5 * (border_v + border_h)
-    interior_l1 = 0.5 * (interior_v + interior_h)
-    ratio = border_l1 / max(interior_l1, 1e-4)
+    axes = {}
+    for name, axis in (("v", 0), ("h", 1)):
+        j = _line_jumps(x, axis)
+        border, others = float(j[0]), j[1:]
+        axes[name] = {
+            "border": round(border, 5),
+            "ratio": round(border / max(float(others.mean()), 1e-4), 3),
+            "outlier": round(border / max(float(np.percentile(others, 99)), 1e-4), 3),
+        }
+    border_l1 = 0.5 * (axes["v"]["border"] + axes["h"]["border"])
+    interior_l1 = 0.5 * (float(np.mean(np.abs(x[1:, ...] - x[:-1, ...]))) + float(np.mean(np.abs(x[:, 1:, ...] - x[:, :-1, ...]))))
     return {
         "border_l1": round(border_l1, 5),
         "interior_l1": round(interior_l1, 5),
-        "seam_ratio": round(ratio, 3),
+        "seam_ratio": round(border_l1 / max(interior_l1, 1e-4), 3),
+        "outlier_score": max(axes["v"]["outlier"], axes["h"]["outlier"]),
+        "axes": axes,
     }
+
+
+def _seam_axes(sm: dict[str, Any], limit: float) -> list[str]:
+    """Axes whose border jump is visible and stands out from every other line of the map.
+
+    The border-vs-mean `ratio` is reported but not used: a crack, ridge or mortar line that happens to
+    run along the border gives a high ratio with no seam at all (measured on the 500-material atlas).
+    """
+    return [name for name, a in sm["axes"].items() if a["border"] > FLAT_SEAM_FLOOR and a["outlier"] > limit]
 
 
 def _normal_metrics(nrm_u8: np.ndarray) -> dict[str, float]:
@@ -69,8 +97,12 @@ def _normal_metrics(nrm_u8: np.ndarray) -> dict[str, float]:
     }
 
 
-def verify_material(mat_dir: "Path | str | MaterialMaps", seam_ratio_limit: float = 2.2) -> dict[str, Any]:
-    """Run deterministic physical and seamlessness QA checks on a hypbr material directory or `MaterialMaps`."""
+def verify_material(mat_dir: "Path | str | MaterialMaps", seam_limit: float = 1.3) -> dict[str, Any]:
+    """Run deterministic physical and seamlessness QA checks on a hypbr material directory or `MaterialMaps`.
+
+    `seam_limit`: max allowed border jump / 99th-percentile jump of all other rows (or columns), per
+    axis, for height, normal and albedo. Tileable textures score about 1; atlas materials stay below 1.2.
+    """
     d = MapSource(mat_dir)
     errors: list[str] = []
     warnings: list[str] = []
@@ -108,8 +140,10 @@ def verify_material(mat_dir: "Path | str | MaterialMaps", seam_ratio_limit: floa
     seam_a = _seam_metrics(alb)
     checks["seamless"] = {"height": seam_h, "normal": seam_n, "albedo": seam_a}
     for key, sm in (("height", seam_h), ("normal", seam_n), ("albedo", seam_a)):
-        if sm["border_l1"] > 0.03 and sm["seam_ratio"] > seam_ratio_limit:
-            errors.append(f"{key} wrap seam detected (ratio={sm['seam_ratio']}, border_l1={sm['border_l1']})")
+        bad = _seam_axes(sm, seam_limit)
+        if bad:
+            detail = ", ".join(f"{a}: border={sm['axes'][a]['border']} outlier={sm['axes'][a]['outlier']}" for a in bad)
+            errors.append(f"{key} wrap seam detected ({detail})")
 
     # 2. Normal validity
     nrm_stats = _normal_metrics(nrm)

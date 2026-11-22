@@ -45,6 +45,12 @@ WEATHER_PRESETS: dict[str, dict[str, float]] = {
 }
 
 
+# Below its knee a channel's output is (intensity / knee) x its output at the knee, so a trace does almost
+# nothing and the response rises linearly into the original curve, which is unchanged from the knee up.
+# Knees sit at or below the lowest value any preset uses (except rust in "aged"), so presets keep their look.
+FADE_IN_KNEES: dict[str, float] = {"wear": 0.35, "dirt": 0.25, "wet": 0.35, "moss": 0.35, "rust": 0.4, "dust": 0.25}
+
+
 def resolve_weather_params(
     preset: str | None = None,
     *,
@@ -186,6 +192,16 @@ def compute_weathering_masks(
     kind = material_kind.lower() if material_kind else "stone"
     is_metal = kind in ("metal", "copper", "bronze", "brass", "steel", "iron")
 
+    # Fade-in below each channel's knee: build the mask as at the knee, then scale it by intensity / knee.
+    raw_moss, raw_wet = float(moss), float(wet)  # cross-channel coupling keeps the requested values
+    fade: dict[str, float] = {}
+    eff: dict[str, float] = {}
+    for name, val in (("wear", wear), ("dirt", dirt), ("wet", wet), ("moss", moss), ("rust", rust), ("dust", dust)):
+        amt = float(np.clip(val, 0.0, 1.0))  # not `v`: that name is the texture-coordinate grid above
+        knee = FADE_IN_KNEES[name]
+        eff[name], fade[name] = (max(amt, knee), min(1.0, amt / knee)) if amt > 1e-4 else (0.0, 0.0)
+    wear, dirt, wet, moss, rust, dust = (eff[n] for n in ("wear", "dirt", "wet", "moss", "rust", "dust"))
+
     crevice = np.clip(
         0.44 * (1.0 - ao) + 0.34 * (1.0 - curv["cavity"]) + 0.22 * curv["concave"],
         0.0,
@@ -223,7 +239,7 @@ def compute_weathering_masks(
     if dirt > 1e-4:
         d_amt = float(np.clip(dirt, 0.0, 1.0))
         if is_metal:
-            heavy_grime = float(np.clip((d_amt - 0.35) / 0.45, 0.0, 1.0)) * float(np.clip(0.4 + 0.8 * (moss + wet), 0.0, 1.0))
+            heavy_grime = float(np.clip((d_amt - 0.35) / 0.45, 0.0, 1.0)) * float(np.clip(0.4 + 0.8 * (raw_moss + raw_wet), 0.0, 1.0))
             spread = (
                 (0.14 * (d_amt ** 1.3) * w_macro + 0.08 * d_amt * basin) * (1.0 - 0.80 * convex)
                 + 0.44 * heavy_grime * (0.55 * (1.0 - w_low) + 0.45 * w_macro) * (1.0 - 0.90 * convex)
@@ -385,6 +401,13 @@ def compute_weathering_masks(
     else:
         masks["dust"] = np.zeros((H, W), dtype=np.float32)
 
+    for name, keys in (("wear", ("wear",)), ("dirt", ("dirt",)), ("wet", ("wet", "puddle", "damp", "droplets")),
+                       ("moss", ("moss",)), ("rust", ("rust",)), ("dust", ("dust",))):
+        if 0.0 < fade[name] < 1.0:
+            for key in keys:
+                masks[key] = (masks[key] * fade[name]).astype(np.float32)
+    # Edge wear is thresholded again when applied; that step needs the mask as built at the knee.
+    masks["wear_fade"] = np.float32(fade["wear"] if fade["wear"] > 0.0 else 1.0)
     return masks
 
 
@@ -435,6 +458,8 @@ def apply_weathering_maps(
                     )
                 scale = float(locals()[k]) if float(locals()[k]) > 1e-4 else 1.0
                 masks[k] = np.clip(arr * scale, 0.0, 1.0).astype(np.float32)
+        if custom_masks.get("wear") is not None:
+            masks["wear_fade"] = np.float32(1.0)
         if "wet" in custom_masks and custom_masks["wet"] is not None:
             mw = masks["wet"]
             masks["puddle"] = gd._smoothstep(0.42, 0.85, mw)
@@ -451,7 +476,8 @@ def apply_weathering_maps(
     # --- Layer 1: Convex Edge Wear & Chipping (crisp thresholded, zero global desaturation!) ---
     m_wear = masks["wear"]
     if float(m_wear.max()) > 1e-4:
-        wear_crisp = gd._smoothstep(0.16, 0.72, m_wear)
+        w_fade = float(masks.get("wear_fade", 1.0))
+        wear_crisp = gd._smoothstep(0.16, 0.72, m_wear / max(w_fade, 1e-6)) * w_fade
         if is_metal:
             # Gleaming burnished exposed bare metal along sharp beveled crests
             burnish = np.clip(alb * 1.24 + 0.04, 0.0, 0.95)

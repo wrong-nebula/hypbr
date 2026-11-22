@@ -55,7 +55,7 @@
   "is_metallic": true,
   "roughness_range": [
    0.067,
-   0.251
+   0.247
   ],
   "metallic_range": [
    0.914,
@@ -106,20 +106,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.178,
+  "max_seam_ratio": 1.227,
+  "max_seam_outlier": 0.515,
   "seam_ratios": {
    "height": 0.151,
-   "normal": 1.178,
-   "albedo": 0.108
+   "normal": 1.227,
+   "albedo": 0.114
   },
-  "normal_unit_error": 0.002,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  230,
+  231,
   205,
-  146
+  145
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/reeded_coin_milling/albedo_delit.webp",

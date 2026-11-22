@@ -128,11 +128,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.706,
+  "max_seam_ratio": 1.657,
+  "max_seam_outlier": 1.005,
   "seam_ratios": {
-   "height": 1.008,
-   "normal": 1.706,
-   "albedo": 1.248
+   "height": 1.004,
+   "normal": 1.657,
+   "albedo": 1.247
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -141,7 +142,7 @@
  "albedo_mean_srgb": [
   212,
   178,
-  103
+  102
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/brass_knurl_grip/albedo_delit.webp",

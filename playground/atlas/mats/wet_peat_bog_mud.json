@@ -76,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.369,
-   0.522
+   0.38,
+   0.529
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +127,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.107,
+  "max_seam_ratio": 1.109,
+  "max_seam_outlier": 0.927,
   "seam_ratios": {
-   "height": 1.097,
-   "normal": 1.107,
-   "albedo": 1.018
+   "height": 1.094,
+   "normal": 1.109,
+   "albedo": 1.013
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  75,
+  76,
   64,
-  42
+  41
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wet_peat_bog_mud/albedo_delit.webp",

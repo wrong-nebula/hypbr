@@ -125,10 +125,11 @@
  "qa": {
   "passed": true,
   "max_seam_ratio": 1.105,
+  "max_seam_outlier": 0.788,
   "seam_ratios": {
    "height": 1.105,
    "normal": 0.886,
-   "albedo": 1.097
+   "albedo": 1.098
   },
   "normal_unit_error": 0.0013,
   "errors": [],

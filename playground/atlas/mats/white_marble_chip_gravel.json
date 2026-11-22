@@ -73,7 +73,7 @@
   "is_metallic": false,
   "roughness_range": [
    0.765,
-   0.922
+   0.918
   ],
   "metallic_range": [
    0.0,
@@ -121,11 +121,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.228,
+  "max_seam_ratio": 1.23,
+  "max_seam_outlier": 1.056,
   "seam_ratios": {
-   "height": 1.228,
-   "normal": 1.189,
-   "albedo": 1.21
+   "height": 1.23,
+   "normal": 1.19,
+   "albedo": 1.211
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -134,7 +135,7 @@
  "albedo_mean_srgb": [
   203,
   203,
-  200
+  201
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_marble_chip_gravel/albedo_delit.webp",

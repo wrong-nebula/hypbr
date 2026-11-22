@@ -72,8 +72,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.753,
-   0.941
+   0.725,
+   0.973
   ],
   "metallic_range": [
    0.0,
@@ -123,11 +123,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.849,
+  "max_seam_ratio": 0.851,
+  "max_seam_outlier": 0.472,
   "seam_ratios": {
-   "height": 0.239,
-   "normal": 0.417,
-   "albedo": 0.849
+   "height": 0.253,
+   "normal": 0.384,
+   "albedo": 0.851
   },
   "normal_unit_error": 0.0018,
   "errors": [],
@@ -136,7 +137,7 @@
  "albedo_mean_srgb": [
   171,
   147,
-  108
+  107
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/london_yellow_stock_brick/albedo_delit.webp",

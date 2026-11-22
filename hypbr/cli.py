@@ -193,16 +193,16 @@ def cmd_preview(args: argparse.Namespace) -> int:
 
 
 def cmd_verify(args: argparse.Namespace) -> int:
-    report = verify_material(args.dir, seam_ratio_limit=args.seam_limit)
+    report = verify_material(args.dir, seam_limit=args.seam_limit)
     if args.json:
         print(json.dumps(report, indent=2))
     else:
         status = "PASS" if report["passed"] else "FAIL"
         print(f"[{status}] {report['material']} ({report['checks'].get('resolution', '?')})")
         if "seamless" in report["checks"]:
-            sh = report["checks"]["seamless"]["height"]["seam_ratio"]
-            sn = report["checks"]["seamless"]["normal"]["seam_ratio"]
-            print(f"  Seam ratio (height / normal): {sh:.3f} / {sn:.3f}")
+            sm = report["checks"]["seamless"]
+            print("  Seam outlier score (height / normal / albedo): "
+                  f"{sm['height']['outlier_score']:.3f} / {sm['normal']['outlier_score']:.3f} / {sm['albedo']['outlier_score']:.3f}")
         if "normal" in report["checks"]:
             n = report["checks"]["normal"]
             print(f"  Normal unit err: {n['unit_length_error']:.4f} | +Z: {n['positive_z_fraction']:.4f} | Curl: {n['curl_residual_ratio']:.3f}")
@@ -394,7 +394,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_ver = sub.add_parser("verify", help="Verify seamlessness, normal validity, ORM packing, and PBR physical ranges")
     p_ver.add_argument("dir", type=Path, help="Material directory to verify")
     p_ver.add_argument("--json", action="store_true", help="Print full JSON report")
-    p_ver.add_argument("--seam-limit", type=float, default=2.2, help="Max allowed border-to-interior seam ratio")
+    p_ver.add_argument("--seam-limit", type=float, default=1.3,
+                       help="Max border jump / 99th-percentile jump of all other rows or columns (tileable ~1)")
     p_ver.set_defaults(func=cmd_verify)
 
     p_dump = sub.add_parser("dump-preset", help="Dump a built-in 47-node PBR graph preset as JSON")

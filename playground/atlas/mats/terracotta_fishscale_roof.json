@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.549,
-   0.965
+   0.624,
+   0.941
   ],
   "metallic_range": [
    0.0,
@@ -123,9 +123,10 @@
  "qa": {
   "passed": true,
   "max_seam_ratio": 0.687,
+  "max_seam_outlier": 0.451,
   "seam_ratios": {
-   "height": 0.363,
-   "normal": 0.577,
+   "height": 0.378,
+   "normal": 0.582,
    "albedo": 0.687
   },
   "normal_unit_error": 0.0019,
@@ -133,9 +134,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  183,
-  111,
-  47
+  184,
+  110,
+  44
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/terracotta_fishscale_roof/albedo_delit.webp",

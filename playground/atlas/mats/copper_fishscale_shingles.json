@@ -124,20 +124,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.55,
+  "max_seam_ratio": 0.554,
+  "max_seam_outlier": 0.282,
   "seam_ratios": {
-   "height": 0.336,
-   "normal": 0.55,
-   "albedo": 0.489
+   "height": 0.345,
+   "normal": 0.554,
+   "albedo": 0.491
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  210,
+  211,
   170,
-  151
+  149
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/copper_fishscale_shingles/albedo_delit.webp",

@@ -133,11 +133,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.907,
+  "max_seam_ratio": 0.901,
+  "max_seam_outlier": 0.102,
   "seam_ratios": {
    "height": 0.173,
-   "normal": 0.315,
-   "albedo": 0.907
+   "normal": 0.312,
+   "albedo": 0.901
   },
   "normal_unit_error": 0.0006,
   "errors": [],
@@ -146,7 +147,7 @@
  "albedo_mean_srgb": [
   187,
   181,
-  172
+  173
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/titanium_tech_panel/albedo_delit.webp",

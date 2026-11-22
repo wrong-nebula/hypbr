@@ -76,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.2,
-   0.553
+   0.192,
+   0.588
   ],
   "metallic_range": [
    0.0,
@@ -128,9 +128,10 @@
  "qa": {
   "passed": true,
   "max_seam_ratio": 0.415,
+  "max_seam_outlier": 0.177,
   "seam_ratios": {
-   "height": 0.116,
-   "normal": 0.139,
+   "height": 0.156,
+   "normal": 0.141,
    "albedo": 0.415
   },
   "normal_unit_error": 0.0008,
@@ -138,9 +139,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  211,
+  210,
   202,
-  182
+  183
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/handmade_cream_subway_tile/albedo_delit.webp",

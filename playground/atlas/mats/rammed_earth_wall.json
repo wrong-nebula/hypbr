@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.757,
-   0.863
+   0.796,
+   0.902
   ],
   "metallic_range": [
    0.0,
@@ -125,11 +125,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.134,
+  "max_seam_ratio": 1.131,
+  "max_seam_outlier": 0.951,
   "seam_ratios": {
-   "height": 0.532,
-   "normal": 1.134,
-   "albedo": 0.84
+   "height": 0.545,
+   "normal": 1.131,
+   "albedo": 0.841
   },
   "normal_unit_error": 0.0018,
   "errors": [],
@@ -138,7 +139,7 @@
  "albedo_mean_srgb": [
   185,
   147,
-  109
+  108
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rammed_earth_wall/albedo_delit.webp",

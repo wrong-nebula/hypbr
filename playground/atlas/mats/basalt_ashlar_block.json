@@ -78,8 +78,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.753,
-   0.914
+   0.678,
+   0.91
   ],
   "metallic_range": [
    0.0,
@@ -127,11 +127,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.93,
+  "max_seam_ratio": 0.924,
+  "max_seam_outlier": 0.536,
   "seam_ratios": {
-   "height": 0.606,
-   "normal": 0.93,
-   "albedo": 0.721
+   "height": 0.601,
+   "normal": 0.924,
+   "albedo": 0.725
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -140,7 +141,7 @@
  "albedo_mean_srgb": [
   76,
   76,
-  78
+  79
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/basalt_ashlar_block/albedo_delit.webp",

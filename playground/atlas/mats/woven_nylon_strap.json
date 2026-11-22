@@ -53,8 +53,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.631,
-   0.859
+   0.6,
+   0.831
   ],
   "metallic_range": [
    0.0,
@@ -103,20 +103,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.042,
+  "max_seam_ratio": 1.033,
+  "max_seam_outlier": 0.997,
   "seam_ratios": {
-   "height": 1.042,
-   "normal": 0.834,
-   "albedo": 0.983
+   "height": 1.033,
+   "normal": 0.826,
+   "albedo": 0.978
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  68,
-  86,
-  74
+  67,
+  87,
+  73
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/woven_nylon_strap/albedo_delit.webp",

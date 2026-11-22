@@ -123,20 +123,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.145,
+  "max_seam_ratio": 1.14,
+  "max_seam_outlier": 0.982,
   "seam_ratios": {
-   "height": 0.575,
-   "normal": 1.145,
-   "albedo": 0.784
+   "height": 0.579,
+   "normal": 1.14,
+   "albedo": 0.783
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  45,
+  44,
   59,
-  109
+  111
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/navy_plush_velvet/albedo_delit.webp",

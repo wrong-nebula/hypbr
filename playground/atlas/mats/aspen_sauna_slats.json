@@ -81,7 +81,7 @@
   "is_metallic": false,
   "roughness_range": [
    0.494,
-   0.941
+   0.937
   ],
   "metallic_range": [
    0.0,
@@ -134,20 +134,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.775,
+  "max_seam_ratio": 0.776,
+  "max_seam_outlier": 0.882,
   "seam_ratios": {
-   "height": 0.23,
-   "normal": 0.377,
-   "albedo": 0.775
+   "height": 0.22,
+   "normal": 0.34,
+   "albedo": 0.776
   },
-  "normal_unit_error": 0.0016,
+  "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   177,
   158,
-  123
+  122
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/aspen_sauna_slats/albedo_delit.webp",

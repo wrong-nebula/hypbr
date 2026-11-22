@@ -72,8 +72,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.757,
-   0.949
+   0.718,
+   0.973
   ],
   "metallic_range": [
    0.0,
@@ -123,9 +123,10 @@
  "qa": {
   "passed": true,
   "max_seam_ratio": 0.591,
+  "max_seam_outlier": 0.29,
   "seam_ratios": {
-   "height": 0.232,
-   "normal": 0.435,
+   "height": 0.252,
+   "normal": 0.4,
    "albedo": 0.591
   },
   "normal_unit_error": 0.0018,
@@ -133,9 +134,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  178,
+  179,
   132,
-  100
+  98
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/offset_bond_terracotta_brick/albedo_delit.webp",

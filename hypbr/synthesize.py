@@ -135,10 +135,12 @@ def _rich_albedo_and_metal(did: str, mat_kind: str, tint: tuple, h: np.ndarray, 
         plank_hue = np.cos(pid_x * 37.1 - pid_y * 19.7) * 0.5 + 0.5
         freq_p = 3.2 + 2.4 * plank_hue
         phase_p = 6.283 * plank_id
+        # Grain phase uses the in-plank coordinate (ry - iy / rx - ix): absolute rx/ry jump by N at the tile
+        # wrap while the plank id (mod N) does not, which broke every plank crossing the border.
         grain = 0.5 + 0.5 * np.where(
             is_h,
-            np.sin(2.0 * math.pi * (ry * freq_p + 0.28 * m1) + phase_p + 0.70 * m2),
-            np.sin(2.0 * math.pi * (rx * freq_p + 0.28 * m1) + phase_p + 0.70 * m2),
+            np.sin(2.0 * math.pi * ((ry - iy) * freq_p + 0.28 * m1) + phase_p + 0.70 * m2),
+            np.sin(2.0 * math.pi * ((rx - ix) * freq_p + 0.28 * m1) + phase_p + 0.70 * m2),
         )
         oak_honey = np.array([0.62, 0.42, 0.22], np.float32)[None, None, :]
         oak_amber = np.array([0.46, 0.29, 0.14], np.float32)[None, None, :]
@@ -838,6 +840,23 @@ def synthesize_hardops_plate_maps(size: int = 512, *, preview: bool = True) -> M
     )
 
 
+_METAL_KINDS = ("metal", "copper", "bronze", "brass", "gold", "steel", "iron")
+
+
+def wear_only_params(wear: float, is_metal: bool) -> dict[str, float]:
+    """What `wear=` means on its own: general ageing at one intensity.
+
+    Convex edge wear + crevice dirt/grime, plus rust/verdigris tarnish on metals, all through
+    `weathering.apply_weathering_maps`. Tarnish ramps as `wear**2`, so `0.5` ("lived-in") keeps metals
+    mostly bright and only `~0.8+` approaches heavy corrosion. Combined with a preset or other channels,
+    `wear` is just the edge-wear channel.
+    """
+    from .weathering import resolve_weather_params
+
+    w = float(np.clip(wear, 0.0, 1.0))
+    return resolve_weather_params(None, wear=w, dirt=w, rust=(w * w if is_metal else None))
+
+
 def _synthesize_hardops_weathered(
     size: int = 512,
     seed: int | None = None,
@@ -862,6 +881,10 @@ def _synthesize_hardops_weathered(
         return synthesize_hardops_plate_maps(size=size, preview=preview)
     # The weathering pass reads the fresh plate exactly as if it were saved to disk (8-bit maps).
     fresh = synthesize_hardops_plate_maps(size=size, preview=False)
+    if weather_preset is None and all(v is None for v in (dirt, wet, moss, rust, dust)):
+        # A lone `wear=` means general ageing, the same as for every other material
+        ch = wear_only_params(w_amt, is_metal=True)
+        dirt, rust = ch["dirt"], ch["rust"]
     return weather_material_maps(
         fresh, preset=weather_preset, wear=(w_amt if w_amt > 1e-4 else None),
         dirt=dirt, wet=wet, moss=moss, rust=rust, dust=dust, material_kind="metal",
@@ -1165,7 +1188,9 @@ def synthesize_material_maps(
         material_id: Built-in material ID (see `list_materials()`).
         size: Square output resolution in pixels (default: 512).
         seed: Optional deterministic seed override.
-        wear: Physical weathering intensity in `[0.0, 1.0]` (`0.0`=fresh, `0.5`=lived-in, `1.0`=weathered).
+        wear: Weathering intensity in `[0.0, 1.0]` (`0.0`=fresh, `0.5`=lived-in, `1.0`=weathered). On its own it
+            means general ageing (edge wear + crevice dirt, plus rust/verdigris on metals, see `wear_only_params`);
+            with `weather_preset` or other channels it is the convex edge-wear channel.
         weather_preset: Optional named multi-layer weathering preset
             (`aged`, `rain`, `mossy`, `rusty`, `dusty`, `coastal`, `abandoned`).
         dirt: Optional crevice dirt/grime intensity in `[0.0, 1.0]`.
@@ -1178,7 +1203,7 @@ def synthesize_material_maps(
             the uncalibrated v1.0 output exactly.
         preview: Render the studio `preview` image (skip to save ~5% time when not needed).
     """
-    from .calibration import adjust_roughness, equalize_albedo, equalize_height, get_calibration
+    from .calibration import FIT_SIZE_PX, adjust_roughness, equalize_albedo, equalize_height, get_calibration
     from .weathering import apply_weathering_maps, resolve_weather_params
 
     from . import atlas_catalog as ac
@@ -1236,7 +1261,7 @@ def synthesize_material_maps(
         slope_scale = float(slope_scale) * float(cal.get("slope_gain", 1.0))
         if cal.get("height_gains"):
             # Reference-matched multi-scale relief (periodic band equalizer on the height field)
-            h0 = equalize_height(h0, cal["height_gains"])
+            h0 = equalize_height(h0, cal["height_gains"], scale=H / FIT_SIZE_PX)
     h_n = dp.normalize_height(h0, clip_pct=0.5)
     N_geom = gd._height_to_normal_periodic(h0, slope=slope_scale)
     N_geom = ng.node_normal_clamp_slope({"circular": True}, {"normal": N_geom}, max_angle_deg=60.0)["normal"]
@@ -1295,7 +1320,7 @@ def synthesize_material_maps(
         met_u8 = np.clip(p_met * 255.0 + 0.5, 0, 255).astype(np.uint8)
     if cal is not None:
         cal_max = np.where(met_u8[..., None] > 64, 0.95, 0.855).astype(np.float32)
-        alb_lin = equalize_albedo(alb_lin, cal["band_gains"], float(cal.get("sat_gain", 1.0)), cal_max)
+        alb_lin = equalize_albedo(alb_lin, cal["band_gains"], float(cal.get("sat_gain", 1.0)), cal_max, scale=H / FIT_SIZE_PX)
         alb_u8 = linear_to_srgb_u8(alb_lin)
         if "rough_std_gain" not in cal:
             base_r = float(base_r) + float(cal.get("rough_shift", 0.0))
@@ -1316,6 +1341,9 @@ def synthesize_material_maps(
 
     weather_mask = None
     puddle_mask = None
+    if wp is None and w_amt > 1e-4:
+        is_metal = mat_kind in _METAL_KINDS or float(met_f.mean()) > 0.35
+        wp = wear_only_params(w_amt, is_metal)
     if wp is not None:
         w_res = apply_weathering_maps(
             alb_lin, N, h_n, rough, met_f, ao, curv,
@@ -1331,81 +1359,6 @@ def synthesize_material_maps(
         met_u8 = w_res["met_u8"]
         weather_mask = w_res["weather_mask"]
         puddle_mask = w_res["masks"].get("puddle")
-    elif w_amt > 1e-4:
-        w_macro = np.clip(0.5 + 0.42 * gd._periodic_fbm(H, W, s_base + 7777, (4, 8, 16)), 0.0, 1.0)
-        w_fine = np.clip(0.5 + 0.46 * gd._periodic_fbm(H, W, s_base + 8888, (16, 32, 64)), 0.0, 1.0)
-        w_micro = np.clip(0.5 + 0.48 * gd._periodic_fbm(H, W, s_base + 9999, (32, 64, 128)), 0.0, 1.0)
-
-        # Geometry-anchored crevice/basin mask: settles in grout, dimples, and occluded lug bases
-        # while keeping flat unoccluded faces & raised crests free of blurry airbrushed clouds.
-        crevice = np.clip(
-            0.42 * (1.0 - ao) + 0.34 * (1.0 - curv["cavity"]) + 0.24 * curv["concave"],
-            0.0, 1.0,
-        )
-        # Subtle outward creep onto recessed/mid zones only at higher wear intensities
-        basin = np.clip(1.0 - h_n, 0.0, 1.0)
-        spread = (0.14 * (w_amt ** 1.35) * w_macro + 0.28 * w_amt * basin) * (1.0 - 0.75 * curv["convex"])
-        drive = crevice * (0.95 + 0.40 * w_macro) + spread + 0.26 * w_micro - 0.32 * curv["convex"]
-        thresh = 0.62 - 0.38 * w_amt
-        patina = (gd._smoothstep(thresh - 0.055, thresh + 0.075, drive) * np.clip(0.75 + 0.25 * w_amt, 0.0, 1.0)).astype(np.float32)
-
-        # Raised convex crests get burnished metal polish (metals) or micro-scuffing (dielectrics)
-        edge_scuff = np.clip(curv["convex"] * (0.45 + 0.85 * w_fine) * w_amt * 1.35, 0.0, 0.88)
-
-        # 3D granular corrosion/grime normal pitting blended via RNM inside crusted pockets
-        pit_h = (0.55 * w_micro + 0.45 * w_fine).astype(np.float32)
-        N_pit = gd._height_to_normal_periodic(pit_h, slope=2.4 * w_amt)
-        p_pit, q_pit = ng.normal_to_slopes(N_pit)
-        N_pit_m = ng.slopes_to_normal(p_pit * patina, q_pit * patina)
-        N = dp.blend_rnm(N, N_pit_m, detail_weight=1.0)
-        N = ng.node_normal_clamp_slope({"circular": True}, {"normal": N}, max_angle_deg=60.0)["normal"]
-
-        is_cu = any(k in material_id for k in ("copper", "bronze", "brass")) or mat_kind in ("copper", "bronze", "brass")
-        is_metal = (mat_kind in ("metal", "copper", "bronze", "brass", "gold", "steel", "iron")) or (float(met_f.mean()) > 0.35)
-        if is_metal:
-            if is_cu:
-                # Crevice-settled cuprite oxide rim + powdery blue-green verdigris core; crests stay gleaming copper
-                cuprite = np.array([0.085, 0.048, 0.032], dtype=np.float32)[None, None, :]
-                verd_lo = np.array([0.090, 0.275, 0.225], dtype=np.float32)[None, None, :]
-                verd_hi = np.array([0.195, 0.420, 0.340], dtype=np.float32)[None, None, :]
-                verd = verd_lo * (1.0 - w_micro[..., None]) + verd_hi * w_micro[..., None]
-                core_w = gd._smoothstep(0.32, 0.78, patina * (0.65 + 0.55 * crevice) * (0.55 + 0.45 * w_amt))[..., None]
-                tarnish_col = cuprite * (1.0 - core_w) + verd * core_w
-            else:
-                # 3-stage granular iron/steel rust: dark magnetite oxide + burnt sienna + dusty ochre micro-flecks
-                ox_dark = np.array([0.068, 0.042, 0.028], dtype=np.float32)[None, None, :]
-                sienna = np.array([0.235, 0.082, 0.028], dtype=np.float32)[None, None, :]
-                ochre = np.array([0.390, 0.175, 0.050], dtype=np.float32)[None, None, :]
-                rust_t = np.clip(0.25 + 0.60 * w_fine + 0.35 * (w_micro - 0.5), 0.0, 1.0)[..., None]
-                rust_warm = sienna * (1.0 - rust_t) + ochre * rust_t
-                core_w = gd._smoothstep(0.22, 0.72, patina * (0.55 + 0.55 * w_micro))[..., None]
-                tarnish_col = ox_dark * (1.0 - core_w) + rust_warm * core_w
-
-            alb_lin = alb_lin * (1.0 - patina[..., None] * 0.92) + tarnish_col * (patina[..., None] * 0.92)
-            # Subtle warm polish on worn high crests
-            crest_col = np.clip(alb_lin * 1.18 + 0.03, 0.0, 0.94)
-            alb_lin = alb_lin * (1.0 - edge_scuff[..., None] * 0.30) + crest_col * (edge_scuff[..., None] * 0.30)
-            # Crisp metallic stripping on oxidized crust (dielectric patina/rust)
-            ox_cut = gd._smoothstep(0.22, 0.48, patina)
-            met_f = np.clip(met_f * (1.0 - ox_cut * 0.97), 0.0, 1.0).astype(np.float32)
-            rough = np.clip(
-                rough * (1.0 - patina) + np.clip(0.80 + 0.15 * w_micro, 0.74, 0.96) * patina - 0.12 * edge_scuff * met_f,
-                0.08, 0.97,
-            ).astype(np.float32)
-        else:
-            # Dielectric crevice grime / mineral buildup (tightly anchored to grout/bevels, zero flat smoke clouds)
-            grime_lo = np.array([0.055, 0.050, 0.044], dtype=np.float32)[None, None, :]
-            grime_hi = np.array([0.145, 0.132, 0.112], dtype=np.float32)[None, None, :]
-            grime_col = grime_lo * (1.0 - w_micro[..., None]) + grime_hi * w_micro[..., None]
-            # Anchor dielectric grime strictly to crevices/cavities + subtle fine bevel wear
-            diel_pat = (patina * gd._smoothstep(0.08, 0.35, crevice + 0.25 * w_amt * basin)).astype(np.float32)
-            scuff_col = np.clip(alb_lin * 1.18 + 0.05, 0.0, 0.855)
-            alb_lin = alb_lin * (1.0 - diel_pat[..., None] * 0.78) + grime_col * (diel_pat[..., None] * 0.78)
-            alb_lin = alb_lin * (1.0 - edge_scuff[..., None] * 0.32) + scuff_col * (edge_scuff[..., None] * 0.32)
-            rough = np.clip(rough + 0.34 * diel_pat + 0.16 * edge_scuff + 0.04 * w_amt * w_micro, 0.08, 0.97).astype(np.float32)
-
-        alb_u8 = linear_to_srgb_u8(alb_lin)
-        met_u8 = np.clip(met_f * 255.0 + 0.5, 0, 255).astype(np.uint8)
 
     rough = ng.node_roughness_specular_aa({"circular": True}, {"roughness": rough, "normal": N}, strength=0.25, max_boost=0.08)["roughness"]
     if puddle_mask is not None and float(puddle_mask.max()) > 1e-4:

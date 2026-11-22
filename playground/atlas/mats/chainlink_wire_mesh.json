@@ -107,20 +107,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.081,
+  "max_seam_ratio": 1.079,
+  "max_seam_outlier": 0.994,
   "seam_ratios": {
-   "height": 0.952,
-   "normal": 1.081,
-   "albedo": 0.965
+   "height": 0.95,
+   "normal": 1.079,
+   "albedo": 0.949
   },
-  "normal_unit_error": 0.0015,
+  "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  98,
-  102,
-  106
+  99,
+  103,
+  107
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/chainlink_wire_mesh/albedo_delit.webp",

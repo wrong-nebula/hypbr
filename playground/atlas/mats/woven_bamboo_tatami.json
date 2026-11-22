@@ -55,8 +55,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.584,
-   0.773
+   0.58,
+   0.765
   ],
   "metallic_range": [
    0.0,
@@ -107,11 +107,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.98,
+  "max_seam_ratio": 1.988,
+  "max_seam_outlier": 1.027,
   "seam_ratios": {
-   "height": 1.49,
-   "normal": 1.98,
-   "albedo": 1.46
+   "height": 1.451,
+   "normal": 1.988,
+   "albedo": 1.442
   },
   "normal_unit_error": 0.0018,
   "errors": [],
@@ -120,7 +121,7 @@
  "albedo_mean_srgb": [
   192,
   186,
-  132
+  134
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/woven_bamboo_tatami/albedo_delit.webp",

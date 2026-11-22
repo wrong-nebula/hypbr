@@ -132,11 +132,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.5,
+  "max_seam_ratio": 0.504,
+  "max_seam_outlier": 0.073,
   "seam_ratios": {
-   "height": 0.199,
-   "normal": 0.5,
-   "albedo": 0.42
+   "height": 0.208,
+   "normal": 0.504,
+   "albedo": 0.416
   },
   "normal_unit_error": 0.0007,
   "errors": [],
@@ -144,8 +145,8 @@
  },
  "albedo_mean_srgb": [
   33,
-  156,
-  161
+  155,
+  159
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cyberpunk_teal_hull/albedo_delit.webp",

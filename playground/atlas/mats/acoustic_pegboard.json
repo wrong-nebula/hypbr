@@ -105,11 +105,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.894,
+  "max_seam_ratio": 0.897,
+  "max_seam_outlier": 0.332,
   "seam_ratios": {
    "height": 0.444,
    "normal": 0.472,
-   "albedo": 0.894
+   "albedo": 0.897
   },
   "normal_unit_error": 0.0016,
   "errors": [],
@@ -117,8 +118,8 @@
  },
  "albedo_mean_srgb": [
   182,
-  160,
-  130
+  161,
+  132
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/acoustic_pegboard/albedo_delit.webp",

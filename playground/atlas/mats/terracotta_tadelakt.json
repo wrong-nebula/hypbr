@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.306,
-   0.49
+   0.29,
+   0.51
   ],
   "metallic_range": [
    0.0,
@@ -123,11 +123,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.011,
+  "max_seam_ratio": 1.015,
+  "max_seam_outlier": 0.882,
   "seam_ratios": {
-   "height": 0.582,
-   "normal": 1.011,
-   "albedo": 0.679
+   "height": 0.574,
+   "normal": 1.015,
+   "albedo": 0.675
   },
   "normal_unit_error": 0.0003,
   "errors": [],
@@ -136,7 +137,7 @@
  "albedo_mean_srgb": [
   198,
   127,
-  76
+  75
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/terracotta_tadelakt/albedo_delit.webp",

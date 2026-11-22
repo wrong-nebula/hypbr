@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.694,
-   0.843
+   0.792,
+   0.937
   ],
   "metallic_range": [
    0.0,
@@ -123,11 +123,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.709,
+  "max_seam_ratio": 0.707,
+  "max_seam_outlier": 0.552,
   "seam_ratios": {
    "height": 0.569,
-   "normal": 0.709,
-   "albedo": 0.676
+   "normal": 0.707,
+   "albedo": 0.679
   },
   "normal_unit_error": 0.0013,
   "errors": [],
@@ -136,7 +137,7 @@
  "albedo_mean_srgb": [
   212,
   202,
-  177
+  178
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/spanish_lace_stucco/albedo_delit.webp",

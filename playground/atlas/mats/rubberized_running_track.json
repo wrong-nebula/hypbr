@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.843,
-   0.945
+   0.812,
+   0.953
   ],
   "metallic_range": [
    0.0,
@@ -124,11 +124,12 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.139,
+  "max_seam_ratio": 1.142,
+  "max_seam_outlier": 0.967,
   "seam_ratios": {
-   "height": 1.01,
-   "normal": 1.139,
-   "albedo": 0.815
+   "height": 1.006,
+   "normal": 1.142,
+   "albedo": 0.811
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -136,8 +137,8 @@
  },
  "albedo_mean_srgb": [
   142,
-  72,
-  53
+  71,
+  52
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rubberized_running_track/albedo_delit.webp",

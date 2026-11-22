@@ -134,20 +134,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.825,
+  "max_seam_ratio": 0.866,
+  "max_seam_outlier": 0.899,
   "seam_ratios": {
-   "height": 0.219,
-   "normal": 0.357,
-   "albedo": 0.825
+   "height": 0.21,
+   "normal": 0.349,
+   "albedo": 0.866
   },
-  "normal_unit_error": 0.0012,
+  "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  94,
-  75,
-  60
+  96,
+  76,
+  59
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/teak_louver_screen/albedo_delit.webp",

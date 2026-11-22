@@ -52,8 +52,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.2,
-   0.655
+   0.204,
+   0.651
   ],
   "metallic_range": [
    0.0,
@@ -102,20 +102,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.723,
+  "max_seam_ratio": 0.714,
+  "max_seam_outlier": 0.58,
   "seam_ratios": {
-   "height": 0.333,
-   "normal": 0.723,
-   "albedo": 0.457
+   "height": 0.332,
+   "normal": 0.714,
+   "albedo": 0.461
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  99,
+  97,
   150,
-  156
+  157
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/mermaid_fishscale_tile/albedo_delit.webp",

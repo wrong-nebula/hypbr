@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.753,
-   0.922
+   0.702,
+   0.961
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.581,
+  "max_seam_ratio": 0.576,
+  "max_seam_outlier": 0.196,
   "seam_ratios": {
-   "height": 0.244,
-   "normal": 0.567,
-   "albedo": 0.581
+   "height": 0.251,
+   "normal": 0.552,
+   "albedo": 0.576
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  119,
+  120,
   98,
-  80
+  79
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sooty_firebox_brick/albedo_delit.webp",

@@ -77,8 +77,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.345,
-   0.639
+   0.325,
+   0.671
   ],
   "metallic_range": [
    0.0,
@@ -131,20 +131,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.567,
+  "max_seam_ratio": 0.577,
+  "max_seam_outlier": 0.073,
   "seam_ratios": {
-   "height": 0.219,
-   "normal": 0.494,
-   "albedo": 0.567
+   "height": 0.21,
+   "normal": 0.501,
+   "albedo": 0.577
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  225,
-  121,
-  33
+  215,
+  126,
+  34
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/hazard_orange_mech_plate/albedo_delit.webp",

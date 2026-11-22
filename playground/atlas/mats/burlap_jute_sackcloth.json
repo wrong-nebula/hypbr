@@ -53,8 +53,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.714,
-   0.863
+   0.824,
+   0.953
   ],
   "metallic_range": [
    0.0,
@@ -103,20 +103,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.649,
+  "max_seam_ratio": 0.65,
+  "max_seam_outlier": 0.403,
   "seam_ratios": {
-   "height": 0.564,
-   "normal": 0.649,
-   "albedo": 0.53
+   "height": 0.568,
+   "normal": 0.65,
+   "albedo": 0.531
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  179,
-  155,
-  120
+  180,
+  154,
+  116
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/burlap_jute_sackcloth/albedo_delit.webp",

@@ -76,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.173,
-   0.424
+   0.059,
+   0.361
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +125,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.284,
+  "max_seam_ratio": 0.282,
+  "max_seam_outlier": 0.03,
   "seam_ratios": {
-   "height": 0.114,
-   "normal": 0.188,
-   "albedo": 0.284
+   "height": 0.138,
+   "normal": 0.173,
+   "albedo": 0.282
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  174,
+  175,
   129,
-  102
+  101
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/terracotta_zellige_tile/albedo_delit.webp",

@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.663,
-   0.839
+   0.714,
+   0.859
   ],
   "metallic_range": [
    0.0,
@@ -126,10 +126,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.006,
+  "max_seam_ratio": 1.0,
+  "max_seam_outlier": 0.871,
   "seam_ratios": {
-   "height": 0.557,
-   "normal": 1.006,
+   "height": 0.548,
+   "normal": 1.0,
    "albedo": 0.734
   },
   "normal_unit_error": 0.001,

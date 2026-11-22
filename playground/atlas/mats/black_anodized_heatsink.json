@@ -123,20 +123,21 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.301,
+  "max_seam_ratio": 1.297,
+  "max_seam_outlier": 0.935,
   "seam_ratios": {
-   "height": 1.301,
-   "normal": 0.541,
-   "albedo": 0.304
+   "height": 1.297,
+   "normal": 0.532,
+   "albedo": 0.326
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  62,
-  62,
-  66
+  63,
+  63,
+  65
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/black_anodized_heatsink/albedo_delit.webp",

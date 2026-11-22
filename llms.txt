@@ -25,7 +25,7 @@
 - `hypbr blend <dir_a> <dir_b> --out <out_dir> [--mode height|cavity|linear] [--factor 0.5] [--contrast 0.06]` — Physically blend two `hypbr` materials via 16-bit HeightLerp/cavity masking with linear-light albedo and recomputed HBAO/curvature/ORM.
 - `hypbr preview <material_dir> [--host 127.0.0.1] [--port 8765] [--no-open]` — Launch a zero-dependency local Three.js PBR material inspector in the browser.
 - `hypbr export <src_dir> --target <unity|unity-hdrp|godot|unreal|blender|threejs|gltf|glb|vulkan|materialx|usd|all> --out <out_dir>` — Export an existing `hypbr` material directory with engine-native channel packing, normal convention, and material definition files.
-- `hypbr verify <material_dir> [--json] [--seam-limit 2.2]` — Automated physical calibration, ORM consistency, normal validity, and wrap-around seamlessness QA check (CI exit code 0/1).
+- `hypbr verify <material_dir> [--json] [--seam-limit 1.3]` — Automated physical calibration, ORM consistency, normal validity, and wrap-around seamlessness QA check (CI exit code 0/1). A seam is a border jump that stands out from the jumps across every other row/column of the same map (score = border jump / 99th-percentile jump of the other lines; tileable textures score about 1).
 - `hypbr dump-preset [v13-default]` — Export a built-in composable PBR node graph preset as JSON.
 - `hypbr photo <image> --preset v13-default [--graph custom.json] [--tileable] [--dx] --out ./output/photo_pbr` — Convert a macro photograph into 15 PBR maps using Apple Depth Pro + DeepBump ONNX + the 47-node graph.
 
@@ -69,7 +69,7 @@ Signatures below are checked against the code by `tests/test_docs.py`.
   - `vulkan`: `vulkan_manifest.json` (`VK_FORMAT_*` + `ktx create` commands), `orm_unorm.png`, `normal_rg_bc5_src.png`, `height_r16.png`.
   - `materialx`: MaterialX 1.38 `material.mtlx` (`standard_surface` + `displacement`) + textures.
   - `usd`: OpenUSD ASCII `material.usda` (`UsdPreviewSurface` with normal scale/bias decoding) + textures.
-- `verify_material(mat_dir, seam_ratio_limit=2.2) -> dict`: Pass/fail report with border-to-interior seam ratios, normal unit-length/+Z/curl metrics, ORM channel diff, and PBR luminance/roughness ranges.
+- `verify_material(mat_dir, seam_limit=1.3) -> dict`: Pass/fail report with per-axis seam outlier scores (border jump / 99th-percentile jump of all other lines), normal unit-length/+Z/curl metrics, ORM channel diff, and PBR luminance/roughness ranges.
 - `render_preview_html(material_name)` / `serve_preview(mat_dir, host="127.0.0.1", port=8765, open_browser=True)`: Local Three.js studio preview.
 
 ### Graph & neural

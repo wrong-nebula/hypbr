@@ -50,7 +50,7 @@ for cand in REPO_CANDIDATES:
 import numpy as np  # noqa: E402
 from PIL import Image  # noqa: E402
 
-BAKE_VERSION = 4  # v4: exact sRGB albedo encoding (was gamma 2.2)
+BAKE_VERSION = 5  # v5: seam outlier score in QA; v4: exact sRGB albedo encoding (was gamma 2.2)
 PARAMETRIC_CODE_VERSION = 5  # v1.1 detail pass, ground cover, marble veins, strata cliffs, textiles, wicker
 Q_MAPS = 86
 Q_NORMAL = 88
@@ -114,6 +114,7 @@ def bake_one(args: tuple[str, str, int]) -> dict[str, Any]:
             "verify": {
                 "passed": bool(rep.get("passed", False)) and finite,
                 "max_seam_ratio": round(max(seam_ratios.values()) if seam_ratios else 0.0, 3),
+                "max_seam_outlier": round(max(float(seamless[k].get("outlier_score", 0.0)) for k in seamless) if seamless else 0.0, 3),
                 "seam_ratios": seam_ratios,
                 "normal_unit_error": round(float(checks.get("normal", {}).get("unit_length_error", 0.0)), 4),
                 "errors": list(rep.get("errors", [])) + ([] if finite else ["non-finite map values"]),
@@ -217,7 +218,7 @@ def main() -> None:
     for r in rows:
         v = meas[r["id"]]["verify"]
         r["cached"] = True
-        r["verify"] = {"passed": v["passed"], "max_seam_ratio": v["max_seam_ratio"], "seam_ratios": v["seam_ratios"],
+        r["verify"] = {"passed": v["passed"], "max_seam_ratio": v["max_seam_ratio"], "max_seam_outlier": v["max_seam_outlier"], "seam_ratios": v["seam_ratios"],
                        "normal_unit_error": v["normal_unit_error"], "warnings": v["warnings"], "errors": v["errors"]}
         r["bundle_bytes"] = meas[r["id"]]["bytes"]
     presets = {"fresh": {k: 0.0 for k in ("wear", "dirt", "wet", "moss", "rust", "dust")}}

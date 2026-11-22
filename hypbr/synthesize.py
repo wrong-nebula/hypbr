@@ -135,10 +135,12 @@ def _rich_albedo_and_metal(did: str, mat_kind: str, tint: tuple, h: np.ndarray, 
         plank_hue = np.cos(pid_x * 37.1 - pid_y * 19.7) * 0.5 + 0.5
         freq_p = 3.2 + 2.4 * plank_hue
         phase_p = 6.283 * plank_id
+        # Grain phase uses the in-plank coordinate (ry - iy / rx - ix): absolute rx/ry jump by N at the tile
+        # wrap while the plank id (mod N) does not, which broke every plank crossing the border.
         grain = 0.5 + 0.5 * np.where(
             is_h,
-            np.sin(2.0 * math.pi * (ry * freq_p + 0.28 * m1) + phase_p + 0.70 * m2),
-            np.sin(2.0 * math.pi * (rx * freq_p + 0.28 * m1) + phase_p + 0.70 * m2),
+            np.sin(2.0 * math.pi * ((ry - iy) * freq_p + 0.28 * m1) + phase_p + 0.70 * m2),
+            np.sin(2.0 * math.pi * ((rx - ix) * freq_p + 0.28 * m1) + phase_p + 0.70 * m2),
         )
         oak_honey = np.array([0.62, 0.42, 0.22], np.float32)[None, None, :]
         oak_amber = np.array([0.46, 0.29, 0.14], np.float32)[None, None, :]

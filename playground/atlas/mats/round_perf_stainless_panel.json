@@ -136,16 +136,16 @@
   "seam_ratios": {
    "height": 0.132,
    "normal": 0.254,
-   "albedo": 0.123
+   "albedo": 0.122
   },
   "normal_unit_error": 0.0009,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  174,
+  173,
   175,
-  176
+  177
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/round_perf_stainless_panel/albedo_delit.webp",

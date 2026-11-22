@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.299,
+  "max_seam_ratio": 0.298,
   "seam_ratios": {
    "height": 0.147,
    "normal": 0.251,
-   "albedo": 0.299
+   "albedo": 0.298
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  151,
+  150,
   153,
-  157
+  158
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/scifi_corridor_floor_panel/albedo_delit.webp",

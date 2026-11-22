@@ -139,7 +139,7 @@
  "albedo_mean_srgb": [
   217,
   215,
-  208
+  209
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/washi_rice_paper/albedo_delit.webp",

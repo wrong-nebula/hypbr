@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 1.301,
    "normal": 0.541,
-   "albedo": 0.305
+   "albedo": 0.304
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  63,
-  63,
-  65
+  62,
+  62,
+  66
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/black_anodized_heatsink/albedo_delit.webp",

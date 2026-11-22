@@ -127,7 +127,7 @@
   "seam_ratios": {
    "height": 0.569,
    "normal": 0.709,
-   "albedo": 0.674
+   "albedo": 0.676
   },
   "normal_unit_error": 0.0013,
   "errors": [],
@@ -136,7 +136,7 @@
  "albedo_mean_srgb": [
   212,
   202,
-  180
+  177
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/spanish_lace_stucco/albedo_delit.webp",

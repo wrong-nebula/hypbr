@@ -135,16 +135,16 @@
   "seam_ratios": {
    "height": 0.801,
    "normal": 0.844,
-   "albedo": 0.756
+   "albedo": 0.752
   },
   "normal_unit_error": 0.0004,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  193,
+  196,
   167,
-  126
+  118
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/birch_plywood_sheet/albedo_delit.webp",

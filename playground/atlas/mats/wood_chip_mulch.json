@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.959,
+  "max_seam_ratio": 0.965,
   "seam_ratios": {
    "height": 0.941,
    "normal": 0.925,
-   "albedo": 0.959
+   "albedo": 0.965
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  135,
-  96,
-  54
+  140,
+  95,
+  39
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wood_chip_mulch/albedo_delit.webp",

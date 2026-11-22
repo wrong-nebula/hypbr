@@ -135,20 +135,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.791,
+  "max_seam_ratio": 0.787,
   "seam_ratios": {
    "height": 0.347,
    "normal": 0.371,
-   "albedo": 0.791
+   "albedo": 0.787
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  198,
-  164,
-  117
+  202,
+  163,
+  105
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/maple_butcher_block_counter/albedo_delit.webp",

@@ -125,16 +125,16 @@
   "seam_ratios": {
    "height": 0.998,
    "normal": 1.119,
-   "albedo": 0.889
+   "albedo": 0.887
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  95,
+  96,
   94,
-  93
+  92
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/coarse_chip_seal_road/albedo_delit.webp",

@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.524,
    "normal": 1.706,
-   "albedo": 1.497
+   "albedo": 1.499
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  143,
-  106,
-  66
+  148,
+  105,
+  53
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/distressed_brown_leather/albedo_delit.webp",

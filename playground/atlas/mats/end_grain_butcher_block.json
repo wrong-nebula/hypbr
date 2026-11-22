@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.283,
+  "max_seam_ratio": 0.278,
   "seam_ratios": {
    "height": 0.108,
    "normal": 0.065,
-   "albedo": 0.283
+   "albedo": 0.278
   },
   "normal_unit_error": 0.0004,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  181,
-  145,
-  94
+  183,
+  144,
+  87
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/end_grain_butcher_block/albedo_delit.webp",

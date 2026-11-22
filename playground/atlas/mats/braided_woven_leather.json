@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.962,
    "normal": 1.055,
-   "albedo": 0.766
+   "albedo": 0.753
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  130,
-  93,
-  53
+  135,
+  92,
+  39
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/braided_woven_leather/albedo_delit.webp",

@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 0.575,
    "normal": 1.145,
-   "albedo": 0.786
+   "albedo": 0.784
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  47,
+  45,
   59,
-  105
+  109
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/navy_plush_velvet/albedo_delit.webp",

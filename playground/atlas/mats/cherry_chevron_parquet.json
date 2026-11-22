@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 0.846,
    "normal": 0.887,
-   "albedo": 0.825
+   "albedo": 0.829
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  162,
-  95,
-  56
+  168,
+  92,
+  38
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cherry_chevron_parquet/albedo_delit.webp",

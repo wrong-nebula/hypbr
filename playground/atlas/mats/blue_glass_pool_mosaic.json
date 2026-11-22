@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 0.15,
    "normal": 0.068,
-   "albedo": 0.127
+   "albedo": 0.129
   },
   "normal_unit_error": 0.0012,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  87,
-  143,
-  174
+  98,
+  142,
+  169
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/blue_glass_pool_mosaic/albedo_delit.webp",

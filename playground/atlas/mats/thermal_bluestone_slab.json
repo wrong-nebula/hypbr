@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.617,
    "normal": 0.907,
-   "albedo": 0.744
+   "albedo": 0.749
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  113,
+  112,
   123,
-  132
+  134
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/thermal_bluestone_slab/albedo_delit.webp",

@@ -127,11 +127,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.645,
+  "max_seam_ratio": 0.644,
   "seam_ratios": {
    "height": 0.189,
    "normal": 0.523,
-   "albedo": 0.645
+   "albedo": 0.644
   },
   "normal_unit_error": 0.0013,
   "errors": [],
@@ -140,7 +140,7 @@
  "albedo_mean_srgb": [
   194,
   172,
-  121
+  122
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/ochre_cement_tile/albedo_delit.webp",

@@ -132,20 +132,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.737,
+  "max_seam_ratio": 0.732,
   "seam_ratios": {
    "height": 0.489,
    "normal": 0.649,
-   "albedo": 0.737
+   "albedo": 0.732
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  143,
-  67,
-  60
+  135,
+  71,
+  66
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_barn_siding/albedo_delit.webp",

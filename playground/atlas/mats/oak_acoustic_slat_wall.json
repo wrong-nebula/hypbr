@@ -142,7 +142,7 @@
  "albedo_mean_srgb": [
   121,
   104,
-  83
+  85
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/oak_acoustic_slat_wall/albedo_delit.webp",

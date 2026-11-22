@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 1.241,
    "normal": 0.576,
-   "albedo": 0.943
+   "albedo": 0.945
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  89,
-  97,
-  62
+  88,
+  98,
+  55
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/olive_military_ripstop/albedo_delit.webp",

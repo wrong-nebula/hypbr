@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 0.326,
    "normal": 0.696,
-   "albedo": 0.575
+   "albedo": 0.573
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  142,
+  143,
   132,
-  116
+  114
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/fieldstone_drystack_wall/albedo_delit.webp",

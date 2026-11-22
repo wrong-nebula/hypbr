@@ -133,16 +133,16 @@
   "seam_ratios": {
    "height": 0.358,
    "normal": 0.824,
-   "albedo": 0.676
+   "albedo": 0.672
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  133,
+  134,
   87,
-  41
+  40
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/heavy_scale_rusted_iron/albedo_delit.webp",

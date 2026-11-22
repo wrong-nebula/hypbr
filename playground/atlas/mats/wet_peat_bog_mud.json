@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 1.097,
    "normal": 1.107,
-   "albedo": 1.017
+   "albedo": 1.018
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  74,
+  75,
   64,
-  45
+  42
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wet_peat_bog_mud/albedo_delit.webp",

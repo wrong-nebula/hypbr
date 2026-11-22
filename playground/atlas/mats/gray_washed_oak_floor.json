@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 0.456,
    "normal": 0.625,
-   "albedo": 0.613
+   "albedo": 0.612
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  148,
+  149,
   141,
-  131
+  129
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_washed_oak_floor/albedo_delit.webp",

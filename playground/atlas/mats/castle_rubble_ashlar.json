@@ -132,14 +132,14 @@
   "seam_ratios": {
    "height": 0.534,
    "normal": 0.851,
-   "albedo": 0.847
+   "albedo": 0.842
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  142,
+  143,
   135,
   125
  ],

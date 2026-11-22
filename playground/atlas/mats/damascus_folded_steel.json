@@ -112,7 +112,7 @@
   "seam_ratios": {
    "height": 0.824,
    "normal": 0.952,
-   "albedo": 0.752
+   "albedo": 0.755
   },
   "normal_unit_error": 0.0014,
   "errors": [],
@@ -121,7 +121,7 @@
  "albedo_mean_srgb": [
   167,
   170,
-  176
+  175
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/damascus_folded_steel/albedo_delit.webp",

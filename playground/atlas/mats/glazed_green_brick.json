@@ -122,11 +122,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.476,
+  "max_seam_ratio": 0.478,
   "seam_ratios": {
    "height": 0.2,
    "normal": 0.398,
-   "albedo": 0.476
+   "albedo": 0.478
   },
   "normal_unit_error": 0.0019,
   "errors": [],

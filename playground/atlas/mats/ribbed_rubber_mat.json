@@ -105,7 +105,7 @@
   "seam_ratios": {
    "height": 0.123,
    "normal": 0.421,
-   "albedo": 0.409
+   "albedo": 0.42
   },
   "normal_unit_error": 0.0018,
   "errors": [],

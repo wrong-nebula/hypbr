@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.558,
+  "max_seam_ratio": 0.559,
   "seam_ratios": {
    "height": 0.345,
    "normal": 0.548,
-   "albedo": 0.558
+   "albedo": 0.559
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  60,
+  58,
   130,
-  82
+  81
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/green_glazed_fishscale_roof/albedo_delit.webp",

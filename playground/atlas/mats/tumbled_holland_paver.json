@@ -130,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.601,
+  "max_seam_ratio": 0.599,
   "seam_ratios": {
    "height": 0.123,
    "normal": 0.227,
-   "albedo": 0.601
+   "albedo": 0.599
   },
   "normal_unit_error": 0.001,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  147,
+  146,
   113,
-  93
+  94
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/tumbled_holland_paver/albedo_delit.webp",

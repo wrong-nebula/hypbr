@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.427,
+  "max_seam_ratio": 1.428,
   "seam_ratios": {
    "height": 1.223,
    "normal": 1.26,
-   "albedo": 1.427
+   "albedo": 1.428
   },
   "normal_unit_error": 0.0012,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  139,
+  138,
   128,
-  121
+  122
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/charcoal_terrazzo/albedo_delit.webp",

@@ -129,7 +129,7 @@
   "seam_ratios": {
    "height": 0.637,
    "normal": 1.074,
-   "albedo": 0.903
+   "albedo": 0.906
   },
   "normal_unit_error": 0.0004,
   "errors": [],
@@ -138,7 +138,7 @@
  "albedo_mean_srgb": [
   183,
   181,
-  177
+  176
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_microcement/albedo_delit.webp",

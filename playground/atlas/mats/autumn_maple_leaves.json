@@ -126,11 +126,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.968,
+  "max_seam_ratio": 0.966,
   "seam_ratios": {
    "height": 0.741,
    "normal": 0.965,
-   "albedo": 0.968
+   "albedo": 0.966
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -139,7 +139,7 @@
  "albedo_mean_srgb": [
   173,
   113,
-  48
+  50
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/autumn_maple_leaves/albedo_delit.webp",

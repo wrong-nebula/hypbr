@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.316,
    "normal": 1.526,
-   "albedo": 1.008
+   "albedo": 1.024
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  178,
-  114,
-  74
+  185,
+  111,
+  58
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_sandstone_slab/albedo_delit.webp",

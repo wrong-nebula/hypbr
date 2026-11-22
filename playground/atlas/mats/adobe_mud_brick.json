@@ -137,9 +137,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  164,
-  133,
-  96
+  168,
+  132,
+  87
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/adobe_mud_brick/albedo_delit.webp",

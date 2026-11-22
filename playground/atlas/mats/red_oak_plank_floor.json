@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.827,
+  "max_seam_ratio": 0.833,
   "seam_ratios": {
    "height": 0.396,
    "normal": 0.524,
-   "albedo": 0.827
+   "albedo": 0.833
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  166,
+  167,
   111,
-  69
+  65
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_oak_plank_floor/albedo_delit.webp",

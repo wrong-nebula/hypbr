@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 0.732,
    "normal": 1.287,
-   "albedo": 0.967
+   "albedo": 0.965
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  186,
+  187,
   174,
-  153
+  149
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/natural_linen_plain/albedo_delit.webp",

@@ -107,16 +107,16 @@
   "seam_ratios": {
    "height": 1.042,
    "normal": 0.834,
-   "albedo": 0.981
+   "albedo": 0.983
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  69,
+  68,
   86,
-  75
+  74
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/woven_nylon_strap/albedo_delit.webp",

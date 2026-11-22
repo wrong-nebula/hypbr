@@ -130,16 +130,16 @@
   "seam_ratios": {
    "height": 1.782,
    "normal": 2.097,
-   "albedo": 0.78
+   "albedo": 0.782
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  171,
+  172,
   163,
-  114
+  104
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/seagrass_basket_weave/albedo_delit.webp",

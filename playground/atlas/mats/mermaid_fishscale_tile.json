@@ -113,9 +113,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  97,
+  99,
   150,
-  157
+  156
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/mermaid_fishscale_tile/albedo_delit.webp",

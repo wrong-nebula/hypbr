@@ -129,11 +129,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.504,
+  "max_seam_ratio": 1.505,
   "seam_ratios": {
    "height": 1.277,
    "normal": 1.435,
-   "albedo": 1.504
+   "albedo": 1.505
   },
   "normal_unit_error": 0.0018,
   "errors": [],
@@ -142,7 +142,7 @@
  "albedo_mean_srgb": [
   120,
   113,
-  105
+  104
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/old_town_cobblestone/albedo_delit.webp",

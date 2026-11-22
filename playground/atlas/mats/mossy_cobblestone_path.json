@@ -130,7 +130,7 @@
   "seam_ratios": {
    "height": 1.649,
    "normal": 1.698,
-   "albedo": 1.494
+   "albedo": 1.491
   },
   "normal_unit_error": 0.0018,
   "errors": [],
@@ -139,7 +139,7 @@
  "albedo_mean_srgb": [
   119,
   120,
-  108
+  110
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/mossy_cobblestone_path/albedo_delit.webp",

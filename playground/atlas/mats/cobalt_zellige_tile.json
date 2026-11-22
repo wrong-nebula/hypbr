@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 0.115,
    "normal": 0.179,
-   "albedo": 0.152
+   "albedo": 0.147
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  63,
-  86,
-  148
+  67,
+  87,
+  143
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cobalt_zellige_tile/albedo_delit.webp",

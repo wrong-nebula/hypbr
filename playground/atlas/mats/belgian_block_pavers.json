@@ -136,9 +136,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  141,
+  142,
   136,
-  126
+  124
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/belgian_block_pavers/albedo_delit.webp",

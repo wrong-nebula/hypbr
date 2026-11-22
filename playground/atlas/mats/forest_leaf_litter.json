@@ -137,8 +137,8 @@
  },
  "albedo_mean_srgb": [
   134,
-  96,
-  44
+  95,
+  42
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/forest_leaf_litter/albedo_delit.webp",

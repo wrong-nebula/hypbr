@@ -130,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.931,
+  "max_seam_ratio": 0.932,
   "seam_ratios": {
    "height": 0.407,
    "normal": 0.512,
-   "albedo": 0.931
+   "albedo": 0.932
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  192,
-  174,
-  144
+  194,
+  173,
+  137
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/scandinavian_ash_floor/albedo_delit.webp",

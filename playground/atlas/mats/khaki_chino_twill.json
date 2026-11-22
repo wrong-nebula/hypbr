@@ -138,9 +138,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  171,
+  173,
   153,
-  114
+  105
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/khaki_chino_twill/albedo_delit.webp",

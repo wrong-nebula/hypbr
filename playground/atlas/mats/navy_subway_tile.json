@@ -136,9 +136,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  65,
+  67,
   79,
-  114
+  111
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/navy_subway_tile/albedo_delit.webp",

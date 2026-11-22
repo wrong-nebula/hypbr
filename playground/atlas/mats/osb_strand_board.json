@@ -132,16 +132,16 @@
   "seam_ratios": {
    "height": 1.47,
    "normal": 1.769,
-   "albedo": 1.291
+   "albedo": 1.292
   },
   "normal_unit_error": 0.0009,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  188,
+  189,
   156,
-  102
+  101
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/osb_strand_board/albedo_delit.webp",

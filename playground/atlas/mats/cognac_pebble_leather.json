@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 1.595,
    "normal": 1.711,
-   "albedo": 1.645
+   "albedo": 1.651
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  163,
-  108,
-  53
+  169,
+  106,
+  33
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cognac_pebble_leather/albedo_delit.webp",

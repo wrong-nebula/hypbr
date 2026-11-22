@@ -130,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.617,
+  "max_seam_ratio": 0.624,
   "seam_ratios": {
    "height": 0.405,
    "normal": 0.497,
-   "albedo": 0.617
+   "albedo": 0.624
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  134,
+  137,
   106,
-  76
+  68
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/smoked_european_oak_floor/albedo_delit.webp",

@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 1.887,
    "normal": 1.748,
-   "albedo": 1.768
+   "albedo": 1.767
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  150,
+  151,
   142,
-  129
+  127
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/river_pebble_cobble/albedo_delit.webp",

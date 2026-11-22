@@ -128,7 +128,7 @@
   "seam_ratios": {
    "height": 1.01,
    "normal": 1.139,
-   "albedo": 0.81
+   "albedo": 0.815
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -136,8 +136,8 @@
  },
  "albedo_mean_srgb": [
   142,
-  71,
-  52
+  72,
+  53
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rubberized_running_track/albedo_delit.webp",

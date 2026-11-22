@@ -137,7 +137,7 @@
  "albedo_mean_srgb": [
   211,
   190,
-  143
+  144
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/jerusalem_gold_limestone/albedo_delit.webp",

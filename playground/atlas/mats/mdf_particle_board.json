@@ -132,7 +132,7 @@
   "seam_ratios": {
    "height": 1.442,
    "normal": 1.522,
-   "albedo": 1.284
+   "albedo": 1.286
   },
   "normal_unit_error": 0.0009,
   "errors": [],
@@ -141,7 +141,7 @@
  "albedo_mean_srgb": [
   184,
   156,
-  114
+  113
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/mdf_particle_board/albedo_delit.webp",

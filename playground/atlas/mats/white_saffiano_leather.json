@@ -134,9 +134,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  204,
+  205,
   203,
-  198
+  197
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_saffiano_leather/albedo_delit.webp",

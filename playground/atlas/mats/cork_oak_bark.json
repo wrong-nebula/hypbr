@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 0.926,
    "normal": 1.048,
-   "albedo": 0.951
+   "albedo": 0.956
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  164,
-  130,
-  90
+  168,
+  129,
+  79
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cork_oak_bark/albedo_delit.webp",

@@ -132,11 +132,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.632,
+  "max_seam_ratio": 0.628,
   "seam_ratios": {
    "height": 0.241,
    "normal": 0.529,
-   "albedo": 0.632
+   "albedo": 0.628
   },
   "normal_unit_error": 0.0007,
   "errors": [],
@@ -145,7 +145,7 @@
  "albedo_mean_srgb": [
   130,
   133,
-  138
+  139
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gunmetal_scifi_hull/albedo_delit.webp",

@@ -101,11 +101,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.258,
+  "max_seam_ratio": 1.254,
   "seam_ratios": {
    "height": 0.563,
    "normal": 0.93,
-   "albedo": 1.258
+   "albedo": 1.254
   },
   "normal_unit_error": 0.0018,
   "errors": [],
@@ -114,7 +114,7 @@
  "albedo_mean_srgb": [
   136,
   103,
-  83
+  84
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/quilted_leather_stitch/albedo_delit.webp",

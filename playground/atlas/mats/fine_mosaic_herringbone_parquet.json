@@ -130,16 +130,16 @@
   "seam_ratios": {
    "height": 0.823,
    "normal": 0.904,
-   "albedo": 0.821
+   "albedo": 0.823
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  168,
-  125,
-  74
+  172,
+  123,
+  57
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/fine_mosaic_herringbone_parquet/albedo_delit.webp",

@@ -130,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.673,
+  "max_seam_ratio": 0.68,
   "seam_ratios": {
    "height": 0.441,
    "normal": 0.652,
-   "albedo": 0.673
+   "albedo": 0.68
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  177,
-  130,
-  75
+  180,
+  129,
+  65
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/larch_vertical_cladding/albedo_delit.webp",

@@ -135,16 +135,16 @@
   "seam_ratios": {
    "height": 0.743,
    "normal": 0.823,
-   "albedo": 0.638
+   "albedo": 0.628
   },
   "normal_unit_error": 0.0005,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  148,
-  106,
-  85
+  146,
+  107,
+  88
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/chevron_brick_paver/albedo_delit.webp",

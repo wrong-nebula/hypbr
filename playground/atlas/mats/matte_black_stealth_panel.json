@@ -131,11 +131,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.685,
+  "max_seam_ratio": 0.698,
   "seam_ratios": {
    "height": 0.185,
    "normal": 0.318,
-   "albedo": 0.685
+   "albedo": 0.698
   },
   "normal_unit_error": 0.0006,
   "errors": [],
@@ -144,7 +144,7 @@
  "albedo_mean_srgb": [
   48,
   48,
-  52
+  53
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/matte_black_stealth_panel/albedo_delit.webp",

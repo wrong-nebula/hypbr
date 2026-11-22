@@ -136,7 +136,7 @@
   "seam_ratios": {
    "height": 0.058,
    "normal": 0.126,
-   "albedo": 0.109
+   "albedo": 0.107
   },
   "normal_unit_error": 0.0011,
   "errors": [],
@@ -145,7 +145,7 @@
  "albedo_mean_srgb": [
   160,
   133,
-  98
+  97
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/slotted_bronze_grille/albedo_delit.webp",

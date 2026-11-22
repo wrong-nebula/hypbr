@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 1.083,
    "normal": 1.19,
-   "albedo": 0.983
+   "albedo": 0.981
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  127,
-  117,
-  103
+  128,
+  116,
+  100
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/furrowed_oak_bark/albedo_delit.webp",

@@ -134,7 +134,7 @@
   "seam_ratios": {
    "height": 0.837,
    "normal": 0.888,
-   "albedo": 0.819
+   "albedo": 0.818
   },
   "normal_unit_error": 0.0006,
   "errors": [],
@@ -143,7 +143,7 @@
  "albedo_mean_srgb": [
   101,
   100,
-  99
+  98
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/herringbone_charcoal_paver/albedo_delit.webp",

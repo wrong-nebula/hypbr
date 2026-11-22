@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.336,
    "normal": 0.55,
-   "albedo": 0.487
+   "albedo": 0.489
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  212,
-  169,
-  147
+  210,
+  170,
+  151
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/copper_fishscale_shingles/albedo_delit.webp",

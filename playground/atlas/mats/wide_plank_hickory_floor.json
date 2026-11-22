@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.87,
+  "max_seam_ratio": 0.868,
   "seam_ratios": {
    "height": 0.504,
    "normal": 0.555,
-   "albedo": 0.87
+   "albedo": 0.868
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  163,
-  129,
-  86
+  165,
+  128,
+  82
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wide_plank_hickory_floor/albedo_delit.webp",

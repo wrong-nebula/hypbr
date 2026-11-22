@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 0.794,
    "normal": 1.027,
-   "albedo": 0.935
+   "albedo": 0.937
   },
   "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  182,
+  183,
   179,
-  171
+  169
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/silver_travertine/albedo_delit.webp",

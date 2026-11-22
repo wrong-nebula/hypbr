@@ -136,7 +136,7 @@
  "albedo_mean_srgb": [
   206,
   195,
-  176
+  175
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sand_finish_stucco/albedo_delit.webp",

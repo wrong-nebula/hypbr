@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 0.858,
    "normal": 1.008,
-   "albedo": 0.881
+   "albedo": 0.879
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  152,
+  153,
   140,
-  120
+  117
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wet_tidal_sand/albedo_delit.webp",

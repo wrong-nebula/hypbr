@@ -110,16 +110,16 @@
   "seam_ratios": {
    "height": 0.151,
    "normal": 1.178,
-   "albedo": 0.117
+   "albedo": 0.108
   },
   "normal_unit_error": 0.002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  231,
+  230,
   205,
-  144
+  146
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/reeded_coin_milling/albedo_delit.webp",

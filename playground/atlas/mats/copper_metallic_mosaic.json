@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.162,
+  "max_seam_ratio": 0.158,
   "seam_ratios": {
    "height": 0.142,
    "normal": 0.071,
-   "albedo": 0.162
+   "albedo": 0.158
   },
   "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  209,
-  163,
-  140
+  204,
+  164,
+  145
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/copper_metallic_mosaic/albedo_delit.webp",

@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.139,
+  "max_seam_ratio": 1.135,
   "seam_ratios": {
    "height": 1.05,
    "normal": 1.094,
-   "albedo": 1.139
+   "albedo": 1.135
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  175,
+  178,
   156,
-  93
+  76
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/dry_savanna_grass/albedo_delit.webp",

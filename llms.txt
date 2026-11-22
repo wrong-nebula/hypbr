@@ -1,17 +1,26 @@
 # hypbr
 
-> Hybrid Neural + Exact Periodic Procedural PBR Material Synthesizer that outputs seamlessly tileable, physically calibrated 15-map PBR texture sets (glTF 2.0 ORM, 16-bit height, OpenGL/DirectX tangent normals, 8-azimuth HBAO, bent normals, curvature, anisotropy, specular, and thickness).
+> Hybrid Neural + Exact Periodic Procedural PBR Material Synthesizer that outputs seamlessly tileable, physically calibrated 15-map PBR texture sets (glTF 2.0 ORM, 16-bit height, OpenGL/DirectX tangent normals, 8-azimuth HBAO, bent normals, curvature, anisotropy, specular, and thickness) for a 500-material agent-ready atlas. Hosted atlas for agents (no install): https://hypbr.vercel.app/llms.txt
 
 ## Install
 
 - `pip install -e .` (core procedural synthesis: `numpy`, `pillow`, `torch`)
 - `pip install -e ".[neural]"` (optional photo-to-PBR via ONNX Runtime + Apple Depth Pro)
 
+## Performance & Environment
+
+- CPU synthesis of one material: about 1 s at 512px and about 11-13 s at 2048px (4 threads). Output is deterministic for a given material ID, size and seed.
+- `HYPBR_DEVICE=cpu|mps|cuda`: torch device for blur/HBAO/preview kernels (default: best available).
+- `HYPBR_THREADS=N`: threads for row-parallel NumPy kernels (Worley cells, studio preview); default `min(4, cpu_count)`, `1` disables. Output is identical for any value.
+
 ## CLI Commands
 
-- `hypbr list` — List built-in seamless procedural material IDs and categories.
-- `hypbr synth <material_id|hardops_plate|all> --size 512 --out ./output/pbr [--seed 42] [--wear 0.0..1.0] [--export unity,godot,unreal,blender,threejs,gltf,glb,vulkan,materialx,usd|all]` — Synthesize a complete 15-map seamless PBR material set with optional physical weathering and engine export.
-- `hypbr blend <dir_a> <dir_b> --out <out_dir> [--mode height|cavity|linear] [--factor 0.5] [--contrast 0.15]` — Physically blend two `hypbr` materials via 16-bit HeightLerp/cavity masking with linear-light albedo and recomputed HBAO/curvature/ORM.
+- `hypbr list` — List all 500 built-in atlas material IDs and categories.
+- `hypbr atlas search "<query>" [--category ...] [--limit 20]` / `hypbr atlas recommend <object> [--style ...] [--environment interior|exterior]` / `hypbr atlas info <material_id> [--snippet threejs|blender]` — Query the atlas (ranked search, per-object recommendations with UV repeat & weathering advice, full spec card).
+- `hypbr atlas export <site_dir>` — Write `llms.txt`, `agent.md`, `atlas.json` and `atlas/` JSON shards. `hypbr atlas calibrate --refs <scan dirs> --baked <uncalibrated bake>` refits the reference-photo calibration.
+- `hypbr synth <material_id|all> --size 512 --out ./output/pbr [--seed 42] [--wear 0..1] [--weather-preset aged|rain|mossy|rusty|dusty|coastal|abandoned] [--dirt|--wet|--moss|--rust|--dust 0..1] [--export unity,godot,unreal,blender,threejs,gltf,glb,vulkan,materialx,usd|all]` — Synthesize a complete 15-map seamless PBR material set with optional multi-layer weathering and engine export (`hardops_plate` is also accepted).
+- `hypbr weather <material_dir> --out <out_dir> [--preset ...] [--wear|--dirt|--wet|--moss|--rust|--dust 0..1] [--kind metal|copper|brick|stone|wood|...] [--seed 42] [--backend procedural|neural --patch-dir <dir>] [--export ...]` — Weather an existing material directory; also writes `weather_mask.png` (`R=Wear, G=Dirt/Rust, B=Wet, A=Moss`).
+- `hypbr blend <dir_a> <dir_b> --out <out_dir> [--mode height|cavity|linear] [--factor 0.5] [--contrast 0.06]` — Physically blend two `hypbr` materials via 16-bit HeightLerp/cavity masking with linear-light albedo and recomputed HBAO/curvature/ORM.
 - `hypbr preview <material_dir> [--host 127.0.0.1] [--port 8765] [--no-open]` — Launch a zero-dependency local Three.js PBR material inspector in the browser.
 - `hypbr export <src_dir> --target <unity|unity-hdrp|godot|unreal|blender|threejs|gltf|glb|vulkan|materialx|usd|all> --out <out_dir>` — Export an existing `hypbr` material directory with engine-native channel packing, normal convention, and material definition files.
 - `hypbr verify <material_dir> [--json] [--seam-limit 2.2]` — Automated physical calibration, ORM consistency, normal validity, and wrap-around seamlessness QA check (CI exit code 0/1).
@@ -20,10 +29,24 @@
 
 ## Python API
 
-- `from hypbr import list_materials, synthesize_material, synthesize_all, synthesize_hardops_plate, blend_materials, compute_height_blend_mask, export_material, verify_material, render_preview_html, serve_preview, apply_depthpro_weightcode, spectral_filter_3x3_kernel, tileable_4quad_blend, SUPPORTED_TARGETS, PRESETS, run_graph`
-- `blend_materials(dir_a, dir_b, out_dir, factor=0.5, contrast=0.15, mode="height") -> Path`: Physically blends two seamless material directories using 16-bit height-lerp, cavity, or linear masking with linear-light albedo and recomputed HBAO/bent-normal/curvature/ORM.
-- `verify_material(mat_dir, seam_ratio_limit=2.2) -> dict`: Returns pass/fail report with border-to-interior seam ratios, normal unit-length/+Z/curl metrics, ORM channel diff, and PBR luminance/roughness ranges.
-- `apply_depthpro_weightcode(model, ...)` / `spectral_filter_3x3_kernel(W, dc_gain, ramp_gain, detail_gain)` / `tileable_4quad_blend(rgb, infer_fn)`: Zero-training analytic weight surgery on 3×3 Conv2d kernels and exact 4-quadrant partition-of-unity seamless blending.
+Signatures below are checked against the code by `tests/test_docs.py`.
+
+### Synthesis
+- `synthesize_material(material_id, out_dir, size=512, seed=None, wear=0.0, *, weather_preset=None, dirt=None, wet=None, moss=None, rust=None, dust=None, calibrated=True) -> Path`: Writes 15 seamless PBR PNGs + `preview.png` (+ `weather_mask.png` when weathered) to `out_dir`. `calibrated=False` reproduces the uncalibrated output.
+- `synthesize_all(out_dir, size=512, materials=None, wear=0.0, *, weather_preset=None, dirt=None, wet=None, moss=None, rust=None, dust=None) -> list[Path]`: Batch-synthesizes all or selected materials.
+- `synthesize_hardops_plate(out_dir, size=512) -> Path`: Machined hard-surface gunmetal panel (SDF plugs, bevels, weld fillets).
+- `list_materials() -> list[dict]`: `{id, name, description, category, atlas_category, subcategory, generator}` for all 500 materials.
+
+### Atlas (agent metadata)
+- `search_atlas(query=None, category=None, object_type=None, scene_role=None, metallic=None, max_roughness=None, limit=20, base_url=...) -> list[dict]`: Ranked search over names, tags, objects and roles with physical filters.
+- `recommend_for_object(object_name, style=None, environment=None, limit=5, surface_size_m=None, base_url=...) -> dict`: Materials for an object with UV repeat and environment-adjusted weathering.
+- `get_material_spec(material_id, base_url=..., surface_m=None) -> dict`: Full spec card (`real_world_size_m`, `projection`, `shader_setup`, `recommended_weathering`, `pairs_well_with`, texture URLs, Three.js / Blender / glTF snippets).
+- `get_atlas(base_url=...) -> dict` / `export_atlas_files(out_dir, base_url=..., measurements=None) -> dict`: Manifest, and static site export.
+
+### Weathering, blending, export, QA
+- `weather_material(src_dir, out_dir, *, preset=None, wear=None, dirt=None, wet=None, moss=None, rust=None, dust=None, material_kind=None, seed=42, backend="procedural", patch_dir=None, vit_patch=None) -> Path`: Weathers an existing material directory. `WEATHER_PRESETS` holds the named presets (`abandoned, aged, coastal, dusty, mossy, rain, rusty`).
+- `resolve_weather_params(preset=None, *, wear=None, dirt=None, wet=None, moss=None, rust=None, dust=None) -> dict`, `compute_weathering_masks(...)`, `apply_weathering_maps(...)`, `infer_material_kind(name, met_mean=0.0)`: Lower-level in-memory weathering building blocks.
+- `blend_materials(dir_a, dir_b, out_dir, factor=0.5, contrast=0.06, mode="height") -> Path`: Physically blends two seamless material directories using 16-bit height-lerp, cavity, or linear masking with linear-light albedo and recomputed HBAO/bent-normal/curvature/ORM.
 - `export_material(src_dir, out_dir, target, name=None) -> Path`: Converts a synthesized `hypbr` directory to engine-native assets:
   - `unity`: URP `MetallicSmoothness.png` (`R=Metallic, A=1-Roughness`), OpenGL `+Y` normal, `unity_material.json`.
   - `unity-hdrp`: HDRP `MaskMap.png` (`R=Metallic, G=AO, B=Detail, A=1-Roughness`), OpenGL `+Y` normal.
@@ -36,11 +59,12 @@
   - `vulkan`: `vulkan_manifest.json` (`VK_FORMAT_*` + `ktx create` commands), `orm_unorm.png`, `normal_rg_bc5_src.png`, `height_r16.png`.
   - `materialx`: MaterialX 1.38 `material.mtlx` (`standard_surface` + `displacement`) + textures.
   - `usd`: OpenUSD ASCII `material.usda` (`UsdPreviewSurface` with normal scale/bias decoding) + textures.
-- `list_materials() -> list[dict[str, str]]`: Returns `{id, description, category}` entries for all built-in procedural materials.
-- `synthesize_material(material_id: str, out_dir: Path | str, size: int = 512, seed: int | None = None, wear: float = 0.0) -> Path`: Writes 15 seamless PBR PNGs + `preview.png` to `out_dir` with optional weathering `wear in [0.0, 1.0]`.
-- `synthesize_all(out_dir: Path | str, size: int = 512, materials: list[str] | None = None, wear: float = 0.0) -> list[Path]`: Batch-synthesizes all or selected materials.
-- `synthesize_hardops_plate(out_dir: Path, size: int = 512) -> Path`: Synthesizes a machined hard-surface gunmetal panel using SDF plugs, bevels, and weld fillets.
-- `PRESETS: dict[str, dict]`: Built-in JSON-serializable PBR node graphs (default: `"v13-default"`).
+- `verify_material(mat_dir, seam_ratio_limit=2.2) -> dict`: Pass/fail report with border-to-interior seam ratios, normal unit-length/+Z/curl metrics, ORM channel diff, and PBR luminance/roughness ranges.
+- `render_preview_html(material_name)` / `serve_preview(mat_dir, host="127.0.0.1", port=8765, open_browser=True)`: Local Three.js studio preview.
+
+### Graph & neural
+- `PRESETS: dict[str, dict]` and `run_graph(graph_spec, sources, circular=False)`: Built-in JSON-serializable PBR node graphs (default: `"v13-default"`) and their executor.
+- `apply_depthpro_weightcode(model, ...)` / `spectral_filter_3x3_kernel(W, dc_gain, ramp_gain, detail_gain)` / `tileable_4quad_blend(rgb, infer_fn)`: Zero-training analytic weight surgery on 3×3 Conv2d kernels and exact 4-quadrant partition-of-unity seamless blending (photo mode).
 
 ## Output Maps (per material)
 
@@ -58,6 +82,11 @@
 
 ## Core Modules
 
+- [hypbr/atlas.py](hypbr/atlas.py): Atlas search, per-object recommendation, spec cards, engine snippets and static site export (`hypbr atlas`).
+- [hypbr/atlas_catalog.py](hypbr/atlas_catalog.py) / [hypbr/atlas_generators.py](hypbr/atlas_generators.py) / [hypbr/atlas_detail.py](hypbr/atlas_detail.py): 500-material catalog metadata, 28 periodic parametric generator families, and the seamless micro-detail / ground-cover pass.
+- [hypbr/calibration.py](hypbr/calibration.py): Reference-photo calibration (periodic FFT band equalizers for albedo contrast, relief and roughness) and its closed-loop fitter.
+- [hypbr/weathering.py](hypbr/weathering.py): Procedural (and optional neural) 6-channel physical weathering (`hypbr weather`).
+- [hypbr/color.py](hypbr/color.py): Exact sRGB transfer functions used for every albedo read/write.
 - [hypbr/weightcode.py](hypbr/weightcode.py): Zero-training analytic 3×3 spectral kernel surgery, SVD energy shrinkage, circular padding, and 4-quadrant tileable blending.
 - [hypbr/blend.py](hypbr/blend.py): 16-bit HeightLerp / cavity physical material blending (`hypbr blend`).
 - [hypbr/preview.py](hypbr/preview.py): Zero-dependency local interactive Three.js PBR studio preview (`hypbr preview`).

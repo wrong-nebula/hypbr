@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 1.445,
    "normal": 1.517,
-   "albedo": 1.376
+   "albedo": 1.379
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  188,
+  190,
   177,
-  150
+  144
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/tan_reptile_scale_leather/albedo_delit.webp",

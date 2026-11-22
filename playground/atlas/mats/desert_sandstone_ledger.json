@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 0.558,
    "normal": 0.783,
-   "albedo": 0.762
+   "albedo": 0.756
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  177,
-  138,
-  96
+  181,
+  137,
+  88
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/desert_sandstone_ledger/albedo_delit.webp",

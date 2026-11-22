@@ -154,7 +154,7 @@ def test_calibration_table_valid():
         assert mid in BY_ID, mid
         assert len(c["band_gains"]) == cal.N_BANDS and all(0.45 <= g <= 2.6 for g in c["band_gains"])
         assert len(c["height_gains"]) == cal.N_BANDS and all(0.5 <= g <= 2.0 for g in c["height_gains"])
-        assert 0.85 <= c["sat_gain"] <= 1.2 and abs(c["rough_shift"]) <= 0.15 and 0.6 <= c["rough_std_gain"] <= 1.8
+        assert cal.SAT_GAIN_RANGE[0] <= c["sat_gain"] <= cal.SAT_GAIN_RANGE[1] and abs(c["rough_shift"]) <= 0.15 and 0.6 <= c["rough_std_gain"] <= 1.8
         assert c["n_refs"] >= 2 and c["refs"] and c["targets"]["alb_bands"]
 
 

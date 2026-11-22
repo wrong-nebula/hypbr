@@ -130,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.543,
+  "max_seam_ratio": 0.557,
   "seam_ratios": {
    "height": 0.376,
    "normal": 0.475,
-   "albedo": 0.543
+   "albedo": 0.557
   },
   "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  178,
-  137,
-  82
+  183,
+  136,
+  64
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rustic_pine_plank_floor/albedo_delit.webp",

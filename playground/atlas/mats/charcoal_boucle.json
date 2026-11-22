@@ -138,7 +138,7 @@
  "albedo_mean_srgb": [
   92,
   92,
-  92
+  91
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/charcoal_boucle/albedo_delit.webp",

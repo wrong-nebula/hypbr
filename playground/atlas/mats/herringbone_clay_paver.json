@@ -135,16 +135,16 @@
   "seam_ratios": {
    "height": 0.851,
    "normal": 0.889,
-   "albedo": 0.777
+   "albedo": 0.774
   },
   "normal_unit_error": 0.0006,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  159,
-  112,
-  90
+  155,
+  114,
+  95
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/herringbone_clay_paver/albedo_delit.webp",

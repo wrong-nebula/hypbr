@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 1.322,
    "normal": 1.515,
-   "albedo": 1.276
+   "albedo": 1.275
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  150,
-  133,
-  106
+  152,
+  132,
+  100
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/palm_trunk_bark/albedo_delit.webp",

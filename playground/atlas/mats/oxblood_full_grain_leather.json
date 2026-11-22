@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.579,
+  "max_seam_ratio": 1.552,
   "seam_ratios": {
    "height": 1.528,
    "normal": 1.535,
-   "albedo": 1.579
+   "albedo": 1.552
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  127,
-  49,
-  42
+  134,
+  43,
+  34
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/oxblood_full_grain_leather/albedo_delit.webp",

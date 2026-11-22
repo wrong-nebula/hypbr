@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 0.831,
    "normal": 0.859,
-   "albedo": 0.85
+   "albedo": 0.848
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  94,
+  93,
   107,
-  92
+  91
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/green_riven_slate/albedo_delit.webp",

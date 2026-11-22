@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.75,
+  "max_seam_ratio": 0.753,
   "seam_ratios": {
    "height": 0.415,
    "normal": 0.459,
-   "albedo": 0.75
+   "albedo": 0.753
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  113,
-  86,
-  66
+  116,
+  85,
+  62
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/american_walnut_floor/albedo_delit.webp",

@@ -29,6 +29,7 @@ from .color import srgb_u8_to_linear
 
 SIGMAS = (1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0)  # band k = G(sigma_{k-1}) - G(sigma_k), sigma_{-1}=0
 N_BANDS = len(SIGMAS)
+SAT_GAIN_RANGE = (0.7, 1.4)  # chroma-variation gain limits (was 0.85-1.2, which pinned most materials)
 _CAL_PATH = Path(__file__).resolve().parent / "data" / "atlas_calibration.json"
 _EPS = 0.004
 
@@ -346,7 +347,7 @@ def update_gains(cal: dict[str, Any], targets: dict[str, Any], measured: dict[st
     cal["band_gains"] = [round(float(g), 3) for g in upd(cal["band_gains"], targets["alb_bands"], measured["bands"], 0.45, 2.6)]
     # chroma_var responds to sat_gain roughly as gain**1.4..2.6 (not linearly), so a full `damping`
     # exponent overshoots and oscillates between the clamps; half the exponent converges monotonically.
-    cal["sat_gain"] = round(float(np.clip(cal["sat_gain"] * (targets["chroma_var"] / max(measured["chroma_var"], 1e-4)) ** (0.5 * damping), 0.85, 1.2)), 3)
+    cal["sat_gain"] = round(float(np.clip(cal["sat_gain"] * (targets["chroma_var"] / max(measured["chroma_var"], 1e-4)) ** (0.5 * damping), *SAT_GAIN_RANGE)), 3)
     if targets.get("slope_bands") and measured.get("slope_bands"):
         cal["height_gains"] = [round(float(g), 3) for g in upd(cal["height_gains"], targets["slope_bands"], measured["slope_bands"], 0.5, 2.0)]
     if targets.get("rough") is not None:

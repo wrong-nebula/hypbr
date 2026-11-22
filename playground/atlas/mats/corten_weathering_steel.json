@@ -142,7 +142,7 @@
  "albedo_mean_srgb": [
   143,
   85,
-  35
+  34
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/corten_weathering_steel/albedo_delit.webp",

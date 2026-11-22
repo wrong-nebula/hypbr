@@ -130,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.798,
+  "max_seam_ratio": 0.797,
   "seam_ratios": {
    "height": 0.546,
    "normal": 0.771,
-   "albedo": 0.798
+   "albedo": 0.797
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  143,
+  144,
   135,
-  121
+  119
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/weathered_boardwalk_planks/albedo_delit.webp",

@@ -133,9 +133,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  173,
-  127,
-  83
+  174,
+  126,
+  79
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/aged_mission_barrel_tile/albedo_delit.webp",

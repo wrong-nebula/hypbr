@@ -34,6 +34,7 @@ from PIL import Image, ImageDraw
 
 from . import depthpro_pbr as dp  # noqa: E402
 from . import normal_graph as ng  # noqa: E402
+from ._parallel import map_rows, row_slices
 from .color import linear_to_srgb
 
 
@@ -215,9 +216,21 @@ def _periodic_hammer_peen(u: np.ndarray, v: np.ndarray, n: int, seed: int, beta:
 def _periodic_worley_id(u: np.ndarray, v: np.ndarray, n: int, seed: int):
     """Fast vectorized 100% periodic 2D Worley/Voronoi returning (F1, F2, cell_hash in [0,1])."""
     rng = np.random.default_rng(seed)
-    jx = rng.uniform(0.14, 0.86, (n, n)).astype(np.float32)
-    jy = rng.uniform(0.14, 0.86, (n, n)).astype(np.float32)
-    ch = rng.uniform(0.0, 1.0, (n, n)).astype(np.float32)
+    jx = rng.uniform(0.14, 0.86, (n, n)).astype(np.float32).ravel()
+    jy = rng.uniform(0.14, 0.86, (n, n)).astype(np.float32).ravel()
+    ch = rng.uniform(0.0, 1.0, (n, n)).astype(np.float32).ravel()
+    u, v = np.broadcast_arrays(np.asarray(u), np.asarray(v))
+    if u.ndim == 0:
+        return _worley_core(u, v, n, jx, jy, ch)
+    # Purely per-pixel kernel: row bands on the shared thread pool give bit-identical output
+    row_px = int(np.prod(u.shape[1:])) if u.ndim > 1 else 1
+    parts = map_rows(lambda s: _worley_core(u[s], v[s], n, jx, jy, ch), row_slices(u.shape[0], row_px))
+    if len(parts) == 1:
+        return parts[0]
+    return tuple(np.concatenate([p[i] for p in parts], axis=0) for i in range(3))
+
+
+def _worley_core(u: np.ndarray, v: np.ndarray, n: int, jx: np.ndarray, jy: np.ndarray, ch: np.ndarray):
     gx, gy = u * n, v * n
     ix = np.floor(gx).astype(np.int32)
     iy = np.floor(gy).astype(np.int32)
@@ -226,16 +239,16 @@ def _periodic_worley_id(u: np.ndarray, v: np.ndarray, n: int, seed: int):
     f2 = np.full_like(u, 1e6, dtype=np.float32)
     cid = np.zeros_like(u, dtype=np.float32)
     for dy in (-1, 0, 1):
-        ny = (iy + dy) % n
+        row = ((iy + dy) % n) * n
         for dx in (-1, 0, 1):
-            nx = (ix + dx) % n
-            ddx = dx + jx[ny, nx] - fx
-            ddy = dy + jy[ny, nx] - fy
+            flat = row + (ix + dx) % n  # flat index into the n*n jitter/hash tables (cheaper than 2-D fancy indexing)
+            ddx = dx + jx.take(flat) - fx
+            ddy = dy + jy.take(flat) - fy
             d = np.sqrt(ddx * ddx + ddy * ddy)
             m1 = d < f1
             f2 = np.where(m1, f1, np.minimum(f2, d))
             f1 = np.where(m1, d, f1)
-            cid = np.where(m1, ch[ny, nx], cid)
+            cid = np.where(m1, ch.take(flat), cid)
     return f1, f2, cid
 
 

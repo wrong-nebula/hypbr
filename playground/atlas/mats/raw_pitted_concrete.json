@@ -128,7 +128,7 @@
   "seam_ratios": {
    "height": 0.421,
    "normal": 0.735,
-   "albedo": 0.656
+   "albedo": 0.651
   },
   "normal_unit_error": 0.0016,
   "errors": [],
@@ -137,7 +137,7 @@
  "albedo_mean_srgb": [
   152,
   150,
-  145
+  144
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/raw_pitted_concrete/albedo_delit.webp",

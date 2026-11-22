@@ -109,20 +109,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.208,
+  "max_seam_ratio": 0.212,
   "seam_ratios": {
    "height": 0.022,
    "normal": 0.059,
-   "albedo": 0.208
+   "albedo": 0.212
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  212,
+  215,
   184,
-  116
+  101
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gilded_tin_ceiling_tile/albedo_delit.webp",

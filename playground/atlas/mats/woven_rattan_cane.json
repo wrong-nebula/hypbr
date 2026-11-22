@@ -109,16 +109,16 @@
   "seam_ratios": {
    "height": 0.532,
    "normal": 0.595,
-   "albedo": 0.381
+   "albedo": 0.382
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  160,
-  138,
-  98
+  163,
+  137,
+  89
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/woven_rattan_cane/albedo_delit.webp",

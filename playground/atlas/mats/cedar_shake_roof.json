@@ -121,11 +121,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.692,
+  "max_seam_ratio": 0.69,
   "seam_ratios": {
    "height": 0.252,
    "normal": 0.558,
-   "albedo": 0.692
+   "albedo": 0.69
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -134,7 +134,7 @@
  "albedo_mean_srgb": [
   170,
   127,
-  78
+  76
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cedar_shake_roof/albedo_delit.webp",

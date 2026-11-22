@@ -129,16 +129,16 @@
   "seam_ratios": {
    "height": 0.895,
    "normal": 0.921,
-   "albedo": 0.872
+   "albedo": 0.874
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  127,
-  90,
-  57
+  129,
+  89,
+  52
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/walnut_herringbone_parquet/albedo_delit.webp",

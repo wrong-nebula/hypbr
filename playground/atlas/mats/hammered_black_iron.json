@@ -128,7 +128,7 @@
   "seam_ratios": {
    "height": 0.886,
    "normal": 1.065,
-   "albedo": 0.813
+   "albedo": 0.812
   },
   "normal_unit_error": 0.0015,
   "errors": [],
@@ -137,7 +137,7 @@
  "albedo_mean_srgb": [
   116,
   112,
-  108
+  107
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/hammered_black_iron/albedo_delit.webp",

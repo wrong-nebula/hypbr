@@ -138,9 +138,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  144,
+  146,
   131,
-  111
+  106
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/donegal_tweed_twill/albedo_delit.webp",

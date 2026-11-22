@@ -110,7 +110,7 @@
   "seam_ratios": {
    "height": 0.38,
    "normal": 1.14,
-   "albedo": 0.374
+   "albedo": 0.376
   },
   "normal_unit_error": 0.002,
   "errors": [],
@@ -119,7 +119,7 @@
  "albedo_mean_srgb": [
   105,
   108,
-  112
+  113
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/expanded_metal_mesh/albedo_delit.webp",

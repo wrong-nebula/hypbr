@@ -123,20 +123,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.808,
+  "max_seam_ratio": 0.81,
   "seam_ratios": {
    "height": 0.406,
    "normal": 0.78,
-   "albedo": 0.808
+   "albedo": 0.81
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  187,
+  188,
   118,
-  64
+  60
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/spanish_barrel_clay_roof/albedo_delit.webp",

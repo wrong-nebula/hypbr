@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 1.482,
    "normal": 1.462,
-   "albedo": 0.848
+   "albedo": 0.842
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  132,
-  98,
-  55
+  135,
+  97,
+  42
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/dark_wicker_rattan/albedo_delit.webp",

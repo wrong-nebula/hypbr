@@ -109,16 +109,16 @@
   "seam_ratios": {
    "height": 0.375,
    "normal": 0.804,
-   "albedo": 0.308
+   "albedo": 0.306
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  147,
-  107,
-  77
+  151,
+  106,
+  71
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/ribbed_corduroy_velvet/albedo_delit.webp",

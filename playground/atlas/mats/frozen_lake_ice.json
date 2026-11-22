@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 0.845,
    "normal": 1.124,
-   "albedo": 0.896
+   "albedo": 0.892
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  191,
-  206,
-  214
+  193,
+  205,
+  212
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/frozen_lake_ice/albedo_delit.webp",

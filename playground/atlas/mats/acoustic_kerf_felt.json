@@ -107,20 +107,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.744,
+  "max_seam_ratio": 0.741,
   "seam_ratios": {
    "height": 0.443,
    "normal": 0.572,
-   "albedo": 0.744
+   "albedo": 0.741
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  141,
+  140,
   143,
-  148
+  149
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/acoustic_kerf_felt/albedo_delit.webp",

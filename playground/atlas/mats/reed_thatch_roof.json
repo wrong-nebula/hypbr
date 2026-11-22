@@ -118,20 +118,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.971,
+  "max_seam_ratio": 0.97,
   "seam_ratios": {
    "height": 0.829,
    "normal": 0.955,
-   "albedo": 0.971
+   "albedo": 0.97
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  168,
+  170,
   148,
-  100
+  89
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/reed_thatch_roof/albedo_delit.webp",

@@ -132,7 +132,7 @@
   "seam_ratios": {
    "height": 1.298,
    "normal": 1.449,
-   "albedo": 1.396
+   "albedo": 1.395
   },
   "normal_unit_error": 0.0011,
   "errors": [],
@@ -141,7 +141,7 @@
  "albedo_mean_srgb": [
   167,
   148,
-  141
+  142
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/classic_venetian_terrazzo/albedo_delit.webp",

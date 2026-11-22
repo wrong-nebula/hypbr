@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 0.084,
    "normal": 0.135,
-   "albedo": 0.089
+   "albedo": 0.093
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  168,
+  172,
   143,
-  89
+  74
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/brass_cabinet_wire_mesh/albedo_delit.webp",

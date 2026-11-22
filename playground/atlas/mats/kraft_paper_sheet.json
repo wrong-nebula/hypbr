@@ -137,9 +137,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  181,
-  151,
-  103
+  185,
+  150,
+  91
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/kraft_paper_sheet/albedo_delit.webp",

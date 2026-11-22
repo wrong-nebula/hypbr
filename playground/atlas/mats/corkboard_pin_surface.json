@@ -104,11 +104,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.995,
+  "max_seam_ratio": 0.99,
   "seam_ratios": {
    "height": 0.726,
    "normal": 0.879,
-   "albedo": 0.995
+   "albedo": 0.99
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -117,7 +117,7 @@
  "albedo_mean_srgb": [
   180,
   153,
-  118
+  119
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/corkboard_pin_surface/albedo_delit.webp",

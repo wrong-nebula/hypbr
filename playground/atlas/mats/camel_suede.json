@@ -126,16 +126,16 @@
   "seam_ratios": {
    "height": 0.603,
    "normal": 1.129,
-   "albedo": 0.793
+   "albedo": 0.792
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  167,
-  124,
-  80
+  172,
+  123,
+  66
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/camel_suede/albedo_delit.webp",

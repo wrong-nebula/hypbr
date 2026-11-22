@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.257,
+  "max_seam_ratio": 1.255,
   "seam_ratios": {
    "height": 0.817,
    "normal": 1.005,
-   "albedo": 1.257
+   "albedo": 1.255
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  165,
-  145,
-  100
+  168,
+  144,
+  89
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/water_hyacinth_weave/albedo_delit.webp",

@@ -128,16 +128,16 @@
   "seam_ratios": {
    "height": 0.231,
    "normal": 0.516,
-   "albedo": 0.494
+   "albedo": 0.496
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  148,
+  147,
   111,
-  88
+  89
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/chicago_common_brick/albedo_delit.webp",

@@ -127,16 +127,16 @@
   "seam_ratios": {
    "height": 0.635,
    "normal": 0.947,
-   "albedo": 0.828
+   "albedo": 0.825
   },
   "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  161,
+  160,
   174,
-  151
+  150
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sage_marmorino_plaster/albedo_delit.webp",

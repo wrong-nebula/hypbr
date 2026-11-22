@@ -131,16 +131,16 @@
   "seam_ratios": {
    "height": 1.07,
    "normal": 1.037,
-   "albedo": 0.761
+   "albedo": 0.759
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  204,
+  205,
   198,
-  184
+  181
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cream_boucle/albedo_delit.webp",

@@ -136,9 +136,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  166,
-  121,
-  68
+  171,
+  119,
+  49
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/teak_herringbone_parquet/albedo_delit.webp",

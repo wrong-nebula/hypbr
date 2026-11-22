@@ -114,9 +114,9 @@
   "warnings": []
  },
  "albedo_mean_srgb": [
-  189,
+  188,
   178,
-  166
+  167
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/terrazzo_speckled_stone/albedo_delit.webp",

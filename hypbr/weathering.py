@@ -24,15 +24,15 @@ from pathlib import Path
 from typing import Any, Mapping
 
 import numpy as np
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
 from PIL import Image
 
+from . import _backend as bk
+from ._backend import no_grad
 from . import depthpro_pbr as dp
 from . import normal_graph as ng
 from . import procedural as gd
 from .color import linear_to_srgb_u8, srgb_u8_to_linear
+from .maps import MapSource, MaterialMaps, unit_normals
 
 WEATHER_PRESETS: dict[str, dict[str, float]] = {
     "aged":      {"wear": 0.45, "dirt": 0.45, "wet": 0.00, "moss": 0.00, "rust": 0.15, "dust": 0.25},
@@ -410,7 +410,8 @@ def apply_weathering_maps(
 ) -> dict[str, np.ndarray]:
     """Apply physical multi-mode weathering layers onto linear PBR maps.
 
-    Returns updated `{"alb_lin", "alb_u8", "N", "rough", "met_f", "met_u8", "weather_mask_rgba", "masks"}`.
+    Returns updated `{"alb_lin", "alb_u8", "N", "rough", "met_f", "met_u8", "weather_mask", "weather_mask_rgba", "masks"}`
+    (`weather_mask` is the float `(H, W, 4)` RGBA mask that `weather_mask_rgba` quantizes).
     """
     alb = alb_lin.astype(np.float32).copy()
     N_out = N.astype(np.float32).copy()
@@ -649,6 +650,7 @@ def apply_weathering_maps(
 
     # Packed 4-channel RGBA8 weather mask for real-time engine shaders (R=Wear, G=Dirt|Rust, B=Wet, A=Moss)
     g_chan = np.maximum(masks["dirt"], masks["rust"])
+    weather_mask = np.stack([masks["wear"], g_chan, masks["wet"], masks["moss"]], axis=-1)
     weather_mask_rgba = np.stack([
         np.clip(masks["wear"] * 255.0 + 0.5, 0, 255),
         np.clip(g_chan * 255.0 + 0.5, 0, 255),
@@ -663,6 +665,7 @@ def apply_weathering_maps(
         "rough": r_out.astype(np.float32),
         "met_f": m_out.astype(np.float32),
         "met_u8": met_u8,
+        "weather_mask": weather_mask,
         "weather_mask_rgba": weather_mask_rgba,
         "masks": masks,
     }
@@ -671,45 +674,59 @@ def apply_weathering_maps(
 # =============================================================================
 # Optional Single-Encode Neural Weathering Backend (DepthPro2-S + 5.2 MiB heads)
 # =============================================================================
-class _WeatherDecodeBranch(nn.Module):
-    """Lightweight (~5.2 MiB fp16) single-channel DPT decode branch sharing 1 ViT encode."""
-
-    def __init__(self, reassemble: nn.ModuleList, decoder: nn.Module, head: nn.Module):
-        super().__init__()
-        self.reassemble = copy.deepcopy(reassemble)
-        self.decoder = copy.deepcopy(decoder)
-        self.head = copy.deepcopy(head)
-
-    @torch.no_grad()
-    def load_patch_dict(self, patch_sd: Mapping[str, torch.Tensor]) -> int:
-        target_maps = [
-            ("encoder.reassemble.", self.reassemble.state_dict()),
-            ("reassemble.", self.reassemble.state_dict()),
-            ("decoder.", self.decoder.state_dict()),
-            ("head.", self.head.state_dict()),
-        ]
-        loaded = 0
-        for k, v in patch_sd.items():
-            for prefix, sub_sd in target_maps:
-                if k.startswith(prefix):
-                    sub_key = k[len(prefix):]
-                    if sub_key in sub_sd and sub_sd[sub_key].shape == v.shape:
-                        sub_sd[sub_key].copy_(v.to(device=sub_sd[sub_key].device, dtype=sub_sd[sub_key].dtype))
-                        loaded += 1
-                    break
-        return loaded
-
-    def forward(self, features: list[torch.Tensor], grid_size: tuple[int, int]) -> torch.Tensor:
-        num_frames = features[0].shape[0]
-        pyr = [
-            layer(feat.transpose(1, 2).reshape(num_frames, -1, *grid_size).contiguous())
-            for layer, feat in zip(self.reassemble, features)
-        ]
-        dec = self.decoder(pyr).float()
-        return torch.sigmoid(self.head[:-1](dec))
+_WEATHER_BRANCH_CLS = None
 
 
-@torch.no_grad()
+def _weather_decode_branch_cls():
+    """Build the torch `nn.Module` lazily so importing hypbr never requires torch."""
+    global _WEATHER_BRANCH_CLS
+    if _WEATHER_BRANCH_CLS is not None:
+        return _WEATHER_BRANCH_CLS
+    torch = bk.require_torch("Neural weathering (`--backend neural`)")
+    nn = torch.nn
+
+    class _WeatherDecodeBranch(nn.Module):
+        """Lightweight (~5.2 MiB fp16) single-channel DPT decode branch sharing 1 ViT encode."""
+
+        def __init__(self, reassemble: nn.ModuleList, decoder: nn.Module, head: nn.Module):
+            super().__init__()
+            self.reassemble = copy.deepcopy(reassemble)
+            self.decoder = copy.deepcopy(decoder)
+            self.head = copy.deepcopy(head)
+
+        @torch.no_grad()
+        def load_patch_dict(self, patch_sd: Mapping[str, torch.Tensor]) -> int:
+            target_maps = [
+                ("encoder.reassemble.", self.reassemble.state_dict()),
+                ("reassemble.", self.reassemble.state_dict()),
+                ("decoder.", self.decoder.state_dict()),
+                ("head.", self.head.state_dict()),
+            ]
+            loaded = 0
+            for k, v in patch_sd.items():
+                for prefix, sub_sd in target_maps:
+                    if k.startswith(prefix):
+                        sub_key = k[len(prefix):]
+                        if sub_key in sub_sd and sub_sd[sub_key].shape == v.shape:
+                            sub_sd[sub_key].copy_(v.to(device=sub_sd[sub_key].device, dtype=sub_sd[sub_key].dtype))
+                            loaded += 1
+                        break
+            return loaded
+
+        def forward(self, features: list[torch.Tensor], grid_size: tuple[int, int]) -> torch.Tensor:
+            num_frames = features[0].shape[0]
+            pyr = [
+                layer(feat.transpose(1, 2).reshape(num_frames, -1, *grid_size).contiguous())
+                for layer, feat in zip(self.reassemble, features)
+            ]
+            dec = self.decoder(pyr).float()
+            return torch.sigmoid(self.head[:-1](dec))
+
+    _WEATHER_BRANCH_CLS = _WeatherDecodeBranch
+    return _WEATHER_BRANCH_CLS
+
+
+@no_grad
 def predict_neural_weathering_masks(
     rgb_u8: np.ndarray,
     *,
@@ -730,6 +747,8 @@ def predict_neural_weathering_masks(
             "Pass --patch-dir / set HYPBR_WEATHER_DIR, or use default --backend procedural."
         )
 
+    torch = bk.require_torch("Neural weathering (`--backend neural`)")
+    F = torch.nn.functional
     from depth_pro_2.model import INPUT_MULTIPLE, to_normalized_tensor
 
     base = dp.load_depthpro2_no_fov("depthpro2-s", precision=torch.float32)
@@ -762,7 +781,7 @@ def predict_neural_weathering_masks(
         if not candidates:
             continue
         ckpt = candidates[-1]
-        branch = _WeatherDecodeBranch(base.encoder.reassemble, base.decoder, base.head).to(dp.DEVICE).eval()
+        branch = _weather_decode_branch_cls()(base.encoder.reassemble, base.decoder, base.head).to(dp.DEVICE).eval()
         bsd = torch.load(ckpt, map_location="cpu", weights_only=True)
         branch.load_patch_dict(bsd)
         pred = branch(features, grid_size)
@@ -779,23 +798,22 @@ def predict_neural_weathering_masks(
     return out
 
 
-def _load_height_f32(mat_dir: Path, size: tuple[int, int]) -> np.ndarray:
-    h16_path = mat_dir / "height16.png"
-    if h16_path.exists():
-        im = Image.open(h16_path)
+def _load_height_f32(src: MapSource, size: tuple[int, int]) -> np.ndarray:
+    if src.exists("height16.png"):
+        im = src.open("height16.png")
         arr = np.asarray(im, dtype=np.float32)
         arr = arr / 65535.0 if (im.mode in ("I;16", "I") or arr.max() > 255.0) else arr / 255.0
         if im.size != size:
             arr = np.asarray(Image.fromarray(arr, mode="F").resize(size, Image.BILINEAR), dtype=np.float32)
         return np.clip(arr, 0.0, 1.0).astype(np.float32)
-    im = Image.open(mat_dir / "height.png").convert("L")
+    im = src.open("height.png").convert("L")
     if im.size != size:
         im = im.resize(size, Image.BILINEAR)
     return (np.asarray(im, dtype=np.float32) / 255.0).astype(np.float32)
 
 
 def weather_material(
-    src_dir: Path | str,
+    src_dir: "Path | str | MaterialMaps",
     out_dir: Path | str,
     *,
     preset: str | None = None,
@@ -814,34 +832,60 @@ def weather_material(
     """Apply multi-mode physical weathering to any existing hypbr material directory.
 
     Reads the source 15-map directory (`albedo_delit.png`, `height16.png`/`height.png`,
-    `normal.png`, `ao.png`, `roughness.png`, `metallic.png`), applies any combination of
-    `preset` and `wear`, `dirt`, `wet`, `moss`, `rust`, `dust` (using either exact periodic
-    geometric masks or optional single-encode `DepthPro2-S` neural masks), and writes a
-    verified seamless PBR directory + `weather_mask.png` (`RGBA8`) into `out_dir`.
+    `normal.png`, `ao.png`, `roughness.png`, `metallic.png`) — or an in-memory `MaterialMaps` —
+    applies any combination of `preset` and `wear`, `dirt`, `wet`, `moss`, `rust`, `dust`
+    (using either exact periodic geometric masks or optional single-encode `DepthPro2-S` neural
+    masks), and writes a verified seamless PBR directory + `weather_mask.png` (`RGBA8`) into
+    `out_dir`. Equivalent to `weather_material_maps(...).save(out_dir)`.
     """
-    from .synthesize import render_studio_preview, save_maps_parallel
+    return weather_material_maps(
+        src_dir, preset=preset, wear=wear, dirt=dirt, wet=wet, moss=moss, rust=rust, dust=dust,
+        material_kind=material_kind, seed=seed, backend=backend, patch_dir=patch_dir, vit_patch=vit_patch,
+    ).save(out_dir)
+
+
+def weather_material_maps(
+    src: "Path | str | MaterialMaps",
+    *,
+    preset: str | None = None,
+    wear: float | None = None,
+    dirt: float | None = None,
+    wet: float | None = None,
+    moss: float | None = None,
+    rust: float | None = None,
+    dust: float | None = None,
+    material_kind: str | None = None,
+    seed: int = 42,
+    backend: str = "procedural",
+    patch_dir: Path | str | None = None,
+    vit_patch: Path | str | None = None,
+    preview: bool = True,
+) -> MaterialMaps:
+    """In-memory `weather_material`: weather a material directory or `MaterialMaps`, return `MaterialMaps`.
+
+    The source maps are read at their saved 8/16-bit precision, so the result is identical
+    whether `src` is a `MaterialMaps` or the directory it was saved to.
+    """
+    from .synthesize import render_studio_preview
 
     wp = resolve_weather_params(preset, wear=wear, dirt=dirt, wet=wet, moss=moss, rust=rust, dust=dust)
-    src = Path(src_dir)
-    out = Path(out_dir)
-    out.mkdir(parents=True, exist_ok=True)
+    src = MapSource(src)
 
-    alb_im = Image.open(src / "albedo_delit.png").convert("RGB")
+    alb_im = src.open("albedo_delit.png").convert("RGB")
     size = alb_im.size
     alb_u8_src = np.asarray(alb_im, dtype=np.uint8)
     alb_lin = srgb_u8_to_linear(alb_u8_src)
 
     h_n = _load_height_f32(src, size)
-    n_im = Image.open(src / "normal.png").convert("RGB")
+    n_im = src.open("normal.png").convert("RGB")
     if n_im.size != size:
         n_im = n_im.resize(size, Image.BILINEAR)
     N = ng.normalize_n(np.asarray(n_im, dtype=np.float32) / 127.5 - 1.0)
 
     def _load_l(fname: str, default: float) -> np.ndarray:
-        fp = src / fname
-        if not fp.exists():
+        if not src.exists(fname):
             return np.full((size[1], size[0]), default, dtype=np.float32)
-        im = Image.open(fp).convert("L")
+        im = src.open(fname).convert("L")
         if im.size != size:
             im = im.resize(size, Image.BILINEAR)
         return (np.asarray(im, dtype=np.float32) / 255.0).astype(np.float32)
@@ -853,8 +897,8 @@ def weather_material(
 
     custom_masks = None
     if backend == "neural":
-        prev_fp = src / "preview.png"
-        rgb_in = np.asarray(Image.open(prev_fp).convert("RGB").resize(size, Image.BICUBIC), dtype=np.uint8) if prev_fp.exists() else alb_u8_src
+        rgb_in = (np.asarray(src.open("preview.png").convert("RGB").resize(size, Image.BICUBIC), dtype=np.uint8)
+                  if src.exists("preview.png") else alb_u8_src)
         custom_masks = predict_neural_weathering_masks(rgb_in, vit_patch=vit_patch, patch_dir=patch_dir)
     elif backend != "procedural":
         raise ValueError(f"Unknown weathering backend {backend!r}. Choose 'procedural' or 'neural'.")
@@ -877,34 +921,29 @@ def weather_material(
 
     # Recompute AO / bent normal if puddle flattened normals strongly, else reuse source AO + subtle wet contact
     hbao = ng.node_horizon_bent_normal_ao({"circular": True}, {"height": h_n, "normal": N_out}, strength=0.85, height_scale=5.0, ao_floor=0.18)
-    ao_out = np.minimum(ao, hbao["ao"]).astype(np.float32) if (src / "ao.png").exists() else hbao["ao"]
-    ao_u8 = np.clip(ao_out * 255.0 + 0.5, 0, 255).astype(np.uint8)
-    rough_u8 = np.clip(rough_out * 255.0 + 0.5, 0, 255).astype(np.uint8)
-    met_u8 = res["met_u8"]
-    orm_u8 = np.stack([ao_u8, rough_u8, met_u8], axis=-1)
-
+    ao_out = np.minimum(ao, hbao["ao"]).astype(np.float32) if src.exists("ao.png") else hbao["ao"]
     curv_out = ng.node_curvature_multiscale({"circular": True}, {"normal": N_out}, gain=2.8)
     aniso = ng.node_anisotropy_flow({"circular": True}, {"height": h_n, "ao": ao_out, "roughness": rough_out})
     thick = ng.node_thickness_subsurface({"circular": True}, {"height": h_n})
-    prev_u8 = render_studio_preview(res["alb_lin"], N_out, rough_out, res["met_f"], ao_out)
+    prev_u8 = render_studio_preview(res["alb_lin"], N_out, rough_out, res["met_f"], ao_out) if preview else None
 
-    save_maps_parallel([
-        (out / "albedo_delit.png", res["alb_u8"]),
-        (out / "preview.png", prev_u8),
-        (out / "height.png", np.clip(h_n * 255.0 + 0.5, 0, 255).astype(np.uint8)),
-        (out / "height16.png", np.clip(h_n * 65535.0 + 0.5, 0, 65535).astype(np.uint16)),
-        (out / "normal.png", dp.normal_to_u8(N_out)),
-        (out / "bent_normal.png", hbao["bent_normal_u8"]),
-        (out / "ao.png", ao_u8),
-        (out / "roughness.png", rough_u8),
-        (out / "metallic.png", met_u8),
-        (out / "orm.png", orm_u8),
-        (out / "curvature.png", curv_out["curvature_u8"]),
-        (out / "cavity.png", curv_out["cavity_u8"]),
-        (out / "edge_wear.png", np.clip(curv_out["convex"] * 255.0 + 0.5, 0, 255).astype(np.uint8)),
-        (out / "anisotropy.png", aniso["anisotropy_u8"]),
-        (out / "specular.png", aniso["specular_u8"]),
-        (out / "thickness.png", thick["thickness_u8"]),
-        (out / "weather_mask.png", res["weather_mask_rgba"]),
-    ])
-    return out
+    meta = dict(src.maps.metadata) if src.maps is not None else {"material_id": src.name}
+    meta.update({"kind": kind, "weather": dict(wp), "weather_backend": backend, "weather_seed": seed})
+    return MaterialMaps(
+        albedo=res["alb_lin"],
+        normal=unit_normals(N_out),
+        height=h_n,
+        roughness=rough_out,
+        metallic=res["met_u8"].astype(np.float32) / 255.0,
+        ao=ao_out,
+        bent_normal=unit_normals(hbao["bent_normal"]),
+        curvature=curv_out["curvature"],
+        cavity=curv_out["cavity"],
+        edge_wear=curv_out["convex"],
+        anisotropy=aniso["anisotropy"],
+        specular=aniso["specular"],
+        thickness=thick["thickness"],
+        preview=prev_u8,
+        weather_mask=res["weather_mask"],
+        metadata=meta,
+    )

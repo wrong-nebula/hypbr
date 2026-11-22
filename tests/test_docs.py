@@ -17,6 +17,8 @@ DOCUMENTED = [
     "search_atlas", "recommend_for_object", "get_material_spec", "get_atlas", "export_atlas_files",
     "weather_material", "resolve_weather_params", "infer_material_kind",
     "blend_materials", "export_material", "verify_material", "render_preview_html", "serve_preview", "run_graph",
+    "synthesize_material_maps", "synthesize_hardops_plate_maps", "blend_materials_maps", "weather_material_maps",
+    "has_torch",
 ]
 
 

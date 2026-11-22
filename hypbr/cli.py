@@ -229,6 +229,14 @@ def cmd_photo(args: argparse.Namespace) -> int:
         argv.append("--tileable")
     if args.dx:
         argv.append("--dx")
+    from ._backend import has_torch, require_torch
+
+    if not has_torch():
+        try:
+            require_torch("`hypbr photo` (neural photo -> PBR)")
+        except ImportError as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
     old_argv = sys.argv
     try:
         sys.argv = ["hypbr-photo", *argv]

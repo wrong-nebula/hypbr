@@ -12,7 +12,9 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from PIL import Image
+from PIL import Image  # noqa: F401
+
+from .maps import MapSource, MaterialMaps  # noqa: F401  (MaterialMaps: annotations)
 
 CORE_MAPS = (
     "albedo_delit.png",
@@ -67,21 +69,21 @@ def _normal_metrics(nrm_u8: np.ndarray) -> dict[str, float]:
     }
 
 
-def verify_material(mat_dir: Path | str, seam_ratio_limit: float = 2.2) -> dict[str, Any]:
-    """Run deterministic physical and seamlessness QA checks on a hypbr material directory."""
-    d = Path(mat_dir)
+def verify_material(mat_dir: "Path | str | MaterialMaps", seam_ratio_limit: float = 2.2) -> dict[str, Any]:
+    """Run deterministic physical and seamlessness QA checks on a hypbr material directory or `MaterialMaps`."""
+    d = MapSource(mat_dir)
     errors: list[str] = []
     warnings: list[str] = []
     checks: dict[str, Any] = {}
 
-    missing = [m for m in CORE_MAPS if not (d / m).exists()]
+    missing = [m for m in CORE_MAPS if not d.exists(m)]
     if missing:
         errors.append(f"Missing core maps: {', '.join(missing)}")
         return {"material": d.name, "passed": False, "errors": errors, "warnings": warnings, "checks": checks}
 
     sizes: dict[str, tuple[int, int]] = {}
     for m in CORE_MAPS:
-        with Image.open(d / m) as im:
+        with d.open(m) as im:
             sizes[m] = im.size
             if m == "height16.png" and im.mode not in ("I;16", "I"):
                 errors.append(f"height16.png is mode {im.mode}, expected 16-bit grayscale")
@@ -92,13 +94,13 @@ def verify_material(mat_dir: Path | str, seam_ratio_limit: float = 2.2) -> dict[
     resolution = next(iter(unique_sizes))
     checks["resolution"] = list(resolution)
 
-    alb = np.asarray(Image.open(d / "albedo_delit.png").convert("RGB"), dtype=np.uint8)
-    nrm = np.asarray(Image.open(d / "normal.png").convert("RGB"), dtype=np.uint8)
-    h8 = np.asarray(Image.open(d / "height.png").convert("L"), dtype=np.uint8)
-    ao = np.asarray(Image.open(d / "ao.png").convert("L"), dtype=np.uint8)
-    rgh = np.asarray(Image.open(d / "roughness.png").convert("L"), dtype=np.uint8)
-    met = np.asarray(Image.open(d / "metallic.png").convert("L"), dtype=np.uint8)
-    orm = np.asarray(Image.open(d / "orm.png").convert("RGB"), dtype=np.uint8)
+    alb = np.asarray(d.open("albedo_delit.png").convert("RGB"), dtype=np.uint8)
+    nrm = np.asarray(d.open("normal.png").convert("RGB"), dtype=np.uint8)
+    h8 = np.asarray(d.open("height.png").convert("L"), dtype=np.uint8)
+    ao = np.asarray(d.open("ao.png").convert("L"), dtype=np.uint8)
+    rgh = np.asarray(d.open("roughness.png").convert("L"), dtype=np.uint8)
+    met = np.asarray(d.open("metallic.png").convert("L"), dtype=np.uint8)
+    orm = np.asarray(d.open("orm.png").convert("RGB"), dtype=np.uint8)
 
     # 1. Seamless wrap-around checks
     seam_h = _seam_metrics(h8)

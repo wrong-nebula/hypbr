@@ -30,3 +30,24 @@ jobs:
         env:
           HYPBR_DEVICE: cpu
         run: pytest -v
+
+  test-no-torch:
+    # Procedural synthesis must work with only numpy + pillow installed (torch is an optional extra).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install package without torch
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+          if python -c "import torch" 2>/dev/null; then echo "torch must not be installed" && exit 1; fi
+
+      - name: Run pytest (neural-only tests skip)
+        env:
+          HYPBR_DEVICE: cpu
+        run: pytest -v -rs

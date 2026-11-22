@@ -14,13 +14,14 @@ Supports zero-dependency export from any synthesized 15-map hypbr directory to:
 from __future__ import annotations
 
 import json
-import shutil
 import struct
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 from PIL import Image
+
+from .maps import MapSource, MaterialMaps  # noqa: F401  (MaterialMaps: annotations)
 
 SUPPORTED_TARGETS: tuple[str, ...] = (
     "unity",
@@ -37,9 +38,9 @@ SUPPORTED_TARGETS: tuple[str, ...] = (
 )
 
 
-def _load_gray(path: Path, default: int = 128, size: tuple[int, int] | None = None) -> np.ndarray:
-    if path.exists():
-        im = Image.open(path).convert("L")
+def _load_gray(src: MapSource, fname: str, default: int = 128, size: tuple[int, int] | None = None) -> np.ndarray:
+    if src.exists(fname):
+        im = src.open(fname).convert("L")
         if size and im.size != size:
             im = im.resize(size, Image.BILINEAR)
         return np.asarray(im, dtype=np.uint8)
@@ -47,9 +48,10 @@ def _load_gray(path: Path, default: int = 128, size: tuple[int, int] | None = No
     return np.full((h, w), default, dtype=np.uint8)
 
 
-def _load_rgb(path: Path, default: tuple[int, int, int] = (128, 128, 255), size: tuple[int, int] | None = None) -> np.ndarray:
-    if path.exists():
-        im = Image.open(path).convert("RGB")
+def _load_rgb(src: MapSource, fname: str, default: tuple[int, int, int] = (128, 128, 255),
+              size: tuple[int, int] | None = None) -> np.ndarray:
+    if src.exists(fname):
+        im = src.open(fname).convert("RGB")
         if size and im.size != size:
             im = im.resize(size, Image.BILINEAR)
         return np.asarray(im, dtype=np.uint8)
@@ -59,11 +61,8 @@ def _load_rgb(path: Path, default: tuple[int, int, int] = (128, 128, 255), size:
     return arr
 
 
-def _copy_if_exists(src: Path, dst: Path) -> bool:
-    if src.exists():
-        shutil.copy2(src, dst)
-        return True
-    return False
+def _copy_if_exists(src: MapSource, fname: str, dst: Path) -> bool:
+    return src.copy_to(fname, dst)
 
 
 def _flip_normal_green(rgb: np.ndarray) -> np.ndarray:
@@ -73,31 +72,30 @@ def _flip_normal_green(rgb: np.ndarray) -> np.ndarray:
     return out
 
 
-def _detect_size(src_dir: Path) -> tuple[int, int]:
+def _detect_size(src_dir: MapSource) -> tuple[int, int]:
     for name in ("albedo_delit.png", "normal.png", "height.png"):
-        p = src_dir / name
-        if p.exists():
-            with Image.open(p) as im:
+        if src_dir.exists(name):
+            with src_dir.open(name) as im:
                 return im.size
     raise FileNotFoundError(f"No PBR maps found in {src_dir}")
 
 
-def _export_unity(src_dir: Path, out_dir: Path, name: str, hdrp: bool = False) -> Path:
+def _export_unity(src_dir: MapSource, out_dir: Path, name: str, hdrp: bool = False) -> Path:
     size = _detect_size(src_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    _copy_if_exists(src_dir / "albedo_delit.png", out_dir / "BaseMap.png")
-    _copy_if_exists(src_dir / "normal.png", out_dir / "NormalMap.png")
-    _copy_if_exists(src_dir / "height.png", out_dir / "HeightMap.png")
-    _copy_if_exists(src_dir / "height16.png", out_dir / "HeightMap16.png")
+    _copy_if_exists(src_dir, "albedo_delit.png", out_dir / "BaseMap.png")
+    _copy_if_exists(src_dir, "normal.png", out_dir / "NormalMap.png")
+    _copy_if_exists(src_dir, "height.png", out_dir / "HeightMap.png")
+    _copy_if_exists(src_dir, "height16.png", out_dir / "HeightMap16.png")
 
-    metallic = _load_gray(src_dir / "metallic.png", default=0, size=size)
-    roughness = _load_gray(src_dir / "roughness.png", default=128, size=size)
+    metallic = _load_gray(src_dir, "metallic.png", default=0, size=size)
+    roughness = _load_gray(src_dir, "roughness.png", default=128, size=size)
     smoothness = (255 - roughness).astype(np.uint8)
-    ao = _load_gray(src_dir / "ao.png", default=255, size=size)
+    ao = _load_gray(src_dir, "ao.png", default=255, size=size)
 
     if hdrp:
-        detail = _load_gray(src_dir / "curvature.png", default=128, size=size)
+        detail = _load_gray(src_dir, "curvature.png", default=128, size=size)
         mask_map = np.stack([metallic, ao, detail, smoothness], axis=-1)
         Image.fromarray(mask_map, mode="RGBA").save(out_dir / "MaskMap.png")
         manifest: dict[str, Any] = {
@@ -141,13 +139,13 @@ def _export_unity(src_dir: Path, out_dir: Path, name: str, hdrp: bool = False) -
     return out_dir
 
 
-def _export_godot(src_dir: Path, out_dir: Path, name: str) -> Path:
+def _export_godot(src_dir: MapSource, out_dir: Path, name: str) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
-    _copy_if_exists(src_dir / "albedo_delit.png", out_dir / "albedo.png")
-    _copy_if_exists(src_dir / "orm.png", out_dir / "orm.png")
-    _copy_if_exists(src_dir / "normal.png", out_dir / "normal.png")
-    _copy_if_exists(src_dir / "height.png", out_dir / "height.png")
-    _copy_if_exists(src_dir / "anisotropy.png", out_dir / "anisotropy.png")
+    _copy_if_exists(src_dir, "albedo_delit.png", out_dir / "albedo.png")
+    _copy_if_exists(src_dir, "orm.png", out_dir / "orm.png")
+    _copy_if_exists(src_dir, "normal.png", out_dir / "normal.png")
+    _copy_if_exists(src_dir, "height.png", out_dir / "height.png")
+    _copy_if_exists(src_dir, "anisotropy.png", out_dir / "anisotropy.png")
 
     tres = f"""[gd_resource type="StandardMaterial3D" load_steps=5 format=3]
 
@@ -180,20 +178,20 @@ heightmap_texture = ExtResource("4_height")
     return out_dir
 
 
-def _export_unreal(src_dir: Path, out_dir: Path, name: str) -> Path:
+def _export_unreal(src_dir: MapSource, out_dir: Path, name: str) -> Path:
     size = _detect_size(src_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    _copy_if_exists(src_dir / "albedo_delit.png", out_dir / "T_BaseColor.png")
-    _copy_if_exists(src_dir / "orm.png", out_dir / "T_ORM.png")
-    _copy_if_exists(src_dir / "height16.png", out_dir / "T_Height16.png")
-    _copy_if_exists(src_dir / "specular.png", out_dir / "T_Specular.png")
+    _copy_if_exists(src_dir, "albedo_delit.png", out_dir / "T_BaseColor.png")
+    _copy_if_exists(src_dir, "orm.png", out_dir / "T_ORM.png")
+    _copy_if_exists(src_dir, "height16.png", out_dir / "T_Height16.png")
+    _copy_if_exists(src_dir, "specular.png", out_dir / "T_Specular.png")
 
-    normal_gl = _load_rgb(src_dir / "normal.png", default=(128, 128, 255), size=size)
+    normal_gl = _load_rgb(src_dir, "normal.png", default=(128, 128, 255), size=size)
     Image.fromarray(_flip_normal_green(normal_gl), mode="RGB").save(out_dir / "T_Normal_DX.png")
 
-    if (src_dir / "bent_normal.png").exists():
-        bent_gl = _load_rgb(src_dir / "bent_normal.png", default=(128, 128, 255), size=size)
+    if src_dir.exists("bent_normal.png"):
+        bent_gl = _load_rgb(src_dir, "bent_normal.png", default=(128, 128, 255), size=size)
         Image.fromarray(_flip_normal_green(bent_gl), mode="RGB").save(out_dir / "T_BentNormal_DX.png")
 
     manifest = {
@@ -217,7 +215,7 @@ def _export_unreal(src_dir: Path, out_dir: Path, name: str) -> Path:
     return out_dir
 
 
-def _export_blender(src_dir: Path, out_dir: Path, name: str) -> Path:
+def _export_blender(src_dir: MapSource, out_dir: Path, name: str) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     for src_name, dst_name in (
         ("albedo_delit.png", "albedo.png"),
@@ -228,7 +226,7 @@ def _export_blender(src_dir: Path, out_dir: Path, name: str) -> Path:
         ("height16.png", "height16.png"),
         ("specular.png", "specular.png"),
     ):
-        _copy_if_exists(src_dir / src_name, out_dir / dst_name)
+        _copy_if_exists(src_dir, src_name, out_dir / dst_name)
 
     script = f'''"""Auto-generated Blender 4.x Principled BSDF importer for `{name}`."""
 from pathlib import Path
@@ -305,7 +303,7 @@ if __name__ == "__main__":
     return out_dir
 
 
-def _export_threejs(src_dir: Path, out_dir: Path, name: str) -> Path:
+def _export_threejs(src_dir: MapSource, out_dir: Path, name: str) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     for src_name, dst_name in (
         ("albedo_delit.png", "color.png"),
@@ -316,7 +314,7 @@ def _export_threejs(src_dir: Path, out_dir: Path, name: str) -> Path:
         ("height.png", "displacement.png"),
         ("orm.png", "orm.png"),
     ):
-        _copy_if_exists(src_dir / src_name, out_dir / dst_name)
+        _copy_if_exists(src_dir, src_name, out_dir / dst_name)
 
     js = f"""// Auto-generated Three.js MeshPhysicalMaterial factory for `{name}`
 import * as THREE from "three";
@@ -354,11 +352,11 @@ export function createMaterial(
     return out_dir
 
 
-def _export_gltf(src_dir: Path, out_dir: Path, name: str) -> Path:
+def _export_gltf(src_dir: MapSource, out_dir: Path, name: str) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
-    _copy_if_exists(src_dir / "albedo_delit.png", out_dir / "baseColor.png")
-    _copy_if_exists(src_dir / "orm.png", out_dir / "orm.png")
-    _copy_if_exists(src_dir / "normal.png", out_dir / "normal.png")
+    _copy_if_exists(src_dir, "albedo_delit.png", out_dir / "baseColor.png")
+    _copy_if_exists(src_dir, "orm.png", out_dir / "orm.png")
+    _copy_if_exists(src_dir, "normal.png", out_dir / "normal.png")
 
     gltf = {
         "asset": {"version": "2.0", "generator": "hypbr"},
@@ -398,18 +396,18 @@ def _export_gltf(src_dir: Path, out_dir: Path, name: str) -> Path:
     return out_dir
 
 
-def _export_vulkan(src_dir: Path, out_dir: Path, name: str) -> Path:
+def _export_vulkan(src_dir: MapSource, out_dir: Path, name: str) -> Path:
     size = _detect_size(src_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    _copy_if_exists(src_dir / "albedo_delit.png", out_dir / "albedo_srgb.png")
-    _copy_if_exists(src_dir / "orm.png", out_dir / "orm_unorm.png")
-    _copy_if_exists(src_dir / "normal.png", out_dir / "normal_rgb.png")
-    _copy_if_exists(src_dir / "height16.png", out_dir / "height_r16.png")
-    _copy_if_exists(src_dir / "bent_normal.png", out_dir / "bent_normal.png")
+    _copy_if_exists(src_dir, "albedo_delit.png", out_dir / "albedo_srgb.png")
+    _copy_if_exists(src_dir, "orm.png", out_dir / "orm_unorm.png")
+    _copy_if_exists(src_dir, "normal.png", out_dir / "normal_rgb.png")
+    _copy_if_exists(src_dir, "height16.png", out_dir / "height_r16.png")
+    _copy_if_exists(src_dir, "bent_normal.png", out_dir / "bent_normal.png")
 
     # 2-channel RG normal (BC5 / VK_FORMAT_R8G8_UNORM ready; reconstruct Z = sqrt(1 - x^2 - y^2))
-    nrm = _load_rgb(src_dir / "normal.png", default=(128, 128, 255), size=size)
+    nrm = _load_rgb(src_dir, "normal.png", default=(128, 128, 255), size=size)
     rg = np.zeros_like(nrm)
     rg[..., 0] = nrm[..., 0]
     rg[..., 1] = nrm[..., 1]
@@ -459,10 +457,10 @@ def _export_vulkan(src_dir: Path, out_dir: Path, name: str) -> Path:
     return out_dir
 
 
-def _export_materialx(src_dir: Path, out_dir: Path, name: str) -> Path:
+def _export_materialx(src_dir: MapSource, out_dir: Path, name: str) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     for fname in ("albedo_delit.png", "normal.png", "roughness.png", "metallic.png", "ao.png", "height16.png"):
-        _copy_if_exists(src_dir / fname, out_dir / fname)
+        _copy_if_exists(src_dir, fname, out_dir / fname)
 
     mtlx = f"""<?xml version="1.0"?>
 <materialx version="1.38">
@@ -551,7 +549,7 @@ def _build_uv_sphere(rings: int = 32, sectors: int = 64) -> tuple[np.ndarray, np
     )
 
 
-def _export_glb(src_dir: Path, out_dir: Path, name: str) -> Path:
+def _export_glb(src_dir: MapSource, out_dir: Path, name: str) -> Path:
     """Export a single self-contained binary glTF 2.0 (.glb) preview sphere with embedded PBR maps."""
     out_dir.mkdir(parents=True, exist_ok=True)
     pos, nrm, tan, uv, idx = _build_uv_sphere()
@@ -579,10 +577,9 @@ def _export_glb(src_dir: Path, out_dir: Path, name: str) -> Path:
 
     img_views: list[int] = []
     for fname in ("albedo_delit.png", "orm.png", "normal.png"):
-        p = src_dir / fname
-        if not p.exists():
-            raise FileNotFoundError(f"Required map missing for GLB export: {p}")
-        img_views.append(add_view(p.read_bytes()))
+        if not src_dir.exists(fname):
+            raise FileNotFoundError(f"Required map missing for GLB export: {src_dir}/{fname}")
+        img_views.append(add_view(src_dir.read_bytes(fname)))
 
     bin_data = b"".join(bin_chunks)
     gltf_doc: dict[str, Any] = {
@@ -659,11 +656,11 @@ def _export_glb(src_dir: Path, out_dir: Path, name: str) -> Path:
     return out_dir
 
 
-def _export_usd(src_dir: Path, out_dir: Path, name: str) -> Path:
+def _export_usd(src_dir: MapSource, out_dir: Path, name: str) -> Path:
     """Export an OpenUSD ASCII (.usda) UsdPreviewSurface material (RealityKit / Omniverse / Houdini)."""
     out_dir.mkdir(parents=True, exist_ok=True)
     for fname in ("albedo_delit.png", "normal.png", "roughness.png", "metallic.png", "ao.png", "height16.png"):
-        _copy_if_exists(src_dir / fname, out_dir / fname)
+        _copy_if_exists(src_dir, fname, out_dir / fname)
 
     safe = "".join(c if (c.isalnum() or c == "_") else "_" for c in name)
     if not safe or safe[0].isdigit():
@@ -765,7 +762,7 @@ def Xform "{safe}_Root"
 
 
 def export_material(
-    src_dir: Path | str,
+    src_dir: "Path | str | MaterialMaps",
     out_dir: Path | str,
     target: str,
     name: str | None = None,
@@ -773,16 +770,17 @@ def export_material(
     """Export a synthesized hypbr material directory to a target engine/format.
 
     Args:
-        src_dir: Directory containing hypbr PBR maps (`albedo_delit.png`, `normal.png`, etc.).
+        src_dir: Directory containing hypbr PBR maps (`albedo_delit.png`, `normal.png`, etc.),
+            or an in-memory `MaterialMaps` (maps are encoded straight into the target layout).
         out_dir: Destination directory for the engine-formatted output.
         target: One of `SUPPORTED_TARGETS` (e.g. "unity", "unity-hdrp", "godot",
             "unreal", "blender", "threejs", "gltf", "glb", "vulkan", "materialx", "usd").
-        name: Optional material name (defaults to `src_dir.name`).
+        name: Optional material name (defaults to `src_dir.name` / `MaterialMaps.material_id`).
 
     Returns:
         Path to `out_dir`.
     """
-    src = Path(src_dir)
+    src = MapSource(src_dir)
     dst = Path(out_dir)
     mat_name = name or src.name
     t = target.lower().strip()

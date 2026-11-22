@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import numpy as np
-import torch
-import torch.nn as nn
+import pytest
+
+torch = pytest.importorskip("torch", reason="weightcode operates on torch modules (pip install hypbr[neural])")
+nn = torch.nn
 
 from hypbr.weightcode import (
     BASIS_3X3,

@@ -25,14 +25,16 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import numpy as np
-import torch
 from PIL import Image
 
+from . import _backend as bk
+from ._backend import no_grad
 from . import depthpro_pbr as dp          # noqa: E402
 from . import normal_graph as ng          # noqa: E402
 from . import procedural as gd            # noqa: E402
 from ._parallel import map_rows, row_slices
 from .color import linear_to_srgb, linear_to_srgb_torch, linear_to_srgb_u8
+from .maps import MaterialMaps, unit_normals
 
 
 def _rich_albedo_and_metal(did: str, mat_kind: str, tint: tuple, h: np.ndarray, cav: np.ndarray,
@@ -765,6 +767,11 @@ def _rich_albedo_and_metal(did: str, mat_kind: str, tint: tuple, h: np.ndarray, 
 
 def synthesize_hardops_plate(out_dir: Path, size: int = 512) -> Path:
     """Synthesize a pure gunmetal machined HardOps panel using 8-Azimuth HBAO + Bent Normal."""
+    return synthesize_hardops_plate_maps(size=size).save(out_dir)
+
+
+def synthesize_hardops_plate_maps(size: int = 512, *, preview: bool = True) -> MaterialMaps:
+    """In-memory `synthesize_hardops_plate`: the machined gunmetal HardOps panel as `MaterialMaps`."""
     H = W = size
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
     u, v = xx / W, yy / H
@@ -808,35 +815,30 @@ def synthesize_hardops_plate(out_dir: Path, size: int = 512) -> Path:
     metal = np.clip(0.96 * (1.0 - 0.16 * deep_oil) + 0.04 * curv["convex"], 0.78, 0.99).astype(np.float32)
     aniso = ng.node_anisotropy_flow(ctx, {"height": h_n, "ao": ao, "roughness": rough})
     thick = ng.node_thickness_subsurface(ctx, {"height": h_n})
-    prev_u8 = render_studio_preview(alb_lin, n_fin, rough, metal, ao)
-    rough_u8 = np.clip(rough * 255.0 + 0.5, 0, 255).astype(np.uint8)
-    met_u8 = np.clip(metal * 255.0 + 0.5, 0, 255).astype(np.uint8)
+    prev_u8 = render_studio_preview(alb_lin, n_fin, rough, metal, ao) if preview else None
 
-    out_dir.mkdir(parents=True, exist_ok=True)
-    save_maps_parallel([
-        (out_dir / "albedo_delit.png", alb_u8),
-        (out_dir / "source_512.png", alb_u8),
-        (out_dir / "preview.png", prev_u8),
-        (out_dir / "height.png", np.clip(h_n * 255.0 + 0.5, 0, 255).astype(np.uint8)),
-        (out_dir / "height16.png", np.clip(h_n * 65535.0 + 0.5, 0, 65535).astype(np.uint16)),
-        (out_dir / "normal.png", dp.normal_to_u8(n_fin)),
-        (out_dir / "bent_normal.png", hbao["bent_normal_u8"]),
-        (out_dir / "ao.png", hbao["ao_u8"]),
-        (out_dir / "roughness.png", rough_u8),
-        (out_dir / "metallic.png", met_u8),
-        (out_dir / "orm.png", np.stack([hbao["ao_u8"], rough_u8, met_u8], -1)),
-        (out_dir / "curvature.png", curv["curvature_u8"]),
-        (out_dir / "cavity.png", curv["cavity_u8"]),
-        (out_dir / "edge_wear.png", np.clip(curv["convex"] * 255.0 + 0.5, 0, 255).astype(np.uint8)),
-        (out_dir / "anisotropy.png", aniso["anisotropy_u8"]),
-        (out_dir / "specular.png", aniso["specular_u8"]),
-        (out_dir / "thickness.png", thick["thickness_u8"]),
-    ])
-    return out_dir
+    return MaterialMaps(
+        albedo=alb_lin,
+        normal=unit_normals(n_fin),
+        height=h_n,
+        roughness=rough,
+        metallic=metal,
+        ao=ao,
+        bent_normal=unit_normals(hbao["bent_normal"]),
+        curvature=curv["curvature"],
+        cavity=curv["cavity"],
+        edge_wear=curv["convex"],
+        anisotropy=aniso["anisotropy"],
+        specular=aniso["specular"],
+        thickness=thick["thickness"],
+        preview=prev_u8,
+        extras={"source_512": alb_u8},
+        metadata={"material_id": "hardops_plate", "size": size, "seed": 901, "kind": "metal",
+                  "family": "hardops", "calibrated": False},
+    )
 
 
 def _synthesize_hardops_weathered(
-    out_dir: Path,
     size: int = 512,
     seed: int | None = None,
     wear: float = 0.0,
@@ -847,25 +849,24 @@ def _synthesize_hardops_weathered(
     moss: float | None = None,
     rust: float | None = None,
     dust: float | None = None,
-) -> Path:
-    """Dispatch `hardops_plate` through `synthesize_material`, applying weathering post-hoc if requested."""
-    import tempfile
-
-    from .weathering import weather_material
+    preview: bool = True,
+) -> MaterialMaps:
+    """Dispatch `hardops_plate` through `synthesize_material_maps`, weathering post-hoc if requested."""
+    from .weathering import weather_material_maps
 
     w_amt = float(np.clip(wear, 0.0, 1.0))
     wants = weather_preset is not None or w_amt > 1e-4 or any(
         v is not None and float(v) > 1e-4 for v in (dirt, wet, moss, rust, dust)
     )
     if not wants:
-        return synthesize_hardops_plate(out_dir, size=size)
-    with tempfile.TemporaryDirectory() as td:
-        fresh = synthesize_hardops_plate(Path(td) / "hardops_plate", size=size)
-        return weather_material(
-            fresh, out_dir, preset=weather_preset, wear=(w_amt if w_amt > 1e-4 else None),
-            dirt=dirt, wet=wet, moss=moss, rust=rust, dust=dust, material_kind="metal",
-            seed=901 if seed is None else int(seed),
-        )
+        return synthesize_hardops_plate_maps(size=size, preview=preview)
+    # The weathering pass reads the fresh plate exactly as if it were saved to disk (8-bit maps).
+    fresh = synthesize_hardops_plate_maps(size=size, preview=False)
+    return weather_material_maps(
+        fresh, preset=weather_preset, wear=(w_amt if w_amt > 1e-4 else None),
+        dirt=dirt, wet=wet, moss=moss, rust=rust, dust=dust, material_kind="metal",
+        seed=901 if seed is None else int(seed), preview=preview,
+    )
 
 
 def list_materials() -> list[dict[str, str]]:
@@ -914,7 +915,7 @@ def save_maps_parallel(items: list[tuple[Path, np.ndarray]], compress_level: int
         list(pool.map(_write, items))
 
 
-@torch.no_grad()
+@no_grad
 def render_studio_preview(
     alb_lin: np.ndarray,
     N: np.ndarray,
@@ -924,6 +925,7 @@ def render_studio_preview(
 ) -> np.ndarray:
     """Physically-based 3-light Cook-Torrance GGX + dual-strip studio IBL + micro-sheen preview (MPS/CPU bit-matched)."""
     if dp.DEVICE.type != "cpu" and rough.size >= 262144:
+        torch = bk.require_torch("GPU studio preview")
         dev = dp.DEVICE
         alb_t = torch.from_numpy(np.ascontiguousarray(alb_lin, dtype=np.float32)).to(dev)
         n_t = torch.from_numpy(np.ascontiguousarray(N, dtype=np.float32)).to(dev)
@@ -1127,11 +1129,40 @@ def synthesize_material(
     dust: float | None = None,
     calibrated: bool = True,
 ) -> Path:
-    """Synthesize a complete seamless 15-map PBR material set into `out_dir`.
+    """Synthesize a complete seamless 15-map PBR material set into `out_dir` (returns `out_dir`).
+
+    Thin wrapper around `synthesize_material_maps(...).save(out_dir)`; see that function for the
+    arguments. Use `synthesize_material_maps` directly to keep the maps in memory.
+    """
+    return synthesize_material_maps(
+        material_id, size=size, seed=seed, wear=wear, weather_preset=weather_preset,
+        dirt=dirt, wet=wet, moss=moss, rust=rust, dust=dust, calibrated=calibrated,
+    ).save(out_dir)
+
+
+def synthesize_material_maps(
+    material_id: str,
+    size: int = 512,
+    seed: int | None = None,
+    wear: float = 0.0,
+    *,
+    weather_preset: str | None = None,
+    dirt: float | None = None,
+    wet: float | None = None,
+    moss: float | None = None,
+    rust: float | None = None,
+    dust: float | None = None,
+    calibrated: bool = True,
+    preview: bool = True,
+) -> MaterialMaps:
+    """Synthesize a complete seamless 15-map PBR material in memory (no files written).
+
+    Returns a `MaterialMaps` (float32 linear albedo, unit normals, height, roughness, metallic, AO,
+    bent normal, curvature, cavity, edge wear, anisotropy, specular, thickness + studio preview);
+    `.save(dir)` writes exactly the files `synthesize_material` writes.
 
     Args:
         material_id: Built-in material ID (see `list_materials()`).
-        out_dir: Destination directory.
         size: Square output resolution in pixels (default: 512).
         seed: Optional deterministic seed override.
         wear: Physical weathering intensity in `[0.0, 1.0]` (`0.0`=fresh, `0.5`=lived-in, `1.0`=weathered).
@@ -1145,6 +1176,7 @@ def synthesize_material(
         calibrated: Apply the reference-photo calibration fitted against real CC0 scans
             (albedo contrast spectrum, chroma, normal slope, roughness). `False` reproduces
             the uncalibrated v1.0 output exactly.
+        preview: Render the studio `preview` image (skip to save ~5% time when not needed).
     """
     from .calibration import adjust_roughness, equalize_albedo, equalize_height, get_calibration
     from .weathering import apply_weathering_maps, resolve_weather_params
@@ -1154,8 +1186,8 @@ def synthesize_material(
     catalog_map = {did: (idx, desc, mat_kind, tint) for idx, (did, desc, mat_kind, tint) in enumerate(gd.DAILY_CATALOG)}
     if material_id == "hardops_plate":  # no reference scans for machined gunmetal -> uncalibrated
         return _synthesize_hardops_weathered(
-            Path(out_dir), size=size, seed=seed, wear=wear, weather_preset=weather_preset,
-            dirt=dirt, wet=wet, moss=moss, rust=rust, dust=dust,
+            size=size, seed=seed, wear=wear, weather_preset=weather_preset,
+            dirt=dirt, wet=wet, moss=moss, rust=rust, dust=dust, preview=preview,
         )
     par = None
     if material_id in catalog_map:
@@ -1167,8 +1199,6 @@ def synthesize_material(
             raise KeyError(f"Unknown material_id '{material_id}'. Use list_materials() to see available IDs.")
         mat_kind, tint = par["kind"], tuple(par["params"]["c1"])
         s_default = int(par["seed"])
-    d = Path(out_dir)
-    d.mkdir(parents=True, exist_ok=True)
     H = W = size
     s_base = s_default if seed is None else seed
     w_amt = float(np.clip(wear, 0.0, 1.0))
@@ -1284,7 +1314,7 @@ def synthesize_material(
         rough = adjust_roughness(rough, float(cal.get("rough_shift", 0.0)), float(cal["rough_std_gain"]), 0.05, 0.95)
     met_f = met_u8.astype(np.float32) / 255.0
 
-    weather_mask_rgba = None
+    weather_mask = None
     puddle_mask = None
     if wp is not None:
         w_res = apply_weathering_maps(
@@ -1299,7 +1329,7 @@ def synthesize_material(
         rough = w_res["rough"]
         met_f = w_res["met_f"]
         met_u8 = w_res["met_u8"]
-        weather_mask_rgba = w_res["weather_mask_rgba"]
+        weather_mask = w_res["weather_mask"]
         puddle_mask = w_res["masks"].get("puddle")
     elif w_amt > 1e-4:
         w_macro = np.clip(0.5 + 0.42 * gd._periodic_fbm(H, W, s_base + 7777, (4, 8, 16)), 0.0, 1.0)
@@ -1380,35 +1410,38 @@ def synthesize_material(
     rough = ng.node_roughness_specular_aa({"circular": True}, {"roughness": rough, "normal": N}, strength=0.25, max_boost=0.08)["roughness"]
     if puddle_mask is not None and float(puddle_mask.max()) > 1e-4:
         rough = np.clip(rough * (1.0 - puddle_mask) + 0.095 * puddle_mask, 0.05, 0.97).astype(np.float32)
-    prev_u8 = render_studio_preview(alb_lin, N, rough, met_f, ao)
+    prev_u8 = render_studio_preview(alb_lin, N, rough, met_f, ao) if preview else None
 
     aniso = ng.node_anisotropy_flow({"circular": True}, {"height": h_n, "ao": ao, "roughness": rough})
     thick = ng.node_thickness_subsurface({"circular": True}, {"height": h_n})
-    rough_u8 = np.clip(rough * 255.0 + 0.5, 0, 255).astype(np.uint8)
-    orm_u8 = np.stack([hbao["ao_u8"], rough_u8, met_u8], axis=-1)
-
-    outputs = [
-        (d / "albedo_delit.png", alb_u8),
-        (d / "preview.png", prev_u8),
-        (d / "height.png", np.clip(h_n * 255.0 + 0.5, 0, 255).astype(np.uint8)),
-        (d / "height16.png", np.clip(h_n * 65535.0 + 0.5, 0, 65535).astype(np.uint16)),
-        (d / "normal.png", dp.normal_to_u8(N)),
-        (d / "bent_normal.png", hbao["bent_normal_u8"]),
-        (d / "ao.png", hbao["ao_u8"]),
-        (d / "roughness.png", rough_u8),
-        (d / "metallic.png", met_u8),
-        (d / "orm.png", orm_u8),
-        (d / "curvature.png", curv["curvature_u8"]),
-        (d / "cavity.png", curv["cavity_u8"]),
-        (d / "edge_wear.png", np.clip(curv["convex"] * 255.0 + 0.5, 0, 255).astype(np.uint8)),
-        (d / "anisotropy.png", aniso["anisotropy_u8"]),
-        (d / "specular.png", aniso["specular_u8"]),
-        (d / "thickness.png", thick["thickness_u8"]),
-    ]
-    if weather_mask_rgba is not None:
-        outputs.append((d / "weather_mask.png", weather_mask_rgba))
-    save_maps_parallel(outputs)
-    return d
+    return MaterialMaps(
+        albedo=alb_lin,
+        normal=unit_normals(N),
+        height=h_n,
+        roughness=rough,
+        # metallic is authored 8-bit; keep the exact quantized value so `.save()` is lossless
+        metallic=met_u8.astype(np.float32) / 255.0,
+        ao=ao,
+        bent_normal=unit_normals(hbao["bent_normal"]),
+        curvature=curv["curvature"],
+        cavity=curv["cavity"],
+        edge_wear=curv["convex"],
+        anisotropy=aniso["anisotropy"],
+        specular=aniso["specular"],
+        thickness=thick["thickness"],
+        preview=prev_u8,
+        weather_mask=weather_mask,
+        metadata={
+            "material_id": material_id,
+            "size": size,
+            "seed": s_base,
+            "kind": mat_kind,
+            "family": par["family"] if par is not None else "daily",
+            "calibrated": cal is not None,
+            "wear": w_amt,
+            "weather": dict(wp) if wp is not None else None,
+        },
+    )
 
 
 def synthesize_all(

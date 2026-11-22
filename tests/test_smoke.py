@@ -1,6 +1,7 @@
 """Smoke tests for hypbr procedural synthesis and node graph registry."""
 from pathlib import Path
 
+import pytest
 from PIL import Image
 
 from hypbr import PRESETS, list_materials, synthesize_material
@@ -47,7 +48,7 @@ def test_synthesize_single_material_seamless(tmp_path: Path) -> None:
 
 def test_gpu_cpu_parity_hbao_and_blur() -> None:
     import numpy as np
-    import torch
+    torch = pytest.importorskip("torch", reason="GPU/CPU parity needs torch")
     from hypbr import depthpro_pbr as dp
     from hypbr import normal_graph as ng
 
@@ -71,7 +72,7 @@ def test_gpu_cpu_parity_hbao_and_blur() -> None:
 
 def test_gpu_cpu_parity_periodic_fbm_and_preview() -> None:
     import numpy as np
-    import torch
+    torch = pytest.importorskip("torch", reason="GPU/CPU parity needs torch")
     from hypbr import depthpro_pbr as dp
     from hypbr import procedural as gd
     from hypbr.synthesize import render_studio_preview

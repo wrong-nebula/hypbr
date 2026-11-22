@@ -4,8 +4,10 @@
 
 ## Install
 
-- `pip install -e .` (core procedural synthesis: `numpy`, `pillow`, `torch`)
-- `pip install -e ".[neural]"` (optional photo-to-PBR via ONNX Runtime + Apple Depth Pro)
+- `pip install -e .` (core procedural synthesis, blend, weather, export, verify: `numpy`, `pillow` only — no torch)
+- `pip install -e ".[gpu]"` (optional `torch` for CUDA/MPS-accelerated procedural kernels; identical output on CPU)
+- `pip install -e ".[neural]"` (optional photo-to-PBR via torch + ONNX Runtime + Apple Depth Pro)
+- Env: `HYPBR_TORCH=0` forces the NumPy path; `HYPBR_DEVICE=cpu|mps|cuda` selects the torch device. `hypbr.has_torch()` reports availability.
 
 ## Performance & Environment
 
@@ -35,6 +37,14 @@ Signatures below are checked against the code by `tests/test_docs.py`.
 - `synthesize_material(material_id, out_dir, size=512, seed=None, wear=0.0, *, weather_preset=None, dirt=None, wet=None, moss=None, rust=None, dust=None, calibrated=True) -> Path`: Writes 15 seamless PBR PNGs + `preview.png` (+ `weather_mask.png` when weathered) to `out_dir`. `calibrated=False` reproduces the uncalibrated output.
 - `synthesize_all(out_dir, size=512, materials=None, wear=0.0, *, weather_preset=None, dirt=None, wet=None, moss=None, rust=None, dust=None) -> list[Path]`: Batch-synthesizes all or selected materials.
 - `synthesize_hardops_plate(out_dir, size=512) -> Path`: Machined hard-surface gunmetal panel (SDF plugs, bevels, weld fillets).
+
+### In-memory maps (no PNG round-trips)
+- `synthesize_material_maps(material_id, size=512, seed=None, wear=0.0, *, weather_preset=None, dirt=None, wet=None, moss=None, rust=None, dust=None, calibrated=True, preview=True) -> MaterialMaps`: Same synthesis as `synthesize_material`, kept in memory; `synthesize_material` is `synthesize_material_maps(...).save(out_dir)`.
+- `synthesize_hardops_plate_maps(size=512, *, preview=True) -> MaterialMaps`: In-memory hard-surface panel.
+- `MaterialMaps`: dataclass of float32 arrays — `albedo` (H,W,3 linear light), `normal`/`bent_normal` (H,W,3 unit, OpenGL +Y), `height`, `roughness`, `metallic`, `ao`, `curvature` (0.5 = flat), `cavity`, `edge_wear`, `anisotropy` (H,W,3 as saved), `specular`, `thickness`; optional `preview` (uint8 sRGB), `weather_mask` (H,W,4), `blend_mask`; `extras`, `metadata` (`material_id`, `seed`, `kind`, `calibrated`, `weather`, ...). `.save(dir, write_metadata=False) -> Path` writes byte-identical files to `synthesize_material`; `MaterialMaps.load(dir)` round-trips losslessly; `.encode("normal.png")` gives the exact 8/16-bit array; also `.file_names()`, `.orm`, `.copy()`.
+- `blend_materials_maps(mat_a, mat_b, factor=0.5, contrast=0.06, mode="height", *, preview=True) -> MaterialMaps` and `weather_material_maps(src, *, preset=None, wear=None, dirt=None, wet=None, moss=None, rust=None, dust=None, material_kind=None, seed=42, backend="procedural", patch_dir=None, vit_patch=None, preview=True) -> MaterialMaps`: Chain blending/weathering in memory. Inputs are read at saved 8/16-bit precision, so results equal the directory path exactly.
+- Every material argument of `blend_materials`, `weather_material`, `export_material` and `verify_material` accepts a directory or a `MaterialMaps`.
+- `has_torch() -> bool`: Whether PyTorch is importable. Procedural synthesis, blend, weather, export and verify need only numpy + pillow; torch (`pip install "hypbr[gpu]"`) adds CUDA/MPS kernels with identical CPU output, `hypbr photo` needs `hypbr[neural]`. `HYPBR_TORCH=0` forces the NumPy path.
 - `list_materials() -> list[dict]`: `{id, name, description, category, atlas_category, subcategory, generator}` for all 500 materials.
 
 ### Atlas (agent metadata)
@@ -44,7 +54,7 @@ Signatures below are checked against the code by `tests/test_docs.py`.
 - `get_atlas(base_url=...) -> dict` / `export_atlas_files(out_dir, base_url=..., measurements=None) -> dict`: Manifest, and static site export.
 
 ### Weathering, blending, export, QA
-- `weather_material(src_dir, out_dir, *, preset=None, wear=None, dirt=None, wet=None, moss=None, rust=None, dust=None, material_kind=None, seed=42, backend="procedural", patch_dir=None, vit_patch=None) -> Path`: Weathers an existing material directory. `WEATHER_PRESETS` holds the named presets (`abandoned, aged, coastal, dusty, mossy, rain, rusty`).
+- `weather_material(src_dir, out_dir, *, preset=None, wear=None, dirt=None, wet=None, moss=None, rust=None, dust=None, material_kind=None, seed=42, backend="procedural", patch_dir=None, vit_patch=None) -> Path`: Weathers an existing material directory (or `MaterialMaps`). `WEATHER_PRESETS` holds the named presets (`abandoned, aged, coastal, dusty, mossy, rain, rusty`).
 - `resolve_weather_params(preset=None, *, wear=None, dirt=None, wet=None, moss=None, rust=None, dust=None) -> dict`, `compute_weathering_masks(...)`, `apply_weathering_maps(...)`, `infer_material_kind(name, met_mean=0.0)`: Lower-level in-memory weathering building blocks.
 - `blend_materials(dir_a, dir_b, out_dir, factor=0.5, contrast=0.06, mode="height") -> Path`: Physically blends two seamless material directories using 16-bit height-lerp, cavity, or linear masking with linear-light albedo and recomputed HBAO/bent-normal/curvature/ORM.
 - `export_material(src_dir, out_dir, target, name=None) -> Path`: Converts a synthesized `hypbr` directory to engine-native assets:
@@ -64,7 +74,7 @@ Signatures below are checked against the code by `tests/test_docs.py`.
 
 ### Graph & neural
 - `PRESETS: dict[str, dict]` and `run_graph(graph_spec, sources, circular=False)`: Built-in JSON-serializable PBR node graphs (default: `"v13-default"`) and their executor.
-- `apply_depthpro_weightcode(model, ...)` / `spectral_filter_3x3_kernel(W, dc_gain, ramp_gain, detail_gain)` / `tileable_4quad_blend(rgb, infer_fn)`: Zero-training analytic weight surgery on 3×3 Conv2d kernels and exact 4-quadrant partition-of-unity seamless blending (photo mode).
+- `apply_depthpro_weightcode(model, ...)` / `spectral_filter_3x3_kernel(W, dc_gain, ramp_gain, detail_gain)` / `tileable_4quad_blend(rgb, infer_fn)`: Zero-training analytic weight surgery on 3×3 Conv2d kernels and exact 4-quadrant partition-of-unity seamless blending (photo mode; torch-only, resolved lazily from `hypbr`).
 
 ## Output Maps (per material)
 
@@ -94,6 +104,8 @@ Signatures below are checked against the code by `tests/test_docs.py`.
 - [hypbr/exporters.py](hypbr/exporters.py): Engine & standard I/O exporters (`unity`, `unity-hdrp`, `godot`, `unreal`, `blender`, `threejs`, `gltf`, `glb`, `vulkan`, `materialx`, `usd`).
 - [hypbr/cli.py](hypbr/cli.py): Command-line entrypoint (`hypbr`).
 - [hypbr/synthesize.py](hypbr/synthesize.py): Public Python synthesis API and multi-tone physical albedo/metallic rules.
+- [hypbr/maps.py](hypbr/maps.py): `MaterialMaps` in-memory material with byte-exact `.save()` / `.load()`.
+- [hypbr/_backend.py](hypbr/_backend.py): Optional-torch backend with NumPy fallbacks for the procedural kernels.
 - [hypbr/procedural.py](hypbr/procedural.py): Exact periodic FBM, Voronoi, weave, ceramic, wood, and metal heightfield generators.
 - [hypbr/normal_graph.py](hypbr/normal_graph.py): 47-node composable PBR graph engine (RNM blending, Weickert structure tensor, analytic bevels, 8-azimuth HBAO, Specular AA).
 - [hypbr/depthpro_pbr.py](hypbr/depthpro_pbr.py): Optional Apple Depth Pro + DeepBump ONNX neural relief extractor with 4-rotation perspective cancellation.

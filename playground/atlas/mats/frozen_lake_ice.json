@@ -72,8 +72,8 @@
   "ior": 1.31,
   "is_metallic": false,
   "roughness_range": [
-   0.059,
-   0.439
+   0.208,
+   0.471
   ],
   "metallic_range": [
    0.0,
@@ -122,20 +122,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.139,
+  "max_seam_ratio": 1.124,
   "seam_ratios": {
-   "height": 0.865,
-   "normal": 1.139,
-   "albedo": 1.028
+   "height": 0.845,
+   "normal": 1.124,
+   "albedo": 0.897
   },
-  "normal_unit_error": 0.0013,
+  "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  186,
-  206,
-  216
+  189,
+  205,
+  213
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/frozen_lake_ice/albedo_delit.webp",

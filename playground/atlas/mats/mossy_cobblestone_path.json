@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.557,
-   0.98
+   0.675,
+   0.957
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.726,
+  "max_seam_ratio": 1.698,
   "seam_ratios": {
-   "height": 1.726,
-   "normal": 1.65,
-   "albedo": 1.643
+   "height": 1.649,
+   "normal": 1.698,
+   "albedo": 1.495
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  119,
+  118,
   120,
-  107
+  108
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/mossy_cobblestone_path/albedo_delit.webp",

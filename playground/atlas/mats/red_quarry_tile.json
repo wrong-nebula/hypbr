@@ -77,8 +77,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.624,
-   0.824
+   0.612,
+   0.898
   ],
   "metallic_range": [
    0.0,
@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.131,
+  "max_seam_ratio": 0.528,
   "seam_ratios": {
-   "height": 0.061,
-   "normal": 0.089,
-   "albedo": 0.131
+   "height": 0.145,
+   "normal": 0.425,
+   "albedo": 0.528
   },
-  "normal_unit_error": 0.0005,
+  "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  149,
-  86,
-  63
+  143,
+  89,
+  71
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_quarry_tile/albedo_delit.webp",

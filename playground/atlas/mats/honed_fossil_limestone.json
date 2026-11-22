@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.514,
-   0.694
+   0.627,
+   0.78
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.694,
+  "max_seam_ratio": 0.775,
   "seam_ratios": {
-   "height": 0.348,
-   "normal": 0.694,
-   "albedo": 0.438
+   "height": 0.529,
+   "normal": 0.775,
+   "albedo": 0.76
   },
-  "normal_unit_error": 0.0006,
+  "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  201,
+  202,
   195,
-  179
+  176
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/honed_fossil_limestone/albedo_delit.webp",

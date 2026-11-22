@@ -75,7 +75,7 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.075,
+   0.208,
    0.424
   ],
   "metallic_range": [
@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.118,
+  "max_seam_ratio": 0.494,
   "seam_ratios": {
-   "height": 0.037,
-   "normal": 0.063,
-   "albedo": 0.118
+   "height": 0.086,
+   "normal": 0.133,
+   "albedo": 0.494
   },
   "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  173,
+  172,
   174,
-  176
+  175
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/beveled_gray_metro_tile/albedo_delit.webp",

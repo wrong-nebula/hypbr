@@ -78,8 +78,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.561,
-   0.98
+   0.678,
+   0.957
   ],
   "metallic_range": [
    0.0,
@@ -129,11 +129,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.528,
+  "max_seam_ratio": 1.488,
   "seam_ratios": {
-   "height": 1.327,
-   "normal": 1.484,
-   "albedo": 1.528
+   "height": 1.277,
+   "normal": 1.435,
+   "albedo": 1.488
   },
   "normal_unit_error": 0.0018,
   "errors": [],
@@ -142,7 +142,7 @@
  "albedo_mean_srgb": [
   119,
   113,
-  107
+  105
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/old_town_cobblestone/albedo_delit.webp",

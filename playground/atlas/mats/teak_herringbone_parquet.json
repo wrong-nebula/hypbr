@@ -28,7 +28,11 @@
    "is_wood": true,
    "grout": 0.045,
    "rough": 0.42,
-   "slope": 8.0
+   "slope": 8.0,
+   "roll": [
+    0.0625,
+    0.0625
+   ]
   },
   "seed": 8145
  },
@@ -72,8 +76,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.408,
-   0.733
+   0.369,
+   0.576
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.582,
+  "max_seam_ratio": 0.915,
   "seam_ratios": {
-   "height": 1.084,
-   "normal": 0.978,
-   "albedo": 1.582
+   "height": 0.891,
+   "normal": 0.915,
+   "albedo": 0.855
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  160,
-  122,
-  83
+  165,
+  120,
+  70
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/teak_herringbone_parquet/albedo_delit.webp",

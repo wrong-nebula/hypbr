@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.451,
-   0.604
+   0.569,
+   0.682
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.881,
+  "max_seam_ratio": 1.074,
   "seam_ratios": {
-   "height": 0.483,
-   "normal": 0.881,
-   "albedo": 0.528
+   "height": 0.637,
+   "normal": 1.074,
+   "albedo": 0.907
   },
-  "normal_unit_error": 0.0001,
+  "normal_unit_error": 0.0004,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   182,
-  181,
-  176
+  180,
+  175
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_microcement/albedo_delit.webp",

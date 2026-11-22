@@ -28,7 +28,11 @@
    "is_wood": false,
    "grout": 0.06,
    "rough": 0.78,
-   "slope": 9.0
+   "slope": 9.0,
+   "roll": [
+    0.0625,
+    0.0625
+   ]
   },
   "seed": 7109
  },
@@ -75,8 +79,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.725,
-   0.969
+   0.812,
+   0.976
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 3.358,
+  "max_seam_ratio": 0.889,
   "seam_ratios": {
-   "height": 1.087,
-   "normal": 0.94,
-   "albedo": 3.358
+   "height": 0.851,
+   "normal": 0.889,
+   "albedo": 0.775
   },
   "normal_unit_error": 0.0006,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  163,
-  110,
-  82
+  158,
+  112,
+  90
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/herringbone_clay_paver/albedo_delit.webp",

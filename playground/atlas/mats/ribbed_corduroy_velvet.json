@@ -54,8 +54,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.792,
-   0.973
+   0.702,
+   0.902
   ],
   "metallic_range": [
    0.0,
@@ -105,20 +105,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.899,
+  "max_seam_ratio": 0.804,
   "seam_ratios": {
-   "height": 0.341,
-   "normal": 0.899,
-   "albedo": 0.201
+   "height": 0.375,
+   "normal": 0.804,
+   "albedo": 0.314
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  142,
-  108,
-  86
+  146,
+  106,
+  78
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/ribbed_corduroy_velvet/albedo_delit.webp",

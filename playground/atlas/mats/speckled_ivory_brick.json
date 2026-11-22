@@ -71,8 +71,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.714,
-   0.965
+   0.765,
+   0.937
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.279,
+  "max_seam_ratio": 0.68,
   "seam_ratios": {
-   "height": 0.072,
-   "normal": 0.122,
-   "albedo": 0.279
+   "height": 0.197,
+   "normal": 0.407,
+   "albedo": 0.68
   },
-  "normal_unit_error": 0.0011,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  191,
+  192,
   183,
-  168
+  167
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/speckled_ivory_brick/albedo_delit.webp",

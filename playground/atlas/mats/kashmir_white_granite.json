@@ -75,8 +75,8 @@
   "ior": 1.54,
   "is_metallic": false,
   "roughness_range": [
-   0.078,
-   0.29
+   0.216,
+   0.353
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.74,
+  "max_seam_ratio": 1.709,
   "seam_ratios": {
-   "height": 1.599,
-   "normal": 1.712,
-   "albedo": 1.74
+   "height": 1.605,
+   "normal": 1.709,
+   "albedo": 1.555
   },
-  "normal_unit_error": 0.001,
+  "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  183,
-  177,
-  171
+  182,
+  175,
+  169
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/kashmir_white_granite/albedo_delit.webp",

@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.278,
-   0.435
+   0.384,
+   0.522
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +123,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.638,
+  "max_seam_ratio": 0.947,
   "seam_ratios": {
-   "height": 0.531,
-   "normal": 0.638,
-   "albedo": 0.515
+   "height": 0.635,
+   "normal": 0.947,
+   "albedo": 0.828
   },
-  "normal_unit_error": 0.0002,
+  "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  161,
+  159,
   172,
-  154
+  150
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sage_marmorino_plaster/albedo_delit.webp",

@@ -77,8 +77,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.412,
-   0.769
+   0.365,
+   0.616
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.908,
+  "max_seam_ratio": 0.881,
   "seam_ratios": {
-   "height": 0.847,
-   "normal": 0.908,
-   "albedo": 0.803
+   "height": 0.846,
+   "normal": 0.881,
+   "albedo": 0.798
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  195,
+  197,
   183,
-  163
+  158
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_oiled_chevron_parquet/albedo_delit.webp",

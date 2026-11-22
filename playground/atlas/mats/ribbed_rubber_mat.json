@@ -54,7 +54,7 @@
   "is_metallic": false,
   "roughness_range": [
    0.294,
-   0.878
+   0.875
   ],
   "metallic_range": [
    0.0,
@@ -101,20 +101,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.43,
+  "max_seam_ratio": 0.421,
   "seam_ratios": {
-   "height": 0.093,
-   "normal": 0.406,
-   "albedo": 0.43
+   "height": 0.123,
+   "normal": 0.421,
+   "albedo": 0.411
   },
-  "normal_unit_error": 0.0019,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   75,
   76,
-  79
+  80
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/ribbed_rubber_mat/albedo_delit.webp",

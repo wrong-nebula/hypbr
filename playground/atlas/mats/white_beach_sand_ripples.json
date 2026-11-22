@@ -72,8 +72,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.808,
-   0.941
+   0.749,
+   0.843
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.012,
+  "max_seam_ratio": 1.029,
   "seam_ratios": {
-   "height": 0.937,
-   "normal": 1.012,
-   "albedo": 0.561
+   "height": 0.932,
+   "normal": 1.029,
+   "albedo": 0.746
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  223,
-  217,
-  203
+  221,
+  216,
+  204
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_beach_sand_ripples/albedo_delit.webp",

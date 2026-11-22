@@ -78,8 +78,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.757,
-   0.941
+   0.722,
+   0.871
   ],
   "metallic_range": [
    0.0,
@@ -129,20 +129,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.7,
+  "max_seam_ratio": 0.886,
   "seam_ratios": {
-   "height": 0.445,
-   "normal": 0.636,
-   "albedo": 0.7
+   "height": 0.457,
+   "normal": 0.558,
+   "albedo": 0.886
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  60,
+  59,
   55,
-  53
+  52
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/charred_shou_sugi_ban/albedo_delit.webp",

@@ -27,6 +27,7 @@
    "mode": "organic",
    "rough": 0.88,
    "slope": 10.0,
+   "cover": "grass",
    "cells": 64
   },
   "seed": 16322
@@ -74,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.812,
-   0.949
+   0.831,
+   0.965
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.186,
+  "max_seam_ratio": 1.063,
   "seam_ratios": {
-   "height": 1.056,
-   "normal": 1.186,
-   "albedo": 1.058
+   "height": 1.042,
+   "normal": 1.061,
+   "albedo": 1.063
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  78,
-  112,
-  54
+  72,
+  116,
+  39
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/green_lawn_grass/albedo_delit.webp",

@@ -72,8 +72,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.706,
-   0.965
+   0.757,
+   0.937
   ],
   "metallic_range": [
    0.0,
@@ -122,20 +122,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.331,
+  "max_seam_ratio": 0.663,
   "seam_ratios": {
-   "height": 0.068,
-   "normal": 0.095,
-   "albedo": 0.331
+   "height": 0.23,
+   "normal": 0.477,
+   "albedo": 0.663
   },
-  "normal_unit_error": 0.0008,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  212,
-  212,
-  209
+  209,
+  209,
+  207
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/painted_white_brick/albedo_delit.webp",

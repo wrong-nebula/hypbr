@@ -27,7 +27,8 @@
    "rough": 0.9,
    "slope": 6.0,
    "mode": "quilted",
-   "freq": 20
+   "freq": 20,
+   "chroma": 0.3
   },
   "seed": 14916
  },
@@ -76,8 +77,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.796,
-   0.945
+   0.655,
+   0.878
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.83,
+  "max_seam_ratio": 0.91,
   "seam_ratios": {
-   "height": 0.76,
-   "normal": 0.83,
-   "albedo": 0.793
+   "height": 0.811,
+   "normal": 0.91,
+   "albedo": 0.848
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  210,
-  210,
-  207
+  209,
+  209,
+  206
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/diamond_quilted_mattress/albedo_delit.webp",

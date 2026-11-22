@@ -72,8 +72,8 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.082,
-   0.533
+   0.078,
+   0.537
   ],
   "metallic_range": [
    0.0,
@@ -123,11 +123,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.51,
+  "max_seam_ratio": 0.545,
   "seam_ratios": {
-   "height": 0.0,
-   "normal": 0.51,
-   "albedo": 0.017
+   "height": 0.041,
+   "normal": 0.545,
+   "albedo": 0.109
   },
   "normal_unit_error": 0.0008,
   "errors": [],
@@ -136,7 +136,7 @@
  "albedo_mean_srgb": [
   128,
   143,
-  175
+  176
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/polycrystalline_solar_array/albedo_delit.webp",

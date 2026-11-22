@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.169,
-   0.329
+   0.251,
+   0.353
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +123,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.641,
+  "max_seam_ratio": 0.785,
   "seam_ratios": {
-   "height": 0.449,
-   "normal": 0.641,
-   "albedo": 0.493
+   "height": 0.52,
+   "normal": 0.785,
+   "albedo": 0.628
   },
-  "normal_unit_error": 0.0007,
+  "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  206,
-  205,
-  203
+  214,
+  213,
+  211
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_quartzite_slab/albedo_delit.webp",

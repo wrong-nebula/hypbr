@@ -80,7 +80,7 @@
   "is_metallic": true,
   "roughness_range": [
    0.216,
-   0.957
+   0.949
   ],
   "metallic_range": [
    0.0,
@@ -132,20 +132,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.242,
+  "max_seam_ratio": 0.254,
   "seam_ratios": {
-   "height": 0.11,
-   "normal": 0.242,
-   "albedo": 0.086
+   "height": 0.132,
+   "normal": 0.254,
+   "albedo": 0.122
   },
-  "normal_unit_error": 0.0007,
+  "normal_unit_error": 0.0009,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  178,
-  180,
-  181
+  171,
+  173,
+  174
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/round_perf_stainless_panel/albedo_delit.webp",

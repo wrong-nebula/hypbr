@@ -54,7 +54,7 @@
   "is_metallic": true,
   "roughness_range": [
    0.141,
-   0.329
+   0.333
   ],
   "metallic_range": [
    0.957,
@@ -104,20 +104,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.363,
+  "max_seam_ratio": 0.365,
   "seam_ratios": {
-   "height": 0.171,
-   "normal": 0.216,
-   "albedo": 0.363
+   "height": 0.152,
+   "normal": 0.211,
+   "albedo": 0.365
   },
-  "normal_unit_error": 0.0003,
+  "normal_unit_error": 0.0005,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   199,
   202,
-  206
+  207
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/riveted_sheet_seam/albedo_delit.webp",

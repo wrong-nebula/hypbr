@@ -80,8 +80,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.51,
-   0.918
+   0.498,
+   0.941
   ],
   "metallic_range": [
    0.0,
@@ -133,20 +133,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.485,
+  "max_seam_ratio": 0.773,
   "seam_ratios": {
-   "height": 0.212,
-   "normal": 0.485,
-   "albedo": 0.286
+   "height": 0.238,
+   "normal": 0.454,
+   "albedo": 0.773
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  158,
-  147,
-  131
+  150,
+  142,
+  129
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_ash_batten_ceiling/albedo_delit.webp",

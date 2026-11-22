@@ -22,7 +22,8 @@
    "rough": 0.9,
    "slope": 6.0,
    "mode": "corduroy",
-   "freq": 10
+   "freq": 10,
+   "chroma": 0.3
   },
   "seed": 14805
  },
@@ -71,8 +72,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.812,
-   0.941
+   0.671,
+   0.859
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.251,
+  "max_seam_ratio": 1.087,
   "seam_ratios": {
-   "height": 1.251,
-   "normal": 0.72,
-   "albedo": 0.254
+   "height": 1.087,
+   "normal": 1.022,
+   "albedo": 0.752
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  155,
-  93,
-  57
+  163,
+  89,
+  40
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wide_wale_rust_corduroy/albedo_delit.webp",

@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.141,
-   0.286
+   0.255,
+   0.373
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.743,
+  "max_seam_ratio": 1.005,
   "seam_ratios": {
-   "height": 0.404,
-   "normal": 0.743,
-   "albedo": 0.443
+   "height": 0.632,
+   "normal": 1.005,
+   "albedo": 0.849
   },
-  "normal_unit_error": 0.0001,
+  "normal_unit_error": 0.0002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   163,
   161,
-  157
+  156
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/polished_concrete_floor/albedo_delit.webp",

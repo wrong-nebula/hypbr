@@ -73,7 +73,7 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.773,
+   0.816,
    0.929
   ],
   "metallic_range": [
@@ -123,20 +123,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.743,
+  "max_seam_ratio": 0.847,
   "seam_ratios": {
-   "height": 0.479,
-   "normal": 0.743,
-   "albedo": 0.46
+   "height": 0.552,
+   "normal": 0.816,
+   "albedo": 0.847
   },
-  "normal_unit_error": 0.0013,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  179,
-  158,
-  133
+  183,
+  157,
+  127
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/earthen_clay_plaster/albedo_delit.webp",

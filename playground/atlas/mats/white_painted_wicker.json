@@ -27,7 +27,8 @@
    "mode": "wicker",
    "rough": 0.78,
    "slope": 8.0,
-   "freq": 12
+   "freq": 12,
+   "chroma": 0.4
   },
   "seed": 15545
  },
@@ -75,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.714,
-   0.941
+   0.643,
+   0.871
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.389,
+  "max_seam_ratio": 1.509,
   "seam_ratios": {
-   "height": 1.151,
-   "normal": 1.389,
-   "albedo": 0.655
+   "height": 1.509,
+   "normal": 1.505,
+   "albedo": 0.864
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  186,
-  183,
-  179
+  190,
+  188,
+  182
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_painted_wicker/albedo_delit.webp",

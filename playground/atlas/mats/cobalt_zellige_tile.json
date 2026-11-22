@@ -76,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.059,
-   0.408
+   0.18,
+   0.416
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.089,
+  "max_seam_ratio": 0.179,
   "seam_ratios": {
-   "height": 0.072,
-   "normal": 0.089,
-   "albedo": 0.058
+   "height": 0.115,
+   "normal": 0.179,
+   "albedo": 0.14
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  59,
-  86,
-  154
+  66,
+  87,
+  147
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cobalt_zellige_tile/albedo_delit.webp",

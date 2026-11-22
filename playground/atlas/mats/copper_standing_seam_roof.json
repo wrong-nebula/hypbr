@@ -75,7 +75,7 @@
   "is_metallic": true,
   "roughness_range": [
    0.322,
-   0.494
+   0.502
   ],
   "metallic_range": [
    0.949,
@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.274,
+  "max_seam_ratio": 0.446,
   "seam_ratios": {
-   "height": 0.106,
-   "normal": 0.274,
-   "albedo": 0.168
+   "height": 0.142,
+   "normal": 0.368,
+   "albedo": 0.446
   },
-  "normal_unit_error": 0.0004,
+  "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  232,
-  177,
-  149
+  239,
+  175,
+  140
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/copper_standing_seam_roof/albedo_delit.webp",

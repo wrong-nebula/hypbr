@@ -72,7 +72,7 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.745,
+   0.796,
    0.941
   ],
   "metallic_range": [
@@ -122,20 +122,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.163,
+  "max_seam_ratio": 1.019,
   "seam_ratios": {
-   "height": 0.945,
-   "normal": 1.163,
-   "albedo": 0.976
+   "height": 0.897,
+   "normal": 1.019,
+   "albedo": 0.868
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  139,
-  103,
-  76
+  144,
+  101,
+  66
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/plated_pine_bark/albedo_delit.webp",

@@ -70,8 +70,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.773,
-   0.945
+   0.812,
+   0.957
   ],
   "metallic_range": [
    0.0,
@@ -118,20 +118,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.952,
+  "max_seam_ratio": 0.971,
   "seam_ratios": {
-   "height": 0.735,
-   "normal": 0.907,
-   "albedo": 0.952
+   "height": 0.829,
+   "normal": 0.955,
+   "albedo": 0.971
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  163,
+  166,
   147,
-  110
+  101
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/reed_thatch_roof/albedo_delit.webp",

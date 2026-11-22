@@ -27,6 +27,7 @@
    "mode": "organic",
    "rough": 0.88,
    "slope": 10.0,
+   "cover": "soil",
    "cells": 32
   },
   "seed": 16655
@@ -74,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.804,
-   0.941
+   0.761,
+   0.898
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.317,
+  "max_seam_ratio": 1.164,
   "seam_ratios": {
-   "height": 1.004,
-   "normal": 1.317,
-   "albedo": 1.067
+   "height": 1.143,
+   "normal": 1.085,
+   "albedo": 1.164
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  157,
-  98,
-  66
+  170,
+  108,
+  76
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_laterite_soil/albedo_delit.webp",

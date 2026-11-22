@@ -79,8 +79,8 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.224,
-   0.949
+   0.22,
+   0.941
   ],
   "metallic_range": [
    0.0,
@@ -132,20 +132,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.086,
+  "max_seam_ratio": 0.126,
   "seam_ratios": {
-   "height": 0.03,
-   "normal": 0.086,
-   "albedo": 0.005
+   "height": 0.058,
+   "normal": 0.126,
+   "albedo": 0.096
   },
-  "normal_unit_error": 0.0008,
+  "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  165,
-  138,
-  103
+  157,
+  132,
+  100
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/slotted_bronze_grille/albedo_delit.webp",

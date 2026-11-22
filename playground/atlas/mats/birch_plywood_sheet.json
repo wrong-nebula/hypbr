@@ -78,8 +78,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.573,
-   0.682
+   0.529,
+   0.635
   ],
   "metallic_range": [
    0.0,
@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.827,
+  "max_seam_ratio": 0.844,
   "seam_ratios": {
-   "height": 0.827,
-   "normal": 0.817,
-   "albedo": 0.723
+   "height": 0.801,
+   "normal": 0.844,
+   "albedo": 0.755
   },
-  "normal_unit_error": 0.001,
+  "normal_unit_error": 0.0004,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   191,
-  169,
-  136
+  166,
+  125
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/birch_plywood_sheet/albedo_delit.webp",

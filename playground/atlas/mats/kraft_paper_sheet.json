@@ -26,7 +26,8 @@
    ],
    "mode": "paper",
    "rough": 0.78,
-   "slope": 3.0
+   "slope": 3.0,
+   "chroma": 0.4
   },
   "seed": 15656
  },
@@ -74,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.722,
-   0.851
+   0.639,
+   0.792
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.101,
+  "max_seam_ratio": 1.078,
   "seam_ratios": {
-   "height": 0.541,
-   "normal": 1.101,
-   "albedo": 0.524
+   "height": 0.625,
+   "normal": 1.078,
+   "albedo": 0.813
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  176,
+  179,
   150,
-  114
+  103
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/kraft_paper_sheet/albedo_delit.webp",

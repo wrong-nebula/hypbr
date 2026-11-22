@@ -54,8 +54,8 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.129,
-   0.298
+   0.118,
+   0.278
   ],
   "metallic_range": [
    0.945,
@@ -106,20 +106,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.215,
+  "max_seam_ratio": 1.068,
   "seam_ratios": {
-   "height": 0.507,
-   "normal": 1.215,
-   "albedo": 1.072
+   "height": 0.472,
+   "normal": 1.036,
+   "albedo": 1.068
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  207,
+  206,
   211,
-  216
+  217
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/embossed_braille_strip/albedo_delit.webp",

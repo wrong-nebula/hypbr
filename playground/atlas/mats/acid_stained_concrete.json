@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.322,
-   0.494
+   0.443,
+   0.569
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.645,
+  "max_seam_ratio": 0.865,
   "seam_ratios": {
-   "height": 0.419,
-   "normal": 0.645,
-   "albedo": 0.442
+   "height": 0.499,
+   "normal": 0.822,
+   "albedo": 0.865
   },
-  "normal_unit_error": 0.0005,
+  "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  141,
-  114,
-  91
+  146,
+  113,
+  84
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/acid_stained_concrete/albedo_delit.webp",

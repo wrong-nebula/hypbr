@@ -79,8 +79,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.725,
-   0.945
+   0.675,
+   0.855
   ],
   "metallic_range": [
    0.0,
@@ -130,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.739,
+  "max_seam_ratio": 0.802,
   "seam_ratios": {
-   "height": 0.412,
-   "normal": 0.739,
-   "albedo": 0.267
+   "height": 0.546,
+   "normal": 0.771,
+   "albedo": 0.802
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  144,
-  137,
-  126
+  142,
+  134,
+  121
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/weathered_boardwalk_planks/albedo_delit.webp",

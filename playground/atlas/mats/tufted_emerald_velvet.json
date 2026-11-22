@@ -54,8 +54,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.812,
-   0.953
+   0.69,
+   0.878
   ],
   "metallic_range": [
    0.0,
@@ -105,20 +105,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.87,
+  "max_seam_ratio": 1.84,
   "seam_ratios": {
-   "height": 0.82,
-   "normal": 1.87,
-   "albedo": 0.3
+   "height": 0.807,
+   "normal": 1.84,
+   "albedo": 0.275
   },
-  "normal_unit_error": 0.0019,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  47,
+  38,
   119,
-  96
+  94
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/tufted_emerald_velvet/albedo_delit.webp",

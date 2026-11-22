@@ -76,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.682,
-   0.925
+   0.702,
+   0.847
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.905,
+  "max_seam_ratio": 1.891,
   "seam_ratios": {
-   "height": 1.905,
-   "normal": 1.815,
-   "albedo": 1.886
+   "height": 1.891,
+   "normal": 1.81,
+   "albedo": 1.678
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  166,
+  164,
   159,
-  150
+  151
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/exposed_aggregate_concrete/albedo_delit.webp",

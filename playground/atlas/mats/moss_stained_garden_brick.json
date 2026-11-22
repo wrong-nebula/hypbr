@@ -72,8 +72,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.71,
-   0.965
+   0.757,
+   0.937
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +123,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.179,
+  "max_seam_ratio": 0.599,
   "seam_ratios": {
-   "height": 0.087,
-   "normal": 0.145,
-   "albedo": 0.179
+   "height": 0.218,
+   "normal": 0.431,
+   "albedo": 0.599
   },
-  "normal_unit_error": 0.0011,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  122,
-  101,
-  77
+  123,
+  103,
+  78
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/moss_stained_garden_brick/albedo_delit.webp",

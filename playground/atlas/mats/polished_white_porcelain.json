@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.059,
-   0.188
+   0.173,
+   0.251
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.369,
+  "max_seam_ratio": 0.477,
   "seam_ratios": {
-   "height": 0.103,
-   "normal": 0.113,
-   "albedo": 0.369
+   "height": 0.15,
+   "normal": 0.269,
+   "albedo": 0.477
   },
   "normal_unit_error": 0.0002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  224,
-  224,
-  223
+  223,
+  223,
+  222
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/polished_white_porcelain/albedo_delit.webp",

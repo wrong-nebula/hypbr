@@ -27,7 +27,8 @@
    "rough": 0.86,
    "slope": 6.0,
    "mode": "plaid",
-   "freq": 40
+   "freq": 40,
+   "chroma": 0.25
   },
   "seed": 14398
  },
@@ -75,8 +76,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.812,
-   0.945
+   0.725,
+   0.851
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.532,
+  "max_seam_ratio": 1.545,
   "seam_ratios": {
-   "height": 1.532,
-   "normal": 0.396,
-   "albedo": 0.23
+   "height": 1.545,
+   "normal": 0.447,
+   "albedo": 0.748
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  97,
-  58,
-  53
+  90,
+  57,
+  54
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_tartan_plaid/albedo_delit.webp",

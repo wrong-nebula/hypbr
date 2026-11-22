@@ -54,8 +54,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.306,
-   0.82
+   0.435,
+   0.792
   ],
   "metallic_range": [
    0.0,
@@ -105,20 +105,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.692,
+  "max_seam_ratio": 0.595,
   "seam_ratios": {
-   "height": 0.405,
-   "normal": 0.692,
-   "albedo": 0.33
+   "height": 0.532,
+   "normal": 0.595,
+   "albedo": 0.392
   },
-  "normal_unit_error": 0.0014,
+  "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  162,
-  143,
-  111
+  159,
+  137,
+  98
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/woven_rattan_cane/albedo_delit.webp",

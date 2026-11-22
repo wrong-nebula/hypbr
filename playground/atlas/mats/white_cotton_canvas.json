@@ -27,7 +27,8 @@
    "rough": 0.86,
    "slope": 6.0,
    "mode": "plain",
-   "freq": 24
+   "freq": 24,
+   "chroma": 0.25
   },
   "seed": 14139
  },
@@ -75,8 +76,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.804,
-   0.941
+   0.698,
+   0.847
   ],
   "metallic_range": [
    0.0,
@@ -125,11 +126,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.332,
+  "max_seam_ratio": 1.188,
   "seam_ratios": {
-   "height": 0.663,
-   "normal": 1.332,
-   "albedo": 0.66
+   "height": 0.778,
+   "normal": 1.188,
+   "albedo": 0.847
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -138,7 +139,7 @@
  "albedo_mean_srgb": [
   207,
   205,
-  196
+  198
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_cotton_canvas/albedo_delit.webp",

@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.243,
-   0.388
+   0.373,
+   0.459
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +123,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.285,
+  "max_seam_ratio": 0.594,
   "seam_ratios": {
-   "height": 0.069,
-   "normal": 0.083,
-   "albedo": 0.285
+   "height": 0.116,
+   "normal": 0.19,
+   "albedo": 0.594
   },
   "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  202,
+  204,
   190,
-  170
+  167
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/warm_beige_porcelain_floor/albedo_delit.webp",

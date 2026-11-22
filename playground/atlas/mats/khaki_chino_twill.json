@@ -27,7 +27,8 @@
    "rough": 0.86,
    "slope": 6.0,
    "mode": "twill",
-   "freq": 40
+   "freq": 40,
+   "chroma": 0.25
   },
   "seed": 14287
  },
@@ -75,8 +76,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.816,
-   0.945
+   0.722,
+   0.843
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.055,
+  "max_seam_ratio": 1.046,
   "seam_ratios": {
-   "height": 1.055,
-   "normal": 0.902,
-   "albedo": 0.942
+   "height": 1.046,
+   "normal": 0.899,
+   "albedo": 0.849
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  167,
+  169,
   152,
-  121
+  113
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/khaki_chino_twill/albedo_delit.webp",

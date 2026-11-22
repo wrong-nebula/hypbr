@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.702,
-   0.945
+   0.698,
+   0.867
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.567,
+  "max_seam_ratio": 1.364,
   "seam_ratios": {
-   "height": 1.374,
-   "normal": 1.567,
-   "albedo": 1.564
+   "height": 0.97,
+   "normal": 1.364,
+   "albedo": 0.918
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  170,
+  186,
   108,
-  74
+  61
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_rock_mesa/albedo_delit.webp",

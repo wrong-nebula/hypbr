@@ -77,8 +77,8 @@
   "ior": 1.486,
   "is_metallic": false,
   "roughness_range": [
-   0.11,
-   0.259
+   0.071,
+   0.161
   ],
   "metallic_range": [
    0.0,
@@ -130,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.903,
+  "max_seam_ratio": 1.078,
   "seam_ratios": {
-   "height": 0.638,
-   "normal": 0.903,
-   "albedo": 0.756
+   "height": 0.772,
+   "normal": 1.078,
+   "albedo": 0.83
   },
-  "normal_unit_error": 0.0006,
+  "normal_unit_error": 0.0004,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  216,
-  188,
-  140
+  213,
+  179,
+  123
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/honey_onyx/albedo_delit.webp",

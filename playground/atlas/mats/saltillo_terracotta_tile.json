@@ -77,8 +77,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.624,
-   0.827
+   0.62,
+   0.878
   ],
   "metallic_range": [
    0.0,
@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.163,
+  "max_seam_ratio": 0.725,
   "seam_ratios": {
-   "height": 0.101,
-   "normal": 0.144,
-   "albedo": 0.163
+   "height": 0.227,
+   "normal": 0.566,
+   "albedo": 0.725
   },
-  "normal_unit_error": 0.0005,
+  "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  179,
-  124,
-  86
+  178,
+  125,
+  89
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/saltillo_terracotta_tile/albedo_delit.webp",

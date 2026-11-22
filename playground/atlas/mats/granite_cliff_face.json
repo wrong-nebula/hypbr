@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.714,
-   0.949
+   0.706,
+   0.882
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.615,
+  "max_seam_ratio": 1.085,
   "seam_ratios": {
-   "height": 1.164,
-   "normal": 1.615,
-   "albedo": 1.546
+   "height": 0.821,
+   "normal": 1.085,
+   "albedo": 0.872
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  148,
-  146,
-  143
+  162,
+  158,
+  154
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/granite_cliff_face/albedo_delit.webp",

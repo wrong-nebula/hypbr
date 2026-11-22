@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.8,
-   0.941
+   0.776,
+   0.875
   ],
   "metallic_range": [
    0.0,
@@ -124,11 +124,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.041,
+  "max_seam_ratio": 1.133,
   "seam_ratios": {
-   "height": 0.589,
-   "normal": 1.041,
-   "albedo": 0.845
+   "height": 0.592,
+   "normal": 1.133,
+   "albedo": 0.794
   },
   "normal_unit_error": 0.0018,
   "errors": [],
@@ -136,8 +136,8 @@
  },
  "albedo_mean_srgb": [
   194,
-  187,
-  174
+  186,
+  171
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/chalk_rammed_earth/albedo_delit.webp",

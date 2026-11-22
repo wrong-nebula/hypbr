@@ -27,7 +27,8 @@
    "rough": 0.86,
    "slope": 6.0,
    "mode": "ripstop",
-   "freq": 48
+   "freq": 48,
+   "chroma": 0.25
   },
   "seed": 14361
  },
@@ -75,8 +76,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.8,
-   0.941
+   0.725,
+   0.855
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.275,
+  "max_seam_ratio": 1.241,
   "seam_ratios": {
-   "height": 1.275,
-   "normal": 0.417,
-   "albedo": 0.826
+   "height": 1.241,
+   "normal": 0.576,
+   "albedo": 0.949
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  90,
+  89,
   97,
-  71
+  65
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/olive_military_ripstop/albedo_delit.webp",

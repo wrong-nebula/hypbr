@@ -51,8 +51,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.082,
-   0.612
+   0.259,
+   0.631
   ],
   "metallic_range": [
    0.0,
@@ -100,20 +100,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.056,
+  "max_seam_ratio": 0.968,
   "seam_ratios": {
-   "height": 0.59,
-   "normal": 1.056,
-   "albedo": 0.604
+   "height": 0.513,
+   "normal": 0.968,
+   "albedo": 0.454
   },
   "normal_unit_error": 0.0001,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  221,
+  222,
   215,
-  206
+  204
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/venetian_plaster_trowel/albedo_delit.webp",

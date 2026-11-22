@@ -53,7 +53,7 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.094,
+   0.098,
    0.333
   ],
   "metallic_range": [
@@ -104,20 +104,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.117,
+  "max_seam_ratio": 0.133,
   "seam_ratios": {
-   "height": 0.015,
-   "normal": 0.069,
-   "albedo": 0.117
+   "height": 0.022,
+   "normal": 0.133,
+   "albedo": 0.098
   },
-  "normal_unit_error": 0.001,
+  "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   190,
   193,
-  196
+  197
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/corrugated_sheet_metal/albedo_delit.webp",

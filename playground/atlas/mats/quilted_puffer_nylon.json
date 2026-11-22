@@ -27,7 +27,8 @@
    "rough": 0.35,
    "slope": 6.0,
    "mode": "quilted",
-   "freq": 14
+   "freq": 14,
+   "chroma": 0.3
   },
   "seed": 14879
  },
@@ -76,8 +77,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.251,
-   0.455
+   0.349,
+   0.561
   ],
   "metallic_range": [
    0.0,
@@ -129,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.94,
+  "max_seam_ratio": 0.911,
   "seam_ratios": {
-   "height": 0.775,
-   "normal": 0.828,
-   "albedo": 0.94
+   "height": 0.797,
+   "normal": 0.911,
+   "albedo": 0.87
   },
-  "normal_unit_error": 0.0019,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   65,
   65,
-  70
+  71
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/quilted_puffer_nylon/albedo_delit.webp",

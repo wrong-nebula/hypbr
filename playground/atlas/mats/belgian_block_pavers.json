@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.553,
-   0.965
+   0.663,
+   0.945
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.882,
+  "max_seam_ratio": 1.721,
   "seam_ratios": {
-   "height": 1.613,
-   "normal": 1.882,
-   "albedo": 1.522
+   "height": 1.563,
+   "normal": 1.721,
+   "albedo": 1.279
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   140,
   135,
-  127
+  125
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/belgian_block_pavers/albedo_delit.webp",

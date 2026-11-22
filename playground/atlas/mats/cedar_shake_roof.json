@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.69,
-   0.961
+   0.588,
+   0.973
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.322,
+  "max_seam_ratio": 0.693,
   "seam_ratios": {
-   "height": 0.198,
-   "normal": 0.322,
-   "albedo": 0.175
+   "height": 0.252,
+   "normal": 0.558,
+   "albedo": 0.693
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  162,
-  126,
-  89
+  169,
+  127,
+  78
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cedar_shake_roof/albedo_delit.webp",

@@ -77,8 +77,8 @@
   "ior": 1.486,
   "is_metallic": false,
   "roughness_range": [
-   0.525,
-   0.682
+   0.514,
+   0.6
   ],
   "metallic_range": [
    0.0,
@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.662,
+  "max_seam_ratio": 1.048,
   "seam_ratios": {
-   "height": 0.53,
-   "normal": 0.662,
-   "albedo": 0.475
+   "height": 0.797,
+   "normal": 1.048,
+   "albedo": 0.947
   },
-  "normal_unit_error": 0.0007,
+  "normal_unit_error": 0.0002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  115,
-  118,
-  118
+  110,
+  113,
+  113
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/charcoal_soapstone/albedo_delit.webp",

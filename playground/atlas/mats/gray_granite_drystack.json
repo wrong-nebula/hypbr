@@ -72,8 +72,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.69,
-   0.976
+   0.757,
+   0.957
   ],
   "metallic_range": [
    0.0,
@@ -119,20 +119,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.581,
+  "max_seam_ratio": 1.427,
   "seam_ratios": {
-   "height": 0.967,
-   "normal": 1.581,
-   "albedo": 1.478
+   "height": 0.928,
+   "normal": 1.427,
+   "albedo": 1.365
   },
-  "normal_unit_error": 0.0016,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  135,
   134,
-  133
+  133,
+  131
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_granite_drystack/albedo_delit.webp",

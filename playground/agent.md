@@ -94,8 +94,8 @@ Engine notes:
     "ior": 1.5,
     "is_metallic": false,
     "roughness_range": [
-      0.71,
-      0.965
+      0.765,
+      0.953
     ],
     "metallic_range": [
       0.0,

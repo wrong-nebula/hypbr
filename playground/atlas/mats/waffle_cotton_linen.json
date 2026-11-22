@@ -53,8 +53,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.8,
-   0.929
+   0.71,
+   0.831
   ],
   "metallic_range": [
    0.0,
@@ -103,20 +103,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.202,
+  "max_seam_ratio": 1.072,
   "seam_ratios": {
-   "height": 1.066,
-   "normal": 0.418,
-   "albedo": 1.202
+   "height": 1.072,
+   "normal": 0.401,
+   "albedo": 1.028
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  163,
-  178,
-  166
+  161,
+  179,
+  164
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/waffle_cotton_linen/albedo_delit.webp",

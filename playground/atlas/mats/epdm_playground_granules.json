@@ -123,20 +123,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.556,
+  "max_seam_ratio": 1.52,
   "seam_ratios": {
-   "height": 1.328,
-   "normal": 1.556,
-   "albedo": 1.399
+   "height": 1.307,
+   "normal": 1.52,
+   "albedo": 1.327
   },
-  "normal_unit_error": 0.0016,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  105,
+  104,
   94,
-  79
+  82
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/epdm_playground_granules/albedo_delit.webp",

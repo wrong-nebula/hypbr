@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.192,
-   0.541
+   0.188,
+   0.545
   ],
   "metallic_range": [
    0.902,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.406,
+  "max_seam_ratio": 0.55,
   "seam_ratios": {
-   "height": 0.321,
-   "normal": 0.406,
-   "albedo": 0.268
+   "height": 0.336,
+   "normal": 0.55,
+   "albedo": 0.491
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  217,
-  165,
-  139
+  212,
+  168,
+  146
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/copper_fishscale_shingles/albedo_delit.webp",

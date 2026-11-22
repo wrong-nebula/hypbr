@@ -50,8 +50,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.059,
-   0.725
+   0.188,
+   0.635
   ],
   "metallic_range": [
    0.0,
@@ -98,20 +98,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.039,
+  "max_seam_ratio": 0.036,
   "seam_ratios": {
-   "height": 0.02,
-   "normal": 0.039,
-   "albedo": 0.033
+   "height": 0.029,
+   "normal": 0.029,
+   "albedo": 0.036
   },
   "normal_unit_error": 0.001,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  222,
-  222,
-  219
+  221,
+  221,
+  218
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/subway_metro_tile/albedo_delit.webp",

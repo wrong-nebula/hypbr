@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.71,
-   0.976
+   0.741,
+   0.898
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.468,
+  "max_seam_ratio": 1.417,
   "seam_ratios": {
-   "height": 1.269,
-   "normal": 1.468,
-   "albedo": 1.358
+   "height": 1.285,
+   "normal": 1.417,
+   "albedo": 1.069
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  71,
-  59,
-  51
+  73,
+  61,
+  53
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cooled_lava_flow/albedo_delit.webp",

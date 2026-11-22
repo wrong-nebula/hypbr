@@ -579,6 +579,7 @@ def _llms_txt(base: str, n: int) -> str:
 - Interactive playground: {base}
 
 ## Conventions
+- Calibrated: 400 of the materials are statistically matched (multi-scale albedo contrast, relief spectrum, roughness) to 449 real CC0 photogrammetry scans from Poly Haven and ambientCG; glass, plastics, glazes, polished marble and electronics are hand-tuned.
 - albedo_delit = sRGB base color. normal = OpenGL +Y tangent space. orm = R AO, G Roughness, B Metallic (glTF/three.js native). aux = R Height, G Curvature, B Cavity. All data maps are linear.
 - One texture tile covers `real_world_size_m = [w, h]` meters. UV repeat = surface_size_m / real_world_size_m. Triplanar scale = 1 / real_world_size_m.
 

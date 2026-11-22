@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.722,
-   0.906
+   0.706,
+   0.839
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.723,
+  "max_seam_ratio": 0.883,
   "seam_ratios": {
-   "height": 0.723,
-   "normal": 0.715,
-   "albedo": 0.244
+   "height": 0.761,
+   "normal": 0.782,
+   "albedo": 0.883
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   154,
   152,
-  148
+  147
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/board_formed_concrete/albedo_delit.webp",

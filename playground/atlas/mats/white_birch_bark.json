@@ -72,8 +72,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.788,
-   0.949
+   0.82,
+   0.933
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.739,
+  "max_seam_ratio": 1.245,
   "seam_ratios": {
-   "height": 0.485,
-   "normal": 0.739,
-   "albedo": 0.481
+   "height": 0.944,
+   "normal": 1.245,
+   "albedo": 1.192
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  199,
-  196,
-  189
+  209,
+  205,
+  196
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_birch_bark/albedo_delit.webp",

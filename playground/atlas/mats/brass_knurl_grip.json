@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.298,
-   0.569
+   0.282,
+   0.565
   ],
   "metallic_range": [
    0.949,
@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.818,
+  "max_seam_ratio": 1.706,
   "seam_ratios": {
-   "height": 1.024,
-   "normal": 1.818,
-   "albedo": 1.01
+   "height": 1.008,
+   "normal": 1.706,
+   "albedo": 1.25
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  206,
-  177,
-  122
+  210,
+  176,
+  106
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/brass_knurl_grip/albedo_delit.webp",

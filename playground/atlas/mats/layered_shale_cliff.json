@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.718,
-   0.949
+   0.686,
+   0.851
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.311,
+  "max_seam_ratio": 0.984,
   "seam_ratios": {
-   "height": 0.967,
-   "normal": 1.311,
-   "albedo": 1.134
+   "height": 0.945,
+   "normal": 0.984,
+   "albedo": 0.928
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  108,
-  106,
-  107
+  113,
+  111,
+  113
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/layered_shale_cliff/albedo_delit.webp",

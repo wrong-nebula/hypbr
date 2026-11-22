@@ -27,6 +27,7 @@
    "mode": "organic",
    "rough": 0.88,
    "slope": 10.0,
+   "cover": "mulch",
    "cells": 26
   },
   "seed": 16692
@@ -74,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.804,
-   0.941
+   0.792,
+   0.969
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.259,
+  "max_seam_ratio": 0.961,
   "seam_ratios": {
-   "height": 0.865,
-   "normal": 1.259,
-   "albedo": 1.123
+   "height": 0.941,
+   "normal": 0.925,
+   "albedo": 0.961
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  129,
-  97,
-  67
+  134,
+  96,
+  57
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wood_chip_mulch/albedo_delit.webp",

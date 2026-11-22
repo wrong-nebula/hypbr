@@ -55,8 +55,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.898,
-   0.965
+   0.773,
+   0.867
   ],
   "metallic_range": [
    0.0,
@@ -107,20 +107,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.794,
+  "max_seam_ratio": 0.749,
   "seam_ratios": {
    "height": 0.443,
-   "normal": 0.732,
-   "albedo": 0.794
+   "normal": 0.572,
+   "albedo": 0.749
   },
-  "normal_unit_error": 0.0019,
+  "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  143,
-  145,
-  149
+  140,
+  142,
+  147
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/acoustic_kerf_felt/albedo_delit.webp",

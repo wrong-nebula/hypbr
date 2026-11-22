@@ -76,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.059,
-   0.639
+   0.196,
+   0.576
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.031,
+  "max_seam_ratio": 0.15,
   "seam_ratios": {
-   "height": 0.018,
-   "normal": 0.03,
-   "albedo": 0.031
+   "height": 0.15,
+   "normal": 0.068,
+   "albedo": 0.124
   },
-  "normal_unit_error": 0.0007,
+  "normal_unit_error": 0.0012,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  71,
-  143,
-  179
+  88,
+  142,
+  173
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/blue_glass_pool_mosaic/albedo_delit.webp",

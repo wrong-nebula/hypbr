@@ -29,6 +29,8 @@
    "ny": 4,
    "wobble": 1.5,
    "face_rough": 0.1,
+   "tooled": 1.0,
+   "chips": 0.35,
    "rough": 0.76,
    "slope": 11.0
   },
@@ -76,8 +78,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.675,
-   0.902
+   0.753,
+   0.914
   ],
   "metallic_range": [
    0.0,
@@ -125,13 +127,13 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.369,
+  "max_seam_ratio": 0.93,
   "seam_ratios": {
-   "height": 0.189,
-   "normal": 0.369,
-   "albedo": 0.241
+   "height": 0.606,
+   "normal": 0.93,
+   "albedo": 0.721
   },
-  "normal_unit_error": 0.0015,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },

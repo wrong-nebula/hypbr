@@ -73,8 +73,8 @@
   "ior": 1.52,
   "is_metallic": false,
   "roughness_range": [
-   0.059,
-   0.733
+   0.2,
+   0.659
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +123,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.24,
+  "max_seam_ratio": 0.221,
   "seam_ratios": {
-   "height": 0.24,
-   "normal": 0.154,
-   "albedo": 0.112
+   "height": 0.221,
+   "normal": 0.129,
+   "albedo": 0.097
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  220,
+  221,
   226,
-  228
+  227
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/small_glass_brick_wall/albedo_delit.webp",

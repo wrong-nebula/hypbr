@@ -71,8 +71,8 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.247,
-   0.357
+   0.2,
+   0.404
   ],
   "metallic_range": [
    0.949,
@@ -125,20 +125,22 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.478,
+  "max_seam_ratio": 1.485,
   "seam_ratios": {
-   "height": 1.352,
-   "normal": 1.478,
-   "albedo": 1.37
+   "height": 1.358,
+   "normal": 1.485,
+   "albedo": 1.0
   },
   "normal_unit_error": 0.0011,
   "errors": [],
-  "warnings": []
+  "warnings": [
+   "Near-clipping albedo highlights (p99=249.0 sRGB)"
+  ]
  },
  "albedo_mean_srgb": [
   236,
   237,
-  239
+  238
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/radial_spun_aluminum/albedo_delit.webp",

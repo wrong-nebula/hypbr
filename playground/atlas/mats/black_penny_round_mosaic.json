@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.165,
-   0.776
+   0.349,
+   0.769
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.961,
+  "max_seam_ratio": 1.015,
   "seam_ratios": {
-   "height": 0.961,
-   "normal": 0.951,
-   "albedo": 0.897
+   "height": 1.015,
+   "normal": 0.933,
+   "albedo": 0.961
   },
-  "normal_unit_error": 0.0013,
+  "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  119,
-  119,
-  117
+  112,
+  112,
+  110
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/black_penny_round_mosaic/albedo_delit.webp",

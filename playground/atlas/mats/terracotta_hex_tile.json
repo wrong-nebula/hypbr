@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.651,
-   0.945
+   0.635,
+   0.949
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.283,
+  "max_seam_ratio": 0.542,
   "seam_ratios": {
-   "height": 0.248,
-   "normal": 0.283,
-   "albedo": 0.231
+   "height": 0.28,
+   "normal": 0.339,
+   "albedo": 0.542
   },
-  "normal_unit_error": 0.0012,
+  "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  174,
-  120,
-  85
+  168,
+  122,
+  95
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/terracotta_hex_tile/albedo_delit.webp",

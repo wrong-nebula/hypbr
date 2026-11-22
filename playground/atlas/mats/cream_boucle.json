@@ -27,7 +27,8 @@
    "rough": 0.86,
    "slope": 6.0,
    "mode": "boucle",
-   "freq": 22
+   "freq": 22,
+   "chroma": 0.25
   },
   "seed": 14509
  },
@@ -75,8 +76,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.827,
-   0.941
+   0.725,
+   0.839
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.063,
+  "max_seam_ratio": 1.07,
   "seam_ratios": {
-   "height": 1.063,
-   "normal": 1.006,
-   "albedo": 0.743
+   "height": 1.07,
+   "normal": 1.037,
+   "albedo": 0.758
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  202,
+  203,
   197,
-  185
+  183
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cream_boucle/albedo_delit.webp",

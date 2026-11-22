@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.776,
-   0.965
+   0.749,
+   0.925
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.205,
+  "max_seam_ratio": 1.156,
   "seam_ratios": {
-   "height": 1.124,
-   "normal": 1.2,
-   "albedo": 1.205
+   "height": 1.095,
+   "normal": 1.156,
+   "albedo": 1.053
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  168,
-  145,
-  116
+  171,
+  144,
+  108
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/dry_cracked_mud/albedo_delit.webp",

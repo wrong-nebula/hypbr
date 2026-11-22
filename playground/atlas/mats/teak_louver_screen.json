@@ -80,8 +80,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.51,
-   0.918
+   0.498,
+   0.941
   ],
   "metallic_range": [
    0.0,
@@ -134,20 +134,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.436,
+  "max_seam_ratio": 0.818,
   "seam_ratios": {
-   "height": 0.214,
-   "normal": 0.436,
-   "albedo": 0.342
+   "height": 0.219,
+   "normal": 0.357,
+   "albedo": 0.818
   },
-  "normal_unit_error": 0.0013,
+  "normal_unit_error": 0.0012,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  105,
-  81,
-  59
+  95,
+  77,
+  61
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/teak_louver_screen/albedo_delit.webp",

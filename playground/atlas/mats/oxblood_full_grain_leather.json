@@ -27,7 +27,8 @@
    "mode": "pebble",
    "rough": 0.48,
    "slope": 6.0,
-   "cells": 40
+   "cells": 40,
+   "chroma": 0.4
   },
   "seed": 15249
  },
@@ -75,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.353,
-   0.729
+   0.431,
+   0.698
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.62,
+  "max_seam_ratio": 1.572,
   "seam_ratios": {
-   "height": 1.551,
-   "normal": 1.543,
-   "albedo": 1.62
+   "height": 1.528,
+   "normal": 1.535,
+   "albedo": 1.572
   },
-  "normal_unit_error": 0.0019,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  120,
-  57,
-  52
+  127,
+  52,
+  46
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/oxblood_full_grain_leather/albedo_delit.webp",

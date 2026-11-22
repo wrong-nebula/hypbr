@@ -1109,6 +1109,7 @@ def synthesize_material(
     moss: float | None = None,
     rust: float | None = None,
     dust: float | None = None,
+    calibrated: bool = True,
 ) -> Path:
     """Synthesize a complete seamless 15-map PBR material set into `out_dir`.
 
@@ -1125,13 +1126,17 @@ def synthesize_material(
         moss: Optional biological moss & lichen growth intensity in `[0.0, 1.0]`.
         rust: Optional gravity-driven rust/verdigris/efflorescence runoff intensity in `[0.0, 1.0]`.
         dust: Optional settled mineral dust/ash intensity in `[0.0, 1.0]`.
+        calibrated: Apply the reference-photo calibration fitted against real CC0 scans
+            (albedo contrast spectrum, chroma, normal slope, roughness). `False` reproduces
+            the uncalibrated v1.0 output exactly.
     """
+    from .calibration import adjust_roughness, equalize_albedo, equalize_height, get_calibration
     from .weathering import apply_weathering_maps, resolve_weather_params
 
     from . import atlas_catalog as ac
 
     catalog_map = {did: (idx, desc, mat_kind, tint) for idx, (did, desc, mat_kind, tint) in enumerate(gd.DAILY_CATALOG)}
-    if material_id == "hardops_plate":
+    if material_id == "hardops_plate":  # no reference scans for machined gunmetal -> uncalibrated
         return _synthesize_hardops_weathered(
             Path(out_dir), size=size, seed=seed, wear=wear, weather_preset=weather_preset,
             dirt=dirt, wet=wet, moss=moss, rust=rust, dust=dust,
@@ -1180,6 +1185,12 @@ def synthesize_material(
             par["family"], par["params"], H, W, seed=s_base,
         )
         par_out = (p_alb_lin, p_met, p_rmod)
+    cal = get_calibration(material_id) if calibrated else None
+    if cal is not None:
+        slope_scale = float(slope_scale) * float(cal.get("slope_gain", 1.0))
+        if cal.get("height_gains"):
+            # Reference-matched multi-scale relief (periodic band equalizer on the height field)
+            h0 = equalize_height(h0, cal["height_gains"])
     h_n = dp.normalize_height(h0, clip_pct=0.5)
     N_geom = gd._height_to_normal_periodic(h0, slope=slope_scale)
     N_geom = ng.node_normal_clamp_slope({"circular": True}, {"normal": N_geom}, max_angle_deg=60.0)["normal"]
@@ -1236,6 +1247,12 @@ def synthesize_material(
         alb_lin, p_met, r_mod = par_out
         alb_u8 = np.clip(np.power(alb_lin, 1.0 / 2.2) * 255.0 + 0.5, 0, 255).astype(np.uint8)
         met_u8 = np.clip(p_met * 255.0 + 0.5, 0, 255).astype(np.uint8)
+    if cal is not None:
+        cal_max = np.where(met_u8[..., None] > 64, 0.95, 0.855).astype(np.float32)
+        alb_lin = equalize_albedo(alb_lin, cal["band_gains"], float(cal.get("sat_gain", 1.0)), cal_max)
+        alb_u8 = np.clip(np.power(alb_lin, 1.0 / 2.2) * 255.0 + 0.5, 0, 255).astype(np.uint8)
+        if "rough_std_gain" not in cal:
+            base_r = float(base_r) + float(cal.get("rough_shift", 0.0))
 
     r_micro = 0.022 * gd._periodic_fbm(H, W, s_base + 3000, (8, 24, 48))
     ao_r_w = 0.08 if mat_kind == "metal" else 0.14
@@ -1247,6 +1264,8 @@ def synthesize_material(
     n_var = 0.0625 * (np.sum(dn_x * dn_x, axis=-1) + np.sum(dn_y * dn_y, axis=-1))
     k_aa = np.minimum(0.32 * n_var, 0.032).astype(np.float32)
     rough = np.clip(np.sqrt(rough_raw * rough_raw + k_aa), 0.06, 0.94).astype(np.float32)
+    if cal is not None and "rough_std_gain" in cal:
+        rough = adjust_roughness(rough, float(cal.get("rough_shift", 0.0)), float(cal["rough_std_gain"]), 0.05, 0.95)
     met_f = met_u8.astype(np.float32) / 255.0
 
     weather_mask_rgba = None

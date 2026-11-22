@@ -79,8 +79,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.306,
-   0.525
+   0.424,
+   0.588
   ],
   "metallic_range": [
    0.0,
@@ -129,20 +129,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.66,
+  "max_seam_ratio": 0.691,
   "seam_ratios": {
-   "height": 0.397,
-   "normal": 0.66,
-   "albedo": 0.391
+   "height": 0.423,
+   "normal": 0.536,
+   "albedo": 0.691
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  138,
+  133,
   85,
-  62
+  65
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/mahogany_plank_floor/albedo_delit.webp",

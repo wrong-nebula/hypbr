@@ -26,7 +26,8 @@
    ],
    "mode": "braided",
    "rough": 0.48,
-   "slope": 6.0
+   "slope": 6.0,
+   "chroma": 0.4
   },
   "seed": 15397
  },
@@ -74,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.388,
-   0.69
+   0.439,
+   0.706
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.996,
+  "max_seam_ratio": 1.055,
   "seam_ratios": {
-   "height": 0.968,
-   "normal": 0.996,
-   "albedo": 0.907
+   "height": 0.962,
+   "normal": 1.055,
+   "albedo": 0.758
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  125,
-  95,
-  66
+  129,
+  93,
+  56
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/braided_woven_leather/albedo_delit.webp",

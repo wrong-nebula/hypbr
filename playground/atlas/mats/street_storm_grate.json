@@ -54,8 +54,8 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.188,
-   0.953
+   0.184,
+   0.945
   ],
   "metallic_range": [
    0.0,
@@ -108,20 +108,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.918,
+  "max_seam_ratio": 0.517,
   "seam_ratios": {
-   "height": 0.276,
-   "normal": 0.918,
-   "albedo": 0.022
+   "height": 0.284,
+   "normal": 0.517,
+   "albedo": 0.024
   },
-  "normal_unit_error": 0.0012,
+  "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  129,
-  131,
-  135
+  116,
+  119,
+  124
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/street_storm_grate/albedo_delit.webp",

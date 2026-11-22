@@ -55,8 +55,8 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.086,
-   0.42
+   0.082,
+   0.416
   ],
   "metallic_range": [
    0.878,
@@ -108,20 +108,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.96,
+  "max_seam_ratio": 0.952,
   "seam_ratios": {
-   "height": 0.784,
-   "normal": 0.96,
-   "albedo": 0.795
+   "height": 0.824,
+   "normal": 0.952,
+   "albedo": 0.761
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  171,
-  174,
-  180
+  166,
+  169,
+  174
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/damascus_folded_steel/albedo_delit.webp",

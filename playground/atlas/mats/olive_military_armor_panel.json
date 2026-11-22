@@ -77,8 +77,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.529,
-   0.867
+   0.443,
+   0.729
   ],
   "metallic_range": [
    0.0,
@@ -133,20 +133,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.434,
+  "max_seam_ratio": 0.619,
   "seam_ratios": {
-   "height": 0.24,
-   "normal": 0.434,
-   "albedo": 0.209
+   "height": 0.258,
+   "normal": 0.531,
+   "albedo": 0.619
   },
-  "normal_unit_error": 0.0008,
+  "normal_unit_error": 0.0009,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  93,
-  99,
-  73
+  92,
+  100,
+  67
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/olive_military_armor_panel/albedo_delit.webp",

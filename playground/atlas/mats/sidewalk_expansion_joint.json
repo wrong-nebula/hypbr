@@ -56,8 +56,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.729,
-   0.941
+   0.733,
+   0.882
   ],
   "metallic_range": [
    0.0,
@@ -107,20 +107,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.18,
+  "max_seam_ratio": 1.125,
   "seam_ratios": {
-   "height": 0.924,
-   "normal": 1.18,
-   "albedo": 0.909
+   "height": 0.998,
+   "normal": 1.125,
+   "albedo": 0.982
   },
-  "normal_unit_error": 0.0019,
+  "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  182,
-  181,
-  177
+  180,
+  179,
+  175
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sidewalk_expansion_joint/albedo_delit.webp",

@@ -75,7 +75,7 @@
   "is_metallic": false,
   "roughness_range": [
    0.059,
-   0.204
+   0.145
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.968,
+  "max_seam_ratio": 0.959,
   "seam_ratios": {
-   "height": 0.835,
-   "normal": 0.968,
-   "albedo": 0.723
+   "height": 0.83,
+   "normal": 0.959,
+   "albedo": 0.838
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  69,
-  97,
-  178
+  64,
+  94,
+  177
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cobalt_enamel_glaze/albedo_delit.webp",

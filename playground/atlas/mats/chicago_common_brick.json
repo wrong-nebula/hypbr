@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.714,
-   0.961
+   0.757,
+   0.941
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.16,
+  "max_seam_ratio": 0.516,
   "seam_ratios": {
-   "height": 0.096,
-   "normal": 0.16,
-   "albedo": 0.137
+   "height": 0.231,
+   "normal": 0.516,
+   "albedo": 0.492
   },
-  "normal_unit_error": 0.0014,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  146,
-  109,
-  86
+  147,
+  110,
+  88
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/chicago_common_brick/albedo_delit.webp",

@@ -75,7 +75,7 @@
   "is_metallic": false,
   "roughness_range": [
    0.71,
-   0.961
+   0.89
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.576,
+  "max_seam_ratio": 1.405,
   "seam_ratios": {
-   "height": 1.11,
-   "normal": 1.576,
-   "albedo": 1.338
+   "height": 1.405,
+   "normal": 1.397,
+   "albedo": 1.102
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  174,
-  171,
-  162
+  188,
+  184,
+  172
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/limestone_karst_cliff/albedo_delit.webp",

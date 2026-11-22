@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.071,
-   0.71
+   0.22,
+   0.624
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.956,
+  "max_seam_ratio": 0.911,
   "seam_ratios": {
-   "height": 0.838,
-   "normal": 0.956,
-   "albedo": 0.825
+   "height": 0.789,
+   "normal": 0.911,
+   "albedo": 0.839
   },
-  "normal_unit_error": 0.0015,
+  "normal_unit_error": 0.002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  73,
+  78,
   100,
-  164
+  157
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cobalt_diamond_mosaic/albedo_delit.webp",

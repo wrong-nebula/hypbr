@@ -27,6 +27,7 @@
    "mode": "organic",
    "rough": 0.88,
    "slope": 10.0,
+   "cover": "lichen",
    "cells": 36
   },
   "seed": 16544
@@ -74,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.8,
-   0.941
+   0.804,
+   0.918
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.208,
+  "max_seam_ratio": 0.944,
   "seam_ratios": {
-   "height": 1.051,
-   "normal": 1.208,
-   "albedo": 1.093
+   "height": 0.734,
+   "normal": 0.944,
+   "albedo": 0.702
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  162,
-  164,
-  149
+  149,
+  150,
+  133
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/tundra_reindeer_lichen/albedo_delit.webp",

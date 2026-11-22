@@ -77,8 +77,8 @@
   "ior": 1.486,
   "is_metallic": false,
   "roughness_range": [
-   0.149,
-   0.314
+   0.122,
+   0.212
   ],
   "metallic_range": [
    0.0,
@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.918,
+  "max_seam_ratio": 0.761,
   "seam_ratios": {
-   "height": 0.751,
-   "normal": 0.897,
-   "albedo": 0.918
+   "height": 0.638,
+   "normal": 0.761,
+   "albedo": 0.691
   },
-  "normal_unit_error": 0.0007,
+  "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  196,
-  196,
-  197
+  215,
+  215,
+  215
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/arabescato_marble/albedo_delit.webp",

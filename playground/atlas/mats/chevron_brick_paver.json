@@ -80,8 +80,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.745,
-   0.969
+   0.788,
+   0.933
   ],
   "metallic_range": [
    0.0,
@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.811,
+  "max_seam_ratio": 0.823,
   "seam_ratios": {
-   "height": 0.727,
-   "normal": 0.811,
-   "albedo": 0.677
+   "height": 0.743,
+   "normal": 0.823,
+   "albedo": 0.626
   },
-  "normal_unit_error": 0.0006,
+  "normal_unit_error": 0.0005,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  152,
-  104,
-  78
+  147,
+  106,
+  85
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/chevron_brick_paver/albedo_delit.webp",

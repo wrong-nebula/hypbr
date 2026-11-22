@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.635,
-   0.91
+   0.631,
+   0.914
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +123,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.462,
+  "max_seam_ratio": 0.812,
   "seam_ratios": {
-   "height": 0.366,
-   "normal": 0.462,
-   "albedo": 0.403
+   "height": 0.406,
+   "normal": 0.78,
+   "albedo": 0.812
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  177,
-  120,
-  82
+  185,
+  118,
+  66
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/spanish_barrel_clay_roof/albedo_delit.webp",

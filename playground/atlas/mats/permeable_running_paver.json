@@ -79,7 +79,7 @@
   "is_metallic": false,
   "roughness_range": [
    0.788,
-   0.945
+   0.914
   ],
   "metallic_range": [
    0.0,
@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.15,
+  "max_seam_ratio": 0.573,
   "seam_ratios": {
-   "height": 0.05,
-   "normal": 0.126,
-   "albedo": 0.15
+   "height": 0.151,
+   "normal": 0.394,
+   "albedo": 0.573
   },
-  "normal_unit_error": 0.0007,
+  "normal_unit_error": 0.001,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  145,
+  146,
   138,
-  130
+  129
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/permeable_running_paver/albedo_delit.webp",

@@ -27,7 +27,8 @@
    "mode": "pebble",
    "rough": 0.48,
    "slope": 6.0,
-   "cells": 34
+   "cells": 34,
+   "chroma": 0.4
   },
   "seed": 15175
  },
@@ -75,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.337,
-   0.725
+   0.443,
+   0.702
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.74,
+  "max_seam_ratio": 1.711,
   "seam_ratios": {
-   "height": 1.627,
-   "normal": 1.74,
-   "albedo": 1.693
+   "height": 1.595,
+   "normal": 1.711,
+   "albedo": 1.645
   },
-  "normal_unit_error": 0.0019,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  156,
-  110,
-  72
+  162,
+  108,
+  56
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cognac_pebble_leather/albedo_delit.webp",

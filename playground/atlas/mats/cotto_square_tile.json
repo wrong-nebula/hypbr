@@ -77,8 +77,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.624,
-   0.831
+   0.627,
+   0.867
   ],
   "metallic_range": [
    0.0,
@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.1,
+  "max_seam_ratio": 0.46,
   "seam_ratios": {
-   "height": 0.055,
-   "normal": 0.092,
-   "albedo": 0.1
+   "height": 0.154,
+   "normal": 0.388,
+   "albedo": 0.46
   },
-  "normal_unit_error": 0.0005,
+  "normal_unit_error": 0.0012,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  186,
-  136,
-  99
+  185,
+  137,
+  102
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cotto_square_tile/albedo_delit.webp",

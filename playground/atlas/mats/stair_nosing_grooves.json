@@ -55,10 +55,10 @@
   "is_metallic": true,
   "roughness_range": [
    0.102,
-   0.4
+   0.376
   ],
   "metallic_range": [
-   0.918,
+   0.922,
    0.961
   ],
   "transmission": 0.0,
@@ -107,20 +107,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.31,
+  "max_seam_ratio": 1.086,
   "seam_ratios": {
-   "height": 0.651,
-   "normal": 1.261,
-   "albedo": 1.31
+   "height": 0.786,
+   "normal": 0.949,
+   "albedo": 1.086
   },
-  "normal_unit_error": 0.0014,
+  "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   199,
   202,
-  205
+  206
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/stair_nosing_grooves/albedo_delit.webp",

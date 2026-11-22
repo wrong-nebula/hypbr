@@ -78,8 +78,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.443,
-   0.659
+   0.494,
+   0.655
   ],
   "metallic_range": [
    0.0,
@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.642,
+  "max_seam_ratio": 0.879,
   "seam_ratios": {
-   "height": 0.476,
-   "normal": 0.642,
-   "albedo": 0.584
+   "height": 0.504,
+   "normal": 0.555,
+   "albedo": 0.879
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  160,
-  131,
-  98
+  162,
+  128,
+  87
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wide_plank_hickory_floor/albedo_delit.webp",

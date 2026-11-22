@@ -77,8 +77,8 @@
   "ior": 1.486,
   "is_metallic": false,
   "roughness_range": [
-   0.141,
-   0.31
+   0.118,
+   0.212
   ],
   "metallic_range": [
    0.0,
@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.784,
+  "max_seam_ratio": 0.886,
   "seam_ratios": {
-   "height": 0.662,
-   "normal": 0.784,
-   "albedo": 0.736
+   "height": 0.593,
+   "normal": 0.886,
+   "albedo": 0.692
   },
-  "normal_unit_error": 0.0007,
+  "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  132,
-  112,
-  91
+  116,
+  95,
+  74
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/emperador_dark_marble/albedo_delit.webp",

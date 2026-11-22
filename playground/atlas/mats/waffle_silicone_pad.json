@@ -54,7 +54,7 @@
   "is_metallic": false,
   "roughness_range": [
    0.282,
-   0.855
+   0.851
   ],
   "metallic_range": [
    0.0,
@@ -102,20 +102,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.835,
+  "max_seam_ratio": 0.838,
   "seam_ratios": {
-   "height": 0.0,
-   "normal": 0.034,
-   "albedo": 0.835
+   "height": 0.011,
+   "normal": 0.041,
+   "albedo": 0.838
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  132,
-  150,
-  157
+  131,
+  151,
+  158
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/waffle_silicone_pad/albedo_delit.webp",

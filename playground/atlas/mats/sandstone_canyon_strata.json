@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.71,
-   0.945
+   0.718,
+   0.875
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.497,
+  "max_seam_ratio": 1.245,
   "seam_ratios": {
-   "height": 1.27,
-   "normal": 1.373,
-   "albedo": 1.497
+   "height": 1.245,
+   "normal": 1.108,
+   "albedo": 0.82
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  182,
-  135,
-  92
+  196,
+  137,
+  78
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sandstone_canyon_strata/albedo_delit.webp",

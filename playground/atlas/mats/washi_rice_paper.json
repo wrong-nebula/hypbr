@@ -26,7 +26,8 @@
    ],
    "mode": "paper",
    "rough": 0.78,
-   "slope": 3.0
+   "slope": 3.0,
+   "chroma": 0.4
   },
   "seed": 15619
  },
@@ -74,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.714,
-   0.855
+   0.663,
+   0.839
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.972,
+  "max_seam_ratio": 1.006,
   "seam_ratios": {
-   "height": 0.439,
-   "normal": 0.972,
-   "albedo": 0.465
+   "height": 0.557,
+   "normal": 1.006,
+   "albedo": 0.736
   },
-  "normal_unit_error": 0.0007,
+  "normal_unit_error": 0.001,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  218,
-  215,
-  206
+  216,
+  214,
+  207
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/washi_rice_paper/albedo_delit.webp",

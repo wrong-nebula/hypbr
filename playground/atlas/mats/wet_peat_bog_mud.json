@@ -27,6 +27,8 @@
    "mode": "organic",
    "rough": 0.3,
    "slope": 10.0,
+   "cover": "soil",
+   "pebbles": 0.02,
    "cells": 40
   },
   "seed": 16729
@@ -74,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.227,
-   0.478
+   0.369,
+   0.522
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.181,
+  "max_seam_ratio": 1.107,
   "seam_ratios": {
-   "height": 0.911,
-   "normal": 1.181,
-   "albedo": 1.073
+   "height": 1.097,
+   "normal": 1.107,
+   "albedo": 1.012
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  68,
-  61,
-  48
+  76,
+  67,
+  49
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wet_peat_bog_mud/albedo_delit.webp",

@@ -21,7 +21,8 @@
    ],
    "rough": 0.9,
    "slope": 6.0,
-   "mode": "velvet"
+   "mode": "velvet",
+   "chroma": 0.3
   },
   "seed": 14768
  },
@@ -70,8 +71,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.816,
-   0.941
+   0.69,
+   0.863
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +122,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.176,
+  "max_seam_ratio": 1.137,
   "seam_ratios": {
-   "height": 0.464,
-   "normal": 1.176,
-   "albedo": 0.521
+   "height": 0.575,
+   "normal": 1.137,
+   "albedo": 0.798
   },
-  "normal_unit_error": 0.0015,
+  "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  190,
-  154,
-  61
+  194,
+  151,
+  38
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/mustard_velvet/albedo_delit.webp",

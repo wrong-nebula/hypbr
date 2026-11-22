@@ -79,7 +79,7 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.439,
+   0.494,
    0.584
   ],
   "metallic_range": [
@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.079,
+  "max_seam_ratio": 0.284,
   "seam_ratios": {
-   "height": 0.028,
-   "normal": 0.038,
-   "albedo": 0.079
+   "height": 0.108,
+   "normal": 0.065,
+   "albedo": 0.284
   },
-  "normal_unit_error": 0.0003,
+  "normal_unit_error": 0.0004,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  175,
-  144,
-  106
+  180,
+  143,
+  94
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/end_grain_butcher_block/albedo_delit.webp",

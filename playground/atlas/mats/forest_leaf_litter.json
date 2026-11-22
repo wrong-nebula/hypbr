@@ -27,7 +27,8 @@
    "mode": "organic",
    "rough": 0.88,
    "slope": 10.0,
-   "cells": 28
+   "cover": "leaves",
+   "cells": 18
   },
   "seed": 16396
  },
@@ -74,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.804,
-   0.941
+   0.773,
+   0.953
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.15,
+  "max_seam_ratio": 1.099,
   "seam_ratios": {
-   "height": 0.917,
-   "normal": 1.15,
-   "albedo": 1.135
+   "height": 0.907,
+   "normal": 1.038,
+   "albedo": 1.099
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  125,
-  95,
-  62
+  133,
+  96,
+  48
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/forest_leaf_litter/albedo_delit.webp",

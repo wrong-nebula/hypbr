@@ -27,7 +27,8 @@
    "rough": 0.86,
    "slope": 6.0,
    "mode": "plain",
-   "freq": 32
+   "freq": 32,
+   "chroma": 0.25
   },
   "seed": 14102
  },
@@ -75,8 +76,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.808,
-   0.945
+   0.718,
+   0.839
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.341,
+  "max_seam_ratio": 1.287,
   "seam_ratios": {
-   "height": 0.686,
-   "normal": 1.341,
-   "albedo": 0.757
+   "height": 0.732,
+   "normal": 1.287,
+   "albedo": 0.966
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  183,
+  184,
   173,
-  156
+  152
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/natural_linen_plain/albedo_delit.webp",

@@ -27,6 +27,8 @@
    "mode": "organic",
    "rough": 0.5,
    "slope": 10.0,
+   "cover": "snow",
+   "trample": 0.8,
    "cells": 24
   },
   "seed": 16285
@@ -74,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.427,
-   0.675
+   0.467,
+   0.643
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.284,
+  "max_seam_ratio": 0.968,
   "seam_ratios": {
-   "height": 0.858,
-   "normal": 1.166,
-   "albedo": 1.284
+   "height": 0.585,
+   "normal": 0.968,
+   "albedo": 0.613
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  195,
-  197,
-  199
+  199,
+  201,
+  203
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/trampled_slush_snow/albedo_delit.webp",

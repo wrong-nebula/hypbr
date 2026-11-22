@@ -56,8 +56,8 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.18,
-   0.812
+   0.173,
+   0.808
   ],
   "metallic_range": [
    0.137,
@@ -109,20 +109,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.05,
+  "max_seam_ratio": 0.181,
   "seam_ratios": {
-   "height": 0.023,
-   "normal": 0.037,
-   "albedo": 0.05
+   "height": 0.022,
+   "normal": 0.059,
+   "albedo": 0.181
   },
   "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  209,
-  186,
-  132
+  211,
+  183,
+  116
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gilded_tin_ceiling_tile/albedo_delit.webp",

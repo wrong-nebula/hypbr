@@ -51,8 +51,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.357,
-   0.831
+   0.51,
+   0.827
   ],
   "metallic_range": [
    0.0,
@@ -100,20 +100,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.7,
+  "max_seam_ratio": 0.638,
   "seam_ratios": {
-   "height": 0.364,
-   "normal": 0.7,
-   "albedo": 0.593
+   "height": 0.368,
+   "normal": 0.638,
+   "albedo": 0.547
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  189,
+  191,
   176,
-  156
+  153
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/travertine_porous_stone/albedo_delit.webp",

@@ -75,7 +75,7 @@
   "is_metallic": false,
   "roughness_range": [
    0.714,
-   0.953
+   0.882
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.866,
+  "max_seam_ratio": 1.495,
   "seam_ratios": {
-   "height": 1.366,
-   "normal": 1.866,
-   "albedo": 1.665
+   "height": 1.495,
+   "normal": 1.408,
+   "albedo": 1.2
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  204,
-  202,
-  195
+  213,
+  211,
+  205
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_chalk_cliff/albedo_delit.webp",

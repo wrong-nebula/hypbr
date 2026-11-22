@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.231,
-   0.761
+   0.373,
+   0.729
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.081,
+  "max_seam_ratio": 0.301,
   "seam_ratios": {
-   "height": 0.032,
-   "normal": 0.046,
-   "albedo": 0.081
+   "height": 0.075,
+   "normal": 0.1,
+   "albedo": 0.301
   },
-  "normal_unit_error": 0.0007,
+  "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  212,
-  212,
-  209
+  213,
+  213,
+  210
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/kit_kat_finger_tile/albedo_delit.webp",

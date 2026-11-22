@@ -77,7 +77,7 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.761,
+   0.824,
    0.941
   ],
   "metallic_range": [
@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.15,
+  "max_seam_ratio": 0.64,
   "seam_ratios": {
-   "height": 0.057,
-   "normal": 0.15,
-   "albedo": 0.128
+   "height": 0.194,
+   "normal": 0.379,
+   "albedo": 0.64
   },
-  "normal_unit_error": 0.0006,
+  "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   161,
   159,
-  155
+  154
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/concrete_square_paver/albedo_delit.webp",

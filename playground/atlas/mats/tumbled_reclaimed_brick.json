@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.714,
-   0.957
+   0.749,
+   0.941
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.21,
+  "max_seam_ratio": 0.607,
   "seam_ratios": {
-   "height": 0.124,
-   "normal": 0.21,
-   "albedo": 0.192
+   "height": 0.275,
+   "normal": 0.489,
+   "albedo": 0.607
   },
-  "normal_unit_error": 0.0016,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  154,
-  119,
-  99
+  155,
+  121,
+  101
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/tumbled_reclaimed_brick/albedo_delit.webp",

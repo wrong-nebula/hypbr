@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.525,
-   0.788
+   0.455,
+   0.698
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +123,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.361,
+  "max_seam_ratio": 0.859,
   "seam_ratios": {
-   "height": 1.104,
-   "normal": 1.361,
-   "albedo": 1.203
+   "height": 0.831,
+   "normal": 0.859,
+   "albedo": 0.843
   },
-  "normal_unit_error": 0.0019,
+  "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  94,
-  102,
-  92
+  95,
+  106,
+  93
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/green_riven_slate/albedo_delit.webp",

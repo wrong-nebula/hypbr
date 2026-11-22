@@ -54,8 +54,8 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.255,
-   0.965
+   0.243,
+   0.953
   ],
   "metallic_range": [
    0.0,
@@ -106,20 +106,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.012,
+  "max_seam_ratio": 0.83,
   "seam_ratios": {
-   "height": 0.151,
-   "normal": 1.012,
-   "albedo": 0.013
+   "height": 0.138,
+   "normal": 0.83,
+   "albedo": 0.02
   },
-  "normal_unit_error": 0.0016,
+  "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  143,
-  147,
-  151
+  138,
+  142,
+  146
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/stamped_louver_micro/albedo_delit.webp",

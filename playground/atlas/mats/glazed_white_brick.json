@@ -72,8 +72,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.157,
-   0.953
+   0.298,
+   0.827
   ],
   "metallic_range": [
    0.0,
@@ -122,20 +122,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.126,
+  "max_seam_ratio": 0.445,
   "seam_ratios": {
-   "height": 0.074,
-   "normal": 0.126,
-   "albedo": 0.105
+   "height": 0.232,
+   "normal": 0.445,
+   "albedo": 0.416
   },
-  "normal_unit_error": 0.0011,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  209,
   210,
-  211,
-  209
+  208
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/glazed_white_brick/albedo_delit.webp",

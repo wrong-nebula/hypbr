@@ -71,8 +71,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.718,
-   0.965
+   0.757,
+   0.941
   ],
   "metallic_range": [
    0.0,
@@ -120,20 +120,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.156,
+  "max_seam_ratio": 0.586,
   "seam_ratios": {
-   "height": 0.068,
-   "normal": 0.116,
-   "albedo": 0.156
+   "height": 0.278,
+   "normal": 0.408,
+   "albedo": 0.586
   },
-  "normal_unit_error": 0.001,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  150,
-  148,
-  144
+  152,
+  149,
+  145
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_thin_brick_veneer/albedo_delit.webp",

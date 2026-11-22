@@ -27,6 +27,7 @@
    "mode": "organic",
    "rough": 0.7,
    "slope": 10.0,
+   "cover": "snow",
    "cells": 32
   },
   "seed": 16248
@@ -74,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.631,
-   0.871
+   0.725,
+   0.835
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.25,
+  "max_seam_ratio": 1.099,
   "seam_ratios": {
-   "height": 0.935,
-   "normal": 1.228,
-   "albedo": 1.25
+   "height": 0.566,
+   "normal": 1.099,
+   "albedo": 0.803
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  217,
-  220,
-  225
+  225,
+  227,
+  229
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/fresh_snow_ground/albedo_delit.webp",

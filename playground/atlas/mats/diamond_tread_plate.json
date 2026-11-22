@@ -53,10 +53,10 @@
   "is_metallic": true,
   "roughness_range": [
    0.227,
-   0.439
+   0.431
   ],
   "metallic_range": [
-   0.925,
+   0.929,
    0.961
   ],
   "transmission": 0.0,
@@ -105,20 +105,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.117,
+  "max_seam_ratio": 0.129,
   "seam_ratios": {
-   "height": 0.0,
-   "normal": 0.111,
-   "albedo": 0.117
+   "height": 0.022,
+   "normal": 0.129,
+   "albedo": 0.113
   },
-  "normal_unit_error": 0.0003,
+  "normal_unit_error": 0.0005,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   180,
   185,
-  190
+  191
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/diamond_tread_plate/albedo_delit.webp",

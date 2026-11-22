@@ -72,8 +72,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.718,
-   0.961
+   0.757,
+   0.937
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +123,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.172,
+  "max_seam_ratio": 0.659,
   "seam_ratios": {
-   "height": 0.073,
-   "normal": 0.139,
-   "albedo": 0.172
+   "height": 0.233,
+   "normal": 0.415,
+   "albedo": 0.659
   },
-  "normal_unit_error": 0.001,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  186,
-  144,
-  130
+  188,
+  145,
+  131
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/pink_handmade_brick/albedo_delit.webp",

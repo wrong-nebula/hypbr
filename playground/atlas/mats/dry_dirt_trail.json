@@ -27,6 +27,8 @@
    "mode": "organic",
    "rough": 0.88,
    "slope": 10.0,
+   "cover": "soil",
+   "pebbles": 0.18,
    "cells": 32
   },
   "seed": 16618
@@ -74,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.808,
-   0.941
+   0.773,
+   0.898
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.315,
+  "max_seam_ratio": 1.126,
   "seam_ratios": {
-   "height": 0.996,
-   "normal": 1.3,
-   "albedo": 1.315
+   "height": 1.024,
+   "normal": 0.983,
+   "albedo": 1.126
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  153,
-  133,
-  107
+  164,
+  143,
+  117
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/dry_dirt_trail/albedo_delit.webp",

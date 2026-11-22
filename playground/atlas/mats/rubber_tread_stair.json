@@ -100,20 +100,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.776,
+  "max_seam_ratio": 0.788,
   "seam_ratios": {
-   "height": 0.128,
-   "normal": 0.396,
-   "albedo": 0.776
+   "height": 0.138,
+   "normal": 0.312,
+   "albedo": 0.788
   },
-  "normal_unit_error": 0.0019,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  93,
+  92,
   95,
-  98
+  99
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rubber_tread_stair/albedo_delit.webp",

@@ -76,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.059,
-   0.404
+   0.18,
+   0.424
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.096,
+  "max_seam_ratio": 0.328,
   "seam_ratios": {
-   "height": 0.069,
-   "normal": 0.088,
-   "albedo": 0.096
+   "height": 0.131,
+   "normal": 0.183,
+   "albedo": 0.328
   },
-  "normal_unit_error": 0.0006,
+  "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  202,
-  169,
-  82
+  198,
+  170,
+  102
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/mustard_zellige_tile/albedo_delit.webp",

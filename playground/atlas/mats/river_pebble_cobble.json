@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.565,
-   0.98
+   0.663,
+   0.941
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.993,
+  "max_seam_ratio": 1.887,
   "seam_ratios": {
-   "height": 1.966,
-   "normal": 1.769,
-   "albedo": 1.993
+   "height": 1.887,
+   "normal": 1.748,
+   "albedo": 1.76
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  147,
+  149,
   141,
-  131
+  129
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/river_pebble_cobble/albedo_delit.webp",

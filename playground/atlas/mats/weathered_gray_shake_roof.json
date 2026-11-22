@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.722,
-   0.961
+   0.608,
+   0.973
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.328,
+  "max_seam_ratio": 0.762,
   "seam_ratios": {
-   "height": 0.208,
-   "normal": 0.328,
-   "albedo": 0.189
+   "height": 0.244,
+   "normal": 0.51,
+   "albedo": 0.762
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  140,
-  137,
-  132
+  142,
+  139,
+  133
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/weathered_gray_shake_roof/albedo_delit.webp",

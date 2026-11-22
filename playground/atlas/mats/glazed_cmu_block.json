@@ -74,7 +74,7 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.153,
+   0.149,
    0.788
   ],
   "metallic_range": [
@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.303,
+  "max_seam_ratio": 0.716,
   "seam_ratios": {
-   "height": 0.134,
-   "normal": 0.208,
-   "albedo": 0.303
+   "height": 0.333,
+   "normal": 0.716,
+   "albedo": 0.65
   },
-  "normal_unit_error": 0.0007,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  179,
-  189,
-  195
+  178,
+  190,
+  196
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/glazed_cmu_block/albedo_delit.webp",

@@ -82,8 +82,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.796,
-   0.918
+   0.71,
+   0.816
   ],
   "metallic_range": [
    0.0,
@@ -134,20 +134,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.848,
+  "max_seam_ratio": 0.924,
   "seam_ratios": {
-   "height": 0.496,
-   "normal": 0.848,
-   "albedo": 0.411
+   "height": 0.481,
+   "normal": 0.769,
+   "albedo": 0.924
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  180,
-  174,
-  162
+  178,
+  170,
+  157
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/weathered_driftwood/albedo_delit.webp",

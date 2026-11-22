@@ -27,7 +27,8 @@
    "rough": 0.86,
    "slope": 6.0,
    "mode": "boucle",
-   "freq": 22
+   "freq": 22,
+   "chroma": 0.25
   },
   "seed": 14546
  },
@@ -75,8 +76,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.827,
-   0.941
+   0.749,
+   0.863
   ],
   "metallic_range": [
    0.0,
@@ -124,11 +125,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.975,
+  "max_seam_ratio": 0.97,
   "seam_ratios": {
-   "height": 0.975,
-   "normal": 0.869,
-   "albedo": 0.762
+   "height": 0.97,
+   "normal": 0.914,
+   "albedo": 0.801
   },
   "normal_unit_error": 0.0019,
   "errors": [],
@@ -137,7 +138,7 @@
  "albedo_mean_srgb": [
   93,
   93,
-  93
+  92
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/charcoal_boucle/albedo_delit.webp",

@@ -76,8 +76,8 @@
   "ior": 1.54,
   "is_metallic": false,
   "roughness_range": [
-   0.102,
-   0.322
+   0.235,
+   0.38
   ],
   "metallic_range": [
    0.0,
@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.568,
+  "max_seam_ratio": 1.449,
   "seam_ratios": {
-   "height": 1.293,
-   "normal": 1.447,
-   "albedo": 1.568
+   "height": 1.298,
+   "normal": 1.449,
+   "albedo": 1.4
   },
-  "normal_unit_error": 0.001,
+  "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  169,
-  148,
-  141
+  165,
+  146,
+  140
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/classic_venetian_terrazzo/albedo_delit.webp",

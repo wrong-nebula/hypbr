@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.714,
-   0.941
+   0.69,
+   0.851
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.042,
+  "max_seam_ratio": 1.135,
   "seam_ratios": {
-   "height": 0.675,
-   "normal": 1.042,
-   "albedo": 0.812
+   "height": 0.874,
+   "normal": 1.135,
+   "albedo": 0.794
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  101,
-  112,
-  82
+  108,
+  119,
+  89
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/mossy_boulder_rock/albedo_delit.webp",

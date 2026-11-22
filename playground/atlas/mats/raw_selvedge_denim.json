@@ -27,7 +27,8 @@
    "rough": 0.86,
    "slope": 6.0,
    "mode": "twill",
-   "freq": 32
+   "freq": 32,
+   "chroma": 0.25
   },
   "seed": 14213
  },
@@ -75,8 +76,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.812,
-   0.941
+   0.737,
+   0.863
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.053,
+  "max_seam_ratio": 1.049,
   "seam_ratios": {
-   "height": 1.053,
-   "normal": 0.91,
-   "albedo": 1.029
+   "height": 1.049,
+   "normal": 0.95,
+   "albedo": 0.984
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  72,
-  86,
-  116
+  71,
+  87,
+  119
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/raw_selvedge_denim/albedo_delit.webp",

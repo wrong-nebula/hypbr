@@ -53,8 +53,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.243,
-   0.635
+   0.38,
+   0.655
   ],
   "metallic_range": [
    0.0,
@@ -101,20 +101,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.228,
+  "max_seam_ratio": 1.252,
   "seam_ratios": {
-   "height": 0.6,
-   "normal": 1.15,
-   "albedo": 1.228
+   "height": 0.563,
+   "normal": 0.93,
+   "albedo": 1.252
   },
-  "normal_unit_error": 0.0019,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  139,
+  137,
   102,
-  80
+  82
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/quilted_leather_stitch/albedo_delit.webp",

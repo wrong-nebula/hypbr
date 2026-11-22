@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.667,
-   0.816
+   0.655,
+   0.8
   ],
   "metallic_range": [
    0.0,
@@ -122,20 +122,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.646,
+  "max_seam_ratio": 0.916,
   "seam_ratios": {
-   "height": 0.557,
-   "normal": 0.646,
-   "albedo": 0.58
+   "height": 0.638,
+   "normal": 0.916,
+   "albedo": 0.756
   },
-  "normal_unit_error": 0.0004,
+  "normal_unit_error": 0.0005,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   217,
   216,
-  211
+  209
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_lime_plaster/albedo_delit.webp",

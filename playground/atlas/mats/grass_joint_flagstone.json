@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.573,
-   0.945
+   0.686,
+   0.949
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.856,
+  "max_seam_ratio": 1.745,
   "seam_ratios": {
-   "height": 1.856,
-   "normal": 1.693,
-   "albedo": 1.686
+   "height": 1.745,
+   "normal": 1.504,
+   "albedo": 1.348
   },
-  "normal_unit_error": 0.0016,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  135,
   138,
-  141,
-  123
+  122
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/grass_joint_flagstone/albedo_delit.webp",

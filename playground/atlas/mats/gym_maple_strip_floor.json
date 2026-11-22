@@ -79,8 +79,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.231,
-   0.537
+   0.357,
+   0.549
   ],
   "metallic_range": [
    0.0,
@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.52,
+  "max_seam_ratio": 0.97,
   "seam_ratios": {
-   "height": 0.309,
-   "normal": 0.52,
-   "albedo": 0.337
+   "height": 0.298,
+   "normal": 0.376,
+   "albedo": 0.97
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  200,
-  169,
-  128
+  202,
+  166,
+  114
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gym_maple_strip_floor/albedo_delit.webp",

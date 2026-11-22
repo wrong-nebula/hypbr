@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.067,
-   0.439
+   0.204,
+   0.431
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.058,
+  "max_seam_ratio": 0.114,
   "seam_ratios": {
-   "height": 0.032,
-   "normal": 0.058,
-   "albedo": 0.017
+   "height": 0.098,
+   "normal": 0.114,
+   "albedo": 0.07
   },
-  "normal_unit_error": 0.0007,
+  "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  59,
-  59,
-  61
+  57,
+  57,
+  60
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/black_gloss_subway_tile/albedo_delit.webp",

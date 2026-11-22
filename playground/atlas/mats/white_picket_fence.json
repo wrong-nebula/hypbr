@@ -80,8 +80,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.51,
-   0.91
+   0.502,
+   0.941
   ],
   "metallic_range": [
    0.0,
@@ -133,20 +133,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.39,
+  "max_seam_ratio": 0.723,
   "seam_ratios": {
-   "height": 0.267,
-   "normal": 0.39,
-   "albedo": 0.134
+   "height": 0.211,
+   "normal": 0.353,
+   "albedo": 0.723
   },
-  "normal_unit_error": 0.0013,
+  "normal_unit_error": 0.0012,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  147,
-  154,
-  139
+  138,
+  146,
+  131
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_picket_fence/albedo_delit.webp",

@@ -27,7 +27,8 @@
    "rough": 0.45,
    "slope": 6.0,
    "mode": "ripstop",
-   "freq": 48
+   "freq": 48,
+   "chroma": 0.25
   },
   "seed": 14324
  },
@@ -75,8 +76,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.396,
-   0.553
+   0.506,
+   0.643
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.257,
+  "max_seam_ratio": 1.282,
   "seam_ratios": {
-   "height": 1.257,
-   "normal": 0.405,
-   "albedo": 0.769
+   "height": 1.282,
+   "normal": 0.567,
+   "albedo": 0.845
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  209,
-  122,
-  48
+  217,
+  116,
+  38
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/orange_nylon_ripstop/albedo_delit.webp",

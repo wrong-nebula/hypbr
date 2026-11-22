@@ -28,7 +28,11 @@
    "is_wood": true,
    "grout": 0.045,
    "rough": 0.42,
-   "slope": 8.0
+   "slope": 8.0,
+   "roll": [
+    0.0625,
+    0.0625
+   ]
   },
   "seed": 8034
  },
@@ -72,8 +76,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.408,
-   0.733
+   0.38,
+   0.592
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.598,
+  "max_seam_ratio": 0.921,
   "seam_ratios": {
-   "height": 1.082,
-   "normal": 1.034,
-   "albedo": 1.598
+   "height": 0.895,
+   "normal": 0.921,
+   "albedo": 0.88
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  123,
-  92,
-  68
+  126,
+  90,
+  62
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/walnut_herringbone_parquet/albedo_delit.webp",

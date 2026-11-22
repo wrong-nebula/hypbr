@@ -72,8 +72,8 @@
   "ior": 1.31,
   "is_metallic": false,
   "roughness_range": [
-   0.059,
-   0.427
+   0.204,
+   0.455
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 2.264,
+  "max_seam_ratio": 1.992,
   "seam_ratios": {
-   "height": 1.249,
-   "normal": 1.505,
-   "albedo": 2.264
+   "height": 1.192,
+   "normal": 1.49,
+   "albedo": 1.992
   },
-  "normal_unit_error": 0.0012,
+  "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  146,
-  186,
-  208
+  153,
+  184,
+  202
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/glacier_blue_ice/albedo_delit.webp",

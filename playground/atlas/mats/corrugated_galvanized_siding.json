@@ -75,7 +75,7 @@
   "is_metallic": true,
   "roughness_range": [
    0.306,
-   0.553
+   0.557
   ],
   "metallic_range": [
    0.949,
@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.385,
+  "max_seam_ratio": 1.311,
   "seam_ratios": {
-   "height": 0.122,
-   "normal": 1.385,
-   "albedo": 0.147
+   "height": 0.134,
+   "normal": 1.311,
+   "albedo": 0.629
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   191,
   194,
-  196
+  197
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/corrugated_galvanized_siding/albedo_delit.webp",

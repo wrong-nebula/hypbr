@@ -78,8 +78,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.612,
-   0.835
+   0.624,
+   0.792
   ],
   "metallic_range": [
    0.0,
@@ -130,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.739,
+  "max_seam_ratio": 0.743,
   "seam_ratios": {
-   "height": 0.419,
-   "normal": 0.739,
-   "albedo": 0.604
+   "height": 0.459,
+   "normal": 0.663,
+   "albedo": 0.743
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  95,
-  77,
-  60
+  92,
+  76,
+  61
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/brushed_shou_sugi_ban/albedo_delit.webp",

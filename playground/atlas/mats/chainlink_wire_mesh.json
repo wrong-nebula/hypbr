@@ -54,8 +54,8 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.2,
-   0.945
+   0.184,
+   0.941
   ],
   "metallic_range": [
    0.0,
@@ -107,20 +107,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.121,
+  "max_seam_ratio": 1.081,
   "seam_ratios": {
-   "height": 0.942,
-   "normal": 1.121,
-   "albedo": 0.996
+   "height": 0.952,
+   "normal": 1.081,
+   "albedo": 0.976
   },
-  "normal_unit_error": 0.0009,
+  "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  111,
-  114,
-  117
+  99,
+  102,
+  106
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/chainlink_wire_mesh/albedo_delit.webp",

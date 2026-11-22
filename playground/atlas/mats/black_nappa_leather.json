@@ -27,7 +27,8 @@
    "mode": "pebble",
    "rough": 0.35,
    "slope": 6.0,
-   "cells": 60
+   "cells": 60,
+   "chroma": 0.4
   },
   "seed": 15212
  },
@@ -75,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.231,
-   0.627
+   0.376,
+   0.608
   ],
   "metallic_range": [
    0.0,
@@ -122,11 +123,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.68,
+  "max_seam_ratio": 1.637,
   "seam_ratios": {
-   "height": 1.641,
-   "normal": 1.487,
-   "albedo": 1.68
+   "height": 1.609,
+   "normal": 1.483,
+   "albedo": 1.637
   },
   "normal_unit_error": 0.0019,
   "errors": [],

@@ -29,6 +29,8 @@
    "ny": 6,
    "wobble": 3.0,
    "face_rough": 0.18,
+   "tooled": 1.0,
+   "chips": 0.35,
    "rough": 0.76,
    "slope": 11.0
   },
@@ -76,7 +78,7 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.671,
+   0.749,
    0.925
   ],
   "metallic_range": [
@@ -126,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.422,
+  "max_seam_ratio": 0.851,
   "seam_ratios": {
-   "height": 0.216,
-   "normal": 0.422,
-   "albedo": 0.391
+   "height": 0.534,
+   "normal": 0.851,
+   "albedo": 0.85
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  142,
-  135,
-  127
+  141,
+  134,
+  125
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/castle_rubble_ashlar/albedo_delit.webp",

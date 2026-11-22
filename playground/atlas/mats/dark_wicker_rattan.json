@@ -27,7 +27,8 @@
    "mode": "wicker",
    "rough": 0.78,
    "slope": 8.0,
-   "freq": 12
+   "freq": 12,
+   "chroma": 0.4
   },
   "seed": 15508
  },
@@ -75,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.718,
-   0.941
+   0.659,
+   0.898
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.393,
+  "max_seam_ratio": 1.482,
   "seam_ratios": {
-   "height": 1.151,
-   "normal": 1.393,
-   "albedo": 0.678
+   "height": 1.482,
+   "normal": 1.462,
+   "albedo": 0.861
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  119,
-  93,
-  64
+  131,
+  99,
+  58
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/dark_wicker_rattan/albedo_delit.webp",

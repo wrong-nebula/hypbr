@@ -79,8 +79,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.451,
-   0.631
+   0.486,
+   0.627
   ],
   "metallic_range": [
    0.0,
@@ -129,20 +129,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.631,
+  "max_seam_ratio": 0.739,
   "seam_ratios": {
-   "height": 0.337,
-   "normal": 0.631,
-   "albedo": 0.348
+   "height": 0.36,
+   "normal": 0.453,
+   "albedo": 0.739
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  170,
-  138,
-  96
+  172,
+  135,
+  81
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/strand_bamboo_floor/albedo_delit.webp",

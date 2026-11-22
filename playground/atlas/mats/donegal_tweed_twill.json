@@ -27,7 +27,8 @@
    "rough": 0.86,
    "slope": 6.0,
    "mode": "twill",
-   "freq": 24
+   "freq": 24,
+   "chroma": 0.25
   },
   "seed": 14583
  },
@@ -126,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.026,
+  "max_seam_ratio": 0.996,
   "seam_ratios": {
-   "height": 1.026,
-   "normal": 0.939,
-   "albedo": 0.964
+   "height": 0.983,
+   "normal": 0.996,
+   "albedo": 0.888
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  142,
-  131,
-  115
+  143,
+  130,
+  110
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/donegal_tweed_twill/albedo_delit.webp",

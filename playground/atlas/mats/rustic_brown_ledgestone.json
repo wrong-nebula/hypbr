@@ -72,8 +72,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.706,
-   0.973
+   0.765,
+   0.953
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.85,
+  "max_seam_ratio": 0.803,
   "seam_ratios": {
-   "height": 0.564,
-   "normal": 0.681,
-   "albedo": 0.85
+   "height": 0.59,
+   "normal": 0.72,
+   "albedo": 0.803
   },
-  "normal_unit_error": 0.0016,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  125,
-  106,
-  86
+  127,
+  105,
+  79
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rustic_brown_ledgestone/albedo_delit.webp",

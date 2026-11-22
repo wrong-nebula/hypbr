@@ -80,8 +80,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.447,
-   0.737
+   0.541,
+   0.753
   ],
   "metallic_range": [
    0.0,
@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.647,
+  "max_seam_ratio": 0.693,
   "seam_ratios": {
-   "height": 0.396,
-   "normal": 0.647,
-   "albedo": 0.412
+   "height": 0.412,
+   "normal": 0.577,
+   "albedo": 0.693
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  139,
-  130,
-  120
+  138,
+  128,
+  116
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/barnwood_reclaimed_planks/albedo_delit.webp",

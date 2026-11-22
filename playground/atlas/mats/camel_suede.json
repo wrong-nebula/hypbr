@@ -21,7 +21,8 @@
    ],
    "rough": 0.92,
    "slope": 6.0,
-   "mode": "velvet"
+   "mode": "velvet",
+   "chroma": 0.3
   },
   "seed": 15101
  },
@@ -70,8 +71,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.824,
-   0.941
+   0.702,
+   0.859
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +122,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.164,
+  "max_seam_ratio": 1.129,
   "seam_ratios": {
-   "height": 0.52,
-   "normal": 1.164,
-   "albedo": 0.584
+   "height": 0.603,
+   "normal": 1.129,
+   "albedo": 0.803
   },
-  "normal_unit_error": 0.0015,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  161,
-  125,
-  93
+  166,
+  124,
+  81
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/camel_suede/albedo_delit.webp",

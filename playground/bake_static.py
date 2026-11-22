@@ -51,6 +51,7 @@ import numpy as np  # noqa: E402
 from PIL import Image  # noqa: E402
 
 BAKE_VERSION = 3
+PARAMETRIC_CODE_VERSION = 5  # v1.1 detail pass, ground cover, marble veins, strata cliffs, textiles, wicker
 Q_MAPS = 86
 Q_NORMAL = 88
 Q_PREVIEW = 82
@@ -59,8 +60,13 @@ VERCEL_HOBBY_SOFT_LIMIT_MB = 95.0
 
 
 def _signature(entry: dict[str, Any], size: int) -> str:
-    raw = json.dumps({"g": entry["generator"], "size": size, "v": BAKE_VERSION,
-                      "q": [Q_MAPS, Q_NORMAL, Q_PREVIEW, PREVIEW_PX]}, sort_keys=True)
+    sig = {"g": entry["generator"], "size": size, "v": BAKE_VERSION, "q": [Q_MAPS, Q_NORMAL, Q_PREVIEW, PREVIEW_PX]}
+    if entry["generator"]["kind"] == "parametric":
+        sig["pv"] = PARAMETRIC_CODE_VERSION
+    from hypbr.calibration import get_calibration
+
+    sig["cal"] = get_calibration(entry["id"])
+    raw = json.dumps(sig, sort_keys=True)
     return hashlib.sha1(raw.encode()).hexdigest()[:16]
 
 

@@ -74,7 +74,7 @@
   "is_metallic": false,
   "roughness_range": [
    0.333,
-   0.557
+   0.498
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.159,
+  "max_seam_ratio": 1.14,
   "seam_ratios": {
-   "height": 0.724,
-   "normal": 1.159,
-   "albedo": 0.64
+   "height": 0.716,
+   "normal": 1.14,
+   "albedo": 0.854
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  192,
-  183,
-  166
+  196,
+  186,
+  169
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/oatmeal_speckled_stoneware/albedo_delit.webp",

@@ -27,7 +27,8 @@
    "rough": 0.86,
    "slope": 6.0,
    "mode": "plaid",
-   "freq": 40
+   "freq": 40,
+   "chroma": 0.25
   },
   "seed": 14435
  },
@@ -75,8 +76,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.812,
-   0.945
+   0.718,
+   0.839
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.516,
+  "max_seam_ratio": 1.517,
   "seam_ratios": {
-   "height": 1.516,
-   "normal": 0.409,
-   "albedo": 0.042
+   "height": 1.517,
+   "normal": 0.449,
+   "albedo": 0.766
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  153,
-  151,
-  149
+  144,
+  143,
+  141
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_glen_plaid/albedo_delit.webp",

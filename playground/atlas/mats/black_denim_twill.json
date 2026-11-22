@@ -27,7 +27,8 @@
    "rough": 0.86,
    "slope": 6.0,
    "mode": "twill",
-   "freq": 32
+   "freq": 32,
+   "chroma": 0.25
   },
   "seed": 14250
  },
@@ -75,8 +76,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.816,
-   0.941
+   0.757,
+   0.878
   ],
   "metallic_range": [
    0.0,
@@ -125,11 +126,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.039,
+  "max_seam_ratio": 1.025,
   "seam_ratios": {
-   "height": 1.039,
-   "normal": 0.922,
-   "albedo": 0.997
+   "height": 1.025,
+   "normal": 0.939,
+   "albedo": 0.953
   },
   "normal_unit_error": 0.0019,
   "errors": [],

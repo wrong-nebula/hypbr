@@ -56,10 +56,10 @@
   "is_metallic": true,
   "roughness_range": [
    0.212,
-   0.416
+   0.396
   ],
   "metallic_range": [
-   0.918,
+   0.922,
    0.961
   ],
   "transmission": 0.0,
@@ -108,20 +108,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.563,
+  "max_seam_ratio": 0.769,
   "seam_ratios": {
-   "height": 0.563,
-   "normal": 0.077,
-   "albedo": 0.14
+   "height": 0.769,
+   "normal": 0.185,
+   "albedo": 0.131
   },
-  "normal_unit_error": 0.0014,
+  "normal_unit_error": 0.0021,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  210,
+  211,
   212,
-  210
+  211
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/window_blinds_slats/albedo_delit.webp",

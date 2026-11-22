@@ -75,8 +75,8 @@
   "ior": 1.54,
   "is_metallic": false,
   "roughness_range": [
-   0.059,
-   0.271
+   0.188,
+   0.329
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.909,
+  "max_seam_ratio": 1.884,
   "seam_ratios": {
-   "height": 1.305,
-   "normal": 1.909,
-   "albedo": 1.768
+   "height": 1.277,
+   "normal": 1.884,
+   "albedo": 1.619
   },
-  "normal_unit_error": 0.001,
+  "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  106,
-  89,
-  76
+  105,
+  87,
+  73
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/baltic_brown_granite/albedo_delit.webp",

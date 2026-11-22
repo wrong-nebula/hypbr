@@ -51,8 +51,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.086,
-   0.875
+   0.251,
+   0.773
   ],
   "metallic_range": [
    0.0,
@@ -100,20 +100,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.197,
+  "max_seam_ratio": 0.798,
   "seam_ratios": {
-   "height": 0.176,
-   "normal": 1.197,
-   "albedo": 0.199
+   "height": 0.233,
+   "normal": 0.798,
+   "albedo": 0.201
   },
-  "normal_unit_error": 0.001,
+  "normal_unit_error": 0.0012,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   212,
   212,
-  210
+  211
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/hex_mosaic_tile/albedo_delit.webp",

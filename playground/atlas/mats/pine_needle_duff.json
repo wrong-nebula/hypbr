@@ -27,6 +27,7 @@
    "mode": "organic",
    "rough": 0.88,
    "slope": 10.0,
+   "cover": "needles",
    "cells": 48
   },
   "seed": 16470
@@ -74,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.804,
-   0.945
+   0.788,
+   0.937
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.167,
+  "max_seam_ratio": 1.031,
   "seam_ratios": {
-   "height": 1.014,
-   "normal": 1.167,
-   "albedo": 1.126
+   "height": 1.031,
+   "normal": 0.966,
+   "albedo": 1.005
   },
-  "normal_unit_error": 0.0019,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  137,
-  105,
-  73
+  116,
+  88,
+  58
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/pine_needle_duff/albedo_delit.webp",

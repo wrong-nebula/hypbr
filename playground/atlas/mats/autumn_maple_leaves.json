@@ -27,7 +27,8 @@
    "mode": "organic",
    "rough": 0.88,
    "slope": 10.0,
-   "cells": 20
+   "cover": "leaves",
+   "cells": 14
   },
   "seed": 16433
  },
@@ -74,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.804,
-   0.941
+   0.757,
+   0.953
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.296,
+  "max_seam_ratio": 0.965,
   "seam_ratios": {
-   "height": 0.893,
-   "normal": 1.296,
-   "albedo": 1.233
+   "height": 0.741,
+   "normal": 0.965,
+   "albedo": 0.965
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  168,
-  110,
-  46
+  174,
+  112,
+  44
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/autumn_maple_leaves/albedo_delit.webp",

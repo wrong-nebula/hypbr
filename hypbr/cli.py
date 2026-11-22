@@ -71,6 +71,17 @@ def cmd_atlas_recommend(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_atlas_calibrate(args: argparse.Namespace) -> int:
+    from .calibration import fit_atlas
+
+    doc = fit_atlas([Path(p) for p in args.refs], [Path(p) for p in (args.roughness or [])], args.baked,
+                    out_path=args.out, strength=args.strength, refine_iters=args.refine,
+                    workers=max(1, min(4, args.workers)))
+    n = len(doc["materials"])
+    print(f"Calibrated {n} materials against {doc['n_references']} reference scans -> {args.out}")
+    return 0
+
+
 def cmd_atlas_export(args: argparse.Namespace) -> int:
     from .atlas import export_atlas_files
 
@@ -267,6 +278,15 @@ def build_parser() -> argparse.ArgumentParser:
     a_r.add_argument("--json", action="store_true")
     a_r.add_argument("--base-url", default=DEFAULT_BASE_URL)
     a_r.set_defaults(func=cmd_atlas_recommend)
+    a_c = asub.add_parser("calibrate", help="Fit reference-photo calibration from real PBR scans (*.npz) vs uncalibrated bakes")
+    a_c.add_argument("--refs", nargs="+", required=True, help="Directories of reference scans (*.npz with albedo/normal)")
+    a_c.add_argument("--roughness", nargs="*", default=None, help="Directories of reference roughness PNGs (<scan_id>.png)")
+    a_c.add_argument("--baked", type=Path, required=True, help="Uncalibrated 512px bake root (<root>/<id>/albedo_delit.webp ...)")
+    a_c.add_argument("--out", type=Path, default=Path(__file__).resolve().parent / "data" / "atlas_calibration.json")
+    a_c.add_argument("--strength", type=float, default=0.7, help="Exponent toward the reference statistics (0..1)")
+    a_c.add_argument("--refine", type=int, default=1, help="Closed-loop refinement passes (each re-synthesizes calibrated materials)")
+    a_c.add_argument("--workers", type=int, default=2, help="CPU worker processes for refinement (max 4)")
+    a_c.set_defaults(func=cmd_atlas_calibrate)
     a_e = asub.add_parser("export", help="Write llms.txt, agent.md, atlas.json and atlas/ JSON shards")
     a_e.add_argument("out_dir", type=Path)
     a_e.add_argument("--base-url", default=DEFAULT_BASE_URL)

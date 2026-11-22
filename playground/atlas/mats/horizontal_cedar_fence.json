@@ -76,8 +76,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.506,
-   0.906
+   0.486,
+   0.925
   ],
   "metallic_range": [
    0.0,
@@ -130,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.365,
+  "max_seam_ratio": 1.011,
   "seam_ratios": {
-   "height": 0.228,
-   "normal": 0.365,
-   "albedo": 0.332
+   "height": 0.306,
+   "normal": 0.384,
+   "albedo": 1.011
   },
-  "normal_unit_error": 0.0019,
+  "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  146,
-  104,
-  73
+  137,
+  102,
+  79
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/horizontal_cedar_fence/albedo_delit.webp",

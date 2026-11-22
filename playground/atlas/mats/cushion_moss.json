@@ -27,6 +27,7 @@
    "mode": "organic",
    "rough": 0.88,
    "slope": 10.0,
+   "cover": "moss",
    "cells": 40
   },
   "seed": 16507
@@ -75,7 +76,7 @@
   "is_metallic": false,
   "roughness_range": [
    0.8,
-   0.945
+   0.922
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.227,
+  "max_seam_ratio": 1.116,
   "seam_ratios": {
-   "height": 0.942,
-   "normal": 1.227,
-   "albedo": 1.031
+   "height": 0.979,
+   "normal": 1.116,
+   "albedo": 1.008
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  86,
-  115,
-  53
+  84,
+  123,
+  38
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cushion_moss/albedo_delit.webp",

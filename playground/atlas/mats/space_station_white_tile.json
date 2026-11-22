@@ -77,8 +77,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.333,
-   0.69
+   0.349,
+   0.647
   ],
   "metallic_range": [
    0.0,
@@ -132,20 +132,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.19,
+  "max_seam_ratio": 0.343,
   "seam_ratios": {
-   "height": 0.145,
-   "normal": 0.19,
-   "albedo": 0.141
+   "height": 0.159,
+   "normal": 0.215,
+   "albedo": 0.343
   },
-  "normal_unit_error": 0.0008,
+  "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  211,
-  211,
-  208
+  210,
+  210,
+  207
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/space_station_white_tile/albedo_delit.webp",

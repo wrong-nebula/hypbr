@@ -54,8 +54,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.812,
-   0.965
+   0.737,
+   0.835
   ],
   "metallic_range": [
    0.0,
@@ -104,20 +104,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.558,
+  "max_seam_ratio": 1.518,
   "seam_ratios": {
-   "height": 1.393,
-   "normal": 0.224,
-   "albedo": 1.558
+   "height": 1.395,
+   "normal": 0.325,
+   "albedo": 1.518
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  188,
-  164,
-  134
+  192,
+  163,
+  127
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/corrugated_cardboard/albedo_delit.webp",

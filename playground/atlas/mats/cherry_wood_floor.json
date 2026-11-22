@@ -79,8 +79,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.443,
-   0.659
+   0.486,
+   0.643
   ],
   "metallic_range": [
    0.0,
@@ -129,20 +129,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.669,
+  "max_seam_ratio": 0.876,
   "seam_ratios": {
-   "height": 0.398,
-   "normal": 0.669,
-   "albedo": 0.459
+   "height": 0.431,
+   "normal": 0.542,
+   "albedo": 0.876
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  149,
+  144,
   93,
-  67
+  69
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cherry_wood_floor/albedo_delit.webp",

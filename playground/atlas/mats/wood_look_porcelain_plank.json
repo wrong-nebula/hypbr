@@ -76,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.443,
-   0.588
+   0.561,
+   0.651
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.162,
+  "max_seam_ratio": 0.508,
   "seam_ratios": {
-   "height": 0.064,
-   "normal": 0.069,
-   "albedo": 0.162
+   "height": 0.12,
+   "normal": 0.164,
+   "albedo": 0.508
   },
   "normal_unit_error": 0.0003,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  168,
+  171,
   137,
-  102
+  96
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/wood_look_porcelain_plank/albedo_delit.webp",

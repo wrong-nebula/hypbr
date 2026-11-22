@@ -72,8 +72,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.698,
-   0.976
+   0.761,
+   0.957
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.961,
+  "max_seam_ratio": 0.952,
   "seam_ratios": {
-   "height": 0.558,
-   "normal": 0.961,
-   "albedo": 0.85
+   "height": 0.563,
+   "normal": 0.952,
+   "albedo": 0.874
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  159,
-  146,
-  122
+  158,
+  144,
+  121
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/golden_quartzite_ledgestone/albedo_delit.webp",

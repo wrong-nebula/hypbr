@@ -74,7 +74,7 @@
   "is_metallic": false,
   "roughness_range": [
    0.537,
-   0.765
+   0.698
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.089,
+  "max_seam_ratio": 1.076,
   "seam_ratios": {
-   "height": 0.884,
-   "normal": 1.089,
-   "albedo": 0.758
+   "height": 0.893,
+   "normal": 1.076,
+   "albedo": 0.85
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  99,
-  99,
-  96
+  96,
+  95,
+  93
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/matte_charcoal_stoneware/albedo_delit.webp",

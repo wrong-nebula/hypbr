@@ -79,8 +79,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.447,
-   0.663
+   0.486,
+   0.639
   ],
   "metallic_range": [
    0.0,
@@ -130,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.619,
+  "max_seam_ratio": 0.552,
   "seam_ratios": {
-   "height": 0.349,
-   "normal": 0.619,
-   "albedo": 0.294
+   "height": 0.376,
+   "normal": 0.475,
+   "albedo": 0.552
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  174,
-  139,
-  98
+  177,
+  136,
+  83
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rustic_pine_plank_floor/albedo_delit.webp",

@@ -71,8 +71,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.718,
-   0.965
+   0.761,
+   0.929
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.102,
+  "max_seam_ratio": 0.461,
   "seam_ratios": {
-   "height": 0.074,
-   "normal": 0.102,
-   "albedo": 0.098
+   "height": 0.269,
+   "normal": 0.461,
+   "albedo": 0.436
   },
-  "normal_unit_error": 0.001,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  89,
-  84,
-  81
+  91,
+  86,
+  82
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/charcoal_ironspot_brick/albedo_delit.webp",

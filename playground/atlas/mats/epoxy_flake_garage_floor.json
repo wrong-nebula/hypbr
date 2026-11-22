@@ -77,8 +77,8 @@
   "ior": 1.54,
   "is_metallic": false,
   "roughness_range": [
-   0.059,
-   0.247
+   0.18,
+   0.298
   ],
   "metallic_range": [
    0.0,
@@ -129,20 +129,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.683,
+  "max_seam_ratio": 1.663,
   "seam_ratios": {
-   "height": 1.683,
-   "normal": 1.557,
-   "albedo": 1.554
+   "height": 1.663,
+   "normal": 1.547,
+   "albedo": 1.492
   },
-  "normal_unit_error": 0.0014,
+  "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  143,
-  143,
-  142
+  138,
+  138,
+  138
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/epoxy_flake_garage_floor/albedo_delit.webp",

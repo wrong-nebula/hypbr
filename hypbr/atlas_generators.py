@@ -11,6 +11,7 @@ from typing import Any
 
 import numpy as np
 
+from . import atlas_detail as ad
 from . import procedural as gd
 
 
@@ -99,6 +100,13 @@ def build_parametric_material(
         mx = gd._smoothstep(1.0 - mortar_w * 0.75, 1.0 - mortar_w * 0.12, fx + wob)
         my = gd._smoothstep(1.0 - mortar_w * 1.45, 1.0 - mortar_w * 0.25, fy + wob)
         mortar = np.clip(np.maximum(mx, my), 0.0, 1.0)
+        chips = float(params.get("chips", 0.0 if float(params.get("glazed", 0.0)) > 0.5 else 0.5))
+        if chips > 0.0:
+            # v1.2: chipped arrises - irregular bites out of brick edges & corners
+            chip_n = ad.fbm(H, W, seed + 3, (24, 48, 96))
+            edge = np.maximum(fx, fy * 0.9)
+            chip = gd._smoothstep(0.86, 0.99, edge + 0.09 * chip_n) * gd._smoothstep(0.2, 1.4, chip_n + 0.3)
+            mortar = np.clip(np.maximum(mortar, chip * chips), 0.0, 1.0)
         brick_m = 1.0 - mortar
 
         tid1 = _cell_hash(ix, iy, nx, ny, seed + 1)
@@ -111,12 +119,20 @@ def build_parametric_material(
             + 0.05 * brick_m * (tid1 - 0.5)
             + 0.03 * mortar * m2
         )
+        tooled = float(params.get("tooled", 0.0))
+        if tooled > 0.0:
+            # v1.2: chisel-dressed striations, direction alternating per stone
+            sgn = np.where(tid2 > 0.5, 1.0, -1.0)
+            stri = 0.5 + 0.5 * np.sin(2.0 * math.pi * (u * 110.0 + v * 110.0 * sgn + 0.4 * m1))
+            h = h + 0.022 * tooled * stri * brick_m
         cav = mortar
         ridge = gd._smoothstep(0.55, 0.92, brick_m * camber)
 
         brick_col = _mix_rgb(c1, c2, 0.20 + 0.65 * tid1 + 0.15 * m1)
         brick_col = brick_col * (0.90 + 0.14 * (tid2 - 0.5)[..., None] + 0.07 * m2[..., None] + cd)
         mortar_col = c3 * (0.86 + 0.16 * m2[..., None])
+        if tooled > 0.0:
+            brick_col = brick_col * (1.0 - 0.05 * tooled * stri[..., None])
         alb = _mix_rgb(brick_col, mortar_col, mortar)
         r_mod = 0.14 * mortar + 0.05 * m2 - 0.04 * (tid1 - 0.5) * brick_m
         if float(params.get("glazed", 0.0)) > 0.5:
@@ -442,9 +458,15 @@ def build_parametric_material(
         style = str(params.get("style", "furrowed"))
         freq = float(params.get("freq", 10))
         if style == "birch":
-            # Horizontal papery peeling lenticels
-            bands = 0.5 + 0.5 * np.sin(2.0 * math.pi * (v * 18.0 + 0.45 * m1))
-            lenticels = gd._smoothstep(0.55, 0.82, m2 * 0.7 + 0.4 * np.sin(2.0 * math.pi * (u * 4.0 + 1.5 * m3))) * gd._smoothstep(0.45, 0.78, bands)
+            # Horizontal papery bark with thin dark lenticel dashes (v1.1)
+            line = np.abs(np.sin(math.pi * (v * 34.0 + 0.12 * m1)))
+            dash_gate = ad.fbm(H, W, seed + 57, (48,))
+            k = max(2, W // 24)
+            dash_gate = sum(np.roll(dash_gate, s_, axis=1) for s_ in range(-k, k + 1)) / (2 * k + 1)
+            dash_gate = dash_gate / (dash_gate.std() + 1e-6)
+            lenticels = (1.0 - gd._smoothstep(0.05, 0.16, line)) * gd._smoothstep(0.6, 1.1, dash_gate)
+            scar = gd._smoothstep(1.4, 2.1, ad.fbm(H, W, seed + 58, (6, 12, 24))) * 0.7
+            lenticels = np.clip(lenticels + scar * gd._smoothstep(0.4, 0.9, 0.5 + 0.5 * m2), 0.0, 1.0)
             peel = gd._smoothstep(0.35, 0.75, m3 + 0.35 * m1)
             h = 0.45 + 0.25 * peel - 0.22 * lenticels + 0.08 * m2
             cav = np.clip(lenticels * 0.85 + 0.25 * (1.0 - peel), 0.0, 1.0)
@@ -468,6 +490,22 @@ def build_parametric_material(
     # ------------------------------------------------------------------
     # 10. VEINED MARBLE / ONYX / SOAPSTONE / JADE
     # ------------------------------------------------------------------
+    elif family == "veined_marble" and params.get("veins", "network") == "network":
+        # v1.1: domain-warped ridged vein network (primary + fine secondary veins + soft clouds)
+        vein_freq = float(params.get("vein_freq", 3.0))
+        vein_sharp = float(params.get("vein_sharp", 4.5))
+        angle = float(params.get("angle", 0.55))
+        primary, secondary, clouds = ad.marble_veins(H, W, seed, vein_freq, vein_sharp, angle)
+        vein_tot = np.clip(primary + 0.45 * secondary, 0.0, 1.0)
+        h = np.clip(0.58 - 0.10 * vein_tot + 0.04 * m2 + 0.03 * clouds, 0.05, 0.95)
+        cav = np.clip(vein_tot * 0.6, 0.0, 1.0)
+        ridge = np.clip(clouds * 0.6, 0.0, 1.0)
+        base_stone = _mix_rgb(c1, c2, np.clip(0.30 + 0.55 * clouds + 0.10 * m3, 0.0, 1.0)) * (0.985 + 0.015 * m2[..., None])
+        halo = np.clip(primary ** 0.35, 0.0, 1.0)
+        alb = _mix_rgb(base_stone, _mix_rgb(c2, c3, 0.25), halo * 0.10)
+        alb = _mix_rgb(alb, c3, np.clip(primary ** 1.6 * 0.92 + secondary * 0.45, 0.0, 1.0))
+        r_mod = 0.04 * vein_tot + 0.01 * m1
+
     elif family == "veined_marble":
         vein_freq = float(params.get("vein_freq", 3.0))
         vein_sharp = float(params.get("vein_sharp", 4.5))
@@ -554,26 +592,43 @@ def build_parametric_material(
             h = 0.50 + 0.18 * swirl + 0.10 * trowel + grit * 0.16 * m2 - 0.28 * pores
             cav = np.clip(pores + 0.32 * gd._smoothstep(0.25, 0.85, -m1), 0.0, 1.0)
             ridge = gd._smoothstep(0.52, 0.88, trowel * 0.5 + 0.5 * np.clip(0.5 + 0.5 * swirl, 0.0, 1.0))
-            alb = _mix_rgb(c1, c2, np.clip(0.35 + 0.40 * swirl + 0.25 * trowel, 0.0, 1.0)) * (0.94 + 0.06 * m2[..., None] + cd)
+            alb = _mix_rgb(c1, c2, np.clip(0.38 + 0.26 * swirl + 0.18 * trowel, 0.0, 1.0)) * (0.95 + 0.05 * m2[..., None] + cd)
+            # v1.2: burnished trowel strokes (thin arcs) + feathered stroke edges
+            stroke_n = ad.warp(ad.stretch(ad.fbm(H, W, seed + 85, (6, 12, 24)), 1, max(2, W // 10)), 0.03 * swirl, 0.015 * m3)
+            strokes = ad.isoline(stroke_n, 0.006 + 0.006 * gd._smoothstep(-1.0, 1.0, m1)) * gd._smoothstep(-0.3, 0.9, ad.fbm(H, W, seed + 86, (3, 6)))
+            burnish = float(params.get("burnish", 0.6 if grit < 0.3 else 0.25))
+            alb = alb * (1.0 - burnish * 0.32 * strokes[..., None])
+            h = h + 0.06 * burnish * strokes
             alb = _mix_rgb(alb, c3, pores * 0.72)
         r_mod = 0.16 * cav - 0.06 * ridge + 0.05 * m1
+        if style not in ("board_formed", "rammed_earth"):
+            r_mod = r_mod - 0.10 * burnish * strokes
 
     # ------------------------------------------------------------------
     # 13. ROCK / CLIFF / SEDIMENTARY / VOLCANIC / SLATE
     # ------------------------------------------------------------------
     elif family == "rock_cliff":
-        layers = float(params.get("layers", 6.0))
+        # v1.2: stepped strata + ledges, vertical erosion runnels, joint fractures, mineral staining
+        layers = float(max(1, round(float(params.get("layers", 6.0)))))
         fracture = int(params.get("fracture", 8))
+        lw = v * layers + 0.22 * m3 + 0.08 * m1
+        li = np.floor(lw)
+        fl = lw - li
+        lid = _cell_hash(li, li * 0.0, layers, 1.0, seed + 92)
+        ledge = gd._smoothstep(0.0, 0.10, fl) * (1.0 - 0.45 * fl) + 0.35 * (lid - 0.5) * 0.4
+        runnel = ad.stretch(ad.fbm(H, W, seed + 93, (24, 48)), 0, max(2, H // 12))
         f1, f2, cid = gd._periodic_worley_id(u, v, fracture, seed + 91)
-        cracks = 1.0 - gd._smoothstep(0.02, 0.11, f2 - f1)
-        strata = 0.5 + 0.5 * np.sin(2.0 * math.pi * (v * layers + 0.35 * m3 + 0.15 * m1))
-        shelf = np.power(strata, 0.75)
-        h = np.clip(0.18 + 0.42 * shelf + 0.22 * (1.0 - f1) + 0.14 * m1 + 0.08 * m2 - 0.26 * cracks, 0.02, 0.98)
-        cav = np.clip(cracks * 0.90 + 0.30 * (1.0 - shelf), 0.0, 1.0)
-        ridge = gd._smoothstep(0.56, 0.90, h)
-        alb = _mix_rgb(c1, c2, np.clip(0.25 + 0.45 * shelf + 0.30 * cid, 0.0, 1.0)) * (0.90 + 0.10 * m2[..., None] + cd)
-        alb = _mix_rgb(alb, c3, cav * 0.65)
-        r_mod = 0.14 * cav - 0.06 * ridge + 0.06 * m2
+        joints = (1.0 - gd._smoothstep(0.012, 0.05, f2 - f1 + 0.02 * m2)) * gd._smoothstep(-0.2, 0.6, ad.fbm(H, W, seed + 94, (3, 6, 12)))
+        blocky = gd._smoothstep(0.0, 0.35, f2 - f1)
+        h = np.clip(0.20 + 0.36 * ledge + 0.16 * blocky + 0.10 * m1 + 0.06 * m2 - 0.05 * runnel - 0.24 * joints, 0.02, 0.98)
+        cav = np.clip(joints * 0.9 + 0.35 * gd._smoothstep(0.85, 1.0, fl) + 0.12 * gd._smoothstep(0.5, 2.0, -runnel), 0.0, 1.0)
+        ridge = gd._smoothstep(0.55, 0.90, h)
+        band = np.clip(0.10 + 0.75 * lid + 0.10 * m3 + 0.05 * cid, 0.0, 1.0)
+        alb = _mix_rgb(c1, c2, band) * (0.86 + 0.18 * (1.0 - fl)[..., None] + 0.06 * m2[..., None] + cd)
+        stain = gd._smoothstep(0.3, 1.8, runnel) * gd._smoothstep(0.4, 1.0, 1.0 - fl)
+        alb = alb * (1.0 - 0.22 * stain[..., None])
+        alb = _mix_rgb(alb, c3, cav * 0.6)
+        r_mod = 0.14 * cav - 0.06 * ridge + 0.06 * m2 + 0.05 * stain
 
     # ------------------------------------------------------------------
     # 14. TERRAIN / SAND / MUD / GRAVEL / SNOW / ICE / GRASS / SOIL
@@ -624,6 +679,8 @@ def build_parametric_material(
             alb = _mix_rgb(c1, c2, 0.30 + 0.45 * frost + 0.25 * cid)
             alb = _mix_rgb(alb, c3, fract * 0.65)
             r_mod = 0.28 * frost + 0.22 * fract - 0.05 * (1.0 - frost)
+        elif params.get("cover"):
+            h, cav, ridge, alb, r_mod = ad.ground_cover(str(params["cover"]), params, H, W, seed, c1[0, 0], c2[0, 0], c3[0, 0])
         else:
             # Organic soil / moss / grass / snow / leaf litter / mulch
             f1, _, cid = gd._periodic_worley_id(u, v, int(params.get("cells", 32)), seed + 105)
@@ -906,11 +963,20 @@ def build_parametric_material(
         h = np.clip(0.18 + 0.64 * weave + 0.09 * m2 + 0.05 * m1, 0.04, 0.96)
         cav = np.clip(1.0 - weave, 0.0, 1.0)
         ridge = gd._smoothstep(0.55, 0.90, weave)
-        alb = _mix_rgb(c1, c2, np.clip(0.18 + 0.64 * yarn_t + 0.18 * m1, 0.0, 1.0)) * (0.92 + 0.08 * m2[..., None] + cd)
+        alb = _mix_rgb(c1, c2, np.clip(0.18 + 0.64 * yarn_t + 0.07 * m1, 0.0, 1.0)) * (0.95 + 0.05 * m2[..., None] + cd)
+        # v1.2: yarn slubs along warp/weft + fine twist striations
+        slub_v = ad.stretch(ad.fbm(H, W, seed + 123, (96,)), 0, max(2, H // 20))
+        slub_u = ad.stretch(ad.fbm(H, W, seed + 124, (96,)), 1, max(2, W // 20))
+        yt = np.clip(yarn_t, 0.0, 1.0)
+        slub = yt * slub_v + (1.0 - yt) * slub_u
+        twist = 0.5 + 0.5 * np.sin(2.0 * math.pi * ((u + v) * round(freq) * 2.0))
+        alb = alb * (1.0 + 0.09 * slub[..., None] + 0.05 * (twist[..., None] - 0.5))
+        h = h + 0.02 * slub + 0.015 * twist * (1.0 - cav)
         if mode == "plaid":
             alb = _mix_rgb(alb, c3, stripe * 0.72)
+            alb = alb * (1.0 - 0.22 * cav[..., None])
         else:
-            alb = _mix_rgb(alb, c3, cav * 0.25)
+            alb = _mix_rgb(alb, c3, cav * 0.38)
         r_mod = 0.06 * cav - 0.04 * ridge + 0.03 * m2
 
     # ------------------------------------------------------------------
@@ -952,8 +1018,10 @@ def build_parametric_material(
             cav = 1.0 - tuft
             ridge = gd._smoothstep(0.50, 0.88, tuft)
         else:
-            # Crushed / plush velvet / suede / Alcantara micro-nap
-            nap = 0.5 + 0.5 * m3
+            # Crushed / plush velvet / suede / Alcantara micro-nap (v1.2: crush controls blotch scale)
+            crush = float(params.get("crush", 0.3))
+            mid_n = ad.fbm(H, W, seed + 133, (10, 20, 40))
+            nap = 0.5 + 0.5 * np.clip(crush * m3 + (1.0 - crush) * 0.35 * mid_n, -1.6, 1.6)
             micro = 0.5 + 0.5 * m2
             h = np.clip(0.38 + 0.24 * nap + 0.18 * micro + 0.10 * m1, 0.05, 0.95)
             cav = np.clip(1.0 - nap, 0.0, 1.0) * 0.55
@@ -1019,10 +1087,10 @@ def build_parametric_material(
             cav = np.clip(0.5 - 0.5 * fib, 0.0, 1.0) * 0.45
             ridge = gd._smoothstep(0.45, 0.85, 0.5 + 0.5 * fib)
         else:
-            # Basketry / wicker / seagrass / bamboo strip weave
-            wx = 0.5 + 0.5 * np.cos(2.0 * math.pi * u * freq)
-            wy = 0.5 + 0.5 * np.cos(2.0 * math.pi * v * freq)
-            p = 0.5 + 0.5 * np.sin(2.0 * math.pi * u * freq * 0.5) * np.sin(2.0 * math.pi * v * freq * 0.5)
+            # Basketry / wicker / seagrass / bamboo strip weave (v1.2: crisp strands + fibers)
+            wx = gd._smoothstep(0.04, 0.55, 0.5 + 0.5 * np.cos(2.0 * math.pi * u * freq))
+            wy = gd._smoothstep(0.04, 0.55, 0.5 + 0.5 * np.cos(2.0 * math.pi * v * freq))
+            p = gd._smoothstep(0.30, 0.70, 0.5 + 0.5 * np.sin(2.0 * math.pi * u * freq * 0.5) * np.sin(2.0 * math.pi * v * freq * 0.5))
             weave = wx * p + wy * (1.0 - p)
             reed = 0.5 + 0.5 * np.sin(2.0 * math.pi * (u * freq * 4.0 * p + v * freq * 4.0 * (1.0 - p)))
             h = 0.14 + 0.68 * weave + 0.08 * reed + 0.04 * m2
@@ -1030,6 +1098,12 @@ def build_parametric_material(
             ridge = gd._smoothstep(0.55, 0.90, weave)
 
         alb = _mix_rgb(c1, c2, 0.20 + 0.55 * ridge + 0.25 * np.clip(0.5 + 0.5 * m1, 0.0, 1.0)) * (0.93 + 0.07 * m2[..., None] + cd)
+        if mode not in ("thatch", "paper"):
+            fib_v = ad.stretch(ad.fbm(H, W, seed + 125, (128,)), 0, max(2, H // 24))
+            fib_u = ad.stretch(ad.fbm(H, W, seed + 126, (128,)), 1, max(2, W // 24))
+            fib = p * fib_v + (1.0 - p) * fib_u
+            alb = alb * (1.0 + 0.12 * fib[..., None])
+            h = h + 0.02 * fib
         alb = _mix_rgb(alb, c3, cav * 0.52)
         r_mod = 0.12 * cav - 0.06 * ridge + 0.04 * m2
 
@@ -1152,7 +1226,7 @@ def build_parametric_material(
             r_mod = 0.36 * crack + 0.02 * m1
         else:
             # Speckled stoneware / raw terracotta / porcelain / raku
-            speck = gd._smoothstep(0.68, 0.92, m2 * 0.6 + 0.5 * m1)
+            speck, _ = ad.speckle(u, v, 64, 0.18 + 0.45 * float(params.get("speck_str", 0.55)), seed + 172, 0.30)
             wheel = 0.5 + 0.5 * np.sin(2.0 * math.pi * (v * 28.0 + 0.18 * m1))
             h = np.clip(0.42 + 0.14 * wheel + 0.12 * m1 + 0.10 * m2, 0.06, 0.94)
             cav = np.clip(0.45 * (1.0 - wheel) + 0.35 * speck, 0.0, 1.0)
@@ -1266,6 +1340,19 @@ def build_parametric_material(
 
     else:
         raise ValueError(f"Unknown parametric material family: '{family}'")
+
+    met = np.broadcast_to(np.asarray(met, dtype=np.float32), (H, W)).copy()
+    r_mod = np.broadcast_to(np.asarray(r_mod, dtype=np.float32), (H, W)).copy()
+    if float(params.get("detail", 1.0)) > 0.0:
+        axis = "u"
+        if family in ("wood_planks",) and params.get("vertical"):
+            axis = "v"
+        if family == "wood_slats" and params.get("vertical", True):
+            axis = "v"
+        h, cav, ridge, alb, met, r_mod = ad.apply_detail_pass(
+            family, params, H, W, seed, np.asarray(h, np.float32), np.asarray(cav, np.float32),
+            np.asarray(ridge, np.float32), alb, met, r_mod, axis=axis,
+        )
 
     alb_max = np.where(met[..., None] > 0.25, 0.95, 0.855).astype(np.float32)
     alb_lin = np.clip(alb, 0.015, alb_max).astype(np.float32)

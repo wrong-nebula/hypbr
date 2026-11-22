@@ -79,7 +79,7 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.447,
+   0.502,
    0.663
   ],
   "metallic_range": [
@@ -129,20 +129,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.625,
+  "max_seam_ratio": 0.575,
   "seam_ratios": {
-   "height": 0.408,
-   "normal": 0.625,
-   "albedo": 0.366
+   "height": 0.424,
+   "normal": 0.487,
+   "albedo": 0.575
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  194,
-  166,
-  131
+  196,
+  163,
+  120
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/hard_maple_floor/albedo_delit.webp",

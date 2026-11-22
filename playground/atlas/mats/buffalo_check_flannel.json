@@ -27,7 +27,8 @@
    "rough": 0.86,
    "slope": 6.0,
    "mode": "plaid",
-   "freq": 32
+   "freq": 32,
+   "chroma": 0.25
   },
   "seed": 14472
  },
@@ -75,8 +76,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.808,
-   0.941
+   0.722,
+   0.851
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.536,
+  "max_seam_ratio": 1.517,
   "seam_ratios": {
-   "height": 1.536,
-   "normal": 0.327,
-   "albedo": 0.206
+   "height": 1.517,
+   "normal": 0.55,
+   "albedo": 0.684
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  124,
-  40,
-  40
+  113,
+  45,
+  45
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/buffalo_check_flannel/albedo_delit.webp",

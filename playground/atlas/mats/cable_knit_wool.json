@@ -54,8 +54,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.827,
-   0.941
+   0.71,
+   0.859
   ],
   "metallic_range": [
    0.0,
@@ -105,20 +105,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.788,
+  "max_seam_ratio": 0.683,
   "seam_ratios": {
-   "height": 0.646,
+   "height": 0.652,
    "normal": 0.664,
-   "albedo": 0.788
+   "albedo": 0.683
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  193,
-  185,
-  172
+  194,
+  184,
+  169
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/cable_knit_wool/albedo_delit.webp",

@@ -22,7 +22,8 @@
    "rough": 0.9,
    "slope": 6.0,
    "mode": "knit",
-   "freq": 24
+   "freq": 24,
+   "chroma": 0.3
   },
   "seed": 14990
  },
@@ -71,8 +72,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.839,
-   0.945
+   0.71,
+   0.855
   ],
   "metallic_range": [
    0.0,
@@ -125,9 +126,9 @@
   "passed": true,
   "max_seam_ratio": 1.361,
   "seam_ratios": {
-   "height": 0.93,
+   "height": 0.994,
    "normal": 1.361,
-   "albedo": 0.747
+   "albedo": 0.872
   },
   "normal_unit_error": 0.0019,
   "errors": [],

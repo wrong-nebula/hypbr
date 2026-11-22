@@ -79,8 +79,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.604,
-   0.835
+   0.643,
+   0.812
   ],
   "metallic_range": [
    0.0,
@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.734,
+  "max_seam_ratio": 0.731,
   "seam_ratios": {
-   "height": 0.449,
-   "normal": 0.734,
-   "albedo": 0.287
+   "height": 0.448,
+   "normal": 0.691,
+   "albedo": 0.731
   },
   "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  160,
   158,
-  152
+  155,
+  148
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/silvered_cedar_cladding/albedo_delit.webp",

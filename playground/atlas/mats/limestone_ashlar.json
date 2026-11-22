@@ -29,6 +29,8 @@
    "ny": 4,
    "wobble": 1.5,
    "face_rough": 0.1,
+   "tooled": 1.0,
+   "chips": 0.35,
    "rough": 0.76,
    "slope": 11.0
   },
@@ -76,8 +78,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.667,
-   0.91
+   0.671,
+   0.922
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.407,
+  "max_seam_ratio": 0.878,
   "seam_ratios": {
-   "height": 0.18,
-   "normal": 0.369,
-   "albedo": 0.407
+   "height": 0.578,
+   "normal": 0.812,
+   "albedo": 0.878
   },
-  "normal_unit_error": 0.0015,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  196,
-  189,
-  173
+  195,
+  187,
+  168
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/limestone_ashlar/albedo_delit.webp",

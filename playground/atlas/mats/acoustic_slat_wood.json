@@ -53,8 +53,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.361,
-   0.953
+   0.357,
+   0.957
   ],
   "metallic_range": [
    0.0,
@@ -105,20 +105,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.459,
+  "max_seam_ratio": 0.373,
   "seam_ratios": {
-   "height": 0.112,
-   "normal": 0.459,
-   "albedo": 0.073
+   "height": 0.105,
+   "normal": 0.373,
+   "albedo": 0.071
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  148,
-  129,
-  106
+  140,
+  125,
+  108
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/acoustic_slat_wood/albedo_delit.webp",

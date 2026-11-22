@@ -27,7 +27,8 @@
    "mode": "pebble",
    "rough": 0.55,
    "slope": 6.0,
-   "cells": 24
+   "cells": 24,
+   "chroma": 0.4
   },
   "seed": 15286
  },
@@ -75,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.416,
-   0.769
+   0.486,
+   0.733
   ],
   "metallic_range": [
    0.0,
@@ -123,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.723,
+  "max_seam_ratio": 1.706,
   "seam_ratios": {
-   "height": 1.54,
-   "normal": 1.723,
-   "albedo": 1.519
+   "height": 1.524,
+   "normal": 1.706,
+   "albedo": 1.496
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  138,
-  108,
-  78
+  142,
+  106,
+  68
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/distressed_brown_leather/albedo_delit.webp",

@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.149,
-   0.765
+   0.294,
+   0.694
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.97,
+  "max_seam_ratio": 0.93,
   "seam_ratios": {
-   "height": 0.838,
-   "normal": 0.97,
-   "albedo": 0.799
+   "height": 0.842,
+   "normal": 0.93,
+   "albedo": 0.795
   },
   "normal_unit_error": 0.001,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  192,
-  191,
-  187
+  194,
+  193,
+  188
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/diamond_marble_mosaic/albedo_delit.webp",

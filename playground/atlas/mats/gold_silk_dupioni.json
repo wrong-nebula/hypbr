@@ -27,7 +27,8 @@
    "rough": 0.3,
    "slope": 6.0,
    "mode": "plain",
-   "freq": 48
+   "freq": 48,
+   "chroma": 0.25
   },
   "seed": 14620
  },
@@ -75,8 +76,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.286,
-   0.459
+   0.392,
+   0.529
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.318,
+  "max_seam_ratio": 1.341,
   "seam_ratios": {
-   "height": 0.702,
-   "normal": 1.318,
-   "albedo": 0.952
+   "height": 0.621,
+   "normal": 1.341,
+   "albedo": 0.89
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  189,
-  162,
-  100
+  194,
+  161,
+  79
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gold_silk_dupioni/albedo_delit.webp",

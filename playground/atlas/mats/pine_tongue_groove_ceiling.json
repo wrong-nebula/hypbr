@@ -80,8 +80,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.608,
-   0.894
+   0.647,
+   0.847
   ],
   "metallic_range": [
    0.0,
@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.603,
+  "max_seam_ratio": 0.735,
   "seam_ratios": {
-   "height": 0.308,
-   "normal": 0.603,
-   "albedo": 0.234
+   "height": 0.298,
+   "normal": 0.44,
+   "albedo": 0.735
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  187,
-  154,
-  113
+  189,
+  151,
+  99
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/pine_tongue_groove_ceiling/albedo_delit.webp",

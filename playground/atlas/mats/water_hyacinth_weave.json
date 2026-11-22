@@ -27,7 +27,12 @@
    "mode": "wicker",
    "rough": 0.78,
    "slope": 8.0,
-   "freq": 6
+   "freq": 6,
+   "roll": [
+    0.041666666666666664,
+    0.041666666666666664
+   ],
+   "chroma": 0.4
   },
   "seed": 15582
  },
@@ -75,8 +80,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.71,
-   0.941
+   0.624,
+   0.839
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 2.012,
+  "max_seam_ratio": 1.261,
   "seam_ratios": {
-   "height": 1.505,
-   "normal": 2.012,
-   "albedo": 0.645
+   "height": 0.817,
+   "normal": 1.005,
+   "albedo": 1.261
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  154,
-  137,
-  104
+  164,
+  144,
+  100
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/water_hyacinth_weave/albedo_delit.webp",

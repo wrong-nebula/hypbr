@@ -77,8 +77,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.282,
-   0.616
+   0.322,
+   0.612
   ],
   "metallic_range": [
    0.0,
@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.443,
+  "max_seam_ratio": 0.609,
   "seam_ratios": {
-   "height": 0.188,
-   "normal": 0.443,
-   "albedo": 0.153
+   "height": 0.187,
+   "normal": 0.48,
+   "albedo": 0.609
   },
-  "normal_unit_error": 0.0008,
+  "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
+  212,
   213,
-  214,
-  216
+  215
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_starship_armor/albedo_delit.webp",

@@ -55,7 +55,7 @@
   "is_metallic": true,
   "roughness_range": [
    0.255,
-   0.961
+   0.953
   ],
   "metallic_range": [
    0.0,
@@ -106,20 +106,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.281,
+  "max_seam_ratio": 1.14,
   "seam_ratios": {
-   "height": 0.416,
-   "normal": 1.281,
-   "albedo": 0.411
+   "height": 0.38,
+   "normal": 1.14,
+   "albedo": 0.38
   },
-  "normal_unit_error": 0.0014,
+  "normal_unit_error": 0.002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  116,
-  119,
-  122
+  106,
+  108,
+  112
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/expanded_metal_mesh/albedo_delit.webp",

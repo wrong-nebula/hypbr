@@ -103,9 +103,26 @@ def test_list_materials_backward_compatible():
         assert {"id", "description", "category"} <= set(m)
 
 
-def test_version_is_1_0_0():
-    assert hypbr.__version__ == "1.0.0"
-    assert ac.ATLAS_VERSION == "1.0.0"
+def test_version_is_1_1_0():
+    assert hypbr.__version__ == "1.1.0"
+    assert ac.ATLAS_VERSION == "1.1.0"
+
+
+def test_detail_helpers_are_periodic():
+    from hypbr import atlas_detail as ad
+
+    f = ad.fbm(96, 96, 7, (4, 48, 160))
+    shifted = ad.warp(f, np.full_like(f, 1.0), np.full_like(f, 0.0))  # warp by exactly one tile
+    assert np.allclose(shifted, f, atol=1e-4)
+    sc = ad.ellipse_scatter(64, 64, 6, 3)
+    assert sc["mask"].any() and (sc["dist"] <= 1.0).all()
+
+
+@pytest.mark.parametrize("cover", ["grass", "moss", "lichen", "soil", "leaves", "mulch", "needles", "snow"])
+def test_ground_cover_modes_seamless(tmp_path, cover):
+    mid = next(e["id"] for e in CATALOG if e["generator"].get("params", {}).get("cover") == cover)
+    d = synthesize_material(mid, tmp_path / mid, size=128)
+    assert verify_material(d)["passed"], mid
 
 
 # ---------------------------------------------------------------------------
@@ -120,11 +137,45 @@ def test_legacy_materials_synthesize_identically(tmp_path, mid):
     if mid == "hardops_plate":
         d = synthesize_hardops_plate(tmp_path / mid, size=size)
     else:
-        d = synthesize_material(mid, tmp_path / mid, size=size)
+        d = synthesize_material(mid, tmp_path / mid, size=size, calibrated=False)
     for name, (mean_ref, std_ref) in LEGACY_STATS["materials"][mid].items():
         a = np.asarray(Image.open(d / f"{name}.png"), dtype=np.float64)
         assert abs(a.mean() - mean_ref) < 0.75, (mid, name, a.mean(), mean_ref)
         assert abs(a.std() - std_ref) < 0.75, (mid, name, a.std(), std_ref)
+
+
+def test_calibration_table_valid():
+    from hypbr import calibration as cal
+
+    cal.clear_cache()
+    table = cal._table()
+    assert len(table) >= 350
+    for mid, c in table.items():
+        assert mid in BY_ID, mid
+        assert len(c["band_gains"]) == cal.N_BANDS and all(0.45 <= g <= 2.6 for g in c["band_gains"])
+        assert len(c["height_gains"]) == cal.N_BANDS and all(0.5 <= g <= 2.0 for g in c["height_gains"])
+        assert 0.85 <= c["sat_gain"] <= 1.2 and abs(c["rough_shift"]) <= 0.15 and 0.6 <= c["rough_std_gain"] <= 1.8
+        assert c["n_refs"] >= 2 and c["refs"] and c["targets"]["alb_bands"]
+
+
+@pytest.mark.parametrize("mid", ["classic_red_brick", "woven_denim_twill", "green_lawn_grass", "subway_metro_tile", "fresh_black_asphalt"])
+def test_calibrated_synthesis_seamless_and_different(tmp_path, mid):
+    a = synthesize_material(mid, tmp_path / "cal", size=128)
+    b = synthesize_material(mid, tmp_path / "raw", size=128, calibrated=False)
+    assert verify_material(a)["passed"]
+    ia = np.asarray(Image.open(a / "albedo_delit.png"), dtype=np.float64)
+    ib = np.asarray(Image.open(b / "albedo_delit.png"), dtype=np.float64)
+    assert np.abs(ia - ib).mean() > 0.2
+
+
+def test_equalizer_is_periodic():
+    from hypbr import calibration as cal
+
+    rng = np.random.default_rng(0)
+    alb = (0.2 + 0.3 * rng.random((64, 64, 3))).astype(np.float32)
+    out = cal.equalize_albedo(alb, [2.0] * cal.N_BANDS, 1.1)
+    out_rolled = cal.equalize_albedo(np.roll(alb, (7, 13), axis=(0, 1)), [2.0] * cal.N_BANDS, 1.1)
+    assert np.allclose(np.roll(out, (7, 13), axis=(0, 1)), out_rolled, atol=1e-4)
 
 
 def test_hardops_dispatch_through_synthesize_material(tmp_path):
@@ -248,7 +299,7 @@ def test_material_spec_card():
 
 def test_get_atlas_manifest():
     m = atlas.get_atlas("https://example.test/")
-    assert m["material_count"] == 500 and m["version"] == "1.0.0"
+    assert m["material_count"] == 500 and m["version"] == "1.1.0"
     assert m["endpoints"]["llms_txt"] == "https://example.test/llms.txt"
     assert len(m["categories"]) == 10
 

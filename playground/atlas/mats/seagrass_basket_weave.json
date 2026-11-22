@@ -27,7 +27,8 @@
    "mode": "wicker",
    "rough": 0.78,
    "slope": 8.0,
-   "freq": 8
+   "freq": 8,
+   "chroma": 0.4
   },
   "seed": 15471
  },
@@ -75,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.71,
-   0.941
+   0.62,
+   0.835
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.554,
+  "max_seam_ratio": 2.097,
   "seam_ratios": {
-   "height": 1.418,
-   "normal": 1.554,
-   "albedo": 0.735
+   "height": 1.782,
+   "normal": 2.097,
+   "albedo": 0.785
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  161,
-  155,
-  118
+  169,
+  162,
+  114
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/seagrass_basket_weave/albedo_delit.webp",

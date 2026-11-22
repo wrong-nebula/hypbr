@@ -129,20 +129,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.675,
+  "max_seam_ratio": 0.813,
   "seam_ratios": {
-   "height": 0.306,
-   "normal": 0.675,
-   "albedo": 0.297
+   "height": 0.382,
+   "normal": 0.813,
+   "albedo": 0.735
   },
   "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  136,
-  88,
-  54
+  140,
+  87,
+  44
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/corten_weathering_steel/albedo_delit.webp",

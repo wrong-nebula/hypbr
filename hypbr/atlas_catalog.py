@@ -18,7 +18,7 @@ import hashlib
 from functools import lru_cache
 from typing import Any
 
-ATLAS_VERSION = "1.0.0"
+ATLAS_VERSION = "1.1.0"
 
 # ---------------------------------------------------------------------------
 # Categories (exact target counts sum to 500)
@@ -658,7 +658,7 @@ for _mid, _c1, _c2, _c3, _ph, _tg, _kw, _sz in [
     ("coral_keystone_ashlar", (0.66, 0.60, 0.48), (0.72, 0.66, 0.54), (0.62, 0.58, 0.50), "Porous coral keystone blocks with fossil pits", "coral tropical keystone", {"face_rough": 0.20}, (1.24, 1.24)),
     ("basalt_ashlar_block", (0.06, 0.06, 0.065), (0.10, 0.10, 0.105), (0.16, 0.16, 0.15), "Dark volcanic basalt ashlar with crisp chiselled joints", "basalt black volcanic", {}, (1.24, 1.24)),
 ]:
-    _R("ashlar", _mid, _B, C(_c1, _c2, _c3, mortar=0.04, **{"nx": 2, "ny": 4, "wobble": 1.5, "face_rough": 0.10, **_kw}), _sz, _ph, _tg + " ashlar stone")
+    _R("ashlar", _mid, _B, C(_c1, _c2, _c3, mortar=0.04, **{"nx": 2, "ny": 4, "wobble": 1.5, "face_rough": 0.10, "tooled": 1.0, "chips": 0.35, **_kw}), _sz, _ph, _tg + " ashlar stone")
 
 for _mid, _c1, _c2, _c3, _ph, _tg, _kw in [
     ("charcoal_slate_ledgestone", (0.08, 0.085, 0.09), (0.16, 0.16, 0.17), (0.03, 0.03, 0.03), "Split charcoal slate ledgers stacked dry with deep shadow lines", "slate charcoal dark", {}),
@@ -1016,7 +1016,7 @@ for _mid, _c1, _c2, _c3, _ph, _tg, _kw, _sz in [
 
 for _mid, _c1, _c2, _c3, _ph, _tg, _kw, _sz, _extra in [
     ("navy_plush_velvet", (0.02, 0.03, 0.10), (0.05, 0.07, 0.18), None, "Deep navy cotton velvet", "velvet navy plush", {"mode": "velvet"}, (0.2, 0.2), ()),
-    ("crushed_burgundy_velvet", (0.16, 0.01, 0.03), (0.30, 0.03, 0.06), None, "Crushed burgundy velvet with mottled nap", "velvet burgundy crushed", {"mode": "velvet"}, (0.2, 0.2), ()),
+    ("crushed_burgundy_velvet", (0.16, 0.01, 0.03), (0.30, 0.03, 0.06), None, "Crushed burgundy velvet with mottled nap", "velvet burgundy crushed", {"mode": "velvet", "crush": 1.0}, (0.2, 0.2), ()),
     ("mustard_velvet", (0.50, 0.30, 0.03), (0.62, 0.40, 0.06), None, "Mustard-yellow performance velvet", "velvet mustard", {"mode": "velvet"}, (0.2, 0.2), ()),
     ("wide_wale_rust_corduroy", (0.30, 0.09, 0.03), (0.42, 0.14, 0.05), None, "Wide-wale rust corduroy", "corduroy rust wide_wale", {"mode": "corduroy", "freq": 10}, (0.1, 0.1), ()),
     ("fine_wale_cream_corduroy", (0.66, 0.60, 0.48), (0.72, 0.66, 0.54), None, "Fine-wale cream corduroy", "corduroy cream fine_wale", {"mode": "corduroy", "freq": 20}, (0.1, 0.1), ()),
@@ -1090,20 +1090,20 @@ for _mid, _c1, _c2, _c3, _ph, _tg in [
     _R("ice", _mid, "terrain_ground", C(_c1, _c2, _c3, mode="ice", rough=0.12, slope=5.0), (3.0, 3.0), _ph, _tg + " ice", kind="glass")
 
 for _mid, _c1, _c2, _c3, _ph, _tg, _kw, _extra in [
-    ("fresh_snow_ground", (0.80, 0.82, 0.85), (0.84, 0.85, 0.86), (0.55, 0.60, 0.68), "Fresh powder snow with soft drifts", "snow white winter", {"cells": 32, "rough": 0.70}, ("snowfield", "ski_slope")),
-    ("trampled_slush_snow", (0.62, 0.64, 0.66), (0.76, 0.77, 0.79), (0.30, 0.30, 0.30), "Trampled gray slush snow", "snow slush dirty winter", {"cells": 24, "rough": 0.50}, ("winter_street", "parking_lot_edge")),
-    ("green_lawn_grass", (0.06, 0.16, 0.03), (0.12, 0.26, 0.05), (0.03, 0.05, 0.015), "Lush green lawn grass", "grass green lawn", {"cells": 64}, ("park_lawn", "sports_field")),
-    ("dry_savanna_grass", (0.42, 0.34, 0.14), (0.54, 0.44, 0.20), (0.18, 0.14, 0.07), "Dry golden savanna grass", "grass dry savanna golden", {"cells": 56}, ("prairie", "savanna")),
-    ("forest_leaf_litter", (0.22, 0.10, 0.04), (0.34, 0.20, 0.07), (0.05, 0.03, 0.02), "Forest floor of decaying brown leaves", "forest leaves litter brown", {"cells": 28}, ("forest_floor", "woodland_path")),
-    ("autumn_maple_leaves", (0.46, 0.10, 0.02), (0.62, 0.30, 0.03), (0.10, 0.04, 0.02), "Freshly fallen red and orange maple leaves", "autumn leaves red orange fall", {"cells": 20}, ("park_path", "forest_floor")),
-    ("pine_needle_duff", (0.30, 0.15, 0.06), (0.38, 0.22, 0.10), (0.08, 0.05, 0.03), "Russet pine needle duff", "pine needles forest", {"cells": 48}, ("conifer_forest_floor",)),
-    ("cushion_moss", (0.08, 0.18, 0.03), (0.16, 0.28, 0.05), (0.02, 0.04, 0.01), "Dense cushion moss", "moss green forest damp", {"cells": 40}, ("mossy_rock_top", "forest_floor")),
-    ("tundra_reindeer_lichen", (0.56, 0.58, 0.50), (0.46, 0.48, 0.38), (0.12, 0.12, 0.08), "Pale reindeer lichen tundra", "lichen tundra arctic", {"cells": 36}, ("tundra", "alpine_meadow")),
-    ("rich_garden_soil", (0.07, 0.045, 0.03), (0.12, 0.08, 0.05), (0.03, 0.02, 0.015), "Dark crumbly garden soil", "soil dark garden earth", {"cells": 40}, ("garden_bed", "farm_field")),
-    ("dry_dirt_trail", (0.36, 0.26, 0.16), (0.44, 0.33, 0.21), (0.18, 0.12, 0.07), "Compacted dry dirt hiking trail", "dirt trail dry", {"cells": 32}, ("hiking_trail", "dirt_road")),
-    ("red_laterite_soil", (0.40, 0.13, 0.05), (0.48, 0.18, 0.08), (0.16, 0.05, 0.02), "Iron-red laterite soil", "soil red laterite tropical", {"cells": 32}, ("dirt_road", "tropical_ground")),
-    ("wood_chip_mulch", (0.24, 0.12, 0.05), (0.36, 0.20, 0.09), (0.06, 0.03, 0.015), "Shredded wood-chip garden mulch", "mulch wood chips garden", {"cells": 26}, ("flower_bed", "playground_surface")),
-    ("wet_peat_bog_mud", (0.05, 0.04, 0.025), (0.09, 0.07, 0.04), (0.02, 0.015, 0.01), "Wet black peat bog mud", "mud peat bog wet", {"cells": 40, "rough": 0.30}, ("swamp", "bog")),
+    ("fresh_snow_ground", (0.80, 0.82, 0.85), (0.84, 0.85, 0.86), (0.55, 0.60, 0.68), "Fresh powder snow with soft drifts", "snow white winter", {"cover": "snow", "cells": 32, "rough": 0.70}, ("snowfield", "ski_slope")),
+    ("trampled_slush_snow", (0.62, 0.64, 0.66), (0.76, 0.77, 0.79), (0.30, 0.30, 0.30), "Trampled gray slush snow", "snow slush dirty winter", {"cover": "snow", "trample": 0.8, "cells": 24, "rough": 0.50}, ("winter_street", "parking_lot_edge")),
+    ("green_lawn_grass", (0.06, 0.16, 0.03), (0.12, 0.26, 0.05), (0.03, 0.05, 0.015), "Lush green lawn grass", "grass green lawn", {"cover": "grass", "cells": 64}, ("park_lawn", "sports_field")),
+    ("dry_savanna_grass", (0.42, 0.34, 0.14), (0.54, 0.44, 0.20), (0.18, 0.14, 0.07), "Dry golden savanna grass", "grass dry savanna golden", {"cover": "grass", "cells": 56}, ("prairie", "savanna")),
+    ("forest_leaf_litter", (0.22, 0.10, 0.04), (0.34, 0.20, 0.07), (0.05, 0.03, 0.02), "Forest floor of decaying brown leaves", "forest leaves litter brown", {"cover": "leaves", "cells": 18}, ("forest_floor", "woodland_path")),
+    ("autumn_maple_leaves", (0.46, 0.10, 0.02), (0.62, 0.30, 0.03), (0.10, 0.04, 0.02), "Freshly fallen red and orange maple leaves", "autumn leaves red orange fall", {"cover": "leaves", "cells": 14}, ("park_path", "forest_floor")),
+    ("pine_needle_duff", (0.30, 0.15, 0.06), (0.38, 0.22, 0.10), (0.08, 0.05, 0.03), "Russet pine needle duff", "pine needles forest", {"cover": "needles", "cells": 48}, ("conifer_forest_floor",)),
+    ("cushion_moss", (0.08, 0.18, 0.03), (0.16, 0.28, 0.05), (0.02, 0.04, 0.01), "Dense cushion moss", "moss green forest damp", {"cover": "moss", "cells": 40}, ("mossy_rock_top", "forest_floor")),
+    ("tundra_reindeer_lichen", (0.56, 0.58, 0.50), (0.46, 0.48, 0.38), (0.12, 0.12, 0.08), "Pale reindeer lichen tundra", "lichen tundra arctic", {"cover": "lichen", "cells": 36}, ("tundra", "alpine_meadow")),
+    ("rich_garden_soil", (0.07, 0.045, 0.03), (0.12, 0.08, 0.05), (0.03, 0.02, 0.015), "Dark crumbly garden soil", "soil dark garden earth", {"cover": "soil", "cells": 40}, ("garden_bed", "farm_field")),
+    ("dry_dirt_trail", (0.36, 0.26, 0.16), (0.44, 0.33, 0.21), (0.18, 0.12, 0.07), "Compacted dry dirt hiking trail", "dirt trail dry", {"cover": "soil", "pebbles": 0.18, "cells": 32}, ("hiking_trail", "dirt_road")),
+    ("red_laterite_soil", (0.40, 0.13, 0.05), (0.48, 0.18, 0.08), (0.16, 0.05, 0.02), "Iron-red laterite soil", "soil red laterite tropical", {"cover": "soil", "cells": 32}, ("dirt_road", "tropical_ground")),
+    ("wood_chip_mulch", (0.24, 0.12, 0.05), (0.36, 0.20, 0.09), (0.06, 0.03, 0.015), "Shredded wood-chip garden mulch", "mulch wood chips garden", {"cover": "mulch", "cells": 26}, ("flower_bed", "playground_surface")),
+    ("wet_peat_bog_mud", (0.05, 0.04, 0.025), (0.09, 0.07, 0.04), (0.02, 0.015, 0.01), "Wet black peat bog mud", "mud peat bog wet", {"cover": "soil", "pebbles": 0.02, "cells": 40, "rough": 0.30}, ("swamp", "bog")),
 ]:
     _R("ground_cover", _mid, "terrain_ground", C(_c1, _c2, _c3, **{"mode": "organic", "rough": 0.88, "slope": 10.0, **_kw}), (2.0, 2.0), _ph, _tg + " terrain ground", objs=_extra)
 
@@ -1320,7 +1320,7 @@ _ROLLS: dict[str, tuple[float, float]] = {
     "teak_louver_screen": (0.075, 0.0), "white_picket_fence": (0.75 / 8, 0.0), "white_ash_batten_ceiling": (0.0, 0.075),
     "bamboo_pole_screen": (0.75 / 14, 0.0), "aspen_sauna_slats": (0.0, 0.0625), "pine_tongue_groove_ceiling": (0.0, 0.065),
     "maple_butcher_block_counter": (0.0, 0.065), "brushed_titanium_seam_panel": (0.25, 0.25),
-    "green_tinted_wired_glass": (0.5 / 14, 0.5 / 14), "dry_cracked_mud": (0.31, 0.17), "salt_flat_crust": (0.31, 0.17), "micro_reeded_glass": (0.025, 0.0),
+    "green_tinted_wired_glass": (0.5 / 14, 0.5 / 14), "dry_cracked_mud": (0.31, 0.17), "salt_flat_crust": (0.31, 0.17), "micro_reeded_glass": (0.025, 0.0), "water_hyacinth_weave": (0.5 / 12, 0.5 / 12),
 }
 _ROLLS.update({
     "round_perf_stainless_panel": (0.75 / 16, 0.75 / 16), "perforated_black_steel_screen": (0.75 / 20, 0.75 / 20),
@@ -1332,6 +1332,10 @@ for _row in _ROWS:
         _row["params"]["roll"] = list(_ROLLS[_row["id"]])
     elif _row["family"] == "wood_planks" and _row["params"].get("planks", 6) >= 2:
         _row["params"]["roll"] = "auto_planks"
+    elif _row["family"] == "herringbone_chevron" and not _row["params"].get("chevron"):
+        # Put the 45-degree herringbone seams off the wrap border (quarter lattice cell)
+        _q = round(0.25 / float(_row["params"].get("freq", 4)), 6)
+        _row["params"]["roll"] = [_q, _q]
 
 
 def _plank_roll(params: dict[str, Any], seed: int) -> list[float]:
@@ -1437,6 +1441,9 @@ _FLAGSHIP_ROLE_EXTRAS = {
     "waffle_radiator_fins": ("mechanical",), "window_blinds_slats": ("glass_window",), "keyboard_keycap_grid": ("mechanical",),
 }
 
+# Lower low-frequency color drift for textiles (v1.1: removes cloudy "camo" blotches)
+_LOW_CHROMA = {"woven_textile": 0.25, "plush_textile": 0.30, "leather": 0.40, "natural_fiber": 0.40}
+
 _ACRONYMS = {"hvac": "HVAC", "pcb": "PCB", "hardops": "HardOps", "cmu": "CMU", "abs": "ABS", "hdpe": "HDPE",
              "epdm": "EPDM", "eva": "EVA", "mdf": "MDF", "osb": "OSB", "enig": "ENIG", "hasl": "HASL", "scifi": "Sci-Fi"}
 
@@ -1525,6 +1532,8 @@ def _assemble() -> list[dict[str, Any]]:
         prof = SUBCATEGORIES[row["sub"]]
         params = copy.deepcopy(row["params"])
         params.setdefault("rough", prof["rough"])
+        if row["sub"] in _LOW_CHROMA:
+            params.setdefault("chroma", _LOW_CHROMA[row["sub"]])
         params.setdefault("slope", prof["slope"])
         kind = row["kind"] or prof["kind"]
         metallic = float(params.get("metallic", 0.0))

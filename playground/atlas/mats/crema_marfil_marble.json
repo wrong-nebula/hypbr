@@ -77,8 +77,8 @@
   "ior": 1.486,
   "is_metallic": false,
   "roughness_range": [
-   0.133,
-   0.29
+   0.122,
+   0.212
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.698,
+  "max_seam_ratio": 0.765,
   "seam_ratios": {
-   "height": 0.555,
-   "normal": 0.698,
-   "albedo": 0.608
+   "height": 0.526,
+   "normal": 0.765,
+   "albedo": 0.748
   },
-  "normal_unit_error": 0.0007,
+  "normal_unit_error": 0.0002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  206,
-  191,
-  164
+  212,
+  197,
+  170
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/crema_marfil_marble/albedo_delit.webp",

@@ -74,8 +74,8 @@
   "ior": 1.54,
   "is_metallic": false,
   "roughness_range": [
-   0.067,
-   0.282
+   0.2,
+   0.341
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.925,
+  "max_seam_ratio": 1.923,
   "seam_ratios": {
-   "height": 1.685,
-   "normal": 1.925,
-   "albedo": 1.782
+   "height": 1.683,
+   "normal": 1.923,
+   "albedo": 1.602
   },
-  "normal_unit_error": 0.001,
+  "normal_unit_error": 0.0012,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  94,
-  101,
-  114
+  91,
+  98,
+  113
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/blue_pearl_granite/albedo_delit.webp",

@@ -55,7 +55,7 @@
   "is_metallic": true,
   "roughness_range": [
    0.204,
-   0.929
+   0.925
   ],
   "metallic_range": [
    0.0,
@@ -106,20 +106,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.704,
+  "max_seam_ratio": 0.636,
   "seam_ratios": {
-   "height": 0.648,
-   "normal": 0.704,
-   "albedo": 0.256
+   "height": 0.636,
+   "normal": 0.493,
+   "albedo": 0.229
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  167,
-  171,
-  176
+  156,
+  161,
+  167
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/hvac_slotted_vent/albedo_delit.webp",

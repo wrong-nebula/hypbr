@@ -79,8 +79,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.565,
-   0.702
+   0.686,
+   0.784
   ],
   "metallic_range": [
    0.0,
@@ -131,20 +131,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.248,
+  "max_seam_ratio": 0.649,
   "seam_ratios": {
-   "height": 0.078,
-   "normal": 0.121,
-   "albedo": 0.248
+   "height": 0.187,
+   "normal": 0.359,
+   "albedo": 0.649
   },
-  "normal_unit_error": 0.0004,
+  "normal_unit_error": 0.0006,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  200,
+  202,
   185,
-  162
+  158
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/travertine_pool_paver/albedo_delit.webp",

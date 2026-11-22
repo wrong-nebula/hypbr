@@ -72,8 +72,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.165,
-   0.267
+   0.157,
+   0.271
   ],
   "metallic_range": [
    0.0,
@@ -124,11 +124,11 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.075,
+  "max_seam_ratio": 0.097,
   "seam_ratios": {
-   "height": 0.072,
-   "normal": 0.075,
-   "albedo": 0.0
+   "height": 0.079,
+   "normal": 0.097,
+   "albedo": 0.085
   },
   "normal_unit_error": 0.0008,
   "errors": [],
@@ -137,7 +137,7 @@
  "albedo_mean_srgb": [
   159,
   62,
-  59
+  60
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_pcb_hasl/albedo_delit.webp",

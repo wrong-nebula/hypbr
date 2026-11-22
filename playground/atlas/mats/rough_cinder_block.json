@@ -74,8 +74,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.753,
-   0.941
+   0.749,
+   0.945
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.466,
+  "max_seam_ratio": 0.842,
   "seam_ratios": {
-   "height": 0.264,
-   "normal": 0.442,
-   "albedo": 0.466
+   "height": 0.35,
+   "normal": 0.697,
+   "albedo": 0.842
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   129,
-  126,
-  123
+  127,
+  122
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/rough_cinder_block/albedo_delit.webp",

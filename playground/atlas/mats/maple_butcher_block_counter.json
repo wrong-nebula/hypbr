@@ -83,8 +83,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.404,
-   0.541
+   0.455,
+   0.565
   ],
   "metallic_range": [
    0.0,
@@ -135,20 +135,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.422,
+  "max_seam_ratio": 0.791,
   "seam_ratios": {
-   "height": 0.315,
-   "normal": 0.422,
-   "albedo": 0.402
+   "height": 0.347,
+   "normal": 0.371,
+   "albedo": 0.791
   },
-  "normal_unit_error": 0.0014,
+  "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  195,
-  166,
-  129
+  196,
+  162,
+  116
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/maple_butcher_block_counter/albedo_delit.webp",

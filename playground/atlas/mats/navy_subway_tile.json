@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.059,
-   0.435
+   0.2,
+   0.431
   ],
   "metallic_range": [
    0.0,
@@ -125,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.057,
+  "max_seam_ratio": 0.117,
   "seam_ratios": {
-   "height": 0.035,
-   "normal": 0.057,
-   "albedo": 0.028
+   "height": 0.089,
+   "normal": 0.117,
+   "albedo": 0.109
   },
   "normal_unit_error": 0.0007,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  66,
+  68,
   81,
-  118
+  113
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/navy_subway_tile/albedo_delit.webp",

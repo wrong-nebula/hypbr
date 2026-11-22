@@ -53,8 +53,8 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.141,
-   0.933
+   0.137,
+   0.922
   ],
   "metallic_range": [
    0.0,
@@ -105,20 +105,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.821,
+  "max_seam_ratio": 0.495,
   "seam_ratios": {
-   "height": 0.16,
-   "normal": 0.821,
-   "albedo": 0.289
+   "height": 0.159,
+   "normal": 0.495,
+   "albedo": 0.262
   },
-  "normal_unit_error": 0.0015,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  142,
-  146,
-  151
+  130,
+  134,
+  140
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/speaker_mesh_hex/albedo_delit.webp",

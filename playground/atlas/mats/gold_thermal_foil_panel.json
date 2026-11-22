@@ -77,8 +77,8 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.235,
-   0.573
+   0.227,
+   0.569
   ],
   "metallic_range": [
    0.627,
@@ -134,20 +134,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.27,
+  "max_seam_ratio": 0.492,
   "seam_ratios": {
-   "height": 0.147,
-   "normal": 0.27,
-   "albedo": 0.14
+   "height": 0.166,
+   "normal": 0.32,
+   "albedo": 0.492
   },
-  "normal_unit_error": 0.0008,
+  "normal_unit_error": 0.0006,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   234,
-  211,
-  145
+  210,
+  140
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gold_thermal_foil_panel/albedo_delit.webp",

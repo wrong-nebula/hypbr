@@ -78,8 +78,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.086,
-   0.333
+   0.184,
+   0.443
   ],
   "metallic_range": [
    0.0,
@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.11,
+  "max_seam_ratio": 0.3,
   "seam_ratios": {
-   "height": 0.056,
-   "normal": 0.075,
-   "albedo": 0.11
+   "height": 0.085,
+   "normal": 0.268,
+   "albedo": 0.3
   },
-  "normal_unit_error": 0.0005,
+  "normal_unit_error": 0.0009,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  182,
-  131,
-  95
+  181,
+  132,
+  98
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/glazed_terracotta_brick_tile/albedo_delit.webp",

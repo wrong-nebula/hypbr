@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.584,
-   0.765
+   0.69,
+   0.851
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.539,
+  "max_seam_ratio": 0.767,
   "seam_ratios": {
-   "height": 0.335,
-   "normal": 0.539,
-   "albedo": 0.391
+   "height": 0.468,
+   "normal": 0.705,
+   "albedo": 0.767
   },
-  "normal_unit_error": 0.0007,
+  "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  208,
+  210,
   189,
-  149
+  142
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/jerusalem_gold_limestone/albedo_delit.webp",

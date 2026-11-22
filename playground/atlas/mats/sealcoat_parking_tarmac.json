@@ -72,8 +72,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.725,
-   0.929
+   0.761,
+   0.918
   ],
   "metallic_range": [
    0.0,
@@ -120,20 +120,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.129,
+  "max_seam_ratio": 1.126,
   "seam_ratios": {
-   "height": 0.964,
-   "normal": 1.129,
-   "albedo": 0.853
+   "height": 0.995,
+   "normal": 1.126,
+   "albedo": 0.751
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  62,
-  62,
-  65
+  63,
+  63,
+  66
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/sealcoat_parking_tarmac/albedo_delit.webp",

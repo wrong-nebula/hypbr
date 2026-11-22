@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.671,
-   0.82
+   0.706,
+   0.863
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.816,
+  "max_seam_ratio": 0.907,
   "seam_ratios": {
-   "height": 0.55,
-   "normal": 0.816,
-   "albedo": 0.554
+   "height": 0.617,
+   "normal": 0.907,
+   "albedo": 0.752
   },
-  "normal_unit_error": 0.0013,
+  "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  114,
+  112,
   122,
-  129
+  131
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/thermal_bluestone_slab/albedo_delit.webp",

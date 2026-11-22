@@ -77,8 +77,8 @@
   "ior": 1.486,
   "is_metallic": false,
   "roughness_range": [
-   0.133,
-   0.294
+   0.122,
+   0.208
   ],
   "metallic_range": [
    0.0,
@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.806,
+  "max_seam_ratio": 0.776,
   "seam_ratios": {
-   "height": 0.67,
-   "normal": 0.763,
-   "albedo": 0.806
+   "height": 0.594,
+   "normal": 0.776,
+   "albedo": 0.62
   },
-  "normal_unit_error": 0.0006,
+  "normal_unit_error": 0.0002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  86,
-  121,
-  103
+  64,
+  108,
+  87
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/verde_guatemala_marble/albedo_delit.webp",

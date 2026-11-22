@@ -71,8 +71,8 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.157,
-   0.494
+   0.153,
+   0.498
   ],
   "metallic_range": [
    0.859,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.797,
+  "max_seam_ratio": 0.761,
   "seam_ratios": {
-   "height": 0.753,
-   "normal": 0.761,
-   "albedo": 0.797
+   "height": 0.761,
+   "normal": 0.756,
+   "albedo": 0.693
   },
-  "normal_unit_error": 0.0009,
+  "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  154,
-  158,
-  169
+  153,
+  157,
+  167
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/blued_raindrop_damascus/albedo_delit.webp",

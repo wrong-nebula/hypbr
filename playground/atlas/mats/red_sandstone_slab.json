@@ -73,8 +73,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.643,
-   0.902
+   0.725,
+   0.882
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +124,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.438,
+  "max_seam_ratio": 1.526,
   "seam_ratios": {
-   "height": 1.212,
-   "normal": 1.438,
-   "albedo": 1.005
+   "height": 1.316,
+   "normal": 1.526,
+   "albedo": 1.004
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  164,
-  112,
-  84
+  177,
+  113,
+  75
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/red_sandstone_slab/albedo_delit.webp",

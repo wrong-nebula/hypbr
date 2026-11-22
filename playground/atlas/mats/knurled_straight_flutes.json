@@ -53,11 +53,11 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.153,
-   0.459
+   0.141,
+   0.404
   ],
   "metallic_range": [
-   0.906,
+   0.91,
    0.961
   ],
   "transmission": 0.0,
@@ -105,20 +105,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.059,
+  "max_seam_ratio": 1.142,
   "seam_ratios": {
-   "height": 1.059,
-   "normal": 0.2,
-   "albedo": 0.288
+   "height": 1.142,
+   "normal": 0.282,
+   "albedo": 0.341
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.002,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   189,
   192,
-  198
+  199
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/knurled_straight_flutes/albedo_delit.webp",

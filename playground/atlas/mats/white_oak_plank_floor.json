@@ -78,8 +78,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.451,
-   0.659
+   0.494,
+   0.651
   ],
   "metallic_range": [
    0.0,
@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.617,
+  "max_seam_ratio": 0.681,
   "seam_ratios": {
-   "height": 0.369,
-   "normal": 0.617,
-   "albedo": 0.378
+   "height": 0.384,
+   "normal": 0.482,
+   "albedo": 0.681
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  164,
-  133,
-  97
+  166,
+  130,
+  84
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_oak_plank_floor/albedo_delit.webp",

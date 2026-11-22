@@ -21,7 +21,9 @@
    ],
    "rough": 0.9,
    "slope": 6.0,
-   "mode": "velvet"
+   "mode": "velvet",
+   "crush": 1.0,
+   "chroma": 0.3
   },
   "seed": 14731
  },
@@ -70,8 +72,8 @@
   "ior": 1.46,
   "is_metallic": false,
   "roughness_range": [
-   0.8,
-   0.941
+   0.675,
+   0.855
   ],
   "metallic_range": [
    0.0,
@@ -122,19 +124,19 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.069,
+  "max_seam_ratio": 1.141,
   "seam_ratios": {
-   "height": 0.516,
-   "normal": 1.069,
-   "albedo": 0.501
+   "height": 0.615,
+   "normal": 1.141,
+   "albedo": 0.922
   },
-  "normal_unit_error": 0.0015,
+  "normal_unit_error": 0.0017,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  128,
-  43,
+  127,
+  44,
   61
  ],
  "maps": {

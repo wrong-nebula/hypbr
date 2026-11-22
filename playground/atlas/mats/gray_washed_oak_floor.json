@@ -78,8 +78,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.435,
-   0.659
+   0.537,
+   0.702
   ],
   "metallic_range": [
    0.0,
@@ -128,20 +128,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.742,
+  "max_seam_ratio": 0.625,
   "seam_ratios": {
-   "height": 0.438,
-   "normal": 0.742,
-   "albedo": 0.471
+   "height": 0.456,
+   "normal": 0.625,
+   "albedo": 0.619
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  148,
-  142,
-  133
+  147,
+  140,
+  130
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_washed_oak_floor/albedo_delit.webp",

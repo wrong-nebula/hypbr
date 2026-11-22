@@ -71,8 +71,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.71,
-   0.965
+   0.765,
+   0.953
   ],
   "metallic_range": [
    0.0,
@@ -121,20 +121,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.101,
+  "max_seam_ratio": 0.536,
   "seam_ratios": {
-   "height": 0.072,
-   "normal": 0.099,
-   "albedo": 0.101
+   "height": 0.218,
+   "normal": 0.433,
+   "albedo": 0.536
   },
-  "normal_unit_error": 0.001,
+  "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  158,
-  99,
-  77
+  154,
+  103,
+  85
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/classic_red_brick/albedo_delit.webp",

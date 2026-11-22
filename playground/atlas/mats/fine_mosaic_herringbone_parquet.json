@@ -28,7 +28,11 @@
    "is_wood": true,
    "grout": 0.045,
    "rough": 0.42,
-   "slope": 8.0
+   "slope": 8.0,
+   "roll": [
+    0.041667,
+    0.041667
+   ]
   },
   "seed": 8182
  },
@@ -72,8 +76,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.412,
-   0.773
+   0.369,
+   0.62
   ],
   "metallic_range": [
    0.0,
@@ -122,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.427,
+  "max_seam_ratio": 0.904,
   "seam_ratios": {
-   "height": 0.982,
-   "normal": 0.867,
-   "albedo": 1.427
+   "height": 0.823,
+   "normal": 0.904,
+   "albedo": 0.818
   },
   "normal_unit_error": 0.0018,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  161,
-  125,
-  88
+  166,
+  124,
+  75
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/fine_mosaic_herringbone_parquet/albedo_delit.webp",

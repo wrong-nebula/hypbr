@@ -27,7 +27,8 @@
    "mode": "croc",
    "rough": 0.48,
    "slope": 6.0,
-   "cells": 30
+   "cells": 30,
+   "chroma": 0.4
   },
   "seed": 15323
  },
@@ -75,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.337,
-   0.737
+   0.439,
+   0.725
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.894,
+  "max_seam_ratio": 1.889,
   "seam_ratios": {
-   "height": 1.84,
-   "normal": 1.497,
-   "albedo": 1.894
+   "height": 1.811,
+   "normal": 1.538,
+   "albedo": 1.889
   },
-  "normal_unit_error": 0.0014,
+  "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  84,
+  83,
   91,
-  70
+  65
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/crocodile_embossed_leather/albedo_delit.webp",

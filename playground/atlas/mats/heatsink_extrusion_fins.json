@@ -100,20 +100,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.06,
+  "max_seam_ratio": 0.155,
   "seam_ratios": {
    "height": 0.0,
-   "normal": 0.06,
-   "albedo": 0.055
+   "normal": 0.155,
+   "albedo": 0.0
   },
-  "normal_unit_error": 0.0011,
+  "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  116,
-  119,
-  124
+  103,
+  107,
+  112
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/heatsink_extrusion_fins/albedo_delit.webp",

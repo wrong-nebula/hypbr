@@ -77,8 +77,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.404,
-   0.741
+   0.357,
+   0.569
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.911,
+  "max_seam_ratio": 0.889,
   "seam_ratios": {
-   "height": 0.857,
-   "normal": 0.911,
-   "albedo": 0.806
+   "height": 0.853,
+   "normal": 0.889,
+   "albedo": 0.814
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0015,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  170,
-  140,
-  102
+  174,
+  139,
+  90
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/oak_chevron_parquet/albedo_delit.webp",

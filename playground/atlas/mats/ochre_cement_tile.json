@@ -76,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.62,
-   0.757
+   0.631,
+   0.808
   ],
   "metallic_range": [
    0.0,
@@ -127,20 +127,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.195,
+  "max_seam_ratio": 0.65,
   "seam_ratios": {
-   "height": 0.072,
-   "normal": 0.105,
-   "albedo": 0.195
+   "height": 0.189,
+   "normal": 0.523,
+   "albedo": 0.65
   },
-  "normal_unit_error": 0.0002,
+  "normal_unit_error": 0.0013,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  196,
-  170,
-  107
+  193,
+  171,
+  120
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/ochre_cement_tile/albedo_delit.webp",

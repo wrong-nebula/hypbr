@@ -77,8 +77,8 @@
   "ior": 1.5,
   "is_metallic": true,
   "roughness_range": [
-   0.271,
-   0.616
+   0.267,
+   0.612
   ],
   "metallic_range": [
    0.627,
@@ -133,20 +133,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.284,
+  "max_seam_ratio": 0.901,
   "seam_ratios": {
-   "height": 0.164,
-   "normal": 0.284,
-   "albedo": 0.139
+   "height": 0.173,
+   "normal": 0.315,
+   "albedo": 0.901
   },
-  "normal_unit_error": 0.0008,
+  "normal_unit_error": 0.0006,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   185,
-  181,
-  174
+  180,
+  172
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/titanium_tech_panel/albedo_delit.webp",

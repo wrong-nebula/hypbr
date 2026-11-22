@@ -77,8 +77,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.682,
-   0.945
+   0.6,
+   0.792
   ],
   "metallic_range": [
    0.0,
@@ -130,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.526,
+  "max_seam_ratio": 0.996,
   "seam_ratios": {
-   "height": 0.239,
-   "normal": 0.303,
-   "albedo": 0.526
+   "height": 0.34,
+   "normal": 0.532,
+   "albedo": 0.996
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  173,
-  138,
-  101
+  167,
+  136,
+  105
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/chinked_log_cabin_wall/albedo_delit.webp",

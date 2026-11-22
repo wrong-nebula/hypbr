@@ -54,8 +54,8 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.451,
-   0.933
+   0.463,
+   0.796
   ],
   "metallic_range": [
    0.0,
@@ -105,20 +105,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.921,
+  "max_seam_ratio": 0.893,
   "seam_ratios": {
-   "height": 0.447,
-   "normal": 0.624,
-   "albedo": 0.921
+   "height": 0.444,
+   "normal": 0.472,
+   "albedo": 0.893
   },
-  "normal_unit_error": 0.0018,
+  "normal_unit_error": 0.0016,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  183,
-  164,
-  139
+  180,
+  159,
+  132
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/acoustic_pegboard/albedo_delit.webp",

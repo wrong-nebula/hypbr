@@ -27,7 +27,8 @@
    "mode": "croc",
    "rough": 0.48,
    "slope": 6.0,
-   "cells": 45
+   "cells": 45,
+   "chroma": 0.4
   },
   "seed": 15360
  },
@@ -75,8 +76,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.353,
-   0.765
+   0.463,
+   0.725
   ],
   "metallic_range": [
    0.0,
@@ -124,20 +125,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.508,
+  "max_seam_ratio": 1.517,
   "seam_ratios": {
-   "height": 1.452,
-   "normal": 1.508,
-   "albedo": 1.405
+   "height": 1.445,
+   "normal": 1.517,
+   "albedo": 1.375
   },
   "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  186,
-  177,
-  154
+  187,
+  176,
+  148
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/tan_reptile_scale_leather/albedo_delit.webp",

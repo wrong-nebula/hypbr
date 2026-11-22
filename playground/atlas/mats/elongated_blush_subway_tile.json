@@ -75,8 +75,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.063,
-   0.518
+   0.204,
+   0.502
   ],
   "metallic_range": [
    0.0,
@@ -126,20 +126,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.129,
+  "max_seam_ratio": 0.427,
   "seam_ratios": {
-   "height": 0.024,
-   "normal": 0.054,
-   "albedo": 0.129
+   "height": 0.065,
+   "normal": 0.095,
+   "albedo": 0.427
   },
-  "normal_unit_error": 0.0007,
+  "normal_unit_error": 0.0008,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  213,
+  210,
   176,
-  169
+  170
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/elongated_blush_subway_tile/albedo_delit.webp",

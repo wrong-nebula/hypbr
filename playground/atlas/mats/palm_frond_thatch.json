@@ -70,8 +70,8 @@
   "ior": 1.5,
   "is_metallic": false,
   "roughness_range": [
-   0.769,
-   0.945
+   0.788,
+   0.957
   ],
   "metallic_range": [
    0.0,
@@ -119,20 +119,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.966,
+  "max_seam_ratio": 1.04,
   "seam_ratios": {
-   "height": 0.684,
-   "normal": 0.966,
-   "albedo": 0.676
+   "height": 0.735,
+   "normal": 1.04,
+   "albedo": 0.835
   },
   "normal_unit_error": 0.0019,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
-  142,
-  131,
-  86
+  144,
+  132,
+  74
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/palm_frond_thatch/albedo_delit.webp",

@@ -76,8 +76,8 @@
   "ior": 1.54,
   "is_metallic": false,
   "roughness_range": [
-   0.122,
-   0.337
+   0.255,
+   0.4
   ],
   "metallic_range": [
    0.0,
@@ -129,20 +129,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 1.808,
+  "max_seam_ratio": 1.646,
   "seam_ratios": {
-   "height": 1.436,
-   "normal": 1.648,
-   "albedo": 1.808
+   "height": 1.44,
+   "normal": 1.646,
+   "albedo": 1.443
   },
-  "normal_unit_error": 0.001,
+  "normal_unit_error": 0.0011,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   196,
   190,
-  187
+  188
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/pastel_memphis_terrazzo/albedo_delit.webp",

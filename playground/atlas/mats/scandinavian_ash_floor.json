@@ -79,7 +79,7 @@
   "ior": 1.53,
   "is_metallic": false,
   "roughness_range": [
-   0.447,
+   0.506,
    0.659
   ],
   "metallic_range": [
@@ -130,20 +130,20 @@
  ],
  "qa": {
   "passed": true,
-  "max_seam_ratio": 0.651,
+  "max_seam_ratio": 0.931,
   "seam_ratios": {
-   "height": 0.366,
-   "normal": 0.651,
-   "albedo": 0.268
+   "height": 0.407,
+   "normal": 0.512,
+   "albedo": 0.931
   },
-  "normal_unit_error": 0.0017,
+  "normal_unit_error": 0.0014,
   "errors": [],
   "warnings": []
  },
  "albedo_mean_srgb": [
   191,
-  175,
-  150
+  172,
+  142
  ],
  "maps": {
   "albedo_delit": "https://hypbr.vercel.app/assets/mats/scandinavian_ash_floor/albedo_delit.webp",

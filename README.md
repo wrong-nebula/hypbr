@@ -65,11 +65,17 @@ cd hypbr
 pip install -e .
 ```
 
-For neural photo-to-PBR (`hypbr photo`), also install the optional neural extras and Apple Depth Pro:
+The core install is just `numpy` + `pillow`: all 500 materials, blending, weathering, export and
+verification run on pure NumPy. PyTorch is optional:
 
 ```bash
-pip install -e ".[neural]"
+pip install -e ".[gpu]"      # optional torch: CUDA/MPS-accelerated kernels (same output on CPU)
+pip install -e ".[neural]"   # neural photo-to-PBR (`hypbr photo`): torch + ONNX Runtime (+ Apple Depth Pro)
 ```
+
+With torch installed hypbr uses its kernels (bit-identical to previous releases); without it the
+NumPy fallbacks match to within 1/255 on <0.2% of pixels. `HYPBR_TORCH=0` forces the NumPy path,
+`HYPBR_DEVICE=cpu|mps|cuda` picks the torch device.
 
 ## Performance
 
@@ -82,7 +88,8 @@ Measured on CPU (Apple Silicon, `HYPBR_DEVICE=cpu`, 4 threads):
 
 - Large-radius Gaussian blurs run as exact FFT convolutions, so cost no longer grows with the blur radius.
 - Per-pixel kernels (Worley cells, studio preview) run in row bands on a small thread pool. Set `HYPBR_THREADS=N` (default `min(4, cpu_count)`, `1` disables). Output is bit-identical for any thread count.
-- `HYPBR_DEVICE=cpu|mps|cuda` selects the torch device for the remaining GPU-capable kernels.
+- `HYPBR_DEVICE=cpu|mps|cuda` selects the torch device for the remaining GPU-capable kernels (when torch is installed).
+- Without torch the NumPy fallbacks run at comparable CPU speed and import much faster; `HYPBR_TORCH=0` forces them.
 
 ## Quick Start (CLI)
 
@@ -179,7 +186,35 @@ out_dir = synthesize_material(
 print("Saved 15 PBR maps to:", out_dir)
 ```
 
-### 2. Export to Unity, Godot, Unreal, Blender, Three.js, Vulkan & MaterialX
+### 2. Keep Maps in Memory (no PNG round-trips)
+
+`synthesize_material_maps` returns a `MaterialMaps` dataclass of float32 arrays (linear-light
+`albedo`, unit `normal`, `height`, `roughness`, `metallic`, `ao`, `bent_normal`, `curvature`,
+`cavity`, `edge_wear`, `anisotropy`, `specular`, `thickness`, plus the `preview` render and
+`metadata`). `.save(dir)` writes byte-identical files to `synthesize_material`, and
+`MaterialMaps.load(dir)` reads any material directory back. `blend_materials`, `weather_material`,
+`export_material` and `verify_material` accept a directory or a `MaterialMaps`; the `*_maps`
+variants return `MaterialMaps` so whole pipelines stay in memory:
+
+```python
+from hypbr import (MaterialMaps, blend_materials_maps, export_material,
+                   synthesize_material_maps, weather_material_maps)
+
+brick = synthesize_material_maps("classic_red_brick", size=1024)
+moss = synthesize_material_maps("mossy_cobblestone_path", size=1024)
+print(brick.albedo.dtype, brick.albedo.shape, brick.roughness.mean())  # float32 (1024, 1024, 3) ...
+
+mixed = blend_materials_maps(brick, moss, factor=0.4, mode="cavity")
+aged = weather_material_maps(mixed, preset="rain", seed=7)
+export_material(aged, "./output/gltf/wet_brick", target="glb")  # encodes straight to the target
+aged.save("./output/wet_brick")                                  # or write the 16-map PNG set
+again = MaterialMaps.load("./output/wet_brick")                  # and read it back
+```
+
+Inputs are read at their saved 8/16-bit precision, so `blend_materials_maps(a, b)` gives exactly
+the same result as blending `a.save(...)` and `b.save(...)` from disk.
+
+### 3. Export to Unity, Godot, Unreal, Blender, Three.js, Vulkan & MaterialX
 
 ```python
 from hypbr import export_material, synthesize_material
@@ -193,7 +228,7 @@ export_material(raw, "./output/blender/bronze", target="blender")
 export_material(raw, "./output/vulkan/bronze", target="vulkan")
 ```
 
-### 3. Inspect or Customize the Node Graph
+### 4. Inspect or Customize the Node Graph
 
 ```python
 import json
@@ -251,8 +286,10 @@ Every material synthesis writes a clean, renderer-ready directory compatible wit
 - [`hypbr/procedural.py`](hypbr/procedural.py): Exact periodic FBM, Voronoi, weave, tile, and metal microstructure heightfield generators.
 - [`hypbr/normal_graph.py`](hypbr/normal_graph.py): Composable 47-node PBR graph engine (RNM blending, Weickert structure tensors, analytic SDF bevels, GPU-accelerated 8-azimuth HBAO + bent normals, Toksvig Specular AA, ORM packing).
 - [`hypbr/synthesize.py`](hypbr/synthesize.py): High-level material synthesis API combining periodic heightfields, physically based multi-tone albedo/metallic rules, and the 15-map export pipeline.
+- [`hypbr/maps.py`](hypbr/maps.py): `MaterialMaps` in-memory material (float32 maps + metadata) with byte-exact `.save()` / `.load()`, and the directory-or-memory `MapSource` reader used by blend/weather/export/verify.
+- [`hypbr/_backend.py`](hypbr/_backend.py): Optional-PyTorch backend: lazy `torch` import, device selection, and NumPy equivalents of the `pad` / `conv2d` / `max_pool2d` / `interpolate` / `grid_sample` kernels on the procedural path.
 - [`hypbr/weightcode.py`](hypbr/weightcode.py): Zero-training analytic weight surgery (exact 9-mode orthonormal 3×3 spatial kernel filtering, SVD energy shrinkage, circular Conv2d padding, and 4-quadrant partition-of-unity tileable blending).
-- [`hypbr/depthpro_pbr.py`](hypbr/depthpro_pbr.py): Optional Apple Depth Pro + DeepBump ONNX neural relief extractor with 4-rotation perspective cancellation, exact FFT Gaussian blurs and GPU-accelerated HBAO kernels (`HYPBR_DEVICE=cpu|mps|cuda`).
+- [`hypbr/depthpro_pbr.py`](hypbr/depthpro_pbr.py): Optional Apple Depth Pro + DeepBump ONNX neural relief extractor (needs `hypbr[neural]`) with 4-rotation perspective cancellation, plus the shared exact FFT / separable Gaussian, morphology and Scharr kernels (torch-accelerated when installed, `HYPBR_DEVICE=cpu|mps|cuda`).
 - [`hypbr/exporters.py`](hypbr/exporters.py): Zero-dependency engine & standard exporters (`unity`, `unity-hdrp`, `godot`, `unreal`, `blender`, `threejs`, `gltf`, `glb`, `vulkan`, `materialx`, `usd`).
 - [`hypbr/blend.py`](hypbr/blend.py): Physically based 16-bit HeightLerp / cavity material blending (`hypbr blend`) with linear-light albedo mixing and recomputed HBAO/curvature/ORM.
 - [`hypbr/preview.py`](hypbr/preview.py): Zero-dependency local interactive Three.js PBR studio viewer (`hypbr preview`) with per-channel inspection, tiling, and displacement controls.

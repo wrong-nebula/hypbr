@@ -28,11 +28,10 @@ import time
 from pathlib import Path
 
 import numpy as np
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
 from PIL import Image, ImageDraw
 
+from . import _backend as bk
+from ._backend import no_grad
 from .color import srgb_to_linear
 
 PKG_DIR = Path(__file__).resolve().parent
@@ -41,15 +40,16 @@ NEON_PATCH = Path(os.environ.get("HYPBR_DEPTHPRO_PATCH", PKG_DIR / "weights" / "
 ONNX_WSP = Path(os.environ.get("HYPBR_DEEPBUMP_ONNX", PKG_DIR / "weights" / "wsp_deepbump_pbr.onnx"))
 ONNX_CACHE = CACHE_DIR / "deepbump_normal.onnx"
 
-_ENV_DEV = os.environ.get("HYPBR_DEVICE", "").strip().lower()
-if _ENV_DEV:
-    DEVICE = torch.device(_ENV_DEV)
-else:
-    DEVICE = torch.device("cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu"))
+# torch is optional: without it (or with HYPBR_TORCH=0) DEVICE is a CPU stand-in and every
+# procedural op runs its NumPy implementation. `HYPBR_DEVICE` overrides auto-detection.
+DEVICE = bk.resolve_device()
 
 
-def load_depthpro2_no_fov(preset_name: str = "depthpro2-s", precision=torch.float32):
+def load_depthpro2_no_fov(preset_name: str = "depthpro2-s", precision=None):
     """Load DepthPro2 without the 94 MB FOVEstimator (orthographic PBR photography needs no FOV)."""
+    torch = bk.require_torch("Neural photo mode (DepthPro2)")
+    if precision is None:
+        precision = torch.float32
     from depth_pro_2.model import DepthPro2, PRESETS, load_checkpoint
 
     cfg = PRESETS[preset_name]
@@ -67,9 +67,10 @@ def load_depthpro2_no_fov(preset_name: str = "depthpro2-s", precision=torch.floa
     return model.to(DEVICE).eval()
 
 
-@torch.no_grad()
+@no_grad
 def apply_neon_wsp_patch(model, circular_pad: bool = False):
     """Apply the compact Neon-medium WeightCode PBR patch (`wsp_depthpro2_s_pbr.pt`, 1.44% weights)."""
+    torch = bk.require_torch("Neural photo mode (DepthPro2)")
     sd = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
     changed = 0
     if NEON_PATCH.exists():
@@ -86,7 +87,7 @@ def apply_neon_wsp_patch(model, circular_pad: bool = False):
     return sd, changed
 
 
-@torch.no_grad()
+@no_grad
 def apply_pbr_weight_tweak(model, scale_weights=(1.85, 1.35, 0.65, 0.20),
                            boost_fine_res=1.35, circular_pad: bool = False):
     """Analytic spectral DPT pyramid WeightCode surgery (zero training)."""
@@ -103,6 +104,7 @@ def apply_pbr_weight_tweak(model, scale_weights=(1.85, 1.35, 0.65, 0.20),
 
 
 def set_circular_padding(model, enabled: bool):
+    nn = bk.require_torch("Neural photo mode (DepthPro2)").nn
     mode = "circular" if enabled else "zeros"
     for mod in (model.decoder, model.head):
         for m in mod.modules():
@@ -128,6 +130,7 @@ def detrend_surface(h: np.ndarray, degree: int = 2) -> np.ndarray:
 
 
 _FFT_BLUR_MIN_RAD = 16  # below this a separable spatial conv is as fast as the FFT
+_NP_DIRECT_BLUR_MAX_RAD = 5  # torch-free path: direct NumPy taps only up to this radius, FFT above
 
 
 def _wrapped_kernel_fft(ker: np.ndarray, n: int, real: bool) -> np.ndarray:
@@ -158,7 +161,6 @@ def _gaussian_blur_fft(arr: np.ndarray, ker: np.ndarray, circular: bool) -> np.n
     return np.ascontiguousarray(out, dtype=np.float32)
 
 
-@torch.no_grad()
 def gaussian_blur_np(arr: np.ndarray, sigma: float, circular: bool = False) -> np.ndarray:
     if sigma <= 0.1:
         return arr.astype(np.float32)
@@ -169,25 +171,19 @@ def gaussian_blur_np(arr: np.ndarray, sigma: float, circular: bool = False) -> n
     if rad >= _FFT_BLUR_MIN_RAD or rad >= min(arr.shape[0], arr.shape[1]):
         return _gaussian_blur_fft(arr, ker, circular)
     use_gpu = (DEVICE.type != "cpu") and (arr.size >= 262144) and (rad < min(arr.shape[0], arr.shape[1]))
-    dev = DEVICE if use_gpu else torch.device("cpu")
-    t = torch.from_numpy(np.ascontiguousarray(arr, dtype=np.float32)).to(dev)[None, None]
-    mode = "circular" if circular else "reflect"
-    k_h = torch.from_numpy(ker).to(dev)[None, None, None, :]
-    k_v = torch.from_numpy(ker).to(dev)[None, None, :, None]
-    t = F.pad(t, (rad, rad, 0, 0), mode=mode)
-    t = F.conv2d(t, k_h)
-    t = F.pad(t, (0, 0, rad, rad), mode=mode)
-    t = F.conv2d(t, k_v)
-    return t[0, 0].cpu().numpy()
+    torch = bk.get_torch()
+    if torch is not None:
+        with torch.no_grad():
+            return bk.separable_conv(arr, ker, circular, device=DEVICE if use_gpu else torch.device("cpu"))
+    if rad > _NP_DIRECT_BLUR_MAX_RAD:  # NumPy taps lose to the FFT much earlier than torch conv2d
+        return _gaussian_blur_fft(arr, ker, circular)
+    return bk.separable_conv(arr, ker, circular)
 
 
 def _morph_close_2d(arr: np.ndarray, radius: int, circular: bool = False) -> np.ndarray:
-    k = 2 * radius + 1
     mode = "circular" if circular else "reflect"
-    t = torch.from_numpy(arr.astype(np.float32))[None, None]
-    dil = F.max_pool2d(F.pad(t, (radius, radius, radius, radius), mode=mode), k, stride=1)
-    ero = -F.max_pool2d(F.pad(-dil, (radius, radius, radius, radius), mode=mode), k, stride=1)
-    return ero[0, 0].numpy()
+    dil = bk.max_filter(arr, radius, mode)
+    return -bk.max_filter(-dil, radius, mode)
 
 
 def _morph_open_2d(arr: np.ndarray, radius: int, circular: bool = False) -> np.ndarray:
@@ -198,8 +194,8 @@ def _bilateral_smooth(img: np.ndarray, guide: np.ndarray, sigma_s: float = 1.8, 
                       circular: bool = False) -> np.ndarray:
     rad = 2
     mode = "circular" if circular else "reflect"
-    t_img = F.pad(torch.from_numpy(img.astype(np.float32))[None, None], (rad, rad, rad, rad), mode=mode)[0, 0].numpy()
-    t_g = F.pad(torch.from_numpy(guide.astype(np.float32))[None, None], (rad, rad, rad, rad), mode=mode)[0, 0].numpy()
+    t_img = bk.pad2d(img.astype(np.float32), rad, rad, rad, rad, mode)
+    t_g = bk.pad2d(guide.astype(np.float32), rad, rad, rad, rad, mode)
     H, W = img.shape
     num = np.zeros((H, W), dtype=np.float32)
     den = np.zeros((H, W), dtype=np.float32)
@@ -253,6 +249,10 @@ def normalize_height(h: np.ndarray, clip_pct: float = 1.0, min_span: float = 0.0
     return np.clip((h - lo) / span, 0.0, 1.0).astype(np.float32)
 
 
+_SCHARR_X = np.array([[-3, 0, 3], [-10, 0, 10], [-3, 0, 3]], dtype=np.float32) / np.float32(32.0)
+_SCHARR_Y = np.array([[-3, -10, -3], [0, 0, 0], [3, 10, 3]], dtype=np.float32) / np.float32(32.0)
+
+
 def height_to_unit_normal(
     h: np.ndarray,
     strength: float = 2.4,
@@ -268,13 +268,9 @@ def height_to_unit_normal(
         return out
     denom = max(span, min_span) if min_span > 0.0 else span
     hn = (h - p5) / denom
-    t = torch.from_numpy(hn.astype(np.float32))[None, None]
     mode = "circular" if circular else "reflect"
-    t = F.pad(t, (1, 1, 1, 1), mode=mode)
-    kx = torch.tensor([[-3, 0, 3], [-10, 0, 10], [-3, 0, 3]], dtype=torch.float32).view(1, 1, 3, 3) / 32.0
-    ky = torch.tensor([[-3, -10, -3], [0, 0, 0], [3, 10, 3]], dtype=torch.float32).view(1, 1, 3, 3) / 32.0
-    gx = F.conv2d(t, kx)[0, 0].numpy()
-    gy = F.conv2d(t, ky)[0, 0].numpy()
+    gx = bk.correlate3x3(hn, _SCHARR_X, mode)
+    gy = bk.correlate3x3(hn, _SCHARR_Y, mode)
     nx = -gx * strength
     ny = (gy if not flip_y else -gy) * strength
     nz = np.ones_like(nx)
@@ -471,7 +467,7 @@ def screened_poisson_fusion(h_anchor: np.ndarray, N_guide: np.ndarray, lam: floa
     return detrend_surface(np.fft.ifft2(Z).real[:H, :W].astype(np.float32), degree=2)
 
 
-@torch.no_grad()
+@no_grad
 def infer_inv_depth(model, rgb_uint8: np.ndarray, tileable: bool = False, rot4: bool = False) -> np.ndarray:
     """Run DepthPro2 inverse depth.
 
@@ -479,6 +475,7 @@ def infer_inv_depth(model, rgb_uint8: np.ndarray, tileable: bool = False, rot4: 
     - `tileable=True` applies exact 4-quadrant separable raised-cosine cyclic-shift blending,
       eliminating ViT patch border seams (and cleanly composes with `rot4=True`).
     """
+    torch = bk.require_torch("Neural photo mode (DepthPro2)")
     from depth_pro_2.model import to_normalized_tensor
     from .weightcode import tileable_4quad_blend
 
@@ -532,6 +529,7 @@ def process_images(paths: list[Path], out_dir: Path, size: int = 512, strength: 
     # Optional WSP-DeepBump (467-param WeightCode edit: calibrated normals + neural height in ch 2!)
     db_map, db_is_wsp = _run_deepbump_batch(rgbs) if use_deepbump else (None, False)
 
+    torch = bk.require_torch("Neural photo mode (`hypbr photo`)")
     model = load_depthpro2_no_fov(preset, precision=torch.float32)
     _, chg = apply_neon_wsp_patch(model, circular_pad=tileable)
     db_tag = "wsp-deepbump" if db_is_wsp else ("deepbump" if db_map else "off")

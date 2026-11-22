@@ -28,10 +28,9 @@ import time
 from pathlib import Path
 
 import numpy as np
-import torch
-import torch.nn.functional as F
 from PIL import Image, ImageDraw
 
+from . import _backend as bk
 from . import depthpro_pbr as dp  # noqa: E402
 from . import normal_graph as ng  # noqa: E402
 from ._parallel import map_rows, row_slices
@@ -59,11 +58,11 @@ def _cr_periodic_basis_np(n: int, f_sz: int) -> np.ndarray:
 
 
 @functools.lru_cache(maxsize=96)
-def _cr_periodic_basis_gpu(n: int, f_sz: int, dev_str: str) -> torch.Tensor:
+def _cr_periodic_basis_gpu(n: int, f_sz: int, dev_str: str):
+    torch = bk.require_torch("GPU periodic noise")
     return torch.from_numpy(_cr_periodic_basis_np(n, f_sz)).to(dev_str)
 
 
-@torch.no_grad()
 def _periodic_fbm(H: int, W: int, seed: int, octaves=(4, 8, 16, 32, 64)) -> np.ndarray:
     """100% mathematically seamless multi-octave periodic noise for ANY integer frequency f.
 
@@ -77,19 +76,21 @@ def _periodic_fbm(H: int, W: int, seed: int, octaves=(4, 8, 16, 32, 64)) -> np.n
     norm = 0.0
 
     if use_gpu:
-        dev = dp.DEVICE
-        dev_str = str(dev)
-        out_t = torch.zeros((H, W), dtype=torch.float32, device=dev)
-        for f in octaves:
-            g = torch.from_numpy(rng.standard_normal((f, f)).astype(np.float32)).to(dev)
-            my = _cr_periodic_basis_gpu(H, f, dev_str)
-            mx = _cr_periodic_basis_gpu(W, f, dev_str)
-            out_t.add_((my @ g) @ mx.T, alpha=amp)
-            norm += amp
-            amp *= 0.52
-        out_t.div_(max(norm, 1e-6))
-        out_t = (out_t - out_t.mean()) / (out_t.std() + 1e-6)
-        return out_t.cpu().numpy().astype(np.float32)
+        torch = bk.require_torch("GPU periodic noise")
+        with torch.no_grad():
+            dev = dp.DEVICE
+            dev_str = str(dev)
+            out_t = torch.zeros((H, W), dtype=torch.float32, device=dev)
+            for f in octaves:
+                g = torch.from_numpy(rng.standard_normal((f, f)).astype(np.float32)).to(dev)
+                my = _cr_periodic_basis_gpu(H, f, dev_str)
+                mx = _cr_periodic_basis_gpu(W, f, dev_str)
+                out_t.add_((my @ g) @ mx.T, alpha=amp)
+                norm += amp
+                amp *= 0.52
+            out_t.div_(max(norm, 1e-6))
+            out_t = (out_t - out_t.mean()) / (out_t.std() + 1e-6)
+            return out_t.cpu().numpy().astype(np.float32)
 
     out = np.zeros((H, W), dtype=np.float32)
     for f in octaves:
@@ -99,20 +100,36 @@ def _periodic_fbm(H: int, W: int, seed: int, octaves=(4, 8, 16, 32, 64)) -> np.n
             mx = _cr_periodic_basis_np(W, f)
             up = (my @ g) @ mx.T
         else:
-            yy = torch.linspace(0.0, 1.0 - 1.0 / H, H, dtype=torch.float32)
-            xx = torch.linspace(0.0, 1.0 - 1.0 / W, W, dtype=torch.float32)
-            gy, gx = torch.meshgrid(yy, xx, indexing="ij")
-            t_pad = F.pad(torch.from_numpy(g)[None, None], (2, 2, 2, 2), mode="circular")
-            n_pad = float(f + 4)
-            u_c = ((2.0 + gx * float(f) + 0.5) / n_pad) * 2.0 - 1.0
-            v_c = ((2.0 + gy * float(f) + 0.5) / n_pad) * 2.0 - 1.0
-            grid = torch.stack([u_c, v_c], dim=-1)[None]
-            up = F.grid_sample(t_pad, grid, mode="bicubic", padding_mode="border", align_corners=False)[0, 0].numpy()
+            up = _fbm_octave_grid_sample(g, H, W, f)
         out += amp * up
         norm += amp
         amp *= 0.52
     out /= max(norm, 1e-6)
     return (out - out.mean()) / (out.std() + 1e-6)
+
+
+def _fbm_octave_grid_sample(g: np.ndarray, H: int, W: int, f: int) -> np.ndarray:
+    """Bicubic periodic upsample of an `(f, f)` lattice for octaves above the GEMM basis limit."""
+    torch = bk.get_torch()
+    if torch is not None:
+        F = torch.nn.functional
+        yy = torch.linspace(0.0, 1.0 - 1.0 / H, H, dtype=torch.float32)
+        xx = torch.linspace(0.0, 1.0 - 1.0 / W, W, dtype=torch.float32)
+        gy, gx = torch.meshgrid(yy, xx, indexing="ij")
+        t_pad = F.pad(torch.from_numpy(g)[None, None], (2, 2, 2, 2), mode="circular")
+        n_pad = float(f + 4)
+        u_c = ((2.0 + gx * float(f) + 0.5) / n_pad) * 2.0 - 1.0
+        v_c = ((2.0 + gy * float(f) + 0.5) / n_pad) * 2.0 - 1.0
+        grid = torch.stack([u_c, v_c], dim=-1)[None]
+        return F.grid_sample(t_pad, grid, mode="bicubic", padding_mode="border", align_corners=False)[0, 0].numpy()
+    yy = np.linspace(0.0, 1.0 - 1.0 / H, H, dtype=np.float32)
+    xx = np.linspace(0.0, 1.0 - 1.0 / W, W, dtype=np.float32)
+    gy, gx = np.meshgrid(yy, xx, indexing="ij")
+    t_pad = np.pad(g.astype(np.float32), 2, mode="wrap")
+    n_pad = np.float32(f + 4)
+    u_c = ((np.float32(2.0) + gx * np.float32(f) + np.float32(0.5)) / n_pad) * np.float32(2.0) - np.float32(1.0)
+    v_c = ((np.float32(2.0) + gy * np.float32(f) + np.float32(0.5)) / n_pad) * np.float32(2.0) - np.float32(1.0)
+    return bk.grid_sample(t_pad, u_c, v_c, mode="bicubic", padding_mode="border", align_corners=False)
 
 
 def _periodic_grad(h: np.ndarray):

@@ -33,10 +33,9 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-import torch
-import torch.nn.functional as F
 from PIL import Image, ImageDraw
 
+from . import _backend as bk
 from . import depthpro_pbr as dp  # noqa: E402
 from .color import linear_to_srgb, srgb_to_linear
 
@@ -250,6 +249,10 @@ def node_bilateral_poisson(ctx: dict, inputs: dict, lam: float = 0.06, slope_gai
 
 # --- Normal Map Modifier Nodes (Exact Tangent-Space) ---
 
+_SOBEL_X = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=np.float32) / np.float32(8.0)
+_SOBEL_Y = np.array([[-1, -2, -1], [0, 0, 0], [1, 2, 1]], dtype=np.float32) / np.float32(8.0)
+
+
 @register_node("HeightToNormal")
 def node_height_to_normal(ctx: dict, inputs: dict, strength: float = 2.1, pre_blur: float = 0.75,
                           adaptive_amp: bool = True, operator: str = "scharr", **_):
@@ -260,11 +263,9 @@ def node_height_to_normal(ctx: dict, inputs: dict, strength: float = 2.1, pre_bl
     if operator == "sobel":
         p5, p95 = np.percentile(hb, 3), np.percentile(hb, 97)
         hn = (hb - p5) / max(p95 - p5, 1e-6)
-        t = F.pad(torch.from_numpy(hn.astype(np.float32))[None, None], (1, 1, 1, 1), mode="circular" if circ else "reflect")
-        kx = torch.tensor([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=torch.float32).view(1, 1, 3, 3) / 8.0
-        ky = torch.tensor([[-1, -2, -1], [0, 0, 0], [1, 2, 1]], dtype=torch.float32).view(1, 1, 3, 3) / 8.0
-        gx = F.conv2d(t, kx)[0, 0].numpy()
-        gy = F.conv2d(t, ky)[0, 0].numpy()
+        pad_mode = "circular" if circ else "reflect"
+        gx = bk.correlate3x3(hn, _SOBEL_X, pad_mode)
+        gy = bk.correlate3x3(hn, _SOBEL_Y, pad_mode)
         s = float(strength) * amp
         N = normalize_n(np.stack([-gx * s, gy * s, np.ones_like(gx)], axis=-1))
     else:
@@ -785,7 +786,7 @@ def node_hardops_plug_stamp(
 def _interp_grid_2d(g: np.ndarray, H: int, W: int, circular: bool) -> np.ndarray:
     """C2-smooth quintic-interpolated 2D upsampler to `(H, W)`; exact torus-periodic when `circular=True`."""
     if not circular:
-        return F.interpolate(torch.from_numpy(g.astype(np.float32))[None, None], size=(H, W), mode="bicubic", align_corners=False)[0, 0].numpy()
+        return bk.resize(g.astype(np.float32), H, W, "bicubic")
     gh, gw = g.shape
     arr = np.pad(g.astype(np.float32), ((0, 1), (0, 1)), mode="wrap")
     u = np.arange(W, dtype=np.float32) * (gw / float(W))
@@ -1187,7 +1188,7 @@ def node_height_warp_flow(
     for o in range(int(max(1, octaves))):
         f = max(2, base_f * (2 ** o))
         g = rng.standard_normal((f, f)).astype(np.float32)
-        up = F.interpolate(torch.from_numpy(g)[None, None], size=(H, W), mode="bilinear", align_corners=False)[0, 0].numpy()
+        up = bk.resize(g, H, W, "bilinear")
         psi += amp * up
         norm += amp
         amp *= 0.5
@@ -1212,15 +1213,14 @@ def node_height_warp_flow(
 
     grid_x = (sx / max(W - 1, 1)) * 2.0 - 1.0
     grid_y = (sy / max(H - 1, 1)) * 2.0 - 1.0
-    grid = torch.from_numpy(np.stack([grid_x, grid_y], axis=-1)[None]).float()
     pad_m = "reflection" if not circ else "border"
-    h_w = F.grid_sample(torch.from_numpy(h)[None, None], grid, mode="bilinear", padding_mode=pad_m, align_corners=True)[0, 0].numpy()
+    h_w = bk.grid_sample(h, grid_x, grid_y, mode="bilinear", padding_mode=pad_m, align_corners=True)
 
     out = {"height": h_w.astype(np.float32)}
     if "normal" in inputs and inputs["normal"] is not None:
         N = inputs["normal"].astype(np.float32)
-        N_t = torch.from_numpy(N.transpose(2, 0, 1)[None]).float()
-        N_w = F.grid_sample(N_t, grid, mode="bilinear", padding_mode=pad_m, align_corners=True)[0].numpy().transpose(1, 2, 0)
+        N_w = bk.grid_sample(N.transpose(2, 0, 1), grid_x, grid_y, mode="bilinear", padding_mode=pad_m,
+                             align_corners=True).transpose(1, 2, 0)
         out["normal"] = normalize_n(N_w)
     return out
 
@@ -1265,8 +1265,7 @@ def node_normal_anisotropic_brush(
             th = np.arctan2(v, u) / (2.0 * math.pi) + 0.5
             gx = (r * 2.0 - 1.0)
             gy = (th * 2.0 - 1.0)
-            grid = torch.from_numpy(np.stack([gx, gy], axis=-1)[None]).float()
-            h_rot = F.grid_sample(torch.from_numpy(h_br)[None, None], grid, mode="bilinear", padding_mode="reflection", align_corners=True)[0, 0].numpy()
+            h_rot = bk.grid_sample(h_br, gx, gy, mode="bilinear", padding_mode="reflection", align_corners=True)
         else:
             rad = math.radians(float(angle_deg))
             ca, sa = math.cos(rad), math.sin(rad)
@@ -1274,8 +1273,7 @@ def node_normal_anisotropic_brush(
             rv = (sa * u + ca * v) + 0.5
             ru = (ru % 1.0) * 2.0 - 1.0
             rv = (rv % 1.0) * 2.0 - 1.0
-            grid = torch.from_numpy(np.stack([ru, rv], axis=-1)[None]).float()
-            h_rot = F.grid_sample(torch.from_numpy(h_br)[None, None], grid, mode="bilinear", padding_mode="reflection", align_corners=True)[0, 0].numpy()
+            h_rot = bk.grid_sample(h_br, ru, rv, mode="bilinear", padding_mode="reflection", align_corners=True)
 
     if circ:
         dx = 0.5 * (np.roll(h_rot, -1, axis=1) - np.roll(h_rot, 1, axis=1)) * res_scale
@@ -1387,6 +1385,8 @@ def node_horizon_bent_normal_ao(
     ]
     use_gpu = (dp.DEVICE.type != "cpu") and (H * W >= 262144)
     if use_gpu:
+        torch = bk.require_torch("GPU HBAO")
+        F = torch.nn.functional
         with torch.no_grad():
             dev = dp.DEVICE
             ht = torch.from_numpy(np.ascontiguousarray(h, dtype=np.float32)).to(dev)
@@ -1660,6 +1660,7 @@ def node_anisotropy_flow(
     # Dielectric Specular F0: cavities and dusty high-roughness pores lose micro-specular F0
     spec_f0 = np.clip(float(base_f0) * (0.35 + 0.65 * ao) * (1.15 - 0.45 * rough), 0.08, 0.95).astype(np.float32)
     return {
+        "anisotropy": np.stack([tx * 0.5 + 0.5, ty * 0.5 + 0.5, coherence], axis=-1),
         "anisotropy_u8": aniso_u8,
         "coherence": coherence,
         "specular": spec_f0,
@@ -1991,6 +1992,7 @@ def extract_neural_sources(rgbs: dict[str, np.ndarray], tileable: bool = False) 
     db_map, db_is_wsp = dp._run_deepbump_batch(rgbs)
     rough_map = _run_wsp_roughness_batch(rgbs)
 
+    torch = bk.require_torch("Neural graph sources (DepthPro2)")
     model = dp.load_depthpro2_no_fov("depthpro2-s", precision=torch.float32)
     dp.apply_neon_wsp_patch(model, circular_pad=tileable)
     dp2_map = {k: dp.infer_inv_depth(model, rgb, tileable=tileable, rot4=not tileable) for k, rgb in rgbs.items()}

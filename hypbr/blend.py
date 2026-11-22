@@ -17,32 +17,32 @@ from PIL import Image
 from . import depthpro_pbr as dp
 from . import normal_graph as ng
 from . import procedural as gd
-from .synthesize import render_studio_preview, save_maps_parallel
-from .color import linear_to_srgb_u8, srgb_to_linear
+from .synthesize import render_studio_preview
+from .color import srgb_to_linear
+from .maps import MapSource, MaterialMaps, unit_normals
 
 
-def _load_srgb_linear(path: Path, size: tuple[int, int]) -> np.ndarray:
-    im = Image.open(path).convert("RGB")
+def _load_srgb_linear(src: MapSource, fname: str, size: tuple[int, int]) -> np.ndarray:
+    im = src.open(fname).convert("RGB")
     if im.size != size:
         im = im.resize(size, Image.BILINEAR)
     arr = np.asarray(im, dtype=np.float32) / 255.0
     return srgb_to_linear(arr)
 
 
-def _load_gray_f32(path: Path, size: tuple[int, int], default: float = 0.5) -> np.ndarray:
-    if not path.exists():
+def _load_gray_f32(src: MapSource, fname: str, size: tuple[int, int], default: float = 0.5) -> np.ndarray:
+    if not src.exists(fname):
         return np.full((size[1], size[0]), default, dtype=np.float32)
-    im = Image.open(path).convert("L")
+    im = src.open(fname).convert("L")
     if im.size != size:
         im = im.resize(size, Image.BILINEAR)
     return np.asarray(im, dtype=np.float32) / 255.0
 
 
-def _load_height_f32(mat_dir: Path, size: tuple[int, int]) -> np.ndarray:
+def _load_height_f32(src: MapSource, size: tuple[int, int]) -> np.ndarray:
     """Prefer full-precision 16-bit height16.png when available, falling back to 8-bit height.png."""
-    h16_path = mat_dir / "height16.png"
-    if h16_path.exists():
-        im = Image.open(h16_path)
+    if src.exists("height16.png"):
+        im = src.open("height16.png")
         arr = np.asarray(im, dtype=np.float32)
         if im.mode in ("I;16", "I") or arr.max() > 255.0:
             arr = arr / 65535.0
@@ -52,11 +52,11 @@ def _load_height_f32(mat_dir: Path, size: tuple[int, int]) -> np.ndarray:
             im_f = Image.fromarray(arr, mode="F").resize(size, Image.BILINEAR)
             arr = np.asarray(im_f, dtype=np.float32)
         return np.clip(arr, 0.0, 1.0).astype(np.float32)
-    return _load_gray_f32(mat_dir / "height.png", size, 0.5)
+    return _load_gray_f32(src, "height.png", size, 0.5)
 
 
-def _load_normal_f32(path: Path, size: tuple[int, int]) -> np.ndarray:
-    im = Image.open(path).convert("RGB")
+def _load_normal_f32(src: MapSource, fname: str, size: tuple[int, int]) -> np.ndarray:
+    im = src.open(fname).convert("RGB")
     if im.size != size:
         im = im.resize(size, Image.BILINEAR)
     n = np.asarray(im, dtype=np.float32) / 127.5 - 1.0
@@ -115,18 +115,37 @@ def compute_height_blend_mask(
 
 
 def blend_materials(
-    dir_a: Path | str,
-    dir_b: Path | str,
+    dir_a: "Path | str | MaterialMaps",
+    dir_b: "Path | str | MaterialMaps",
     out_dir: Path | str,
     factor: float = 0.5,
     contrast: float = 0.06,
     mode: str = "height",
 ) -> Path:
-    """Physically blend two hypbr material directories into a new seamless 15-map directory."""
-    pa, pb, out = Path(dir_a), Path(dir_b), Path(out_dir)
-    out.mkdir(parents=True, exist_ok=True)
+    """Physically blend two hypbr materials (directories or `MaterialMaps`) into a new 15-map directory.
 
-    with Image.open(pa / "albedo_delit.png") as im0:
+    Equivalent to `blend_materials_maps(dir_a, dir_b, ...).save(out_dir)`.
+    """
+    return blend_materials_maps(dir_a, dir_b, factor=factor, contrast=contrast, mode=mode).save(out_dir)
+
+
+def blend_materials_maps(
+    mat_a: "Path | str | MaterialMaps",
+    mat_b: "Path | str | MaterialMaps",
+    factor: float = 0.5,
+    contrast: float = 0.06,
+    mode: str = "height",
+    *,
+    preview: bool = True,
+) -> MaterialMaps:
+    """In-memory `blend_materials`: blend two materials (directories or `MaterialMaps`) -> `MaterialMaps`.
+
+    Inputs are read at their saved 8/16-bit precision, so the result is identical whether each
+    input is a `MaterialMaps` or the directory it was saved to. `blend_mask` holds the B weight.
+    """
+    pa, pb = MapSource(mat_a), MapSource(mat_b)
+
+    with pa.open("albedo_delit.png") as im0:
         size = im0.size
 
     h_a = _load_height_f32(pa, size)
@@ -161,14 +180,13 @@ def blend_materials(
         contact_ao = np.clip(1.0 - 0.38 * seam_sh, 0.55, 1.0).astype(np.float32)
 
     # 1. Linear-light albedo blend + grounded contact shading at material boundary
-    alb_a = _load_srgb_linear(pa / "albedo_delit.png", size)
-    alb_b = _load_srgb_linear(pb / "albedo_delit.png", size)
+    alb_a = _load_srgb_linear(pa, "albedo_delit.png", size)
+    alb_b = _load_srgb_linear(pb, "albedo_delit.png", size)
     alb_lin = ((1.0 - m3) * alb_a + m3 * alb_b) * (0.72 + 0.28 * contact_ao[..., None])
-    alb_u8 = linear_to_srgb_u8(alb_lin)
 
     # 2. Height & slope-consistent normal blend with physical step lip & soft-knee slope limit
-    n_a = _load_normal_f32(pa / "normal.png", size)
-    n_b = _load_normal_f32(pb / "normal.png", size)
+    n_a = _load_normal_f32(pa, "normal.png", size)
+    n_b = _load_normal_f32(pb, "normal.png", size)
     if mode == "height":
         h_blend = np.maximum((1.0 - surf_mask) * h_a, surf_mask * (h_b + 0.14))
         lip_slope = 2.4
@@ -188,49 +206,44 @@ def blend_materials(
     n_out = ng.node_normal_clamp_slope({"circular": True}, {"normal": n_out}, max_angle_deg=60.0)["normal"]
 
     # 3. Roughness (with Specular AA) & crisp physical Metallic
-    r_a = _load_gray_f32(pa / "roughness.png", size, 0.5)
-    r_b = _load_gray_f32(pb / "roughness.png", size, 0.5)
+    r_a = _load_gray_f32(pa, "roughness.png", size, 0.5)
+    r_b = _load_gray_f32(pb, "roughness.png", size, 0.5)
     cav_rough_boost = (0.14 * surf_mask) if mode == "cavity" else 0.0
     rough = np.clip((1.0 - surf_mask) * r_a + surf_mask * r_b + cav_rough_boost + 0.12 * (1.0 - contact_ao), 0.06, 0.98).astype(np.float32)
     rough = ng.node_roughness_specular_aa({"circular": True}, {"roughness": rough, "normal": n_out}, strength=0.2, max_boost=0.06)["roughness"]
 
-    met_a = _load_gray_f32(pa / "metallic.png", size, 0.0)
-    met_b = _load_gray_f32(pb / "metallic.png", size, 0.0)
+    met_a = _load_gray_f32(pa, "metallic.png", size, 0.0)
+    met_b = _load_gray_f32(pb, "metallic.png", size, 0.0)
     met = np.clip((1.0 - met_mask) * met_a + met_mask * met_b, 0.0, 1.0).astype(np.float32)
-    met_u8 = np.clip(met * 255.0 + 0.5, 0, 255).astype(np.uint8)
 
     # 4. Recompute physical 8-azimuth HBAO + contact seam AO + bent normal + curvature + anisotropy + thickness
     hbao = ng.node_horizon_bent_normal_ao({"circular": True}, {"height": h_out, "normal": n_out}, strength=1.10, height_scale=12.0, ao_floor=0.18)
     ao = np.clip(hbao["ao"] * contact_ao, 0.16, 1.0).astype(np.float32)
-    hbao["ao"] = ao
-    hbao["ao_u8"] = np.clip(ao * 255.0 + 0.5, 0, 255).astype(np.uint8)
-    ao = hbao["ao"]
     curv = ng.node_curvature_multiscale({"circular": True}, {"normal": n_out}, gain=2.8)
     aniso = ng.node_anisotropy_flow({"circular": True}, {"height": h_out, "ao": ao, "roughness": rough})
     thick = ng.node_thickness_subsurface({"circular": True}, {"height": h_out})
-    rough_u8 = np.clip(rough * 255.0 + 0.5, 0, 255).astype(np.uint8)
-    orm_u8 = np.stack([hbao["ao_u8"], rough_u8, met_u8], axis=-1)
 
     # 5. Physically-based studio preview (with metallic Fresnel IBL)
-    prev_u8 = render_studio_preview(alb_lin, n_out, rough, met, ao)
+    prev_u8 = render_studio_preview(alb_lin, n_out, rough, met, ao) if preview else None
 
-    save_maps_parallel([
-        (out / "albedo_delit.png", alb_u8),
-        (out / "preview.png", prev_u8),
-        (out / "height.png", np.clip(h_out * 255.0 + 0.5, 0, 255).astype(np.uint8)),
-        (out / "height16.png", np.clip(h_out * 65535.0 + 0.5, 0, 65535).astype(np.uint16)),
-        (out / "normal.png", dp.normal_to_u8(n_out)),
-        (out / "bent_normal.png", hbao["bent_normal_u8"]),
-        (out / "ao.png", hbao["ao_u8"]),
-        (out / "roughness.png", rough_u8),
-        (out / "metallic.png", met_u8),
-        (out / "orm.png", orm_u8),
-        (out / "curvature.png", curv["curvature_u8"]),
-        (out / "cavity.png", curv["cavity_u8"]),
-        (out / "edge_wear.png", np.clip(curv["convex"] * 255.0 + 0.5, 0, 255).astype(np.uint8)),
-        (out / "anisotropy.png", aniso["anisotropy_u8"]),
-        (out / "specular.png", aniso["specular_u8"]),
-        (out / "thickness.png", thick["thickness_u8"]),
-        (out / "blend_mask.png", np.clip(surf_mask * 255.0 + 0.5, 0, 255).astype(np.uint8)),
-    ])
-    return out
+    return MaterialMaps(
+        albedo=alb_lin,
+        normal=unit_normals(n_out),
+        height=h_out,
+        roughness=rough,
+        metallic=met,
+        ao=ao,
+        bent_normal=unit_normals(hbao["bent_normal"]),
+        curvature=curv["curvature"],
+        cavity=curv["cavity"],
+        edge_wear=curv["convex"],
+        anisotropy=aniso["anisotropy"],
+        specular=aniso["specular"],
+        thickness=thick["thickness"],
+        preview=prev_u8,
+        blend_mask=surf_mask,
+        metadata={
+            "material_id": f"{pa.name}_blend_{pb.name}",
+            "blend": {"a": pa.name, "b": pb.name, "factor": float(factor), "contrast": float(contrast), "mode": mode},
+        },
+    )

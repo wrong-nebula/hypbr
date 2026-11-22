@@ -374,9 +374,11 @@ def _measure_calibrated(args: tuple[str, int]) -> tuple[str, dict[str, Any]]:
     import tempfile
 
     os.environ["HYPBR_DEVICE"] = "cpu"
-    import torch
+    from ._backend import get_torch
 
-    torch.set_num_threads(2)
+    torch = get_torch()
+    if torch is not None:
+        torch.set_num_threads(2)
     from .synthesize import synthesize_material
 
     mid, size = args

@@ -21,11 +21,17 @@ classifiers = [
 dependencies = [
     "numpy>=1.24",
     "pillow>=10.0",
-    "torch>=2.1",
 ]
 
 [project.optional-dependencies]
+# Optional PyTorch acceleration for procedural synthesis (CUDA/MPS kernels). Not needed on CPU:
+# without torch every procedural op runs an equivalent NumPy implementation.
+gpu = [
+    "torch>=2.1",
+]
+# Neural photo-to-PBR (`hypbr photo`, neural weathering); also needs Apple Depth Pro (`depth_pro_2`).
 neural = [
+    "torch>=2.1",
     "onnxruntime>=1.17",
 ]
 dev = [

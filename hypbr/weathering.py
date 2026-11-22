@@ -359,7 +359,10 @@ def compute_weathering_masks(
             )
             pocket = gd._smoothstep(0.64 - 0.36 * rs, 0.74 - 0.32 * rs, crust_drive)
             m_rust = np.clip(np.maximum(pocket, streak_mod * (0.65 + 0.35 * rs)), 0.0, 1.0)
-        masks["rust"] = np.clip(m_rust * np.clip(0.72 + 0.28 * rs, 0.0, 1.0) * relief_gate, 0.0, 1.0).astype(np.float32)
+        # Strength fades in from zero below rust=0.4 (identical above). Without the fade any trace of rust
+        # painted ~36% of a steel surface at 72% strength, so the channel behaved like an on/off switch.
+        amp = float(np.clip(0.72 + 0.28 * rs, 0.0, 1.0)) * min(1.0, rs / 0.4)
+        masks["rust"] = np.clip(m_rust * amp * relief_gate, 0.0, 1.0).astype(np.float32)
     else:
         masks["rust"] = np.zeros((H, W), dtype=np.float32)
 

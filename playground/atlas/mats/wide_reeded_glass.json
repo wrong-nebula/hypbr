@@ -1,0 +1,192 @@
+{
+ "id": "wide_reeded_glass",
+ "name": "Wide Reeded Glass",
+ "category": "glass_optics",
+ "subcategory": "fluted_glass",
+ "kind": "glass",
+ "description": "Wide-reed architectural glass. Optically ribbed privacy glass with refractive flutes.",
+ "generator": {
+  "kind": "parametric",
+  "family": "glass_optics",
+  "params": {
+   "c1": [
+    0.8,
+    0.82,
+    0.82
+   ],
+   "c2": [
+    0.84,
+    0.86,
+    0.86
+   ],
+   "c3": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "mode": "fluted",
+   "freq": 6,
+   "rough": 0.06,
+   "slope": 8.0
+  },
+  "seed": 17284
+ },
+ "real_world_size_m": [
+  0.3,
+  0.3
+ ],
+ "best_objects": [
+  "shower_screen",
+  "cabinet_door",
+  "room_divider",
+  "office_partition",
+  "window",
+  "pendant_lamp"
+ ],
+ "avoid_objects": [
+  "floor",
+  "road",
+  "terrain_ground",
+  "sofa"
+ ],
+ "scene_roles": [
+  "glass_window",
+  "furniture"
+ ],
+ "projection": {
+  "recommended": "uv",
+  "triplanar_fallback": false,
+  "world_scale_uv": true,
+  "anisotropic_axis": "v",
+  "requires_tangents": true,
+  "tiling_note": "Flutes run along V; keep them vertical. Use MeshPhysicalMaterial.transmission with the albedo as attenuation tint.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 0.3; repeat_v = surface_height_m / 0.3",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 0.3 (texture tiles per meter along U), 1 / 0.3 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.0,
+  "ior": 1.52,
+  "is_metallic": false,
+  "roughness_range": [
+   0.059,
+   0.125
+  ],
+  "metallic_range": [
+   0.0,
+   0.0
+  ],
+  "transmission": 0.9,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "light_use",
+  "wear": 0.05,
+  "dirt": 0.1,
+  "moisture": 0.1,
+  "moss": 0.0,
+  "rust": 0.0,
+  "frost": 0.0,
+  "dust": 0.05,
+  "note": "Glass picks up water spots and dust in flute valleys.",
+  "hypbr_params": {
+   "wear": 0.05,
+   "dirt": 0.1,
+   "wet": 0.1,
+   "moss": 0.0,
+   "rust": 0.0,
+   "dust": 0.05
+  }
+ },
+ "tags": [
+  "wide",
+  "reeded",
+  "glass",
+  "white",
+  "light",
+  "glossy",
+  "fluted_glass",
+  "glass_optics",
+  "glass_window",
+  "furniture"
+ ],
+ "pairs_well_with": [
+  "brushed_satin_brass",
+  "wide_plank_hickory_floor",
+  "charcoal_soapstone",
+  "white_ash_batten_ceiling"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 0.795,
+  "seam_ratios": {
+   "height": 0.795,
+   "normal": 0.441,
+   "albedo": 0.114
+  },
+  "normal_unit_error": 0.0015,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  234,
+  236,
+  236
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/wide_reeded_glass/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/wide_reeded_glass/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/wide_reeded_glass/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/wide_reeded_glass/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/wide_reeded_glass/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/wide_reeded_glass.json",
+ "uv_example": {
+  "surface_m": [
+   1.0,
+   2.0
+  ],
+  "repeat": [
+   3.333,
+   6.667
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: Wide Reeded Glass (wide_reeded_glass) | 1 tile = 0.3 m x 0.3 m\nimport * as THREE from 'three';\nconst SURFACE_W = 1, SURFACE_H = 2; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/wide_reeded_glass/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 0.3, SURFACE_H / 0.3);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0, displacementBias: -0, // aux.R height; dense mesh only\n  ior: 1.52,\n  transmission: 0.9, thickness: 0.006, // glass: albedo tints transmission\n  anisotropy: 0.6, anisotropyRotation: Math.PI / 2, // brushed/grain direction along V\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: Wide Reeded Glass (wide_reeded_glass) | 1 tile = 0.3 m x 0.3 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'wide_reeded_glass', 'https://hypbr.vercel.app/assets/mats/wide_reeded_glass/'\nSURFACE_W, SURFACE_H = 1, 2  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (SURFACE_W / 0.3, SURFACE_H / 0.3, 1.0)\nL.new(tc.outputs[\"UV\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.52\nfor key in (\"Transmission Weight\", \"Transmission\"):\n    if key in bsdf.inputs: bsdf.inputs[key].default_value = 0.9\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "wide_reeded_glass",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/wide_reeded_glass/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/wide_reeded_glass/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/wide_reeded_glass/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/wide_reeded_glass/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.52
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

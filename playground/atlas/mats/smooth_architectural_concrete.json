@@ -1,0 +1,195 @@
+{
+ "id": "smooth_architectural_concrete",
+ "name": "Smooth Architectural Concrete",
+ "category": "stone_marble_concrete",
+ "subcategory": "concrete",
+ "kind": "concrete",
+ "description": "Smooth fair-faced architectural concrete with sparse bug holes. Architectural concrete with trowel marks, pores and form-work imprints.",
+ "generator": {
+  "kind": "parametric",
+  "family": "concrete_plaster",
+  "params": {
+   "c1": [
+    0.42,
+    0.41,
+    0.39
+   ],
+   "c2": [
+    0.48,
+    0.47,
+    0.45
+   ],
+   "c3": [
+    0.2,
+    0.2,
+    0.19
+   ],
+   "grit": 0.2,
+   "pores": 0.15,
+   "rough": 0.72,
+   "slope": 4.0
+  },
+  "seed": 10291
+ },
+ "real_world_size_m": [
+  2.0,
+  2.0
+ ],
+ "best_objects": [
+  "building_facade",
+  "parking_garage_column",
+  "loft_floor",
+  "skate_park",
+  "bunker_wall",
+  "staircase",
+  "bridge_pier"
+ ],
+ "avoid_objects": [
+  "sofa",
+  "jewelry",
+  "window_pane",
+  "tree_trunk"
+ ],
+ "scene_roles": [
+  "wall",
+  "floor",
+  "ceiling"
+ ],
+ "projection": {
+  "recommended": "triplanar",
+  "triplanar_fallback": true,
+  "world_scale_uv": true,
+  "anisotropic_axis": "none",
+  "requires_tangents": false,
+  "tiling_note": "Triplanar suits monolithic pours; board-formed variants need UVs with boards horizontal.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 2; repeat_v = surface_height_m / 2",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 2 (texture tiles per meter along U), 1 / 2 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.004,
+  "ior": 1.5,
+  "is_metallic": false,
+  "roughness_range": [
+   0.659,
+   0.796
+  ],
+  "metallic_range": [
+   0.0,
+   0.0
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "aged",
+  "wear": 0.25,
+  "dirt": 0.45,
+  "moisture": 0.25,
+  "moss": 0.1,
+  "rust": 0.05,
+  "frost": 0.0,
+  "dust": 0.2,
+  "note": "Concrete stains under drips, darkens when wet and grows algae at the base.",
+  "hypbr_params": {
+   "wear": 0.25,
+   "dirt": 0.45,
+   "wet": 0.25,
+   "moss": 0.1,
+   "rust": 0.05,
+   "dust": 0.2
+  }
+ },
+ "tags": [
+  "smooth",
+  "fairfaced",
+  "minimal",
+  "concrete",
+  "gray",
+  "light",
+  "matte",
+  "stone_marble_concrete",
+  "wall",
+  "floor",
+  "ceiling"
+ ],
+ "pairs_well_with": [
+  "brushed_titanium_seam_panel",
+  "bronze_tinted_glazing",
+  "acoustic_slat_wood",
+  "fresh_black_asphalt"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 0.681,
+  "seam_ratios": {
+   "height": 0.454,
+   "normal": 0.681,
+   "albedo": 0.453
+  },
+  "normal_unit_error": 0.0006,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  172,
+  170,
+  166
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/smooth_architectural_concrete/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/smooth_architectural_concrete/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/smooth_architectural_concrete/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/smooth_architectural_concrete/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/smooth_architectural_concrete/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/smooth_architectural_concrete.json",
+ "uv_example": {
+  "surface_m": [
+   10.0,
+   6.0
+  ],
+  "repeat": [
+   5.0,
+   3.0
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: Smooth Architectural Concrete (smooth_architectural_concrete) | 1 tile = 2 m x 2 m\nimport * as THREE from 'three';\nconst SURFACE_W = 10, SURFACE_H = 6; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/smooth_architectural_concrete/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 2, SURFACE_H / 2);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.004, displacementBias: -0.002, // aux.R height; dense mesh only\n  ior: 1.5,\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: Smooth Architectural Concrete (smooth_architectural_concrete) | 1 tile = 2 m x 2 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'smooth_architectural_concrete', 'https://hypbr.vercel.app/assets/mats/smooth_architectural_concrete/'\nSURFACE_W, SURFACE_H = 10, 6  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (1 / 2, 1 / 2, 1 / 2)\nL.new(tc.outputs[\"Object\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    t.projection = \"BOX\"; t.projection_blend = 0.25\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.004; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.5\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "smooth_architectural_concrete",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/smooth_architectural_concrete/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/smooth_architectural_concrete/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/smooth_architectural_concrete/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/smooth_architectural_concrete/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.5
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

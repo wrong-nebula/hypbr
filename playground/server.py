@@ -29,9 +29,12 @@ from typing import Any
 
 PLAYGROUND_DIR = Path(__file__).resolve().parent
 REPO_ROOT = PLAYGROUND_DIR.parent
-HYPBR_SRC = REPO_ROOT / "hypbr"
-if str(HYPBR_SRC) not in sys.path:
-    sys.path.insert(0, str(HYPBR_SRC))
+# Works both from `<workspace>/playground` (repo at `<workspace>/hypbr`) and `<repo>/playground`
+for _cand in (REPO_ROOT, REPO_ROOT / "hypbr"):
+    if (_cand / "hypbr" / "synthesize.py").is_file():
+        if str(_cand) not in sys.path:
+            sys.path.insert(0, str(_cand))
+        break
 
 import hypbr  # noqa: E402
 from hypbr import depthpro_pbr as dp  # noqa: E402
@@ -95,15 +98,9 @@ KIND_TO_GROUP: dict[str, str] = {
     "carbon": "Rubber & Polymer",
 }
 
-GROUP_ORDER = [
-    "All",
-    "Metal",
-    "Stone & Concrete",
-    "Wood & Natural",
-    "Ceramic & Glass",
-    "Fabric & Leather",
-    "Rubber & Polymer",
-]
+from hypbr.atlas_catalog import CATEGORIES as ATLAS_CATEGORIES  # noqa: E402
+
+GROUP_ORDER = ["All"] + [c["name"] for c in ATLAS_CATEGORIES]
 
 # Approximate per-kind defaults for catalog browsing before synthesis
 KIND_DEFAULT_META: dict[str, tuple[float, float]] = {
@@ -139,46 +136,11 @@ def _format_title(mat_id: str) -> str:
 
 
 def _build_catalog() -> tuple[list[dict[str, Any]], dict[str, dict[str, Any]]]:
-    items: list[dict[str, Any]] = []
-    by_id: dict[str, dict[str, Any]] = {}
+    """All 500 atlas materials (lean playground rows shared with the static baker)."""
+    from hypbr.atlas import playground_entries
 
-    for idx, (did, desc, mat_kind, tint) in enumerate(gd.DAILY_CATALOG):
-        def_r, def_m = KIND_DEFAULT_META.get(mat_kind, (0.5, 0.0))
-        entry = {
-            "id": did,
-            "name": _format_title(did),
-            "description": desc,
-            "kind": mat_kind,
-            "group": KIND_TO_GROUP.get(mat_kind, "Other"),
-            "archetype": infer_material_kind(did, def_m),
-            "tint": [round(float(c), 4) for c in tint],
-            "tint_hex": _rgb_to_hex(tint),
-            "default_seed": 2000 + idx * 41,
-            "default_roughness": def_r,
-            "default_metallic": def_m,
-            "source": "daily_catalog",
-        }
-        items.append(entry)
-        by_id[did] = entry
-
-    # Include the machined HardOps plate generator as a bonus catalog entry
-    hardops = {
-        "id": "hardops_plate",
-        "name": "HardOps Machined Plate",
-        "description": "CNC-machined gunmetal HardOps panel with plug stamps, bolt plate, lug boss & weld fillets",
-        "kind": "metal",
-        "group": "Metal",
-        "archetype": "metal",
-        "tint": [0.28, 0.31, 0.36],
-        "tint_hex": _rgb_to_hex((0.28, 0.31, 0.36)),
-        "default_seed": 901,
-        "default_roughness": 0.24,
-        "default_metallic": 0.95,
-        "source": "hardops",
-    }
-    items.append(hardops)
-    by_id[hardops["id"]] = hardops
-    return items, by_id
+    items = playground_entries(asset_prefix=None)
+    return items, {e["id"]: e for e in items}
 
 
 CATALOG_LIST, CATALOG_BY_ID = _build_catalog()
@@ -522,6 +484,8 @@ def get_catalog_payload() -> dict[str, Any]:
             preview_url = f"/cache/{key_512}/preview.png"
         elif has_256 and (CACHE_DIR / key_256 / "preview.png").is_file():
             preview_url = f"/cache/{key_256}/preview.png"
+        elif (PLAYGROUND_DIR / "assets" / "mats" / entry["id"] / "preview.webp").is_file():
+            preview_url = f"/assets/mats/{entry['id']}/preview.webp"
 
         if has_256 or has_512:
             cached_count += 1
@@ -543,6 +507,7 @@ def get_catalog_payload() -> dict[str, Any]:
         "count": len(materials),
         "cached_count": cached_count,
         "groups": GROUP_ORDER,
+        "group_counts": {g: sum(1 for m in materials if m["group"] == g) for g in GROUP_ORDER[1:]},
         "materials": materials,
         "weather_presets": presets,
         "weather_archetypes": list(WEATHER_ARCHETYPES),
@@ -605,6 +570,7 @@ class PlaygroundHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", cache_control)
+        self.send_header("Access-Control-Allow-Origin", "*")
         if extra_headers:
             for k, v in extra_headers.items():
                 self.send_header(k, v)
@@ -640,9 +606,25 @@ class PlaygroundHandler(BaseHTTPRequestHandler):
             mime = "text/html; charset=utf-8"
         elif fp.suffix == ".png":
             mime = "image/png"
+        elif fp.suffix == ".webp":
+            mime = "image/webp"
+        elif fp.suffix == ".json":
+            mime = "application/json; charset=utf-8"
+        elif fp.suffix == ".txt":
+            mime = "text/plain; charset=utf-8"
+        elif fp.suffix == ".md":
+            mime = "text/markdown; charset=utf-8"
         else:
             mime = mime or "application/octet-stream"
         self._send_bytes(fp.read_bytes(), mime, cache_control=cache_control)
+
+    def do_OPTIONS(self) -> None:  # noqa: N802
+        self.send_response(HTTPStatus.NO_CONTENT)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, HEAD, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "*")
+        self.send_header("Content-Length", "0")
+        self.end_headers()
 
     def do_GET(self) -> None:  # noqa: N802
         parsed = urllib.parse.urlsplit(self.path)
@@ -653,8 +635,23 @@ class PlaygroundHandler(BaseHTTPRequestHandler):
                 self._serve_file(PLAYGROUND_DIR / "index.html", "no-cache")
                 return
 
-            if path in ("/styles.css", "/app.js"):
+            if path in ("/styles.css", "/app.js", "/static_engine.js"):
                 self._serve_file(PLAYGROUND_DIR / path.lstrip("/"), "no-cache")
+                return
+
+            # Agent atlas + baked static assets (CORS-enabled like the Vercel deployment)
+            if path in ("/llms.txt", "/agent.md", "/atlas.json") or path.startswith(("/atlas/", "/assets/")):
+                rel = path.lstrip("/")
+                target = (PLAYGROUND_DIR / rel).resolve()
+                if PLAYGROUND_DIR.resolve() not in target.parents:
+                    self._send_json({"error": "Forbidden path"}, status=HTTPStatus.FORBIDDEN)
+                    return
+                if path == "/atlas.json" or path.startswith("/atlas/") or path in ("/llms.txt", "/agent.md"):
+                    if not target.is_file():
+                        self._send_json({"error": "Atlas files not exported yet: run `hypbr atlas export playground/` or bake_static.py"},
+                                        status=HTTPStatus.NOT_FOUND)
+                        return
+                self._serve_file(target, "public, max-age=300")
                 return
 
             if path == "/api/health":

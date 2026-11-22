@@ -1,0 +1,182 @@
+{
+ "name": "hypbr PBR Material Atlas",
+ "version": "1.0.0",
+ "material_count": 500,
+ "license": "MIT",
+ "homepage": "https://hypbr.vercel.app",
+ "repository": "https://github.com/wrong-nebula/hypbr",
+ "endpoints": {
+  "llms_txt": "https://hypbr.vercel.app/llms.txt",
+  "agent_guide": "https://hypbr.vercel.app/agent.md",
+  "manifest": "https://hypbr.vercel.app/atlas.json",
+  "index": "https://hypbr.vercel.app/atlas/index.json",
+  "category_shard": "https://hypbr.vercel.app/atlas/categories/{category}.json",
+  "material_spec": "https://hypbr.vercel.app/atlas/mats/{id}.json",
+  "texture": "https://hypbr.vercel.app/assets/mats/{id}/{map}.webp"
+ },
+ "maps": {
+  "albedo_delit": {
+   "file": "albedo_delit.webp",
+   "description": "Base color, de-lit (no baked lighting). sRGB. 512x512 WebP."
+  },
+  "normal": {
+   "file": "normal.webp",
+   "description": "Tangent-space normal map, OpenGL convention (+Y up / green = up). Linear. 512x512 WebP."
+  },
+  "orm": {
+   "file": "orm.webp",
+   "description": "Packed R=Ambient Occlusion, G=Roughness, B=Metallic. Linear. Directly glTF metallicRoughness compatible."
+  },
+  "aux": {
+   "file": "aux.webp",
+   "description": "Packed R=Height (0.5 = mid-level), G=Curvature (0.5 = flat), B=Cavity. Linear."
+  },
+  "preview": {
+   "file": "preview.webp",
+   "description": "256x256 studio-lit sphere thumbnail (sRGB) for previews only; never use as a texture."
+  }
+ },
+ "texture_resolution": 512,
+ "categories": [
+  {
+   "slug": "architectural_masonry",
+   "name": "Architectural Masonry",
+   "count": 65,
+   "description": "Bricks, concrete blocks, ashlar, stacked stone, cobbles and pavers for building shells and hardscape.",
+   "shard": "https://hypbr.vercel.app/atlas/categories/architectural_masonry.json"
+  },
+  {
+   "slug": "wood_timber",
+   "name": "Wood & Timber",
+   "count": 58,
+   "description": "Plank floors, parquet, cladding, slats, charred timber, engineered boards and tree bark.",
+   "shard": "https://hypbr.vercel.app/atlas/categories/wood_timber.json"
+  },
+  {
+   "slug": "stone_marble_concrete",
+   "name": "Stone, Marble & Concrete",
+   "count": 58,
+   "description": "Marbles, granites, terrazzo, quartz, concrete, plaster, stucco, slate and natural stone slabs.",
+   "shard": "https://hypbr.vercel.app/atlas/categories/stone_marble_concrete.json"
+  },
+  {
+   "slug": "tiles_ceramics",
+   "name": "Tiles & Ceramics",
+   "count": 46,
+   "description": "Subway, zellige, porcelain, mosaics, crackle and stoneware glazes, terracotta.",
+   "shard": "https://hypbr.vercel.app/atlas/categories/tiles_ceramics.json"
+  },
+  {
+   "slug": "metals_industrial",
+   "name": "Metals & Industrial",
+   "count": 58,
+   "description": "Brushed, anodized, galvanized, hammered, corten and damascus metals, cladding, meshes, treads and grips.",
+   "shard": "https://hypbr.vercel.app/atlas/categories/metals_industrial.json"
+  },
+  {
+   "slug": "fabrics_upholstery",
+   "name": "Fabrics & Upholstery",
+   "count": 58,
+   "description": "Linen, denim, canvas, plaid, boucle, velvet, corduroy, knits, carpet, felt, leathers, wicker and cork.",
+   "shard": "https://hypbr.vercel.app/atlas/categories/fabrics_upholstery.json"
+  },
+  {
+   "slug": "nature_terrain",
+   "name": "Nature & Terrain",
+   "count": 40,
+   "description": "Sand, cracked mud, gravel, ice, snow, grass, soil, moss, forest floor, cliffs and thatch.",
+   "shard": "https://hypbr.vercel.app/atlas/categories/nature_terrain.json"
+  },
+  {
+   "slug": "glass_optics",
+   "name": "Glass & Optics",
+   "count": 35,
+   "description": "Fluted, reeded, block, frosted, pebbled, cathedral, wired and tinted architectural glazing.",
+   "shard": "https://hypbr.vercel.app/atlas/categories/glass_optics.json"
+  },
+  {
+   "slug": "rubber_polymers_roads",
+   "name": "Rubber, Polymers & Roads",
+   "count": 42,
+   "description": "Asphalt, tire treads, rubber mats, silicone, carbon fiber, foams and molded plastics.",
+   "shard": "https://hypbr.vercel.app/atlas/categories/rubber_polymers_roads.json"
+  },
+  {
+   "slug": "roofing_tech_scifi",
+   "name": "Roofing, Tech & Sci-Fi",
+   "count": 40,
+   "description": "Slate, shake, barrel and fishscale roofing, PCBs, solar arrays, sci-fi hull plating, heatsinks and acoustic foam.",
+   "shard": "https://hypbr.vercel.app/atlas/categories/roofing_tech_scifi.json"
+  }
+ ],
+ "scene_roles": [
+  "wall",
+  "floor",
+  "ceiling",
+  "roof",
+  "ground",
+  "road",
+  "furniture",
+  "prop",
+  "trim",
+  "hero_asset",
+  "mechanical",
+  "foliage_bark",
+  "glass_window"
+ ],
+ "projections": [
+  "uv",
+  "triplanar",
+  "box"
+ ],
+ "anisotropic_axes": [
+  "none",
+  "u",
+  "v",
+  "radial"
+ ],
+ "shader_conventions": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "threejs": "MeshPhysicalMaterial; aoMap/roughnessMap/metalnessMap all = orm (three reads R/G/B); normal is native.",
+  "gltf": "orm is directly the glTF metallicRoughnessTexture (G,B) and occlusionTexture (R).",
+  "blender": "Separate Color on orm: Green->Roughness, Blue->Metallic; Normal Map node (OpenGL).",
+  "unreal": "DirectX normals: enable 'Flip Green Channel' on normal.webp; ORM packs R=AO G=Roughness B=Metallic (UE native order).",
+  "unity": "OpenGL normals (native). URP/Built-in: metallic map + smoothness = 1 - roughness in alpha; HDRP mask map = (Metallic, AO, detail, Smoothness)."
+ },
+ "weathering_channels": {
+  "wear": "Edge wear / polish on convex crests",
+  "dirt": "Crevice grime",
+  "moisture": "Wet darkening and puddles (hypbr 'wet')",
+  "moss": "Biological growth",
+  "rust": "Oxide / verdigris / efflorescence runoff",
+  "frost": "Frost & rime (mapped to hypbr 'dust')",
+  "dust": "Settled mineral dust"
+ },
+ "schema": {
+  "id": "unique snake_case id",
+  "name": "display name",
+  "category": "one of 10 category slugs",
+  "subcategory": "surface class",
+  "description": "1-2 sentences",
+  "generator": "{kind: flagship|parametric, family?, params?, seed}",
+  "real_world_size_m": "[width_m, height_m] covered by ONE texture tile (UV 0..1)",
+  "best_objects": "4-8 objects/meshes it belongs on",
+  "avoid_objects": "2-4 objects where it looks wrong",
+  "scene_roles": "subset of scene_roles",
+  "projection": "{recommended, triplanar_fallback, world_scale_uv, anisotropic_axis, requires_tangents, tiling_note, uv_repeat_formula}",
+  "shader_setup": "{normal_space, orm_packing, aux_packing, albedo_colorspace, data_colorspace, displacement_scale_m, ior, is_metallic, roughness_range, metallic_range, transmission}",
+  "recommended_weathering": "{preset, wear, dirt, moisture, moss, rust, frost, dust, note, hypbr_params}",
+  "pairs_well_with": "3-5 complementary atlas ids",
+  "tags": "search keywords",
+  "maps": "absolute texture URLs (spec cards only)",
+  "snippets": "threejs / blender_bpy / gltf (spec cards only)"
+ },
+ "usage": {
+  "uv_repeat": "repeat_u = surface_width_m / real_world_size_m[0]; repeat_v = surface_height_m / real_world_size_m[1]",
+  "triplanar": "world-space scale = 1 / real_world_size_m (tiles per meter)"
+ }
+}

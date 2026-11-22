@@ -3,12 +3,15 @@
 [![CI](https://github.com/wrong-nebula/hypbr/actions/workflows/ci.yml/badge.svg)](https://github.com/wrong-nebula/hypbr/actions/workflows/ci.yml)
 [![Live 3D Playground](https://img.shields.io/badge/Live_3D_Playground-hypbr.vercel.app-d97742?style=flat&logo=vercel)](https://hypbr.vercel.app)
 
-**Hybrid Neural + Exact Periodic Procedural PBR Material Synthesizer**
+**500-Material Agent-Ready PBR Atlas + Hybrid Neural / Exact Periodic Procedural PBR Synthesizer**
 
-> **Try it live in your browser:** **[hypbr.vercel.app](https://hypbr.vercel.app)** — interactive Three.js `r187` PBR studio with all **69** seamless 512px materials, real-time 6-channel weathering, HeightLerp A×B blending, A/B split compare, channel inspection, and one-click PNG ZIP export.
+> **Point any AI agent at one URL:** **[hypbr.vercel.app/llms.txt](https://hypbr.vercel.app/llms.txt)** — 500 physically calibrated, mathematically seamless PBR materials with CORS-enabled 512px WebP maps and JSON spec cards that tell the agent *what objects each material belongs on*, the *exact real-world tile size in meters*, *UV vs triplanar projection*, *engine shader wiring*, *weathering presets* and *pairing partners*.
+>
+> **Try it live:** **[hypbr.vercel.app](https://hypbr.vercel.app)** — interactive Three.js `r187` PBR studio over all 500 materials with an Atlas Inspector, real-time 6-channel weathering, HeightLerp A×B blending and PNG ZIP export.
 
 `hypbr` synthesizes seamlessly tileable, physically calibrated **15-map PBR material sets** (glTF 2.0 ORM, 16-bit height, OpenGL/DirectX tangent normals, 8-azimuth horizon-based AO, bent normals, curvature, anisotropy, specular, and subsurface thickness) at arbitrary resolution with zero border seams.
 
+- **500-Material Agent Atlas**: 69 hand-tuned flagship generators + 431 curated parametric materials from 28 periodic generator families across 10 scene categories (masonry, wood, stone/marble/concrete, tiles, metals, fabrics, terrain, glass, rubber/roads, roofing/tech/sci-fi). Every material passes `hypbr.verify` (zero wrap seams, finite maps, physical ranges).
 - **Exact Periodic Procedural Synthesis**: Pure NumPy/PyTorch circular-padded microstructure generators across metals, stones, ceramics, fabrics, wood, and hard-surface panels — ~0.35s per material with `0.00 px` seam error.
 - **47-Node Composable PBR Graph**: Editable JSON node graph with analytic bevels, Weickert structure tensors, Reoriented Normal Mapping (RNM), 8-azimuth Horizon-Based Ambient Occlusion (HBAO) + Bent Normals, and Kaplanyan/Toksvig Specular Anti-Aliasing.
 - **Optional Neural Photo-to-PBR**: Calibrate real macro photographs through **Apple Depth Pro** (metric depth prior) and **DeepBump ONNX** (micro-relief tangent normals) before feeding into the circular-padded 47-node graph.
@@ -22,6 +25,36 @@
 <p align="center">
   <img src="examples/assets/showcase_3.png" alt="hypbr PBR showcase 3" width="100%" />
 </p>
+
+## Agent Atlas (500 materials)
+
+| Endpoint | What it is |
+| --- | --- |
+| [`/llms.txt`](https://hypbr.vercel.app/llms.txt) | LLM-optimized entrypoint (endpoints, conventions, quick start) |
+| [`/agent.md`](https://hypbr.vercel.app/agent.md) | Full integration guide: picking, UV scale, projection, shader wiring, weathering |
+| [`/atlas.json`](https://hypbr.vercel.app/atlas.json) | Manifest: version, count, schema, URL templates, categories |
+| [`/atlas/index.json`](https://hypbr.vercel.app/atlas/index.json) | Compact searchable index of all 500 materials |
+| `/atlas/categories/<slug>.json` | 10 category shards with full metadata |
+| `/atlas/mats/<id>.json` | Spec card: metadata + texture URLs + Three.js / Blender `bpy` / glTF snippets |
+| `/assets/mats/<id>/{albedo_delit,normal,orm,aux,preview}.webp` | 512×512 maps (sRGB albedo, OpenGL normal, ORM = R AO / G rough / B metal, aux = R height / G curvature / B cavity) |
+
+Every spec card carries `real_world_size_m` (UV repeat = surface size / tile size), `best_objects`, `avoid_objects`, `scene_roles`, `projection` (`uv` / `triplanar` / `box`, anisotropic axis, tangents, tiling note), `shader_setup` (color spaces, packing, displacement scale, IOR, measured roughness/metallic ranges, transmission), `recommended_weathering` (wear, dirt, moisture, moss, rust, frost + `hypbr_params`), `pairs_well_with` and `tags`.
+
+```python
+from hypbr.atlas import search_atlas, recommend_for_object, get_material_spec
+
+search_atlas("brick wall", limit=5)
+recommend_for_object("kitchen counter", style="modern", environment="interior")
+print(get_material_spec("calacatta_gold_marble")["snippets"]["threejs"])
+```
+
+```bash
+hypbr atlas search "asphalt road"
+hypbr atlas recommend sofa --environment interior
+hypbr atlas info classic_red_brick --snippet blender
+hypbr atlas export ./site            # llms.txt, agent.md, atlas.json, atlas/**
+hypbr synth classic_red_brick --size 2048 --weather-preset aged
+```
 
 ## Installation
 

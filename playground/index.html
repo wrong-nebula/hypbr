@@ -3,10 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>hypbr — Interactive 3D PBR Material Playground</title>
-  <meta name="description" content="Explore 69 seamless calibrated procedural PBR materials in Three.js with real-time 6-channel physical weathering, HeightLerp A×B blending, and engine-ready PNG ZIP export." />
+  <title>hypbr — 500-Material Agent-Ready PBR Atlas &amp; Playground</title>
+  <meta name="description" content="500 seamless, physically calibrated PBR materials with agent-ready metadata (real-world tile size, best objects, projection, shader wiring, weathering, pairings). CORS-enabled JSON + WebP for Three.js, Blender, glTF, Unreal and Unity. Start at /llms.txt." />
+  <link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt" />
+  <link rel="alternate" type="application/json" title="hypbr atlas manifest" href="/atlas.json" />
   <meta property="og:title" content="hypbr — Interactive 3D PBR Material Playground" />
-  <meta property="og:description" content="69 seamless calibrated procedural PBR materials · Real-time 6-channel weathering · HeightLerp blending · Three.js r187 AgX Studio" />
+  <meta property="og:description" content="500 seamless calibrated PBR materials · Agent-ready atlas (llms.txt) · Real-time 6-channel weathering · HeightLerp blending · Three.js r187" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3CradialGradient id='g' cx='35%25' cy='30%25' r='68%25'%3E%3Cstop offset='0%25' stop-color='%23f6b88f'/%3E%3Cstop offset='55%25' stop-color='%23c87042'/%3E%3Cstop offset='100%25' stop-color='%233d1e12'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='%230d1117'/%3E%3Ccircle cx='16' cy='16' r='11' fill='url(%23g)'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="./styles.css" />
   <script type="importmap">
@@ -54,6 +56,10 @@
           ↓ ZIP
         </a>
 
+        <button type="button" id="btnAgentAtlas" class="hdr-btn hdr-btn-agent" title="Agent Atlas: llms.txt, JSON endpoints & system prompt for AI agents">
+          <span class="btn-icon">✦</span> Agent Atlas
+        </button>
+
         <a class="hdr-btn" href="https://github.com/wrong-nebula/hypbr" target="_blank" rel="noopener noreferrer" title="View hypbr source & Python CLI on GitHub">
           GitHub ↗
         </a>
@@ -73,7 +79,7 @@
           <input
             id="catalogSearch"
             type="text"
-            placeholder="Filter materials… (press /)"
+            placeholder="Search 500 materials, objects, tags… (press /)"
             autocomplete="off"
             spellcheck="false"
             aria-label="Filter materials"
@@ -201,8 +207,9 @@
       <!-- Right Sidebar: Weathering Lab, Surface & Lighting, Blend, QA -->
       <aside class="sidebar-right" aria-label="Weathering and Material Controls">
         <div class="right-tabs" role="tablist">
-          <button type="button" class="rtab-btn active" data-rtab="weather">Weathering &amp; Surface</button>
-          <button type="button" class="rtab-btn" data-rtab="blend">Height Blend</button>
+          <button type="button" class="rtab-btn active" data-rtab="weather">Weathering</button>
+          <button type="button" class="rtab-btn" data-rtab="atlas">Atlas Inspector</button>
+          <button type="button" class="rtab-btn" data-rtab="blend">Blend</button>
         </div>
 
         <div class="right-scroll">
@@ -313,6 +320,12 @@
             </section>
           </div>
 
+          <!-- TAB: Atlas Inspector (agent metadata) -->
+          <div id="rtabAtlas" class="rtab-pane">
+            <div id="atlasEmpty" class="helper-copy atlas-empty">Select a material to inspect its agent metadata.</div>
+            <div id="atlasBody" class="atlas-body"></div>
+          </div>
+
           <!-- TAB 2: Height-Lerp Material Blend -->
           <div id="rtabBlend" class="rtab-pane">
             <section class="ctrl-section">
@@ -409,6 +422,21 @@
       </aside>
     </div>
   </div>
+
+  <!-- Agent Atlas modal -->
+  <div id="agentModal" class="agent-modal hidden" role="dialog" aria-modal="true" aria-labelledby="agentModalTitle" aria-hidden="true">
+    <div class="agent-card">
+      <div class="agent-card-head">
+        <div>
+          <div id="agentModalTitle" class="atlas-title">Agent Atlas</div>
+          <div class="mono-dim">Point any AI agent at one URL. Static JSON + WebP, CORS <code>*</code>, MIT.</div>
+        </div>
+        <button type="button" id="btnAgentClose" class="vp-btn" aria-label="Close agent atlas">Close</button>
+      </div>
+      <div id="agentModalBody" class="agent-card-body"></div>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script type="module" src="./app.js"></script>
 </body>

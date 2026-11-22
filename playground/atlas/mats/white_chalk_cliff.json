@@ -1,0 +1,196 @@
+{
+ "id": "white_chalk_cliff",
+ "name": "White Chalk Cliff",
+ "category": "nature_terrain",
+ "subcategory": "rock_cliff",
+ "kind": "stone",
+ "description": "Bright white chalk sea cliff with flint bands. Stratified and fractured bedrock with ledges and crack networks.",
+ "generator": {
+  "kind": "parametric",
+  "family": "rock_cliff",
+  "params": {
+   "c1": [
+    0.78,
+    0.77,
+    0.72
+   ],
+   "c2": [
+    0.7,
+    0.69,
+    0.64
+   ],
+   "c3": [
+    0.4,
+    0.38,
+    0.34
+   ],
+   "rough": 0.8,
+   "slope": 14.0,
+   "layers": 10,
+   "fracture": 8
+  },
+  "seed": 17062
+ },
+ "real_world_size_m": [
+  4.0,
+  4.0
+ ],
+ "best_objects": [
+  "cliff_face",
+  "canyon_wall",
+  "mountain",
+  "boulder",
+  "cave_wall",
+  "quarry"
+ ],
+ "avoid_objects": [
+  "interior_wall",
+  "sofa",
+  "kitchen_countertop",
+  "window_pane"
+ ],
+ "scene_roles": [
+  "ground",
+  "wall",
+  "hero_asset"
+ ],
+ "projection": {
+  "recommended": "triplanar",
+  "triplanar_fallback": true,
+  "world_scale_uv": true,
+  "anisotropic_axis": "none",
+  "requires_tangents": false,
+  "tiling_note": "Triplanar is mandatory on sculpted rock; strata run along U, keep them roughly horizontal.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 4; repeat_v = surface_height_m / 4",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 4 (texture tiles per meter along U), 1 / 4 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.08,
+  "ior": 1.5,
+  "is_metallic": false,
+  "roughness_range": [
+   0.714,
+   0.953
+  ],
+  "metallic_range": [
+   0.0,
+   0.0
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "mossy",
+  "wear": 0.15,
+  "dirt": 0.25,
+  "moisture": 0.2,
+  "moss": 0.3,
+  "rust": 0.0,
+  "frost": 0.0,
+  "dust": 0.1,
+  "note": "Exposed rock carries moss on ledges and dust in fractures.",
+  "hypbr_params": {
+   "wear": 0.15,
+   "dirt": 0.25,
+   "wet": 0.2,
+   "moss": 0.3,
+   "rust": 0.0,
+   "dust": 0.1
+  }
+ },
+ "tags": [
+  "chalk",
+  "white",
+  "coastal",
+  "rock",
+  "cliff",
+  "light",
+  "matte",
+  "rock_cliff",
+  "nature_terrain",
+  "stone",
+  "ground",
+  "wall",
+  "hero_asset"
+ ],
+ "pairs_well_with": [
+  "forest_leaf_litter",
+  "white_marble_chip_gravel",
+  "white_beach_sand_ripples",
+  "palm_trunk_bark"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 1.866,
+  "seam_ratios": {
+   "height": 1.366,
+   "normal": 1.866,
+   "albedo": 1.665
+  },
+  "normal_unit_error": 0.0018,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  204,
+  202,
+  195
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_chalk_cliff/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/white_chalk_cliff/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/white_chalk_cliff/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/white_chalk_cliff/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/white_chalk_cliff/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/white_chalk_cliff.json",
+ "uv_example": {
+  "surface_m": [
+   12.0,
+   12.0
+  ],
+  "repeat": [
+   3.0,
+   3.0
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: White Chalk Cliff (white_chalk_cliff) | 1 tile = 4 m x 4 m\nimport * as THREE from 'three';\nconst SURFACE_W = 12, SURFACE_H = 12; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/white_chalk_cliff/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 4, SURFACE_H / 4);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.08, displacementBias: -0.04, // aux.R height; dense mesh only\n  ior: 1.5,\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: White Chalk Cliff (white_chalk_cliff) | 1 tile = 4 m x 4 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'white_chalk_cliff', 'https://hypbr.vercel.app/assets/mats/white_chalk_cliff/'\nSURFACE_W, SURFACE_H = 12, 12  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (1 / 4, 1 / 4, 1 / 4)\nL.new(tc.outputs[\"Object\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    t.projection = \"BOX\"; t.projection_blend = 0.25\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.08; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.5\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "white_chalk_cliff",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/white_chalk_cliff/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/white_chalk_cliff/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/white_chalk_cliff/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/white_chalk_cliff/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.5
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

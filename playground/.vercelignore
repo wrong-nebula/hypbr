@@ -1,0 +1,6 @@
+*.py
+__pycache__
+.cache
+.DS_Store
+assets/.bake_cache.json
+README.md

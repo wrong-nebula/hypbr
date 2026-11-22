@@ -1,0 +1,175 @@
+{
+ "id": "acoustic_slat_wood",
+ "name": "Acoustic Slat Wood",
+ "category": "wood_timber",
+ "subcategory": "wood_slats",
+ "kind": "wood",
+ "description": "Vertical micro-slatted oak acoustic wall paneling over dark felt. Parallel slats with deep shadow gaps for acoustic walls, screens and fences.",
+ "generator": {
+  "kind": "flagship",
+  "seed": 3394
+ },
+ "real_world_size_m": [
+  0.6,
+  0.6
+ ],
+ "best_objects": [
+  "acoustic_wall_panel",
+  "privacy_screen",
+  "fence",
+  "pergola",
+  "ceiling_baffle",
+  "bench_seat"
+ ],
+ "avoid_objects": [
+  "road",
+  "kitchen_countertop",
+  "car_body",
+  "terrain_ground"
+ ],
+ "scene_roles": [
+  "wall",
+  "ceiling",
+  "furniture",
+  "prop"
+ ],
+ "projection": {
+  "recommended": "uv",
+  "triplanar_fallback": false,
+  "world_scale_uv": true,
+  "anisotropic_axis": "v",
+  "requires_tangents": true,
+  "tiling_note": "Slats run along V; rotate UVs 90 degrees for horizontal installations.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 0.6; repeat_v = surface_height_m / 0.6",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 0.6 (texture tiles per meter along U), 1 / 0.6 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.012,
+  "ior": 1.53,
+  "is_metallic": false,
+  "roughness_range": [
+   0.361,
+   0.953
+  ],
+  "metallic_range": [
+   0.0,
+   0.0
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "lived_in",
+  "wear": 0.2,
+  "dirt": 0.2,
+  "moisture": 0.05,
+  "moss": 0.0,
+  "rust": 0.0,
+  "frost": 0.0,
+  "dust": 0.15,
+  "note": "Dust collects in the recessed gaps; outdoor fences can take aged/mossy presets.",
+  "hypbr_params": {
+   "wear": 0.2,
+   "dirt": 0.2,
+   "wet": 0.05,
+   "moss": 0.0,
+   "rust": 0.0,
+   "dust": 0.15
+  }
+ },
+ "tags": [
+  "oak",
+  "acoustic",
+  "slat",
+  "beige",
+  "warm",
+  "matte",
+  "wood_slats",
+  "wood_timber",
+  "wood",
+  "wall",
+  "ceiling",
+  "furniture",
+  "prop"
+ ],
+ "pairs_well_with": [
+  "polished_concrete_floor",
+  "venetian_plaster_trowel",
+  "gray_washed_oak_floor",
+  "acoustic_kerf_felt"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 0.459,
+  "seam_ratios": {
+   "height": 0.112,
+   "normal": 0.459,
+   "albedo": 0.073
+  },
+  "normal_unit_error": 0.0019,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  148,
+  129,
+  106
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/acoustic_slat_wood/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/acoustic_slat_wood/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/acoustic_slat_wood/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/acoustic_slat_wood/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/acoustic_slat_wood/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/acoustic_slat_wood.json",
+ "uv_example": {
+  "surface_m": [
+   1.2,
+   1.2
+  ],
+  "repeat": [
+   2.0,
+   2.0
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: Acoustic Slat Wood (acoustic_slat_wood) | 1 tile = 0.6 m x 0.6 m\nimport * as THREE from 'three';\nconst SURFACE_W = 1.2, SURFACE_H = 1.2; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/acoustic_slat_wood/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 0.6, SURFACE_H / 0.6);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.012, displacementBias: -0.006, // aux.R height; dense mesh only\n  ior: 1.53,\n  anisotropy: 0.6, anisotropyRotation: Math.PI / 2, // brushed/grain direction along V\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: Acoustic Slat Wood (acoustic_slat_wood) | 1 tile = 0.6 m x 0.6 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'acoustic_slat_wood', 'https://hypbr.vercel.app/assets/mats/acoustic_slat_wood/'\nSURFACE_W, SURFACE_H = 1.2, 1.2  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (SURFACE_W / 0.6, SURFACE_H / 0.6, 1.0)\nL.new(tc.outputs[\"UV\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.012; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.53\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "acoustic_slat_wood",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/acoustic_slat_wood/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/acoustic_slat_wood/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/acoustic_slat_wood/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/acoustic_slat_wood/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.53
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

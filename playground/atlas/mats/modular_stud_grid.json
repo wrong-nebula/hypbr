@@ -1,0 +1,175 @@
+{
+ "id": "modular_stud_grid",
+ "name": "Modular Stud Grid",
+ "category": "rubber_polymers_roads",
+ "subcategory": "molded_plastic",
+ "kind": "ceramic",
+ "description": "Precision-molded interlocking circular plastic stud grid. Injection-molded polymers with mold-tech stipple texture.",
+ "generator": {
+  "kind": "flagship",
+  "seed": 3476
+ },
+ "real_world_size_m": [
+  0.1,
+  0.1
+ ],
+ "best_objects": [
+  "toy_brick",
+  "baseplate",
+  "appliance_housing",
+  "toy",
+  "phone_case",
+  "chair_shell",
+  "storage_bin",
+  "dashboard"
+ ],
+ "avoid_objects": [
+  "road",
+  "terrain_ground",
+  "roof",
+  "exterior_wall"
+ ],
+ "scene_roles": [
+  "prop",
+  "furniture",
+  "mechanical"
+ ],
+ "projection": {
+  "recommended": "triplanar",
+  "triplanar_fallback": true,
+  "world_scale_uv": false,
+  "anisotropic_axis": "none",
+  "requires_tangents": false,
+  "tiling_note": "Mold-tech stipple is isotropic; triplanar avoids UV seams on product shells.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 0.1; repeat_v = surface_height_m / 0.1",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 0.1 (texture tiles per meter along U), 1 / 0.1 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.0005,
+  "ior": 1.46,
+  "is_metallic": false,
+  "roughness_range": [
+   0.086,
+   0.333
+  ],
+  "metallic_range": [
+   0.0,
+   0.0
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "light_use",
+  "wear": 0.15,
+  "dirt": 0.15,
+  "moisture": 0.0,
+  "moss": 0.0,
+  "rust": 0.0,
+  "frost": 0.0,
+  "dust": 0.1,
+  "note": "Plastic scuffs and shines on contact points.",
+  "hypbr_params": {
+   "wear": 0.15,
+   "dirt": 0.15,
+   "wet": 0.0,
+   "moss": 0.0,
+   "rust": 0.0,
+   "dust": 0.1
+  }
+ },
+ "tags": [
+  "stud",
+  "plastic",
+  "toy",
+  "red",
+  "warm",
+  "satin",
+  "molded_plastic",
+  "rubber_polymers_roads",
+  "ceramic",
+  "prop",
+  "furniture",
+  "mechanical"
+ ],
+ "pairs_well_with": [
+  "anodized_black_aluminum",
+  "carbon_fiber_weave",
+  "embossed_braille_strip",
+  "white_memory_foam"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 0.081,
+  "seam_ratios": {
+   "height": 0.002,
+   "normal": 0.024,
+   "albedo": 0.081
+  },
+  "normal_unit_error": 0.0008,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  217,
+  94,
+  91
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/modular_stud_grid/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/modular_stud_grid/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/modular_stud_grid/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/modular_stud_grid/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/modular_stud_grid/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/modular_stud_grid.json",
+ "uv_example": {
+  "surface_m": [
+   0.5,
+   0.5
+  ],
+  "repeat": [
+   5.0,
+   5.0
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: Modular Stud Grid (modular_stud_grid) | 1 tile = 0.1 m x 0.1 m\nimport * as THREE from 'three';\nconst SURFACE_W = 0.5, SURFACE_H = 0.5; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/modular_stud_grid/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 0.1, SURFACE_H / 0.1);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.0005, displacementBias: -0.00025, // aux.R height; dense mesh only\n  ior: 1.46,\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: Modular Stud Grid (modular_stud_grid) | 1 tile = 0.1 m x 0.1 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'modular_stud_grid', 'https://hypbr.vercel.app/assets/mats/modular_stud_grid/'\nSURFACE_W, SURFACE_H = 0.5, 0.5  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (1 / 0.1, 1 / 0.1, 1 / 0.1)\nL.new(tc.outputs[\"Object\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    t.projection = \"BOX\"; t.projection_blend = 0.25\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.0005; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.46\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "modular_stud_grid",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/modular_stud_grid/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/modular_stud_grid/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/modular_stud_grid/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/modular_stud_grid/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.46
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,194 @@
+{
+ "id": "anodized_black_aluminum",
+ "name": "Anodized Black Aluminum",
+ "category": "metals_industrial",
+ "subcategory": "brushed_metal",
+ "kind": "metal",
+ "description": "Bead-brushed black anodized aluminum. Directionally brushed metal with physically calibrated anisotropic micro-grooves.",
+ "generator": {
+  "kind": "parametric",
+  "family": "brushed_metal",
+  "params": {
+   "c1": [
+    0.05,
+    0.05,
+    0.055
+   ],
+   "c2": [
+    0.08,
+    0.08,
+    0.085
+   ],
+   "metallic": 0.9,
+   "rough": 0.32,
+   "slope": 2.0
+  },
+  "seed": 13140
+ },
+ "real_world_size_m": [
+  0.5,
+  0.5
+ ],
+ "best_objects": [
+  "appliance_panel",
+  "elevator_door",
+  "kitchen_hood",
+  "laptop_shell",
+  "column_cladding",
+  "signage_plate",
+  "handrail"
+ ],
+ "avoid_objects": [
+  "terrain_ground",
+  "sofa",
+  "roof_shingles",
+  "tree_trunk"
+ ],
+ "scene_roles": [
+  "mechanical",
+  "trim",
+  "prop",
+  "wall"
+ ],
+ "projection": {
+  "recommended": "uv",
+  "triplanar_fallback": false,
+  "world_scale_uv": true,
+  "anisotropic_axis": "u",
+  "requires_tangents": true,
+  "tiling_note": "Brush lines run along U; align U with the longest panel edge and enable anisotropy.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 0.5; repeat_v = surface_height_m / 0.5",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 0.5 (texture tiles per meter along U), 1 / 0.5 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.0005,
+  "ior": 1.5,
+  "is_metallic": true,
+  "roughness_range": [
+   0.286,
+   0.404
+  ],
+  "metallic_range": [
+   0.902,
+   0.902
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "light_use",
+  "wear": 0.15,
+  "dirt": 0.1,
+  "moisture": 0.0,
+  "moss": 0.0,
+  "rust": 0.0,
+  "frost": 0.0,
+  "dust": 0.05,
+  "note": "Fingerprint smudges and fine scratches; avoid rust on stainless and aluminum.",
+  "hypbr_params": {
+   "wear": 0.15,
+   "dirt": 0.1,
+   "wet": 0.0,
+   "moss": 0.0,
+   "rust": 0.0,
+   "dust": 0.05
+  }
+ },
+ "tags": [
+  "black",
+  "anodized",
+  "aluminum",
+  "gadget",
+  "brushed",
+  "metal",
+  "gray",
+  "satin",
+  "metallic",
+  "brushed_metal",
+  "metals_industrial",
+  "mechanical",
+  "trim",
+  "prop",
+  "wall"
+ ],
+ "pairs_well_with": [
+  "arabescato_marble",
+  "low_e_blue_green_glazing",
+  "smooth_architectural_concrete",
+  "polished_white_porcelain"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 1.31,
+  "seam_ratios": {
+   "height": 1.243,
+   "normal": 0.993,
+   "albedo": 1.31
+  },
+  "normal_unit_error": 0.0013,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  74,
+  74,
+  77
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/anodized_black_aluminum/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/anodized_black_aluminum/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/anodized_black_aluminum/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/anodized_black_aluminum/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/anodized_black_aluminum/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/anodized_black_aluminum.json",
+ "uv_example": {
+  "surface_m": [
+   1.2,
+   1.2
+  ],
+  "repeat": [
+   2.4,
+   2.4
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: Anodized Black Aluminum (anodized_black_aluminum) | 1 tile = 0.5 m x 0.5 m\nimport * as THREE from 'three';\nconst SURFACE_W = 1.2, SURFACE_H = 1.2; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/anodized_black_aluminum/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 0.5, SURFACE_H / 0.5);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.0005, displacementBias: -0.00025, // aux.R height; dense mesh only\n  ior: 1.5,\n  anisotropy: 0.6, anisotropyRotation: 0, // brushed/grain direction along U\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: Anodized Black Aluminum (anodized_black_aluminum) | 1 tile = 0.5 m x 0.5 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'anodized_black_aluminum', 'https://hypbr.vercel.app/assets/mats/anodized_black_aluminum/'\nSURFACE_W, SURFACE_H = 1.2, 1.2  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (SURFACE_W / 0.5, SURFACE_H / 0.5, 1.0)\nL.new(tc.outputs[\"UV\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.0005; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.5\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "anodized_black_aluminum",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/anodized_black_aluminum/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/anodized_black_aluminum/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/anodized_black_aluminum/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/anodized_black_aluminum/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.5
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

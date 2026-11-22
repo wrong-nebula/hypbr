@@ -1,0 +1,196 @@
+{
+ "id": "fluted_aluminum_facade",
+ "name": "Fluted Aluminum Facade",
+ "category": "metals_industrial",
+ "subcategory": "metal_cladding",
+ "kind": "metal",
+ "description": "Fluted aluminum facade panels. Architectural sheet-metal profiles: standing seam, corrugated, fluted and riveted.",
+ "generator": {
+  "kind": "parametric",
+  "family": "metal_cladding",
+  "params": {
+   "c1": [
+    0.78,
+    0.79,
+    0.8
+   ],
+   "c2": [
+    0.86,
+    0.87,
+    0.88
+   ],
+   "c3": [
+    0.4,
+    0.4,
+    0.4
+   ],
+   "metallic": 0.95,
+   "rough": 0.38,
+   "slope": 8.0,
+   "mode": "fluted",
+   "freq": 10
+  },
+  "seed": 13658
+ },
+ "real_world_size_m": [
+  0.5,
+  0.5
+ ],
+ "best_objects": [
+  "industrial_roof",
+  "barn_roof",
+  "warehouse_wall",
+  "shipping_container",
+  "modern_facade",
+  "shed"
+ ],
+ "avoid_objects": [
+  "sofa",
+  "kitchen_countertop",
+  "terrain_ground",
+  "carpet"
+ ],
+ "scene_roles": [
+  "roof",
+  "wall"
+ ],
+ "projection": {
+  "recommended": "uv",
+  "triplanar_fallback": false,
+  "world_scale_uv": true,
+  "anisotropic_axis": "v",
+  "requires_tangents": true,
+  "tiling_note": "Profiles run along V (down the roof slope); keep ribs vertical on walls.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 0.5; repeat_v = surface_height_m / 0.5",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 0.5 (texture tiles per meter along U), 1 / 0.5 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.01,
+  "ior": 1.5,
+  "is_metallic": true,
+  "roughness_range": [
+   0.286,
+   0.482
+  ],
+  "metallic_range": [
+   0.949,
+   0.949
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "aged",
+  "wear": 0.25,
+  "dirt": 0.3,
+  "moisture": 0.25,
+  "moss": 0.05,
+  "rust": 0.35,
+  "frost": 0.0,
+  "dust": 0.1,
+  "note": "Sheet metal streaks below laps and rusts at cut edges and fasteners.",
+  "hypbr_params": {
+   "wear": 0.25,
+   "dirt": 0.3,
+   "wet": 0.25,
+   "moss": 0.05,
+   "rust": 0.35,
+   "dust": 0.1
+  }
+ },
+ "tags": [
+  "aluminum",
+  "fluted",
+  "facade",
+  "metal",
+  "cladding",
+  "white",
+  "light",
+  "satin",
+  "metallic",
+  "metal_cladding",
+  "metals_industrial",
+  "roof",
+  "wall"
+ ],
+ "pairs_well_with": [
+  "painted_stack_block",
+  "board_formed_concrete",
+  "brushed_shou_sugi_ban",
+  "clear_float_glazing"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 0.945,
+  "seam_ratios": {
+   "height": 0.844,
+   "normal": 0.532,
+   "albedo": 0.945
+  },
+  "normal_unit_error": 0.0017,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  227,
+  228,
+  229
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/fluted_aluminum_facade/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/fluted_aluminum_facade/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/fluted_aluminum_facade/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/fluted_aluminum_facade/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/fluted_aluminum_facade/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/fluted_aluminum_facade.json",
+ "uv_example": {
+  "surface_m": [
+   8.0,
+   5.0
+  ],
+  "repeat": [
+   16.0,
+   10.0
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: Fluted Aluminum Facade (fluted_aluminum_facade) | 1 tile = 0.5 m x 0.5 m\nimport * as THREE from 'three';\nconst SURFACE_W = 8, SURFACE_H = 5; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/fluted_aluminum_facade/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 0.5, SURFACE_H / 0.5);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.01, displacementBias: -0.005, // aux.R height; dense mesh only\n  ior: 1.5,\n  anisotropy: 0.6, anisotropyRotation: Math.PI / 2, // brushed/grain direction along V\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: Fluted Aluminum Facade (fluted_aluminum_facade) | 1 tile = 0.5 m x 0.5 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'fluted_aluminum_facade', 'https://hypbr.vercel.app/assets/mats/fluted_aluminum_facade/'\nSURFACE_W, SURFACE_H = 8, 5  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (SURFACE_W / 0.5, SURFACE_H / 0.5, 1.0)\nL.new(tc.outputs[\"UV\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.01; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.5\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "fluted_aluminum_facade",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/fluted_aluminum_facade/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/fluted_aluminum_facade/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/fluted_aluminum_facade/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/fluted_aluminum_facade/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.5
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,193 @@
+{
+ "id": "fine_wale_cream_corduroy",
+ "name": "Fine Wale Cream Corduroy",
+ "category": "fabrics_upholstery",
+ "subcategory": "plush_textile",
+ "kind": "fabric",
+ "description": "Fine-wale cream corduroy. Pile, knit, quilted and carpet textiles with soft volumetric relief.",
+ "generator": {
+  "kind": "parametric",
+  "family": "plush_knit",
+  "params": {
+   "c1": [
+    0.66,
+    0.6,
+    0.48
+   ],
+   "c2": [
+    0.72,
+    0.66,
+    0.54
+   ],
+   "rough": 0.9,
+   "slope": 6.0,
+   "mode": "corduroy",
+   "freq": 20
+  },
+  "seed": 14842
+ },
+ "real_world_size_m": [
+  0.1,
+  0.1
+ ],
+ "best_objects": [
+  "sofa",
+  "armchair",
+  "headboard",
+  "cushion",
+  "ottoman",
+  "car_seat",
+  "theater_seat",
+  "rug"
+ ],
+ "avoid_objects": [
+  "exterior_wall",
+  "road",
+  "roof",
+  "kitchen_countertop"
+ ],
+ "scene_roles": [
+  "furniture",
+  "prop",
+  "floor"
+ ],
+ "projection": {
+  "recommended": "uv",
+  "triplanar_fallback": false,
+  "world_scale_uv": false,
+  "anisotropic_axis": "v",
+  "requires_tangents": true,
+  "tiling_note": "UV-unwrap upholstery; use a sheen lobe (MeshPhysicalMaterial.sheen) for pile fabrics.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 0.1; repeat_v = surface_height_m / 0.1",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 0.1 (texture tiles per meter along U), 1 / 0.1 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.0015,
+  "ior": 1.46,
+  "is_metallic": false,
+  "roughness_range": [
+   0.816,
+   0.945
+  ],
+  "metallic_range": [
+   0.0,
+   0.0
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "lived_in",
+  "wear": 0.2,
+  "dirt": 0.15,
+  "moisture": 0.0,
+  "moss": 0.0,
+  "rust": 0.0,
+  "frost": 0.0,
+  "dust": 0.2,
+  "note": "Pile crushes on seats and collects dust; keep moisture/moss/rust at 0 indoors.",
+  "hypbr_params": {
+   "wear": 0.2,
+   "dirt": 0.15,
+   "wet": 0.0,
+   "moss": 0.0,
+   "rust": 0.0,
+   "dust": 0.2
+  }
+ },
+ "tags": [
+  "corduroy",
+  "cream",
+  "fine_wale",
+  "fabric",
+  "textile",
+  "beige",
+  "warm",
+  "matte",
+  "plush_textile",
+  "fabrics_upholstery",
+  "furniture",
+  "prop",
+  "floor"
+ ],
+ "pairs_well_with": [
+  "ebony_stained_oak_floor",
+  "cream_boucle",
+  "white_saffiano_leather",
+  "smoked_oak_chevron_parquet"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 1.253,
+  "seam_ratios": {
+   "height": 1.253,
+   "normal": 0.734,
+   "albedo": 0.628
+  },
+  "normal_unit_error": 0.0019,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  208,
+  200,
+  182
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/fine_wale_cream_corduroy/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/fine_wale_cream_corduroy/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/fine_wale_cream_corduroy/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/fine_wale_cream_corduroy/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/fine_wale_cream_corduroy/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/fine_wale_cream_corduroy.json",
+ "uv_example": {
+  "surface_m": [
+   2.2,
+   0.9
+  ],
+  "repeat": [
+   22.0,
+   9.0
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: Fine Wale Cream Corduroy (fine_wale_cream_corduroy) | 1 tile = 0.1 m x 0.1 m\nimport * as THREE from 'three';\nconst SURFACE_W = 2.2, SURFACE_H = 0.9; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/fine_wale_cream_corduroy/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 0.1, SURFACE_H / 0.1);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.0015, displacementBias: -0.00075, // aux.R height; dense mesh only\n  ior: 1.46,\n  anisotropy: 0.6, anisotropyRotation: Math.PI / 2, // brushed/grain direction along V\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: Fine Wale Cream Corduroy (fine_wale_cream_corduroy) | 1 tile = 0.1 m x 0.1 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'fine_wale_cream_corduroy', 'https://hypbr.vercel.app/assets/mats/fine_wale_cream_corduroy/'\nSURFACE_W, SURFACE_H = 2.2, 0.9  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (SURFACE_W / 0.1, SURFACE_H / 0.1, 1.0)\nL.new(tc.outputs[\"UV\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.0015; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.46\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "fine_wale_cream_corduroy",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/fine_wale_cream_corduroy/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/fine_wale_cream_corduroy/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/fine_wale_cream_corduroy/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/fine_wale_cream_corduroy/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.46
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

@@ -229,6 +229,7 @@ const MATERIAL_STAGE_MAP = {
 function getRecommendedStage(entry) {
   if (!entry) return { geom: "sphere", repeat: 4.0, lightRig: "raking" };
   if (MATERIAL_STAGE_MAP[entry.id]) return MATERIAL_STAGE_MAP[entry.id];
+  if (entry.stage && entry.stage.geom) return entry.stage;
 
   const kind = entry.kind || "";
   if (["fabric", "leather", "copper", "bronze", "carbon"].includes(kind)) {
@@ -254,7 +255,10 @@ const state = {
   catalogById: new Map(),
   filtered: [],
   groups: ["All"],
+  groupCounts: {},
   weatherPresets: {},
+  specCache: new Map(),
+  atlasSpec: null,
   activeGroup: "All",
   searchQuery: "",
 
@@ -374,7 +378,16 @@ const dom = {
   qaMessages: $("qaMessages"),
   qaCacheHash: $("qaCacheHash"),
   btnCopyPath: $("btnCopyPath"),
+  atlasBody: $("atlasBody"),
+  atlasEmpty: $("atlasEmpty"),
+  btnAgentAtlas: $("btnAgentAtlas"),
+  agentModal: $("agentModal"),
+  agentModalBody: $("agentModalBody"),
+  btnAgentClose: $("btnAgentClose"),
+  toast: $("toast"),
 };
+
+const ATLAS_PUBLIC_URL = "https://hypbr.vercel.app";
 
 // ============================================================================
 // Three.js Studio Stage (HDR 8x MSAA + SMAA + Specular AA + Softbox IBL)
@@ -1301,6 +1314,10 @@ async function fetchCatalog() {
   state.catalogById.clear();
   for (const m of state.catalog) state.catalogById.set(m.id, m);
   state.groups = data.groups || ["All"];
+  state.groupCounts = data.group_counts || {};
+  if (!data.group_counts) {
+    for (const m of state.catalog) state.groupCounts[m.group] = (state.groupCounts[m.group] || 0) + 1;
+  }
   state.weatherPresets = data.weather_presets || {};
   // Default to 512px in UI (even if an older server instance is still running)
   state.size = 512;
@@ -1547,11 +1564,19 @@ function renderCategoryPills() {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "cat-pill" + (grp === state.activeGroup ? " active" : "");
-    btn.textContent = grp;
+    btn.dataset.group = grp;
+    const count = grp === "All" ? state.catalog.length : (state.groupCounts[grp] || 0);
+    btn.innerHTML = "";
+    const label = document.createElement("span");
+    label.textContent = grp === "All" ? "All" : grp;
+    const cnt = document.createElement("span");
+    cnt.className = "cat-count";
+    cnt.textContent = String(count);
+    btn.append(label, cnt);
     btn.addEventListener("click", () => {
       state.activeGroup = grp;
       dom.categoryPills.querySelectorAll(".cat-pill").forEach((el) => {
-        el.classList.toggle("active", el.textContent === grp);
+        el.classList.toggle("active", el.dataset.group === grp);
       });
       applyCatalogFilter();
     });
@@ -1560,17 +1585,32 @@ function renderCategoryPills() {
 }
 
 function applyCatalogFilter() {
-  const q = state.searchQuery.trim().toLowerCase();
-  state.filtered = state.catalog.filter((m) => {
-    if (state.activeGroup !== "All" && m.group !== state.activeGroup) return false;
-    if (!q) return true;
-    return (
-      m.name.toLowerCase().includes(q) ||
-      m.id.toLowerCase().includes(q) ||
-      m.kind.toLowerCase().includes(q) ||
-      m.description.toLowerCase().includes(q)
-    );
-  });
+  const q = state.searchQuery.trim().toLowerCase().replace(/sci[-\s]fi/g, "scifi");
+  const toks = q.split(/[\s,]+/).filter((t) => t.length > 0).map((t) => (t.length > 3 && t.endsWith("s") && !t.endsWith("ss") ? t.slice(0, -1) : t));
+  const scored = [];
+  for (const m of state.catalog) {
+    if (state.activeGroup !== "All" && m.group !== state.activeGroup) continue;
+    if (!toks.length) {
+      scored.push([0, m]);
+      continue;
+    }
+    if (!m._hay) {
+      m._hayName = `${m.name} ${m.id}`.toLowerCase().replace(/_/g, " ");
+      m._hayObj = (m.best_objects || []).join(" ").toLowerCase().replace(/_/g, " ");
+      m._hay = [m._hayName, m._hayObj, (m.scene_roles || []).join(" "), (m.tags || []).join(" ").replace(/_/g, " "),
+        m.subcategory || "", m.kind || "", m.group || "", m.description || ""].join(" ").toLowerCase().replace(/_/g, " ");
+    }
+    let score = 0;
+    let ok = true;
+    for (const t of toks) {
+      if (!m._hay.includes(t)) { ok = false; break; }
+      score += (m._hayName.includes(t) ? 3 : 0) + (m._hayObj.includes(t) ? 2 : 0) +
+        ((m.subcategory || "").replace(/_/g, " ").includes(t) ? 3 : 0) + 1;
+    }
+    if (ok) scored.push([score, m]);
+  }
+  if (toks.length) scored.sort((a, b) => b[0] - a[0]);
+  state.filtered = scored.map((x) => x[1]);
 
   dom.catalogCount.textContent = `${state.filtered.length} / ${state.catalog.length}`;
   dom.btnClearSearch.classList.toggle("hidden", q.length === 0);
@@ -1597,6 +1637,9 @@ function renderMaterialList() {
       img.src = item.preview_url;
       img.alt = "";
       img.loading = "lazy";
+      img.decoding = "async";
+      img.width = 40;
+      img.height = 40;
       thumb.appendChild(img);
     } else {
       const sw = document.createElement("div");
@@ -1612,7 +1655,8 @@ function renderMaterialList() {
     nameEl.textContent = item.name;
     const subEl = document.createElement("div");
     subEl.className = "mat-sub";
-    subEl.textContent = `${item.kind} · ${item.id}`;
+    const sz = item.size_m ? ` · ${item.size_m[0]}×${item.size_m[1]} m` : "";
+    subEl.textContent = `${(item.subcategory || item.kind).replace(/_/g, " ")}${sz}`;
     info.append(nameEl, subEl);
 
     const dot = document.createElement("span");
@@ -1677,6 +1721,7 @@ function selectMaterial(matId, scrollIntoView = false) {
   });
 
   synthesizeCurrent();
+  loadAtlasInspector(matId);
 }
 
 function renderWeatherPresets() {
@@ -1726,11 +1771,18 @@ function syncWeatherSliderDOM() {
 
 function populateBlendPicker() {
   dom.blendMatBSelect.innerHTML = "";
+  const byGroup = new Map();
   for (const item of state.catalog) {
+    if (!byGroup.has(item.group)) {
+      const og = document.createElement("optgroup");
+      og.label = item.group;
+      byGroup.set(item.group, og);
+      dom.blendMatBSelect.appendChild(og);
+    }
     const opt = document.createElement("option");
     opt.value = item.id;
-    opt.textContent = `${item.name} (${item.kind})`;
-    dom.blendMatBSelect.appendChild(opt);
+    opt.textContent = item.name;
+    byGroup.get(item.group).appendChild(opt);
   }
   const defB = state.catalogById.has("sidewalk_expansion_joint")
     ? "sidewalk_expansion_joint"
@@ -2119,6 +2171,7 @@ function wireEvents() {
       });
       $("rtabWeather").classList.toggle("active", target === "weather");
       $("rtabBlend").classList.toggle("active", target === "blend");
+      $("rtabAtlas").classList.toggle("active", target === "atlas");
     });
   });
 
@@ -2356,6 +2409,291 @@ function wireEvents() {
     }
   });
 }
+
+// ============================================================================
+// Atlas Inspector (agent metadata for the selected material)
+// ============================================================================
+function showToast(msg) {
+  if (!dom.toast) return;
+  dom.toast.textContent = msg;
+  dom.toast.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => dom.toast.classList.remove("show"), 1600);
+}
+
+async function copyText(text, label) {
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast(`Copied ${label}`);
+  } catch {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); showToast(`Copied ${label}`); } catch { showToast("Copy failed"); }
+    ta.remove();
+  }
+}
+
+async function fetchSpec(matId) {
+  if (state.specCache.has(matId)) return state.specCache.get(matId);
+  const res = await fetch(`./atlas/mats/${encodeURIComponent(matId)}.json`, { headers: { Accept: "application/json" } });
+  if (!res.ok) throw new Error(`spec ${res.status}`);
+  const spec = await res.json();
+  state.specCache.set(matId, spec);
+  return spec;
+}
+
+function el(tag, cls, text) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  return n;
+}
+
+function chipRow(items, cls) {
+  const row = el("div", "chip-row");
+  for (const it of items) row.appendChild(el("span", `chip ${cls || ""}`, String(it).replace(/_/g, " ")));
+  return row;
+}
+
+function atlasSection(title, child) {
+  const sec = el("section", "ctrl-section atlas-sec");
+  const head = el("div", "section-head");
+  head.appendChild(el("span", "panel-title", title));
+  sec.appendChild(head);
+  if (child) sec.appendChild(child);
+  return sec;
+}
+
+function applyRecommendedWeathering(spec) {
+  const hp = spec?.recommended_weathering?.hypbr_params;
+  if (!hp) return;
+  for (const k of WEATHER_KEYS) state.weather[k] = Number(hp[k] || 0);
+  state.activePreset = null;
+  syncWeatherSliderDOM();
+  dom.weatherPresets.querySelectorAll(".preset-pill").forEach((p) => p.classList.remove("active"));
+  synthesizeCurrent();
+  showToast(`Applied recommended weathering (${spec.recommended_weathering.preset})`);
+}
+
+function openBlendWithPartner(partnerId) {
+  if (!state.catalogById.has(partnerId)) return;
+  dom.blendMatBSelect.value = partnerId;
+  dom.blendMatBSelect.dispatchEvent(new Event("change"));
+  state.blendConfig.id_b = partnerId;
+  document.querySelector('.rtab-btn[data-rtab="blend"]')?.click();
+  showToast(`Blend slot B: ${state.catalogById.get(partnerId).name}`);
+}
+
+function renderAtlasInspector(spec) {
+  const body = dom.atlasBody;
+  if (!body) return;
+  body.innerHTML = "";
+  if (!spec) {
+    dom.atlasEmpty?.classList.remove("hidden");
+    return;
+  }
+  dom.atlasEmpty?.classList.add("hidden");
+  const [w, h] = spec.real_world_size_m;
+  const pj = spec.projection;
+  const ss = spec.shader_setup;
+
+  // Header summary
+  const head = el("section", "ctrl-section atlas-head");
+  const title = el("div", "atlas-title", spec.name);
+  const sub = el("div", "mono-dim", `${spec.category.replace(/_/g, " ")} · ${spec.subcategory.replace(/_/g, " ")} · ${spec.generator.kind}`);
+  const desc = el("p", "helper-copy", spec.description);
+  const stats = el("div", "atlas-stats");
+  const stat = (k, v) => {
+    const d = el("div", "atlas-stat");
+    d.append(el("span", "qa-k", k), el("span", "qa-v", v));
+    return d;
+  };
+  stats.append(
+    stat("Tile size", `${w} × ${h} m`),
+    stat("Projection", pj.recommended + (pj.triplanar_fallback ? " · tri ok" : "")),
+    stat("Grain axis", pj.anisotropic_axis),
+    stat("Repeat on 4×2.7 m", `${(4 / w).toFixed(2)} × ${(2.7 / h).toFixed(2)}`),
+  );
+  head.append(title, sub, desc, stats);
+  body.appendChild(head);
+
+  // Objects
+  const objWrap = el("div");
+  objWrap.append(el("div", "field-lbl", "Best on"), chipRow(spec.best_objects, "chip-good"),
+    el("div", "field-lbl", "Avoid on"), chipRow(spec.avoid_objects, "chip-bad"),
+    el("div", "field-lbl", "Scene roles"), chipRow(spec.scene_roles, ""));
+  body.appendChild(atlasSection("OBJECTS & ROLES", objWrap));
+
+  // UV / projection
+  const uv = el("div");
+  uv.append(el("code", "atlas-code", pj.uv_repeat_formula), el("p", "helper-copy", pj.tiling_note));
+  if (pj.requires_tangents) uv.appendChild(el("p", "helper-copy mono-dim", "Directional: generate MikkTSpace tangents / set anisotropy rotation."));
+  body.appendChild(atlasSection("UV & PROJECTION", uv));
+
+  // Shader table
+  const tbl = el("table", "atlas-table");
+  const rows = [
+    ["albedo_delit", `${ss.albedo_colorspace}`],
+    ["normal", `${ss.normal_space} · ${ss.data_colorspace}`],
+    ["orm", `${ss.orm_packing}`],
+    ["aux", `${ss.aux_packing}`],
+    ["displacement", `${ss.displacement_scale_m} m`],
+    ["ior", `${ss.ior}${ss.transmission ? ` · transmission ${ss.transmission}` : ""}`],
+    ["roughness", `${ss.roughness_range[0]} – ${ss.roughness_range[1]}${ss.ranges_measured ? " (measured)" : ""}`],
+    ["metallic", `${(ss.metallic_range || [0, 0]).join(" – ")}${ss.is_metallic ? " · metal" : " · dielectric"}`],
+  ];
+  for (const [k, v] of rows) {
+    const tr = el("tr");
+    tr.append(el("td", "atlas-k", k), el("td", "atlas-v", v));
+    tbl.appendChild(tr);
+  }
+  body.appendChild(atlasSection("SHADER SETUP", tbl));
+
+  // Weathering
+  const wx = spec.recommended_weathering;
+  const ww = el("div");
+  const bars = el("div", "atlas-weather");
+  for (const k of ["wear", "dirt", "moisture", "moss", "rust", "frost"]) {
+    const r = el("div", "aw-row");
+    const bar = el("div", "aw-bar");
+    const fill = el("div", "aw-fill");
+    fill.style.width = `${Math.round((wx[k] || 0) * 100)}%`;
+    bar.appendChild(fill);
+    r.append(el("span", "aw-k", k), bar, el("span", "mono-val", Number(wx[k] || 0).toFixed(2)));
+    bars.appendChild(r);
+  }
+  const applyBtn = el("button", "primary-btn atlas-apply", `Apply Recommended Weathering · ${wx.preset}`);
+  applyBtn.type = "button";
+  applyBtn.addEventListener("click", () => applyRecommendedWeathering(spec));
+  ww.append(bars, el("p", "helper-copy", wx.note), applyBtn);
+  body.appendChild(atlasSection("RECOMMENDED WEATHERING", ww));
+
+  // Pairs
+  const pw = el("div", "pair-list");
+  for (const pid of spec.pairs_well_with || []) {
+    const item = state.catalogById.get(pid);
+    if (!item) continue;
+    const row = el("div", "pair-row");
+    const main = el("button", "pair-main");
+    main.type = "button";
+    main.title = `Load ${item.name}`;
+    if (item.preview_url) {
+      const img = document.createElement("img");
+      img.src = item.preview_url;
+      img.alt = "";
+      img.loading = "lazy";
+      main.appendChild(img);
+    }
+    main.appendChild(el("span", "pair-name", item.name));
+    main.addEventListener("click", () => selectMaterial(pid, true));
+    const blendBtn = el("button", "pair-blend", "Blend B");
+    blendBtn.type = "button";
+    blendBtn.title = "Open in HeightLerp Blend slot B";
+    blendBtn.addEventListener("click", () => openBlendWithPartner(pid));
+    row.append(main, blendBtn);
+    pw.appendChild(row);
+  }
+  body.appendChild(atlasSection("PAIRS WELL WITH", pw));
+
+  // Copy actions
+  const acts = el("div", "atlas-actions");
+  const mk = (label, fn) => {
+    const b = el("button", "secondary-btn", label);
+    b.type = "button";
+    b.addEventListener("click", fn);
+    return b;
+  };
+  acts.append(
+    mk("Copy Agent Spec JSON", () => {
+      const { snippets, ...lean } = spec;
+      copyText(JSON.stringify(lean, null, 2), "agent spec JSON");
+    }),
+    mk("Copy Three.js Snippet", () => copyText(spec.snippets?.threejs || "", "Three.js snippet")),
+    mk("Copy Blender bpy Snippet", () => copyText(spec.snippets?.blender_bpy || "", "Blender bpy snippet")),
+    mk("Open Spec URL ↗", () => window.open(spec.spec_url || `./atlas/mats/${spec.id}.json`, "_blank", "noopener")),
+  );
+  body.appendChild(atlasSection("AGENT EXPORT", acts));
+}
+
+async function loadAtlasInspector(matId) {
+  try {
+    const spec = await fetchSpec(matId);
+    if (state.selectedId !== matId) return;
+    state.atlasSpec = spec;
+    renderAtlasInspector(spec);
+  } catch (err) {
+    console.warn("Atlas spec unavailable", err);
+    state.atlasSpec = null;
+    renderAtlasInspector(null);
+  }
+}
+
+function atlasBaseUrl() {
+  const h = window.location.hostname;
+  return ["localhost", "127.0.0.1", "[::1]"].includes(h) ? ATLAS_PUBLIC_URL : window.location.origin;
+}
+
+function renderAgentModal() {
+  const base = atlasBaseUrl();
+  const body = dom.agentModalBody;
+  body.innerHTML = "";
+  const links = [
+    ["llms.txt", `${base}/llms.txt`, "LLM entrypoint (start here)"],
+    ["agent.md", `${base}/agent.md`, "Full integration guide"],
+    ["atlas.json", `${base}/atlas.json`, "Manifest, schema & URL templates"],
+    ["atlas/index.json", `${base}/atlas/index.json`, `Compact index of all ${state.catalog.length} materials`],
+    ["spec card", `${base}/atlas/mats/${state.selectedId || "classic_red_brick"}.json`, "Current material spec card"],
+  ];
+  for (const [label, url, hint] of links) {
+    const row = el("div", "agent-link");
+    const info = el("div", "agent-link-info");
+    const a = el("a", "agent-url", url);
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    info.append(el("span", "agent-label", label), a, el("span", "mono-dim", hint));
+    const b = el("button", "secondary-btn", "Copy");
+    b.type = "button";
+    b.addEventListener("click", () => copyText(url, label));
+    row.append(info, b);
+    body.appendChild(row);
+  }
+  const prompt = `You have access to the hypbr PBR Material Atlas: ${state.catalog.length || 500} seamless, physically calibrated PBR materials.\n` +
+    `1. Read ${base}/llms.txt (then ${base}/agent.md for details).\n` +
+    `2. Find materials in ${base}/atlas/index.json by best_objects, scene_roles and tags; avoid any whose avoid_objects match.\n` +
+    `3. Fetch ${base}/atlas/mats/<id>.json and obey real_world_size_m (repeat = surface_m / size_m), projection, shader_setup (sRGB albedo, OpenGL +Y normal, ORM = R AO / G roughness / B metallic) and recommended_weathering.\n` +
+    `4. Load textures from ${base}/assets/mats/<id>/{albedo_delit,normal,orm,aux}.webp (CORS enabled).`;
+  const pre = el("pre", "agent-prompt", prompt);
+  const copyPrompt = el("button", "primary-btn", "Copy System Prompt");
+  copyPrompt.type = "button";
+  copyPrompt.addEventListener("click", () => copyText(prompt, "system prompt"));
+  const sec = el("div", "agent-prompt-wrap");
+  sec.append(el("div", "panel-title", "SYSTEM PROMPT SNIPPET"), pre, copyPrompt);
+  body.appendChild(sec);
+}
+
+function openAgentModal() {
+  renderAgentModal();
+  dom.agentModal.classList.remove("hidden");
+  dom.agentModal.setAttribute("aria-hidden", "false");
+  dom.btnAgentClose?.focus();
+}
+
+function closeAgentModal() {
+  dom.agentModal.classList.add("hidden");
+  dom.agentModal.setAttribute("aria-hidden", "true");
+}
+
+dom.btnAgentAtlas?.addEventListener("click", openAgentModal);
+dom.btnAgentClose?.addEventListener("click", closeAgentModal);
+dom.agentModal?.addEventListener("click", (e) => {
+  if (e.target === dom.agentModal) closeAgentModal();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && dom.agentModal && !dom.agentModal.classList.contains("hidden")) closeAgentModal();
+});
 
 // ============================================================================
 // Bootstrap

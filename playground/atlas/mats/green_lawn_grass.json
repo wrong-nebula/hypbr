@@ -1,0 +1,193 @@
+{
+ "id": "green_lawn_grass",
+ "name": "Green Lawn Grass",
+ "category": "nature_terrain",
+ "subcategory": "ground_cover",
+ "kind": "natural",
+ "description": "Lush green lawn grass. Organic ground cover clumps with soil, leaf, moss and snow variation.",
+ "generator": {
+  "kind": "parametric",
+  "family": "terrain_ground",
+  "params": {
+   "c1": [
+    0.06,
+    0.16,
+    0.03
+   ],
+   "c2": [
+    0.12,
+    0.26,
+    0.05
+   ],
+   "c3": [
+    0.03,
+    0.05,
+    0.015
+   ],
+   "mode": "organic",
+   "rough": 0.88,
+   "slope": 10.0,
+   "cells": 64
+  },
+  "seed": 16322
+ },
+ "real_world_size_m": [
+  2.0,
+  2.0
+ ],
+ "best_objects": [
+  "park_lawn",
+  "sports_field",
+  "terrain_ground",
+  "forest_floor",
+  "meadow",
+  "garden_bed",
+  "hillside",
+  "trail"
+ ],
+ "avoid_objects": [
+  "interior_wall",
+  "sofa",
+  "kitchen_countertop",
+  "window_pane"
+ ],
+ "scene_roles": [
+  "ground"
+ ],
+ "projection": {
+  "recommended": "triplanar",
+  "triplanar_fallback": true,
+  "world_scale_uv": true,
+  "anisotropic_axis": "none",
+  "requires_tangents": false,
+  "tiling_note": "Triplanar on terrain; blend several ground covers with the height-lerp blend using aux.R height.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 2; repeat_v = surface_height_m / 2",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 2 (texture tiles per meter along U), 1 / 2 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.02,
+  "ior": 1.5,
+  "is_metallic": false,
+  "roughness_range": [
+   0.812,
+   0.949
+  ],
+  "metallic_range": [
+   0.0,
+   0.0
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "fresh",
+  "wear": 0.0,
+  "dirt": 0.1,
+  "moisture": 0.2,
+  "moss": 0.0,
+  "rust": 0.0,
+  "frost": 0.0,
+  "dust": 0.0,
+  "note": "Organic ground is already 'weathered'; add moisture after rain or frost in winter.",
+  "hypbr_params": {
+   "wear": 0.0,
+   "dirt": 0.1,
+   "wet": 0.2,
+   "moss": 0.0,
+   "rust": 0.0,
+   "dust": 0.0
+  }
+ },
+ "tags": [
+  "grass",
+  "green",
+  "lawn",
+  "terrain",
+  "ground",
+  "cool",
+  "matte",
+  "ground_cover",
+  "nature_terrain",
+  "natural"
+ ],
+ "pairs_well_with": [
+  "white_chalk_cliff",
+  "pea_gravel_path",
+  "plated_pine_bark",
+  "grass_joint_flagstone"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 1.186,
+  "seam_ratios": {
+   "height": 1.056,
+   "normal": 1.186,
+   "albedo": 1.058
+  },
+  "normal_unit_error": 0.0019,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  78,
+  112,
+  54
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/green_lawn_grass/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/green_lawn_grass/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/green_lawn_grass/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/green_lawn_grass/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/green_lawn_grass/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/green_lawn_grass.json",
+ "uv_example": {
+  "surface_m": [
+   10.0,
+   10.0
+  ],
+  "repeat": [
+   5.0,
+   5.0
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: Green Lawn Grass (green_lawn_grass) | 1 tile = 2 m x 2 m\nimport * as THREE from 'three';\nconst SURFACE_W = 10, SURFACE_H = 10; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/green_lawn_grass/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 2, SURFACE_H / 2);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.02, displacementBias: -0.01, // aux.R height; dense mesh only\n  ior: 1.5,\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: Green Lawn Grass (green_lawn_grass) | 1 tile = 2 m x 2 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'green_lawn_grass', 'https://hypbr.vercel.app/assets/mats/green_lawn_grass/'\nSURFACE_W, SURFACE_H = 10, 10  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (1 / 2, 1 / 2, 1 / 2)\nL.new(tc.outputs[\"Object\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    t.projection = \"BOX\"; t.projection_blend = 0.25\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.02; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.5\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "green_lawn_grass",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/green_lawn_grass/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/green_lawn_grass/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/green_lawn_grass/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/green_lawn_grass/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.5
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

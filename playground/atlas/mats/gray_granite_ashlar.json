@@ -1,0 +1,194 @@
+{
+ "id": "gray_granite_ashlar",
+ "name": "Gray Granite Ashlar",
+ "category": "architectural_masonry",
+ "subcategory": "ashlar",
+ "kind": "stone",
+ "description": "Hard gray granite ashlar for plinths and bridges. Dressed stone blocks laid in coursed ashlar with fine lime joints.",
+ "generator": {
+  "kind": "parametric",
+  "family": "running_bond_masonry",
+  "params": {
+   "c1": [
+    0.3,
+    0.3,
+    0.3
+   ],
+   "c2": [
+    0.38,
+    0.37,
+    0.36
+   ],
+   "c3": [
+    0.34,
+    0.33,
+    0.31
+   ],
+   "mortar": 0.04,
+   "nx": 2,
+   "ny": 4,
+   "wobble": 1.5,
+   "face_rough": 0.14,
+   "rough": 0.76,
+   "slope": 11.0
+  },
+  "seed": 6221
+ },
+ "real_world_size_m": [
+  1.24,
+  1.24
+ ],
+ "best_objects": [
+  "castle_wall",
+  "cathedral_facade",
+  "bridge_pier",
+  "palace_exterior",
+  "monument_base",
+  "garden_wall"
+ ],
+ "avoid_objects": [
+  "sofa",
+  "kitchen_backsplash",
+  "car_body",
+  "laptop_shell"
+ ],
+ "scene_roles": [
+  "wall",
+  "hero_asset"
+ ],
+ "projection": {
+  "recommended": "box",
+  "triplanar_fallback": true,
+  "world_scale_uv": true,
+  "anisotropic_axis": "none",
+  "requires_tangents": false,
+  "tiling_note": "Box or UV map with courses horizontal; large stones read best at 1 tile per 1.2 m.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 1.24; repeat_v = surface_height_m / 1.24",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 1.24 (texture tiles per meter along U), 1 / 1.24 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.02,
+  "ior": 1.5,
+  "is_metallic": false,
+  "roughness_range": [
+   0.678,
+   0.91
+  ],
+  "metallic_range": [
+   0.0,
+   0.0
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "aged",
+  "wear": 0.35,
+  "dirt": 0.4,
+  "moisture": 0.2,
+  "moss": 0.25,
+  "rust": 0.0,
+  "frost": 0.0,
+  "dust": 0.1,
+  "note": "Centuries-old dressed stone: soften arrises with wear and let moss colonize the lower courses.",
+  "hypbr_params": {
+   "wear": 0.35,
+   "dirt": 0.4,
+   "wet": 0.2,
+   "moss": 0.25,
+   "rust": 0.0,
+   "dust": 0.1
+  }
+ },
+ "tags": [
+  "gray",
+  "granite",
+  "civic",
+  "ashlar",
+  "stone",
+  "matte",
+  "architectural_masonry",
+  "wall",
+  "hero_asset"
+ ],
+ "pairs_well_with": [
+  "granite_setts_cobble",
+  "copper_fishscale_shingles",
+  "gray_solar_glazing",
+  "weathered_boardwalk_planks"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 0.468,
+  "seam_ratios": {
+   "height": 0.21,
+   "normal": 0.452,
+   "albedo": 0.468
+  },
+  "normal_unit_error": 0.0018,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  149,
+  148,
+  147
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/gray_granite_ashlar/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/gray_granite_ashlar/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/gray_granite_ashlar/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/gray_granite_ashlar/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/gray_granite_ashlar/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/gray_granite_ashlar.json",
+ "uv_example": {
+  "surface_m": [
+   4.0,
+   2.7
+  ],
+  "repeat": [
+   3.226,
+   2.177
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: Gray Granite Ashlar (gray_granite_ashlar) | 1 tile = 1.24 m x 1.24 m\nimport * as THREE from 'three';\nconst SURFACE_W = 4, SURFACE_H = 2.7; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/gray_granite_ashlar/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 1.24, SURFACE_H / 1.24);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.02, displacementBias: -0.01, // aux.R height; dense mesh only\n  ior: 1.5,\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: Gray Granite Ashlar (gray_granite_ashlar) | 1 tile = 1.24 m x 1.24 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'gray_granite_ashlar', 'https://hypbr.vercel.app/assets/mats/gray_granite_ashlar/'\nSURFACE_W, SURFACE_H = 4, 2.7  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (1 / 1.24, 1 / 1.24, 1 / 1.24)\nL.new(tc.outputs[\"Object\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    t.projection = \"BOX\"; t.projection_blend = 0.25\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.02; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.5\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "gray_granite_ashlar",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/gray_granite_ashlar/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/gray_granite_ashlar/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/gray_granite_ashlar/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/gray_granite_ashlar/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.5
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

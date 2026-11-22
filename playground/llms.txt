@@ -1,0 +1,36 @@
+# hypbr PBR Material Atlas
+
+> 500 physically calibrated, mathematically seamless (periodic) PBR materials with agent-ready metadata: what objects each material belongs on, exact real-world tile size in meters, UV/triplanar projection advice, engine shader wiring, weathering presets and pairing partners. All JSON and 512x512 WebP textures are static, CORS-enabled (`Access-Control-Allow-Origin: *`) and free to use (MIT).
+
+## Endpoints
+- [Agent guide](https://hypbr.vercel.app/agent.md): how to pick, scale, project, wire and weather materials in any engine.
+- [Manifest](https://hypbr.vercel.app/atlas.json): version, count, schema, URL templates, category list.
+- [Search index](https://hypbr.vercel.app/atlas/index.json): all 500 materials in one compact file (id, name, category, roles, best_objects, tags, size_m, preview, spec URL).
+- Material spec card: `https://hypbr.vercel.app/atlas/mats/{id}.json` (full metadata + texture URLs + Three.js / Blender / glTF snippets).
+- Textures: `https://hypbr.vercel.app/assets/mats/{id}/{albedo_delit|normal|orm|aux|preview}.webp`
+- Interactive playground: https://hypbr.vercel.app
+
+## Conventions
+- albedo_delit = sRGB base color. normal = OpenGL +Y tangent space. orm = R AO, G Roughness, B Metallic (glTF/three.js native). aux = R Height, G Curvature, B Cavity. All data maps are linear.
+- One texture tile covers `real_world_size_m = [w, h]` meters. UV repeat = surface_size_m / real_world_size_m. Triplanar scale = 1 / real_world_size_m.
+
+## Quick start
+1. GET `https://hypbr.vercel.app/atlas/index.json`, filter by `best_objects`, `scene_roles`, `tags`.
+2. GET `https://hypbr.vercel.app/atlas/mats/<id>.json` and read `real_world_size_m`, `projection`, `shader_setup`, `recommended_weathering`.
+3. Three.js: `const orm = load('orm.webp'); new THREE.MeshPhysicalMaterial({ map: load('albedo_delit.webp', sRGB), normalMap: load('normal.webp'), aoMap: orm, roughnessMap: orm, metalnessMap: orm })` with `texture.repeat.set(surfaceW / w, surfaceH / h)`.
+4. Blender: Image Texture (sRGB) -> Base Color; orm (Non-Color) -> Separate Color: G -> Roughness, B -> Metallic; normal (Non-Color) -> Normal Map -> Normal; Mapping scale = surface / size.
+
+## Categories
+- [Architectural Masonry](https://hypbr.vercel.app/atlas/categories/architectural_masonry.json): 65 materials. Bricks, concrete blocks, ashlar, stacked stone, cobbles and pavers for building shells and hardscape.
+- [Wood & Timber](https://hypbr.vercel.app/atlas/categories/wood_timber.json): 58 materials. Plank floors, parquet, cladding, slats, charred timber, engineered boards and tree bark.
+- [Stone, Marble & Concrete](https://hypbr.vercel.app/atlas/categories/stone_marble_concrete.json): 58 materials. Marbles, granites, terrazzo, quartz, concrete, plaster, stucco, slate and natural stone slabs.
+- [Tiles & Ceramics](https://hypbr.vercel.app/atlas/categories/tiles_ceramics.json): 46 materials. Subway, zellige, porcelain, mosaics, crackle and stoneware glazes, terracotta.
+- [Metals & Industrial](https://hypbr.vercel.app/atlas/categories/metals_industrial.json): 58 materials. Brushed, anodized, galvanized, hammered, corten and damascus metals, cladding, meshes, treads and grips.
+- [Fabrics & Upholstery](https://hypbr.vercel.app/atlas/categories/fabrics_upholstery.json): 58 materials. Linen, denim, canvas, plaid, boucle, velvet, corduroy, knits, carpet, felt, leathers, wicker and cork.
+- [Nature & Terrain](https://hypbr.vercel.app/atlas/categories/nature_terrain.json): 40 materials. Sand, cracked mud, gravel, ice, snow, grass, soil, moss, forest floor, cliffs and thatch.
+- [Glass & Optics](https://hypbr.vercel.app/atlas/categories/glass_optics.json): 35 materials. Fluted, reeded, block, frosted, pebbled, cathedral, wired and tinted architectural glazing.
+- [Rubber, Polymers & Roads](https://hypbr.vercel.app/atlas/categories/rubber_polymers_roads.json): 42 materials. Asphalt, tire treads, rubber mats, silicone, carbon fiber, foams and molded plastics.
+- [Roofing, Tech & Sci-Fi](https://hypbr.vercel.app/atlas/categories/roofing_tech_scifi.json): 40 materials. Slate, shake, barrel and fishscale roofing, PCBs, solar arrays, sci-fi hull plating, heatsinks and acoustic foam.
+
+## Optional
+- [Python package](https://github.com/wrong-nebula/hypbr): `pip install git+https://github.com/wrong-nebula/hypbr`; `hypbr atlas search "brick wall"`, `hypbr atlas recommend sofa`, `hypbr atlas info <id>`; regenerate any material at any resolution with `hypbr synth <id> --size 2048`.

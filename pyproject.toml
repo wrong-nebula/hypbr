@@ -4,15 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hypbr"
-version = "0.6.0"
-description = "Hybrid Neural + Exact Periodic Procedural PBR Material Synthesizer (15 calibrated PBR maps)"
+version = "1.0.0"
+description = "500-material agent-ready seamless PBR atlas + hybrid neural/procedural PBR synthesizer (15 calibrated maps)"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
 authors = [{ name = "wrong-nebula" }]
 keywords = ["pbr", "procedural-textures", "materials", "normal-map", "hbao", "computer-graphics", "depth-pro"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
@@ -41,3 +41,6 @@ Repository = "https://github.com/wrong-nebula/hypbr"
 
 [tool.setuptools.packages.find]
 include = ["hypbr*"]
+
+[tool.setuptools.package-data]
+hypbr = ["data/*.json"]

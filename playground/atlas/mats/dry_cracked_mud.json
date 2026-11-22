@@ -1,0 +1,194 @@
+{
+ "id": "dry_cracked_mud",
+ "name": "Dry Cracked Mud",
+ "category": "nature_terrain",
+ "subcategory": "mud",
+ "kind": "natural",
+ "description": "Sun-baked cracked mud plates. Desiccation-cracked clay plates with curled edges and deep fissures.",
+ "generator": {
+  "kind": "parametric",
+  "family": "terrain_ground",
+  "params": {
+   "c1": [
+    0.42,
+    0.3,
+    0.18
+   ],
+   "c2": [
+    0.5,
+    0.37,
+    0.23
+   ],
+   "c3": [
+    0.08,
+    0.05,
+    0.03
+   ],
+   "mode": "cracked_mud",
+   "rough": 0.86,
+   "slope": 11.0,
+   "cells": 7,
+   "roll": [
+    0.31,
+    0.17
+   ]
+  },
+  "seed": 15841
+ },
+ "real_world_size_m": [
+  1.5,
+  1.5
+ ],
+ "best_objects": [
+  "dry_lakebed",
+  "desert_floor",
+  "drought_field",
+  "canyon_floor",
+  "battlefield_ground"
+ ],
+ "avoid_objects": [
+  "interior_wall",
+  "sofa",
+  "kitchen_countertop",
+  "window_pane"
+ ],
+ "scene_roles": [
+  "ground"
+ ],
+ "projection": {
+  "recommended": "triplanar",
+  "triplanar_fallback": true,
+  "world_scale_uv": true,
+  "anisotropic_axis": "none",
+  "requires_tangents": false,
+  "tiling_note": "Triplanar on terrain; plates need world-scale tiling to keep crack spacing physical.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 1.5; repeat_v = surface_height_m / 1.5",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 1.5 (texture tiles per meter along U), 1 / 1.5 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.02,
+  "ior": 1.5,
+  "is_metallic": false,
+  "roughness_range": [
+   0.776,
+   0.965
+  ],
+  "metallic_range": [
+   0.0,
+   0.0
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "dusty",
+  "wear": 0.0,
+  "dirt": 0.15,
+  "moisture": 0.0,
+  "moss": 0.0,
+  "rust": 0.0,
+  "frost": 0.0,
+  "dust": 0.4,
+  "note": "Dry crusts collect windblown dust; add moisture to turn them into fresh mud.",
+  "hypbr_params": {
+   "wear": 0.0,
+   "dirt": 0.15,
+   "wet": 0.0,
+   "moss": 0.0,
+   "rust": 0.0,
+   "dust": 0.4
+  }
+ },
+ "tags": [
+  "mud",
+  "cracked",
+  "drought",
+  "terrain",
+  "ground",
+  "beige",
+  "warm",
+  "matte",
+  "nature_terrain",
+  "natural"
+ ],
+ "pairs_well_with": [
+  "limestone_karst_cliff",
+  "black_volcanic_sand",
+  "wood_chip_mulch",
+  "white_marble_chip_gravel"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 1.205,
+  "seam_ratios": {
+   "height": 1.124,
+   "normal": 1.2,
+   "albedo": 1.205
+  },
+  "normal_unit_error": 0.0019,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  168,
+  145,
+  116
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/dry_cracked_mud/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/dry_cracked_mud/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/dry_cracked_mud/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/dry_cracked_mud/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/dry_cracked_mud/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/dry_cracked_mud.json",
+ "uv_example": {
+  "surface_m": [
+   5.0,
+   4.0
+  ],
+  "repeat": [
+   3.333,
+   2.667
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: Dry Cracked Mud (dry_cracked_mud) | 1 tile = 1.5 m x 1.5 m\nimport * as THREE from 'three';\nconst SURFACE_W = 5, SURFACE_H = 4; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/dry_cracked_mud/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 1.5, SURFACE_H / 1.5);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.02, displacementBias: -0.01, // aux.R height; dense mesh only\n  ior: 1.5,\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: Dry Cracked Mud (dry_cracked_mud) | 1 tile = 1.5 m x 1.5 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'dry_cracked_mud', 'https://hypbr.vercel.app/assets/mats/dry_cracked_mud/'\nSURFACE_W, SURFACE_H = 5, 4  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (1 / 1.5, 1 / 1.5, 1 / 1.5)\nL.new(tc.outputs[\"Object\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    t.projection = \"BOX\"; t.projection_blend = 0.25\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.02; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.5\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "dry_cracked_mud",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/dry_cracked_mud/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/dry_cracked_mud/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/dry_cracked_mud/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/dry_cracked_mud/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.5
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

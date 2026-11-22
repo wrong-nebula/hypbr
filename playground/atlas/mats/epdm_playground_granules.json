@@ -1,0 +1,193 @@
+{
+ "id": "epdm_playground_granules",
+ "name": "EPDM Playground Granules",
+ "category": "rubber_polymers_roads",
+ "subcategory": "rubber_mat",
+ "kind": "rubber",
+ "description": "Bonded EPDM rubber granule safety surface. Resilient rubber flooring with raised studs, ribs and granules.",
+ "generator": {
+  "kind": "parametric",
+  "family": "speckled_aggregate",
+  "params": {
+   "c1": [
+    0.08,
+    0.08,
+    0.08
+   ],
+   "c2": [
+    0.3,
+    0.08,
+    0.05
+   ],
+   "c3": [
+    0.08,
+    0.2,
+    0.1
+   ],
+   "cells_a": 40,
+   "cells_b": 80,
+   "chip_fill": 0.6,
+   "rough": 0.86,
+   "slope": 6.0
+  },
+  "seed": 19541
+ },
+ "real_world_size_m": [
+  0.5,
+  0.5
+ ],
+ "best_objects": [
+  "gym_floor",
+  "entrance_mat",
+  "garage_floor",
+  "truck_bed_liner",
+  "playground_surface",
+  "stair_tread"
+ ],
+ "avoid_objects": [
+  "roof",
+  "kitchen_countertop",
+  "window_pane",
+  "sofa"
+ ],
+ "scene_roles": [
+  "floor",
+  "mechanical"
+ ],
+ "projection": {
+  "recommended": "uv",
+  "triplanar_fallback": false,
+  "world_scale_uv": true,
+  "anisotropic_axis": "none",
+  "requires_tangents": false,
+  "tiling_note": "Planar UVs aligned to the room; studs and ribs should stay axis-aligned.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 0.5; repeat_v = surface_height_m / 0.5",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 0.5 (texture tiles per meter along U), 1 / 0.5 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.004,
+  "ior": 1.52,
+  "is_metallic": false,
+  "roughness_range": [
+   0.741,
+   0.949
+  ],
+  "metallic_range": [
+   0.0,
+   0.0
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "dusty",
+  "wear": 0.25,
+  "dirt": 0.35,
+  "moisture": 0.05,
+  "moss": 0.0,
+  "rust": 0.0,
+  "frost": 0.0,
+  "dust": 0.3,
+  "note": "Rubber floors trap grit and chalk dust around studs.",
+  "hypbr_params": {
+   "wear": 0.25,
+   "dirt": 0.35,
+   "wet": 0.05,
+   "moss": 0.0,
+   "rust": 0.0,
+   "dust": 0.3
+  }
+ },
+ "tags": [
+  "epdm",
+  "granules",
+  "playground",
+  "gray",
+  "matte",
+  "rubber_mat",
+  "rubber_polymers_roads",
+  "rubber",
+  "floor",
+  "mechanical"
+ ],
+ "pairs_well_with": [
+  "acid_stained_concrete",
+  "knurled_straight_flutes",
+  "brushed_aluminum_satin",
+  "rough_cinder_block"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 1.556,
+  "seam_ratios": {
+   "height": 1.328,
+   "normal": 1.556,
+   "albedo": 1.399
+  },
+  "normal_unit_error": 0.0016,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  105,
+  94,
+  79
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/epdm_playground_granules/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/epdm_playground_granules/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/epdm_playground_granules/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/epdm_playground_granules/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/epdm_playground_granules/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/epdm_playground_granules.json",
+ "uv_example": {
+  "surface_m": [
+   5.0,
+   4.0
+  ],
+  "repeat": [
+   10.0,
+   8.0
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: EPDM Playground Granules (epdm_playground_granules) | 1 tile = 0.5 m x 0.5 m\nimport * as THREE from 'three';\nconst SURFACE_W = 5, SURFACE_H = 4; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/epdm_playground_granules/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 0.5, SURFACE_H / 0.5);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.004, displacementBias: -0.002, // aux.R height; dense mesh only\n  ior: 1.52,\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: EPDM Playground Granules (epdm_playground_granules) | 1 tile = 0.5 m x 0.5 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'epdm_playground_granules', 'https://hypbr.vercel.app/assets/mats/epdm_playground_granules/'\nSURFACE_W, SURFACE_H = 5, 4  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (SURFACE_W / 0.5, SURFACE_H / 0.5, 1.0)\nL.new(tc.outputs[\"UV\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.004; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.52\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "epdm_playground_granules",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/epdm_playground_granules/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/epdm_playground_granules/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/epdm_playground_granules/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/epdm_playground_granules/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.52
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

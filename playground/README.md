@@ -2,7 +2,7 @@
 
 **Live Demo:** **[https://hypbr.vercel.app](https://hypbr.vercel.app)**
 
-Interactive Three.js `r187` PBR material studio to inspect, weather, blend, verify, and export all **69** seamless procedural PBR materials in `hypbr` (`68` `DAILY_CATALOG` materials + `hardops_plate`).
+Interactive Three.js `r187` PBR material studio to inspect, weather, blend, verify, and export all **500** seamless PBR atlas materials in `hypbr` (69 flagship generators + 431 parametric materials), plus the static **agent atlas** (`/llms.txt`, `/agent.md`, `/atlas.json`, `/atlas/index.json`, `/atlas/categories/*.json`, `/atlas/mats/*.json`) served with `Access-Control-Allow-Origin: *`.
 
 ## Dual Mode: Static Edge (Vercel) + Local CPU Server
 
@@ -19,17 +19,21 @@ HYPBR_DEVICE=cpu python3 playground/server.py --port 8766
 
 Then open **http://127.0.0.1:8766** in your browser.
 
-### Re-Bake Static WebP Assets (All 69 Materials at 512px)
+### Re-Bake Static WebP Assets + Agent Atlas (All 500 Materials at 512px)
 
 ```bash
-HYPBR_DEVICE=cpu python3 playground/bake_static.py --workers 4
+HYPBR_DEVICE=cpu python3 playground/bake_static.py --workers 2
 ```
+
+CPU-only, at most 4 worker processes (2 keeps peak RSS around 1.2 GB), incremental (unchanged materials are skipped; `--force` rebakes), and every material must pass `hypbr.verify`. It also writes `hypbr/data/atlas_measurements.json` with measured roughness/metallic ranges.
 
 ## Features
 
 - **Three.js `r187` Studio Rendering**: Linear HDR `HalfFloatType` MSAA -> `SMAAPass` -> `OutputPass` (`THREE.AgXToneMapping`), procedural softbox PMREM HDRI (rotates in lockstep with `Shift+Drag` light orbit), grounded shadow catcher + cyclorama dome, physical `clearcoat` / `sheen`, and high-subdivision shaderball meshes.
 - **Studio Anti-Aliasing Suite**: 5-tap texel-filtered vertex displacement, 4-tap GPU Cubic B-Spline normal magnification (zero close-up bilinear diamonds), 4-tap Rotated Grid Super-Sampling (RGSS) minification, and dual Kaplanyan + Toksvig Specular AA.
-- **Catalog Browser**: Instant search (`/`), semantic category filter pills, live thumbnails, `Auto Scene` staging, and `↑` / `↓` keyboard navigation across all 69 QA-verified materials.
+- **Catalog Browser**: Instant multi-field search (`/`) over names, objects, roles and tags (e.g. `brick wall`, `sofa`), 10 category pills with live counts, lazy thumbnails, `Auto Scene` staging, and `↑` / `↓` keyboard navigation across all 500 QA-verified materials.
+- **Atlas Inspector**: Real-world tile size, projection & UV repeat formula, best/avoid object chips, shader setup table, 1-click **Apply Recommended Weathering**, clickable `pairs_well_with` partners (load or send to Blend slot B), and Copy Agent Spec JSON / Three.js / Blender `bpy` snippets.
+- **Agent Atlas modal**: Copyable `llms.txt`, `agent.md`, `atlas.json`, `atlas/index.json` URLs and a ready-to-paste system prompt.
 - **Channel Inspector + 2D Diagnostic Sheet**: Inspect `Final PBR`, `Albedo`, `Normal`, `Roughness`, `Metallic`, `AO`, `Height`, `Curvature`, `Weather Mask`, and a full `2D All Maps` contact sheet with `2×2` seamless tile preview and lightbox inspection.
 - **A/B Comparison**: Draggable **Split A/B** 3D scissor wipe (`Fresh` vs `Weathered`) and **Hold `Space` for Fresh** instant toggle.
 - **6-Channel Weathering Lab, HeightLerp Blend & Export**: 8 one-click presets (`Fresh`, `Aged`, `Rain`, `Mossy`, `Rusty`, `Dusty`, `Coastal`, `Abandoned`), 6 live sliders (`Wear`, `Dirt`, `Wet`, `Moss`, `Rust`, `Dust`), A×B HeightLerp/Cavity/Linear blender, live QA verification telemetry, PNG viewport snapshots, and one-click engine-ready PBR ZIP export.

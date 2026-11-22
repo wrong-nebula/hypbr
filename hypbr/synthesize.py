@@ -833,12 +833,73 @@ def synthesize_hardops_plate(out_dir: Path, size: int = 512) -> Path:
     return out_dir
 
 
+def _synthesize_hardops_weathered(
+    out_dir: Path,
+    size: int = 512,
+    seed: int | None = None,
+    wear: float = 0.0,
+    *,
+    weather_preset: str | None = None,
+    dirt: float | None = None,
+    wet: float | None = None,
+    moss: float | None = None,
+    rust: float | None = None,
+    dust: float | None = None,
+) -> Path:
+    """Dispatch `hardops_plate` through `synthesize_material`, applying weathering post-hoc if requested."""
+    import tempfile
+
+    from .weathering import weather_material
+
+    w_amt = float(np.clip(wear, 0.0, 1.0))
+    wants = weather_preset is not None or w_amt > 1e-4 or any(
+        v is not None and float(v) > 1e-4 for v in (dirt, wet, moss, rust, dust)
+    )
+    if not wants:
+        return synthesize_hardops_plate(out_dir, size=size)
+    with tempfile.TemporaryDirectory() as td:
+        fresh = synthesize_hardops_plate(Path(td) / "hardops_plate", size=size)
+        return weather_material(
+            fresh, out_dir, preset=weather_preset, wear=(w_amt if w_amt > 1e-4 else None),
+            dirt=dirt, wet=wet, moss=moss, rust=rust, dust=dust, material_kind="metal",
+            seed=901 if seed is None else int(seed),
+        )
+
+
 def list_materials() -> list[dict[str, str]]:
-    """Return metadata for all built-in procedural PBR materials."""
+    """Return metadata for all 500 built-in PBR atlas materials.
+
+    Each item carries `id`, `name`, `description`, `category` (the legacy material kind such as
+    `metal` / `wood`, kept for backward compatibility), `atlas_category`, `subcategory` and
+    `generator` (`flagship` or `parametric`). The first 68 items are the legacy flagship IDs in
+    their original order; full agent metadata lives in `hypbr.atlas.get_material_spec()`.
+    """
+    from . import atlas_catalog as ac
+
+    by_id = {e["id"]: e for e in ac.get_catalog()}
+    legacy = [did for did, *_ in gd.DAILY_CATALOG]
+    ordered = legacy + [mid for mid in by_id if mid not in set(legacy)]
     return [
-        {"id": did, "description": desc, "category": mat_kind}
-        for did, desc, mat_kind, _ in gd.DAILY_CATALOG
+        {
+            "id": mid,
+            "name": by_id[mid]["name"],
+            "description": by_id[mid]["description"],
+            "category": by_id[mid]["kind"],
+            "atlas_category": by_id[mid]["category"],
+            "subcategory": by_id[mid]["subcategory"],
+            "generator": by_id[mid]["generator"]["kind"],
+        }
+        for mid in ordered
     ]
+
+
+def _resolve_param_kind(family: str, kind: str) -> str:
+    """Micro-grain family used by the shared post-pipeline for parametric materials."""
+    if family in ("brushed_metal", "metal_cladding"):
+        return "brushed"
+    if kind in ("concrete", "ceramic", "stone", "plaster"):
+        return "mineral"
+    return "cast"
 
 
 def save_maps_parallel(items: list[tuple[Path, np.ndarray]], compress_level: int = 4) -> None:
@@ -1067,14 +1128,28 @@ def synthesize_material(
     """
     from .weathering import apply_weathering_maps, resolve_weather_params
 
+    from . import atlas_catalog as ac
+
     catalog_map = {did: (idx, desc, mat_kind, tint) for idx, (did, desc, mat_kind, tint) in enumerate(gd.DAILY_CATALOG)}
-    if material_id not in catalog_map:
-        raise KeyError(f"Unknown material_id '{material_id}'. Use list_materials() to see available IDs.")
-    idx, _desc, mat_kind, tint = catalog_map[material_id]
+    if material_id == "hardops_plate":
+        return _synthesize_hardops_weathered(
+            Path(out_dir), size=size, seed=seed, wear=wear, weather_preset=weather_preset,
+            dirt=dirt, wet=wet, moss=moss, rust=rust, dust=dust,
+        )
+    par = None
+    if material_id in catalog_map:
+        idx, _desc, mat_kind, tint = catalog_map[material_id]
+        s_default = 2000 + idx * 41
+    else:
+        par = ac.parametric_spec(material_id)
+        if par is None:
+            raise KeyError(f"Unknown material_id '{material_id}'. Use list_materials() to see available IDs.")
+        mat_kind, tint = par["kind"], tuple(par["params"]["c1"])
+        s_default = int(par["seed"])
     d = Path(out_dir)
     d.mkdir(parents=True, exist_ok=True)
     H = W = size
-    s_base = (2000 + idx * 41) if seed is None else seed
+    s_base = s_default if seed is None else seed
     w_amt = float(np.clip(wear, 0.0, 1.0))
 
     has_multi_weather = (
@@ -1095,7 +1170,16 @@ def synthesize_material(
         else None
     )
 
-    h0, slope_scale, cav0, base_r, ridge0 = gd.build_daily_detail(material_id, H, W, seed=s_base)
+    if par is None:
+        h0, slope_scale, cav0, base_r, ridge0 = gd.build_daily_detail(material_id, H, W, seed=s_base)
+        par_out = None
+    else:
+        from .atlas_generators import build_parametric_material
+
+        h0, slope_scale, cav0, base_r, ridge0, p_alb_lin, p_met, p_rmod = build_parametric_material(
+            par["family"], par["params"], H, W, seed=s_base,
+        )
+        par_out = (p_alb_lin, p_met, p_rmod)
     h_n = dp.normalize_height(h0, clip_pct=0.5)
     N_geom = gd._height_to_normal_periodic(h0, slope=slope_scale)
     N_geom = ng.node_normal_clamp_slope({"circular": True}, {"normal": N_geom}, max_angle_deg=60.0)["normal"]
@@ -1111,7 +1195,9 @@ def synthesize_material(
         "machined_straight_flutes",
         "radiator_louver_fins",
     }
-    if mat_kind in ("concrete", "ceramic", "stone", "plaster"):
+    if par is not None:
+        g_kind = _resolve_param_kind(par["family"], mat_kind)
+    elif mat_kind in ("concrete", "ceramic", "stone", "plaster"):
         g_kind = "mineral"
     elif material_id in _BRUSHED_METAL_IDS:
         g_kind = "brushed"
@@ -1144,7 +1230,12 @@ def synthesize_material(
     )
     ao = hbao["ao"]
     curv = ng.node_curvature_multiscale({"circular": True}, {"normal": N_geom}, gain=2.8)
-    alb_u8, alb_lin, met_u8, r_mod = _rich_albedo_and_metal(material_id, mat_kind, tint, h_n, cav0, ridge0, ao, seed=s_base + 2000)
+    if par_out is None:
+        alb_u8, alb_lin, met_u8, r_mod = _rich_albedo_and_metal(material_id, mat_kind, tint, h_n, cav0, ridge0, ao, seed=s_base + 2000)
+    else:
+        alb_lin, p_met, r_mod = par_out
+        alb_u8 = np.clip(np.power(alb_lin, 1.0 / 2.2) * 255.0 + 0.5, 0, 255).astype(np.uint8)
+        met_u8 = np.clip(p_met * 255.0 + 0.5, 0, 255).astype(np.uint8)
 
     r_micro = 0.022 * gd._periodic_fbm(H, W, s_base + 3000, (8, 24, 48))
     ao_r_w = 0.08 if mat_kind == "metal" else 0.14
@@ -1300,7 +1391,7 @@ def synthesize_all(
 ) -> list[Path]:
     """Synthesize all (or selected) seamless materials into `out_dir/<material_id>/`."""
     root = Path(out_dir)
-    ids = materials if materials is not None else [did for did, *_ in gd.DAILY_CATALOG]
+    ids = materials if materials is not None else [m["id"] for m in list_materials()]
     return [
         synthesize_material(
             mid, root / mid, size=size, wear=wear,

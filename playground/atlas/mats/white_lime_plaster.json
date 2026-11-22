@@ -1,0 +1,192 @@
+{
+ "id": "white_lime_plaster",
+ "name": "White Lime Plaster",
+ "category": "stone_marble_concrete",
+ "subcategory": "plaster_stucco",
+ "kind": "plaster",
+ "description": "Hand-troweled white lime plaster with soft cloudy relief. Hand-applied lime plaster, stucco and drywall finishes with soft trowel relief.",
+ "generator": {
+  "kind": "parametric",
+  "family": "concrete_plaster",
+  "params": {
+   "c1": [
+    0.78,
+    0.77,
+    0.73
+   ],
+   "c2": [
+    0.72,
+    0.71,
+    0.67
+   ],
+   "c3": [
+    0.5,
+    0.49,
+    0.46
+   ],
+   "grit": 0.15,
+   "pores": 0.1,
+   "rough": 0.74,
+   "slope": 4.0
+  },
+  "seed": 10624
+ },
+ "real_world_size_m": [
+  2.0,
+  2.0
+ ],
+ "best_objects": [
+  "interior_wall",
+  "ceiling",
+  "mediterranean_villa_exterior",
+  "bathroom_wall",
+  "archway",
+  "niche"
+ ],
+ "avoid_objects": [
+  "floor",
+  "road",
+  "kitchen_countertop",
+  "car_body"
+ ],
+ "scene_roles": [
+  "wall",
+  "ceiling"
+ ],
+ "projection": {
+  "recommended": "triplanar",
+  "triplanar_fallback": true,
+  "world_scale_uv": true,
+  "anisotropic_axis": "none",
+  "requires_tangents": false,
+  "tiling_note": "Triplanar or world-space UVs keep trowel swirls continuous across corners.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 2; repeat_v = surface_height_m / 2",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 2 (texture tiles per meter along U), 1 / 2 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.002,
+  "ior": 1.5,
+  "is_metallic": false,
+  "roughness_range": [
+   0.667,
+   0.816
+  ],
+  "metallic_range": [
+   0.0,
+   0.0
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "light_use",
+  "wear": 0.15,
+  "dirt": 0.2,
+  "moisture": 0.05,
+  "moss": 0.0,
+  "rust": 0.0,
+  "frost": 0.0,
+  "dust": 0.15,
+  "note": "Interior plaster takes scuffs at hand height; exterior stucco takes rain streaks.",
+  "hypbr_params": {
+   "wear": 0.15,
+   "dirt": 0.2,
+   "wet": 0.05,
+   "moss": 0.0,
+   "rust": 0.0,
+   "dust": 0.15
+  }
+ },
+ "tags": [
+  "white",
+  "lime",
+  "interior",
+  "plaster",
+  "wall",
+  "light",
+  "matte",
+  "plaster_stucco",
+  "stone_marble_concrete",
+  "ceiling"
+ ],
+ "pairs_well_with": [
+  "hard_maple_floor",
+  "ochre_cement_tile",
+  "walnut_slat_panel",
+  "white_zellige_tile"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 0.646,
+  "seam_ratios": {
+   "height": 0.557,
+   "normal": 0.646,
+   "albedo": 0.58
+  },
+  "normal_unit_error": 0.0004,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  217,
+  216,
+  211
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_lime_plaster/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/white_lime_plaster/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/white_lime_plaster/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/white_lime_plaster/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/white_lime_plaster/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/white_lime_plaster.json",
+ "uv_example": {
+  "surface_m": [
+   4.0,
+   2.7
+  ],
+  "repeat": [
+   2.0,
+   1.35
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: White Lime Plaster (white_lime_plaster) | 1 tile = 2 m x 2 m\nimport * as THREE from 'three';\nconst SURFACE_W = 4, SURFACE_H = 2.7; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/white_lime_plaster/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 2, SURFACE_H / 2);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.002, displacementBias: -0.001, // aux.R height; dense mesh only\n  ior: 1.5,\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: White Lime Plaster (white_lime_plaster) | 1 tile = 2 m x 2 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'white_lime_plaster', 'https://hypbr.vercel.app/assets/mats/white_lime_plaster/'\nSURFACE_W, SURFACE_H = 4, 2.7  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (1 / 2, 1 / 2, 1 / 2)\nL.new(tc.outputs[\"Object\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    t.projection = \"BOX\"; t.projection_blend = 0.25\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.002; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.5\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "white_lime_plaster",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/white_lime_plaster/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/white_lime_plaster/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/white_lime_plaster/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/white_lime_plaster/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.5
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

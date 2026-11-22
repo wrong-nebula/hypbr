@@ -1269,13 +1269,20 @@ def build_parametric_material(
 
     alb_max = np.where(met[..., None] > 0.25, 0.95, 0.855).astype(np.float32)
     alb_lin = np.clip(alb, 0.015, alb_max).astype(np.float32)
-    return (
-        h.astype(np.float32),
-        slope,
+    outs = [
+        np.asarray(h, dtype=np.float32),
         np.clip(cav, 0.0, 1.0).astype(np.float32),
-        base_r,
         np.clip(ridge, 0.0, 1.0).astype(np.float32),
         alb_lin,
-        np.clip(met, 0.0, 0.99).astype(np.float32),
-        r_mod.astype(np.float32),
-    )
+        np.clip(np.broadcast_to(met, (H, W)), 0.0, 0.99).astype(np.float32),
+        np.asarray(np.broadcast_to(r_mod, (H, W)), dtype=np.float32),
+    ]
+    roll = params.get("roll")
+    if roll:
+        # Exact integer-pixel torus translation: keeps every map perfectly periodic while moving
+        # lattice-aligned features (grooves, folds, seams) away from the texture border.
+        sx = int(round(float(roll[0]) * W)) % W
+        sy = int(round(float(roll[1]) * H)) % H
+        outs = [np.roll(a, (sy, sx), axis=(0, 1)) for a in outs]
+    h_o, cav_o, ridge_o, alb_o, met_o, rmod_o = outs
+    return (h_o, slope, cav_o, base_r, ridge_o, alb_o, met_o, rmod_o)

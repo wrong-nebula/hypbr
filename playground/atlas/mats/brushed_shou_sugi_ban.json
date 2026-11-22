@@ -1,0 +1,200 @@
+{
+ "id": "brushed_shou_sugi_ban",
+ "name": "Brushed Shou Sugi Ban",
+ "category": "wood_timber",
+ "subcategory": "wood_cladding",
+ "kind": "wood",
+ "description": "Brushed shou sugi ban exposing warm grain between char. Shiplap, board-and-batten and siding boards with shadow grooves.",
+ "generator": {
+  "kind": "parametric",
+  "family": "wood_planks",
+  "params": {
+   "c1": [
+    0.06,
+    0.045,
+    0.035
+   ],
+   "c2": [
+    0.2,
+    0.12,
+    0.06
+   ],
+   "c3": [
+    0.01,
+    0.01,
+    0.01
+   ],
+   "planks": 6,
+   "joints": 1,
+   "ring_freq": 9.895833,
+   "rough": 0.62,
+   "slope": 9.0,
+   "roll": [
+    0.804688,
+    0.108333
+   ]
+  },
+  "seed": 8404
+ },
+ "real_world_size_m": [
+  1.8,
+  0.9
+ ],
+ "best_objects": [
+  "cabin_exterior",
+  "facade_cladding",
+  "barn_wall",
+  "ceiling_paneling",
+  "sauna_interior",
+  "porch_ceiling"
+ ],
+ "avoid_objects": [
+  "kitchen_countertop",
+  "road",
+  "car_body",
+  "floor_tile_interior"
+ ],
+ "scene_roles": [
+  "wall",
+  "ceiling"
+ ],
+ "projection": {
+  "recommended": "uv",
+  "triplanar_fallback": false,
+  "world_scale_uv": true,
+  "anisotropic_axis": "u",
+  "requires_tangents": true,
+  "tiling_note": "Keep boards aligned with the building axis; UV-unwrap walls flat rather than triplanar.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 1.8; repeat_v = surface_height_m / 0.9",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 1.8 (texture tiles per meter along U), 1 / 0.9 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.008,
+  "ior": 1.53,
+  "is_metallic": false,
+  "roughness_range": [
+   0.612,
+   0.835
+  ],
+  "metallic_range": [
+   0.0,
+   0.0
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "aged",
+  "wear": 0.3,
+  "dirt": 0.3,
+  "moisture": 0.25,
+  "moss": 0.15,
+  "rust": 0.0,
+  "frost": 0.0,
+  "dust": 0.1,
+  "note": "Exterior boards silver, streak with rain and grow moss near the ground.",
+  "hypbr_params": {
+   "wear": 0.3,
+   "dirt": 0.3,
+   "wet": 0.25,
+   "moss": 0.15,
+   "rust": 0.0,
+   "dust": 0.1
+  }
+ },
+ "tags": [
+  "charred",
+  "brushed",
+  "yakisugi",
+  "japanese",
+  "cladding",
+  "wood",
+  "beige",
+  "warm",
+  "matte",
+  "wood_cladding",
+  "wood_timber",
+  "wall",
+  "ceiling"
+ ],
+ "pairs_well_with": [
+  "weathered_gray_shake_roof",
+  "limestone_drystack",
+  "bronze_tinted_glazing",
+  "corrugated_galvanized_siding"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 0.739,
+  "seam_ratios": {
+   "height": 0.419,
+   "normal": 0.739,
+   "albedo": 0.604
+  },
+  "normal_unit_error": 0.0017,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  95,
+  77,
+  60
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/brushed_shou_sugi_ban/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/brushed_shou_sugi_ban/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/brushed_shou_sugi_ban/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/brushed_shou_sugi_ban/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/brushed_shou_sugi_ban/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/brushed_shou_sugi_ban.json",
+ "uv_example": {
+  "surface_m": [
+   10.0,
+   6.0
+  ],
+  "repeat": [
+   5.556,
+   6.667
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: Brushed Shou Sugi Ban (brushed_shou_sugi_ban) | 1 tile = 1.8 m x 0.9 m\nimport * as THREE from 'three';\nconst SURFACE_W = 10, SURFACE_H = 6; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/brushed_shou_sugi_ban/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 1.8, SURFACE_H / 0.9);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.008, displacementBias: -0.004, // aux.R height; dense mesh only\n  ior: 1.53,\n  anisotropy: 0.6, anisotropyRotation: 0, // brushed/grain direction along U\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: Brushed Shou Sugi Ban (brushed_shou_sugi_ban) | 1 tile = 1.8 m x 0.9 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'brushed_shou_sugi_ban', 'https://hypbr.vercel.app/assets/mats/brushed_shou_sugi_ban/'\nSURFACE_W, SURFACE_H = 10, 6  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (SURFACE_W / 1.8, SURFACE_H / 0.9, 1.0)\nL.new(tc.outputs[\"UV\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.008; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.53\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "brushed_shou_sugi_ban",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/brushed_shou_sugi_ban/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/brushed_shou_sugi_ban/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/brushed_shou_sugi_ban/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/brushed_shou_sugi_ban/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.53
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

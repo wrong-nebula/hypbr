@@ -18,7 +18,65 @@ from .weathering import WEATHER_ARCHETYPES, WEATHER_PRESETS, weather_material
 
 def cmd_list(_args: argparse.Namespace) -> int:
     for item in list_materials():
-        print(f"{item['id']:30s}  [{item['category']:8s}]  {item['description']}")
+        print(f"{item['id']:34s}  [{item['category']:8s}]  {item['description']}")
+    return 0
+
+
+def cmd_atlas_search(args: argparse.Namespace) -> int:
+    from .atlas import search_atlas
+
+    res = search_atlas(
+        query=" ".join(args.query) or None, category=args.category, scene_role=args.role,
+        metallic=(True if args.metallic else (False if args.dielectric else None)),
+        max_roughness=args.max_roughness, limit=args.limit, base_url=args.base_url,
+    )
+    if args.json:
+        print(json.dumps(res, indent=2))
+        return 0
+    for r in res:
+        w, h = r["size_m"]
+        print(f"{r['score']:6.1f}  {r['id']:34s}  {r['category']:22s}  {w:g}x{h:g} m  {', '.join(r['best_objects'][:3])}")
+    if not res:
+        print("No matches.")
+    return 0
+
+
+def cmd_atlas_info(args: argparse.Namespace) -> int:
+    from .atlas import get_material_spec
+
+    spec = get_material_spec(args.material, base_url=args.base_url)
+    if args.snippet:
+        print(spec["snippets"]["threejs" if args.snippet == "threejs" else "blender_bpy"])
+        return 0
+    if not args.full:
+        spec = {k: v for k, v in spec.items() if k != "snippets"}
+    print(json.dumps(spec, indent=2))
+    return 0
+
+
+def cmd_atlas_recommend(args: argparse.Namespace) -> int:
+    from .atlas import recommend_for_object
+
+    size = tuple(args.surface) if args.surface else None
+    rec = recommend_for_object(" ".join(args.object), style=args.style, environment=args.environment,
+                               limit=args.limit, surface_size_m=size, base_url=args.base_url)
+    if args.json:
+        print(json.dumps(rec, indent=2))
+        return 0
+    print(f"Object: {rec['object']}  style={rec['style']}  environment={rec['environment']}")
+    for m in rec["matches"]:
+        wp = m["weathering"]["hypbr_params"]
+        print(f"  {m['id']:34s} repeat={m['uv_repeat'][0]:g}x{m['uv_repeat'][1]:g} on {m['surface_size_m'][0]:g}x{m['surface_size_m'][1]:g} m"
+              f"  proj={m['projection']['recommended']}  weather(wear={wp['wear']}, dirt={wp['dirt']}, wet={wp['wet']}, moss={wp['moss']}, rust={wp['rust']})")
+    return 0
+
+
+def cmd_atlas_export(args: argparse.Namespace) -> int:
+    from .atlas import export_atlas_files
+
+    t0 = time.time()
+    info = export_atlas_files(args.out_dir, base_url=args.base_url)
+    print(f"Exported atlas ({info['materials']} materials, {info['files']} files) to {info['out_dir']} in {time.time() - t0:.1f}s")
     return 0
 
 
@@ -45,7 +103,9 @@ def cmd_synth(args: argparse.Namespace) -> int:
     if args.material == "all":
         paths = synthesize_all(args.out, size=args.size, wear=args.wear, **w_kw)
         print(f"Synthesized {len(paths)} seamless 15-map PBR sets in {time.time() - t0:.1f}s -> {args.out}")
-    elif args.material == "hardops_plate":
+    elif args.material == "hardops_plate" and not (args.weather_preset or args.wear > 1e-4 or any(
+        v is not None and v > 1e-4 for v in (args.dirt, args.wet, args.moss, args.rust, args.dust)
+    )):
         paths = [synthesize_hardops_plate(args.out / "hardops_plate", size=args.size)]
         print(f"Synthesized hardops_plate in {time.time() - t0:.2f}s -> {paths[0]}")
     else:
@@ -174,11 +234,46 @@ def build_parser() -> argparse.ArgumentParser:
     )
     sub = p.add_subparsers(dest="command", required=True)
 
-    p_list = sub.add_parser("list", help="List built-in procedural materials")
+    p_list = sub.add_parser("list", help="List all 500 built-in atlas materials")
     p_list.set_defaults(func=cmd_list)
 
+    from .atlas import DEFAULT_BASE_URL
+
+    p_atlas = sub.add_parser("atlas", help="Query and export the 500-material agent-ready PBR atlas")
+    asub = p_atlas.add_subparsers(dest="atlas_command", required=True)
+    a_s = asub.add_parser("search", help="Ranked search by text, object, role and physical filters")
+    a_s.add_argument("query", nargs="*", help="Free text, e.g. 'brick wall'")
+    a_s.add_argument("--category", default=None, help="Category or subcategory slug filter")
+    a_s.add_argument("--role", default=None, help="Scene role filter (wall, floor, road, furniture, ...)")
+    a_s.add_argument("--metallic", action="store_true", help="Only metallic materials")
+    a_s.add_argument("--dielectric", action="store_true", help="Only non-metallic materials")
+    a_s.add_argument("--max-roughness", type=float, default=None, help="Maximum mean roughness")
+    a_s.add_argument("--limit", type=int, default=20)
+    a_s.add_argument("--json", action="store_true")
+    a_s.add_argument("--base-url", default=DEFAULT_BASE_URL)
+    a_s.set_defaults(func=cmd_atlas_search)
+    a_i = asub.add_parser("info", help="Print the agent spec card for one material")
+    a_i.add_argument("material", help="Atlas material ID")
+    a_i.add_argument("--full", action="store_true", help="Include Three.js / Blender / glTF snippets")
+    a_i.add_argument("--snippet", choices=("threejs", "blender"), default=None, help="Print only one snippet")
+    a_i.add_argument("--base-url", default=DEFAULT_BASE_URL)
+    a_i.set_defaults(func=cmd_atlas_info)
+    a_r = asub.add_parser("recommend", help="Recommend materials for an object with UV repeat & weathering advice")
+    a_r.add_argument("object", nargs="+", help="Object name, e.g. 'kitchen counter'")
+    a_r.add_argument("--style", default=None)
+    a_r.add_argument("--environment", default=None, help="interior, exterior, coastal, rainy, desert, winter, forest, urban, abandoned, space")
+    a_r.add_argument("--surface", type=float, nargs=2, default=None, metavar=("W_M", "H_M"), help="Surface size in meters")
+    a_r.add_argument("--limit", type=int, default=5)
+    a_r.add_argument("--json", action="store_true")
+    a_r.add_argument("--base-url", default=DEFAULT_BASE_URL)
+    a_r.set_defaults(func=cmd_atlas_recommend)
+    a_e = asub.add_parser("export", help="Write llms.txt, agent.md, atlas.json and atlas/ JSON shards")
+    a_e.add_argument("out_dir", type=Path)
+    a_e.add_argument("--base-url", default=DEFAULT_BASE_URL)
+    a_e.set_defaults(func=cmd_atlas_export)
+
     p_synth = sub.add_parser("synth", help="Synthesize seamless procedural 15-map PBR materials")
-    p_synth.add_argument("material", help="Material ID (see `hypbr list`), `hardops_plate`, or `all`")
+    p_synth.add_argument("material", help="Atlas material ID (see `hypbr list` / `hypbr atlas search`) or `all` (500 materials)")
     p_synth.add_argument("--out", type=Path, default=Path("./output/pbr"), help="Output directory")
     p_synth.add_argument("--size", type=int, default=512, help="Square texture resolution (default: 512)")
     p_synth.add_argument("--seed", type=int, default=None, help="Optional deterministic seed override")

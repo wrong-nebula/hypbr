@@ -1,0 +1,189 @@
+{
+ "id": "fresh_black_asphalt",
+ "name": "Fresh Black Asphalt",
+ "category": "rubber_polymers_roads",
+ "subcategory": "asphalt",
+ "kind": "asphalt",
+ "description": "Freshly laid jet-black asphalt. Bituminous road surfacing with sharp mineral aggregate.",
+ "generator": {
+  "kind": "parametric",
+  "family": "rubber_polymer",
+  "params": {
+   "c1": [
+    0.03,
+    0.03,
+    0.03
+   ],
+   "c2": [
+    0.06,
+    0.06,
+    0.06
+   ],
+   "c3": [
+    0.015,
+    0.015,
+    0.015
+   ],
+   "mode": "asphalt",
+   "rough": 0.86,
+   "slope": 9.0
+  },
+  "seed": 18394
+ },
+ "real_world_size_m": [
+  1.2,
+  1.2
+ ],
+ "best_objects": [
+  "road",
+  "highway",
+  "parking_lot",
+  "driveway",
+  "runway",
+  "racetrack"
+ ],
+ "avoid_objects": [
+  "interior_wall",
+  "sofa",
+  "kitchen_countertop",
+  "window_pane"
+ ],
+ "scene_roles": [
+  "road",
+  "ground"
+ ],
+ "projection": {
+  "recommended": "uv",
+  "triplanar_fallback": true,
+  "world_scale_uv": true,
+  "anisotropic_axis": "none",
+  "requires_tangents": false,
+  "tiling_note": "Planar UVs along the road spline (U along travel); world-scale tiling keeps aggregate size physical.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 1.2; repeat_v = surface_height_m / 1.2",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 1.2 (texture tiles per meter along U), 1 / 1.2 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.006,
+  "ior": 1.5,
+  "is_metallic": false,
+  "roughness_range": [
+   0.882,
+   0.965
+  ],
+  "metallic_range": [
+   0.0,
+   0.0
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "rain",
+  "wear": 0.2,
+  "dirt": 0.4,
+  "moisture": 0.4,
+  "moss": 0.0,
+  "rust": 0.0,
+  "frost": 0.0,
+  "dust": 0.2,
+  "note": "Roads polish in wheel paths, gather oil and grit, and puddle after rain.",
+  "hypbr_params": {
+   "wear": 0.2,
+   "dirt": 0.4,
+   "wet": 0.4,
+   "moss": 0.0,
+   "rust": 0.0,
+   "dust": 0.2
+  }
+ },
+ "tags": [
+  "asphalt",
+  "black",
+  "fresh",
+  "road",
+  "dark",
+  "matte",
+  "rubber_polymers_roads",
+  "ground"
+ ],
+ "pairs_well_with": [
+  "travertine_pool_paver",
+  "exposed_aggregate_concrete",
+  "crushed_granite_gravel",
+  "pine_needle_duff"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 1.063,
+  "seam_ratios": {
+   "height": 0.919,
+   "normal": 1.063,
+   "albedo": 0.81
+  },
+  "normal_unit_error": 0.0019,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  55,
+  55,
+  55
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/fresh_black_asphalt/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/fresh_black_asphalt/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/fresh_black_asphalt/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/fresh_black_asphalt/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/fresh_black_asphalt/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/fresh_black_asphalt.json",
+ "uv_example": {
+  "surface_m": [
+   7.0,
+   20.0
+  ],
+  "repeat": [
+   5.833,
+   16.667
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: Fresh Black Asphalt (fresh_black_asphalt) | 1 tile = 1.2 m x 1.2 m\nimport * as THREE from 'three';\nconst SURFACE_W = 7, SURFACE_H = 20; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/fresh_black_asphalt/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 1.2, SURFACE_H / 1.2);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.006, displacementBias: -0.003, // aux.R height; dense mesh only\n  ior: 1.5,\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: Fresh Black Asphalt (fresh_black_asphalt) | 1 tile = 1.2 m x 1.2 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'fresh_black_asphalt', 'https://hypbr.vercel.app/assets/mats/fresh_black_asphalt/'\nSURFACE_W, SURFACE_H = 7, 20  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (SURFACE_W / 1.2, SURFACE_H / 1.2, 1.0)\nL.new(tc.outputs[\"UV\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.006; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.5\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "fresh_black_asphalt",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/fresh_black_asphalt/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/fresh_black_asphalt/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/fresh_black_asphalt/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/fresh_black_asphalt/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.5
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

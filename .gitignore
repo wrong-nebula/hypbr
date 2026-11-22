@@ -11,3 +11,5 @@ output/
 *.pth
 .vercel/
 playground/.cache/
+
+playground/assets/.bake_cache.json

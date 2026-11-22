@@ -1,0 +1,193 @@
+{
+ "id": "palm_trunk_bark",
+ "name": "Palm Trunk Bark",
+ "category": "wood_timber",
+ "subcategory": "bark",
+ "kind": "wood",
+ "description": "Fibrous tropical palm trunk husk. Organic bark cortex with fissured ridges and periodic plates.",
+ "generator": {
+  "kind": "parametric",
+  "family": "tree_bark",
+  "params": {
+   "c1": [
+    0.3,
+    0.24,
+    0.16
+   ],
+   "c2": [
+    0.4,
+    0.32,
+    0.22
+   ],
+   "c3": [
+    0.08,
+    0.06,
+    0.04
+   ],
+   "rough": 0.86,
+   "slope": 14.0,
+   "freq": 20
+  },
+  "seed": 9070
+ },
+ "real_world_size_m": [
+  0.6,
+  0.6
+ ],
+ "best_objects": [
+  "tree_trunk",
+  "log",
+  "firewood_pile",
+  "branch",
+  "stump",
+  "rustic_post"
+ ],
+ "avoid_objects": [
+  "floor",
+  "kitchen_countertop",
+  "interior_wall",
+  "window_pane"
+ ],
+ "scene_roles": [
+  "foliage_bark",
+  "prop"
+ ],
+ "projection": {
+  "recommended": "uv",
+  "triplanar_fallback": true,
+  "world_scale_uv": false,
+  "anisotropic_axis": "v",
+  "requires_tangents": true,
+  "tiling_note": "Wrap cylindrical trunk UVs so fissures run along V (up the trunk); use triplanar on roots and stumps.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 0.6; repeat_v = surface_height_m / 0.6",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 0.6 (texture tiles per meter along U), 1 / 0.6 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.03,
+  "ior": 1.53,
+  "is_metallic": false,
+  "roughness_range": [
+   0.757,
+   0.965
+  ],
+  "metallic_range": [
+   0.0,
+   0.0
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "mossy",
+  "wear": 0.1,
+  "dirt": 0.25,
+  "moisture": 0.3,
+  "moss": 0.45,
+  "rust": 0.0,
+  "frost": 0.0,
+  "dust": 0.0,
+  "note": "Living bark carries moss and lichen on the shaded, wetter side.",
+  "hypbr_params": {
+   "wear": 0.1,
+   "dirt": 0.25,
+   "wet": 0.3,
+   "moss": 0.45,
+   "rust": 0.0,
+   "dust": 0.0
+  }
+ },
+ "tags": [
+  "palm",
+  "tropical",
+  "trunk",
+  "tree",
+  "beige",
+  "warm",
+  "matte",
+  "bark",
+  "wood_timber",
+  "wood",
+  "foliage_bark",
+  "prop"
+ ],
+ "pairs_well_with": [
+  "red_laterite_soil",
+  "white_chalk_cliff",
+  "pea_gravel_path",
+  "palm_frond_thatch"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 1.578,
+  "seam_ratios": {
+   "height": 1.3,
+   "normal": 1.578,
+   "albedo": 1.459
+  },
+  "normal_unit_error": 0.0019,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  146,
+  132,
+  111
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/palm_trunk_bark/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/palm_trunk_bark/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/palm_trunk_bark/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/palm_trunk_bark/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/palm_trunk_bark/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/palm_trunk_bark.json",
+ "uv_example": {
+  "surface_m": [
+   2.0,
+   3.0
+  ],
+  "repeat": [
+   3.333,
+   5.0
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: Palm Trunk Bark (palm_trunk_bark) | 1 tile = 0.6 m x 0.6 m\nimport * as THREE from 'three';\nconst SURFACE_W = 2, SURFACE_H = 3; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/palm_trunk_bark/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 0.6, SURFACE_H / 0.6);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.03, displacementBias: -0.015, // aux.R height; dense mesh only\n  ior: 1.53,\n  anisotropy: 0.6, anisotropyRotation: Math.PI / 2, // brushed/grain direction along V\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: Palm Trunk Bark (palm_trunk_bark) | 1 tile = 0.6 m x 0.6 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'palm_trunk_bark', 'https://hypbr.vercel.app/assets/mats/palm_trunk_bark/'\nSURFACE_W, SURFACE_H = 2, 3  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (SURFACE_W / 0.6, SURFACE_H / 0.6, 1.0)\nL.new(tc.outputs[\"UV\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.03; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.53\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "palm_trunk_bark",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/palm_trunk_bark/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/palm_trunk_bark/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/palm_trunk_bark/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/palm_trunk_bark/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.53
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

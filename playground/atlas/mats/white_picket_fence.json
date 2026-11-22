@@ -1,0 +1,203 @@
+{
+ "id": "white_picket_fence",
+ "name": "White Picket Fence",
+ "category": "wood_timber",
+ "subcategory": "wood_slats",
+ "kind": "wood",
+ "description": "Painted white pickets against a green hedge. Parallel slats with deep shadow gaps for acoustic walls, screens and fences.",
+ "generator": {
+  "kind": "parametric",
+  "family": "wood_slats",
+  "params": {
+   "c1": [
+    0.74,
+    0.74,
+    0.72
+   ],
+   "c2": [
+    0.7,
+    0.7,
+    0.68
+   ],
+   "c3": [
+    0.08,
+    0.12,
+    0.05
+   ],
+   "slats": 8,
+   "gap_ratio": 0.45,
+   "vertical": true,
+   "rough": 0.52,
+   "slope": 9.0,
+   "roll": [
+    0.09375,
+    0.0
+   ]
+  },
+  "seed": 8811
+ },
+ "real_world_size_m": [
+  1.0,
+  1.0
+ ],
+ "best_objects": [
+  "acoustic_wall_panel",
+  "privacy_screen",
+  "fence",
+  "pergola",
+  "ceiling_baffle",
+  "bench_seat"
+ ],
+ "avoid_objects": [
+  "road",
+  "kitchen_countertop",
+  "car_body",
+  "terrain_ground"
+ ],
+ "scene_roles": [
+  "wall",
+  "ceiling",
+  "furniture",
+  "prop"
+ ],
+ "projection": {
+  "recommended": "uv",
+  "triplanar_fallback": false,
+  "world_scale_uv": true,
+  "anisotropic_axis": "v",
+  "requires_tangents": true,
+  "tiling_note": "Slats run along V; rotate UVs 90 degrees for horizontal installations.",
+  "uv_repeat_formula": "repeat_u = surface_width_m / 1; repeat_v = surface_height_m / 1",
+  "triplanar_scale_formula": "triplanar_scale = 1 / 1 (texture tiles per meter along U), 1 / 1 along V"
+ },
+ "shader_setup": {
+  "normal_space": "OpenGL (+Y)",
+  "orm_packing": "R=AO, G=Roughness, B=Metallic",
+  "aux_packing": "R=Height, G=Curvature, B=Cavity",
+  "albedo_colorspace": "sRGB",
+  "data_colorspace": "Linear",
+  "displacement_scale_m": 0.012,
+  "ior": 1.53,
+  "is_metallic": false,
+  "roughness_range": [
+   0.51,
+   0.91
+  ],
+  "metallic_range": [
+   0.0,
+   0.0
+  ],
+  "transmission": 0.0,
+  "ranges_measured": true
+ },
+ "recommended_weathering": {
+  "preset": "lived_in",
+  "wear": 0.2,
+  "dirt": 0.2,
+  "moisture": 0.05,
+  "moss": 0.0,
+  "rust": 0.0,
+  "frost": 0.0,
+  "dust": 0.15,
+  "note": "Dust collects in the recessed gaps; outdoor fences can take aged/mossy presets.",
+  "hypbr_params": {
+   "wear": 0.2,
+   "dirt": 0.2,
+   "wet": 0.05,
+   "moss": 0.0,
+   "rust": 0.0,
+   "dust": 0.15
+  }
+ },
+ "tags": [
+  "white",
+  "picket",
+  "fence",
+  "suburban",
+  "wood",
+  "slats",
+  "light",
+  "matte",
+  "wood_slats",
+  "wood_timber",
+  "wall",
+  "ceiling",
+  "furniture",
+  "prop"
+ ],
+ "pairs_well_with": [
+  "smooth_architectural_concrete",
+  "earthen_clay_plaster",
+  "weathered_boardwalk_planks",
+  "chunky_oatmeal_knit"
+ ],
+ "qa": {
+  "passed": true,
+  "max_seam_ratio": 0.39,
+  "seam_ratios": {
+   "height": 0.267,
+   "normal": 0.39,
+   "albedo": 0.134
+  },
+  "normal_unit_error": 0.0013,
+  "errors": [],
+  "warnings": []
+ },
+ "albedo_mean_srgb": [
+  147,
+  154,
+  139
+ ],
+ "maps": {
+  "albedo_delit": "https://hypbr.vercel.app/assets/mats/white_picket_fence/albedo_delit.webp",
+  "normal": "https://hypbr.vercel.app/assets/mats/white_picket_fence/normal.webp",
+  "orm": "https://hypbr.vercel.app/assets/mats/white_picket_fence/orm.webp",
+  "aux": "https://hypbr.vercel.app/assets/mats/white_picket_fence/aux.webp",
+  "preview": "https://hypbr.vercel.app/assets/mats/white_picket_fence/preview.webp"
+ },
+ "spec_url": "https://hypbr.vercel.app/atlas/mats/white_picket_fence.json",
+ "uv_example": {
+  "surface_m": [
+   1.2,
+   1.2
+  ],
+  "repeat": [
+   1.2,
+   1.2
+  ]
+ },
+ "snippets": {
+  "threejs": "// hypbr atlas: White Picket Fence (white_picket_fence) | 1 tile = 1 m x 1 m\nimport * as THREE from 'three';\nconst SURFACE_W = 1.2, SURFACE_H = 1.2; // meters covered by the mesh UV 0..1\nconst base = 'https://hypbr.vercel.app/assets/mats/white_picket_fence/';\nconst loader = new THREE.TextureLoader().setCrossOrigin('anonymous');\nfunction tex(file, srgb) {\n  const t = loader.load(base + file);\n  t.wrapS = t.wrapT = THREE.RepeatWrapping;\n  t.repeat.set(SURFACE_W / 1, SURFACE_H / 1);\n  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;\n  t.anisotropy = 8;\n  return t;\n}\nconst orm = tex('orm.webp', false); // R=AO, G=Roughness, B=Metallic\nconst material = new THREE.MeshPhysicalMaterial({\n  map: tex('albedo_delit.webp', true),\n  normalMap: tex('normal.webp', false), // OpenGL +Y = three.js native\n  aoMap: orm, roughnessMap: orm, metalnessMap: orm,\n  roughness: 1.0, metalness: 1.0,\n  displacementMap: tex('aux.webp', false), displacementScale: 0.012, displacementBias: -0.006, // aux.R height; dense mesh only\n  ior: 1.53,\n  anisotropy: 0.6, anisotropyRotation: Math.PI / 2, // brushed/grain direction along V\n});\nmesh.material = material;\n",
+  "blender_bpy": "# hypbr atlas: White Picket Fence (white_picket_fence) | 1 tile = 1 m x 1 m | Blender 3.4+\nimport bpy, os, tempfile, urllib.request\nMAT_ID, BASE = 'white_picket_fence', 'https://hypbr.vercel.app/assets/mats/white_picket_fence/'\nSURFACE_W, SURFACE_H = 1.2, 1.2  # meters covered by UV 0..1 (UV mode)\ncache = os.path.join(tempfile.gettempdir(), 'hypbr', MAT_ID); os.makedirs(cache, exist_ok=True)\ndef img(name, data):\n    p = os.path.join(cache, name)\n    if not os.path.exists(p): urllib.request.urlretrieve(BASE + name, p)\n    im = bpy.data.images.load(p, check_existing=True)\n    im.colorspace_settings.name = 'Non-Color' if data else 'sRGB'\n    return im\nmat = bpy.data.materials.new('hypbr_' + MAT_ID); mat.use_nodes = True\nN, L = mat.node_tree.nodes, mat.node_tree.links\nbsdf, out = N['Principled BSDF'], N['Material Output']\ntc, mp = N.new('ShaderNodeTexCoord'), N.new('ShaderNodeMapping')\nmp.inputs['Scale'].default_value = (SURFACE_W / 1, SURFACE_H / 1, 1.0)\nL.new(tc.outputs[\"UV\"], mp.inputs['Vector'])\ndef tex(name, data):\n    t = N.new('ShaderNodeTexImage'); t.image = img(name, data)\n    L.new(mp.outputs['Vector'], t.inputs['Vector']); return t\nL.new(tex('albedo_delit.webp', False).outputs['Color'], bsdf.inputs['Base Color'])\norm = N.new('ShaderNodeSeparateColor'); L.new(tex('orm.webp', True).outputs['Color'], orm.inputs['Color'])\nL.new(orm.outputs['Green'], bsdf.inputs['Roughness']); L.new(orm.outputs['Blue'], bsdf.inputs['Metallic'])\nnm = N.new('ShaderNodeNormalMap'); L.new(tex('normal.webp', True).outputs['Color'], nm.inputs['Color'])  # OpenGL +Y\nL.new(nm.outputs['Normal'], bsdf.inputs['Normal'])\naux = N.new('ShaderNodeSeparateColor'); L.new(tex('aux.webp', True).outputs['Color'], aux.inputs['Color'])\ndsp = N.new('ShaderNodeDisplacement'); dsp.inputs['Scale'].default_value = 0.012; dsp.inputs['Midlevel'].default_value = 0.5\nL.new(aux.outputs['Red'], dsp.inputs['Height']); L.new(dsp.outputs['Displacement'], out.inputs['Displacement'])\nbsdf.inputs['IOR'].default_value = 1.53\nobj = bpy.context.active_object\nif obj is not None and obj.type == 'MESH': obj.data.materials.append(mat)\n",
+  "gltf": {
+   "name": "white_picket_fence",
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/white_picket_fence/albedo_delit.webp"
+    },
+    "metallicRoughnessTexture": {
+     "uri": "https://hypbr.vercel.app/assets/mats/white_picket_fence/orm.webp",
+     "note": "G=roughness, B=metallic (glTF native)"
+    },
+    "metallicFactor": 1.0,
+    "roughnessFactor": 1.0
+   },
+   "normalTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/white_picket_fence/normal.webp",
+    "note": "OpenGL +Y (glTF native)"
+   },
+   "occlusionTexture": {
+    "uri": "https://hypbr.vercel.app/assets/mats/white_picket_fence/orm.webp",
+    "note": "R channel"
+   },
+   "extensions": {
+    "KHR_materials_ior": {
+     "ior": 1.53
+    },
+    "KHR_texture_transform": {
+     "scale": "[surface_w_m / tile_w_m, surface_h_m / tile_h_m]"
+    }
+   }
+  }
+ }
+}

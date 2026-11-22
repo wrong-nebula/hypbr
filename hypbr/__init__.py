@@ -1,6 +1,8 @@
 """hypbr — Hybrid Neural + Exact Periodic Procedural PBR Material Synthesizer."""
 from __future__ import annotations
 
+from . import atlas
+from .atlas import export_atlas_files, get_atlas, get_material_spec, recommend_for_object, search_atlas
 from .blend import blend_materials, compute_height_blend_mask
 from .exporters import SUPPORTED_TARGETS, export_material
 from .normal_graph import PRESETS, run_graph
@@ -28,10 +30,16 @@ from .weightcode import (
     tileable_4quad_blend,
 )
 
-__version__ = "0.6.0"
+__version__ = "1.0.0"
 
 __all__ = [
     "__version__",
+    "atlas",
+    "export_atlas_files",
+    "get_atlas",
+    "get_material_spec",
+    "recommend_for_object",
+    "search_atlas",
     "PRESETS",
     "SUPPORTED_TARGETS",
     "WEATHER_ARCHETYPES",

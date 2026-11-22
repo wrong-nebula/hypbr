@@ -1180,7 +1180,7 @@ def synthesize_material_maps(
             the uncalibrated v1.0 output exactly.
         preview: Render the studio `preview` image (skip to save ~5% time when not needed).
     """
-    from .calibration import adjust_roughness, equalize_albedo, equalize_height, get_calibration
+    from .calibration import FIT_SIZE_PX, adjust_roughness, equalize_albedo, equalize_height, get_calibration
     from .weathering import apply_weathering_maps, resolve_weather_params
 
     from . import atlas_catalog as ac
@@ -1238,7 +1238,7 @@ def synthesize_material_maps(
         slope_scale = float(slope_scale) * float(cal.get("slope_gain", 1.0))
         if cal.get("height_gains"):
             # Reference-matched multi-scale relief (periodic band equalizer on the height field)
-            h0 = equalize_height(h0, cal["height_gains"])
+            h0 = equalize_height(h0, cal["height_gains"], scale=H / FIT_SIZE_PX)
     h_n = dp.normalize_height(h0, clip_pct=0.5)
     N_geom = gd._height_to_normal_periodic(h0, slope=slope_scale)
     N_geom = ng.node_normal_clamp_slope({"circular": True}, {"normal": N_geom}, max_angle_deg=60.0)["normal"]
@@ -1297,7 +1297,7 @@ def synthesize_material_maps(
         met_u8 = np.clip(p_met * 255.0 + 0.5, 0, 255).astype(np.uint8)
     if cal is not None:
         cal_max = np.where(met_u8[..., None] > 64, 0.95, 0.855).astype(np.float32)
-        alb_lin = equalize_albedo(alb_lin, cal["band_gains"], float(cal.get("sat_gain", 1.0)), cal_max)
+        alb_lin = equalize_albedo(alb_lin, cal["band_gains"], float(cal.get("sat_gain", 1.0)), cal_max, scale=H / FIT_SIZE_PX)
         alb_u8 = linear_to_srgb_u8(alb_lin)
         if "rough_std_gain" not in cal:
             base_r = float(base_r) + float(cal.get("rough_shift", 0.0))

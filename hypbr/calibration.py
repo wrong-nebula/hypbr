@@ -53,11 +53,15 @@ def _lum(lin: np.ndarray) -> np.ndarray:
     return (0.2126 * lin[..., 0] + 0.7152 * lin[..., 1] + 0.0722 * lin[..., 2]).astype(np.float32)
 
 
-def band_layers(logl: np.ndarray) -> tuple[list[np.ndarray], np.ndarray]:
+FIT_SIZE_PX = 512  # calibration statistics and gains are measured on 512px bakes
+
+
+def band_layers(logl: np.ndarray, scale: float = 1.0) -> tuple[list[np.ndarray], np.ndarray]:
+    """Periodic difference-of-Gaussian bands at SIGMAS * scale pixels (scale = size / FIT_SIZE_PX)."""
     prev = logl
     bands = []
     for s in SIGMAS:
-        g = _gauss_fft(logl, s)
+        g = _gauss_fft(logl, s * scale)
         bands.append(prev - g)
         prev = g
     return bands, prev
@@ -85,10 +89,10 @@ def slope_bands(nrm_u8: np.ndarray) -> list[float]:
     return out
 
 
-def equalize_height(h: np.ndarray, gains: list[float]) -> np.ndarray:
+def equalize_height(h: np.ndarray, gains: list[float], scale: float = 1.0) -> np.ndarray:
     """Reshape relief per periodic band (scales slope energy in each band by its gain)."""
     hf = np.asarray(h, dtype=np.float32)
-    bands, base = band_layers(hf)
+    bands, base = band_layers(hf, scale)
     out = base.copy()
     for b, g in zip(bands, gains):
         out += float(g) * b
@@ -107,11 +111,11 @@ def normal_slope(nrm_u8: np.ndarray) -> float:
 
 
 def equalize_albedo(alb_lin: np.ndarray, gains: list[float], sat_gain: float = 1.0,
-                    alb_max: np.ndarray | float = 0.855) -> np.ndarray:
+                    alb_max: np.ndarray | float = 0.855, scale: float = 1.0) -> np.ndarray:
     """Reshape albedo luminance contrast per band (periodic) and rescale chroma variation."""
     L = _lum(alb_lin)
     logl = np.log(L + _EPS)
-    bands, base = band_layers(logl)
+    bands, base = band_layers(logl, scale)
     out = base.copy()
     for b, g in zip(bands, gains):
         out += float(g) * b

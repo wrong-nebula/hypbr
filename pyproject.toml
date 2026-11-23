@@ -34,6 +34,11 @@ neural = [
     "torch>=2.1",
     "onnxruntime>=1.17",
 ]
+# tools/import_refs.py matsynth: stream MatSynth shards from Hugging Face, reading only needed columns.
+refs = [
+    "pyarrow>=14",
+    "huggingface_hub>=0.20",
+]
 dev = [
     "pytest>=8.0",
 ]

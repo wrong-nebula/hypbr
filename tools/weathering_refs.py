@@ -9,8 +9,10 @@ patch as a share of the covered area, patch count, all at 512px) plus group mean
 scans beside hypbr renders.
 
 usage: python tools/weathering_refs.py <scan_root> <board.png>
-  <scan_root> holds polyhaven/, polyhaven_extra/ and/or crosslab/ with <id>.npz files ("albedo", uint8 sRGB),
-  the same reference set `hypbr atlas calibrate --refs` uses.
+  <scan_root> holds <id>.npz files ("albedo", uint8 sRGB) in any sub-folder: the reference set
+  `hypbr atlas calibrate --refs` uses, plus anything imported with tools/import_refs.py. Scans named in
+  GROUPS are always compared; any other scan whose id or tags mention rust/corrosion or moss/lichen is
+  added to that group automatically.
 
 The rust and moss tones in hypbr/weathering.py were fitted with this tool (mean colour distance to the
 scans: rust dE 19 -> 5, moss dE 17 -> 9).
@@ -34,12 +36,45 @@ def lab(lin):
     f = np.where(xyz > 0.008856, np.cbrt(xyz), 7.787 * xyz + 16 / 116)
     return np.stack([116 * f[:, 1] - 16, 500 * (f[:, 0] - f[:, 1]), 200 * (f[:, 1] - f[:, 2])], -1)
 
+_INDEX = None
+
+
+def _index():
+    """Every <id>.npz under the scan root (any sub-folder, including tools/import_refs.py output)."""
+    global _INDEX
+    if _INDEX is None:
+        _INDEX = {}
+        for f in sorted(D.rglob("*.npz")):
+            _INDEX.setdefault(f.stem, f)
+    return _INDEX
+
+
 def scan(name):
-    for sub in ("polyhaven", "polyhaven_extra", "crosslab"):
-        p = D / sub / f"{name}.npz"
-        if p.exists():
-            return np.load(p)["albedo"]
-    raise FileNotFoundError(name)
+    f = _index().get(name)
+    if f is None:
+        raise FileNotFoundError(name)
+    return np.load(f)["albedo"]
+
+
+AUTO = {"rust": r"(?<![a-z])(rust|rusty|rusted|corroded|corrosion|oxidi[sz]ed)(?![a-z])", "moss": r"(?<![a-z])(moss|mossy|lichen)(?![a-z])"}
+
+
+def auto_refs(grp, listed):
+    """Scans not listed by name whose id or tags name this kind of weathering (e.g. imported Megascans)."""
+    import json, re
+    pat = re.compile(AUTO[grp], re.I)
+    out = []
+    for rid, f in _index().items():
+        if rid in listed:
+            continue
+        tags = ""
+        try:
+            tags = " ".join(json.loads(str(np.load(f)["meta"])).get("tags") or [])
+        except Exception:  # noqa: BLE001 - scans without metadata
+            pass
+        if pat.search(rid) or pat.search(tags):
+            out.append(rid)
+    return out
 
 def feature(lab_px, kind):
     L, a, b = lab_px[:, 0], lab_px[:, 1], lab_px[:, 2]
@@ -89,6 +124,7 @@ GROUPS = {
 }
 board = []
 for grp, (refs, ours) in GROUPS.items():
+    refs = list(refs) + auto_refs(grp, set(refs))
     print(f"== {grp}")
     agg = {"ref": [], "ours": []}
     for r in refs:

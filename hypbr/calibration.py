@@ -248,9 +248,20 @@ def reference_stats(ref_dirs: list[Path], rough_dirs: list[Path]) -> dict[str, d
             except Exception:  # noqa: BLE001 - skip unreadable scans
                 continue
             rid = f.stem
-            rr = _roughness_for(rid, rough_dirs)
+            # Imported scans (tools/import_refs.py) carry roughness and, when known, their physical size
+            rr = None
+            if "roughness" in z.files:
+                r = z["roughness"].astype(np.float32) / 255.0
+                rr = (float(r.mean()), float(r.std()))
+            rr = rr or _roughness_for(rid, rough_dirs)
             st["rough"], st["rough_std"] = (rr if rr else (None, None))
-            st["size_m"] = ref_size(rid)
+            meta_size = None
+            if "meta" in z.files:
+                try:
+                    meta_size = float(json.loads(str(z["meta"])).get("size_m") or 0.0) or None
+                except (ValueError, TypeError):
+                    meta_size = None
+            st["size_m"] = meta_size or ref_size(rid)
             out[rid] = st
     return out
 

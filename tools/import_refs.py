@@ -283,13 +283,14 @@ def iter_matsynth(split: str, allow_cc_by: bool, skip_sources: tuple[str, ...], 
                 metas = pf.read_row_group(g, columns=["metadata"]).column("metadata").to_pylist()
                 if not any(matsynth_keep(m or {}, allow_cc_by, skip_sources)[0] for m in metas):
                     continue
-                table = pf.read_row_group(g, columns=MATSYNTH_COLUMNS)
-                for row in table.to_pylist():
-                    ok, why = matsynth_keep(row.get("metadata") or {}, allow_cc_by, skip_sources)
+                table = pf.read_row_group(g, columns=MATSYNTH_COLUMNS)  # ~60 MB of 4K maps per material
+                for i, meta in enumerate(metas):
+                    ok, why = matsynth_keep(meta or {}, allow_cc_by, skip_sources)
                     if ok:
-                        yield row
+                        yield table.slice(i, 1).to_pylist()[0]  # one row at a time: no second copy of the group
                     else:
-                        log(f"skip {row.get('name')}: {why}")
+                        log(f"skip {(meta or {}).get('name')}: {why}")
+                del table
 
 
 # ---------------------------------------------------------------------------- CLI

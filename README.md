@@ -168,8 +168,9 @@ hypbr photo path/to/surface.jpg --preset v13-default --tileable --out ./output/p
 ```
 
 Macro relief comes from Depth Anything V2 Small (Apache-2.0, ~99 MB, downloaded from Hugging Face on first use) with
-hypbr's 5 MB relief patch, which retrains only the model's DPT neck and head on 344 CC0 Poly Haven scans. On held-out
-scans it beats the Apple Depth Pro 2 path on every relief metric, including scans from a different lab
+hypbr's 5 MB relief patch, which retrains only the model's DPT neck and head on 344 CC0 Poly Haven scans; broad shape
+is blended in from the original head. On held-out scans it beats the Apple Depth Pro 2 path on every relief metric,
+including scans from a different lab
 ([`hypbr/weights/NOTICE.md`](hypbr/weights/NOTICE.md) has the numbers). `--depth-model depthpro` switches back to
 Apple Depth Pro 2 (research-only license, needs `depth_pro_2`).
 

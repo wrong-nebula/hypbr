@@ -280,10 +280,10 @@ def height_to_unit_normal(
 
 
 # Calibrated relief amplitude: across 20 held-out Poly Haven scans, the mean true surface slope follows the mean
-# gradient of the Depth Anything V2 relief as log(slope) = A + B*log(gradient) (r = 0.47; B < 1 shrinks toward the
-# typical slope when the model's own scale is unreliable). Fitted on the `da2` relief only.
-RELIEF_SLOPE_A = -0.592
-RELIEF_SLOPE_B = 0.361
+# gradient of the `da2` relief (shape + detail blend, `relief_da2.infer_relief` with rot4) as
+# log(slope) = A + B*log(gradient); B < 1 shrinks toward the typical slope when the model's own scale is unreliable.
+RELIEF_SLOPE_A = -0.125
+RELIEF_SLOPE_B = 0.485
 
 
 def relief_normal(h: np.ndarray, amplitude: float = 1.2, circular: bool = False, border: int = 8) -> np.ndarray:

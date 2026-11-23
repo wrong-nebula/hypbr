@@ -21,4 +21,9 @@ Held-out results (20 Poly Haven scans never trained on, 7 ambientCG scans from a
 | Apple Depth Pro 2-S, unmodified | 0.027 | -0.015 / 0.021 / 0.014 | 0.07 |
 | Apple Depth Pro 2-S, best hypbr fine-tune | 0.233 | 0.269 / 0.271 / 0.320 | 0.28 |
 | Depth Anything V2 Small, unmodified | 0.183 | 0.255 / 0.271 / 0.328 | 0.02 |
-| **Depth Anything V2 Small + this patch** | **0.266** | **0.350 / 0.295 / 0.355** | 0.07 |
+| Depth Anything V2 Small + this patch | 0.266 | 0.350 / 0.295 / 0.355 | 0.07 |
+| **+ shape blend (what `hypbr photo` runs)** | **0.283** | **0.351 / 0.290 / 0.353** | 0.07 |
+
+The shape blend keeps the original head alongside the patched one (one backbone pass, two 2.7M-param heads): broad
+shape above 16 px comes 30% from the original head, fine detail from the patched head. It fixes the patch's worst
+failures (bark relief inverted: -0.27 -> +0.02; overlapping boards 0.50 -> 0.62) at a small cost on bricks.

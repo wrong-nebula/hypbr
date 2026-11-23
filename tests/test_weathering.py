@@ -65,7 +65,15 @@ def test_physical_material_archetype_responses(tmp_path: Path) -> None:
     wm = np.asarray(Image.open(stone_moss / "weather_mask.png"), dtype=np.float32) / 255.0
     moss_px = wm[..., 3] > 0.55
     assert moss_px.mean() > 0.04
-    assert alb[..., 1][moss_px].mean() > alb[..., 0][moss_px].mean() + 0.04  # green > red
+    # Olive like real moss scans (CC0 refs: Lab hue ~108 deg, G only a little above R), not blue-green
+    from hypbr.color import srgb_to_linear
+
+    lin = srgb_to_linear(alb[moss_px])
+    xyz = lin @ np.array([[0.4124, 0.3576, 0.1805], [0.2126, 0.7152, 0.0722], [0.0193, 0.1192, 0.9505]]).T
+    f = np.cbrt(np.maximum(xyz / np.array([0.9505, 1.0, 1.089]), 1e-6))
+    a_star, b_star = 500 * (f[:, 0] - f[:, 1]), 200 * (f[:, 1] - f[:, 2])
+    hue = float(np.degrees(np.arctan2(b_star.mean(), a_star.mean())))
+    assert a_star.mean() < 0 and 95.0 < hue < 135.0, (a_star.mean(), hue)
     assert alb[..., 1][moss_px].mean() > alb[..., 2][moss_px].mean() + 0.08  # green > blue
     assert rough[moss_px].mean() > 0.80
 

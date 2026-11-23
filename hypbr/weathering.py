@@ -611,9 +611,10 @@ def apply_weathering_maps(
             stain_col = cuprite * (1.0 - core_w) + verd * core_w
             blend_k = 0.90
         elif is_metal:
-            ox_dark = np.array([0.055, 0.024, 0.012], dtype=np.float32)[None, None, :]
-            sienna = np.array([0.330, 0.088, 0.018], dtype=np.float32)[None, None, :]
-            ochre = np.array([0.520, 0.205, 0.042], dtype=np.float32)[None, None, :]
+            # Tones fitted to 8 CC0 rust scans (Lab L 24-50, hue ~64 deg yellow-brown): see tools/weathering_refs.py
+            ox_dark = np.array([0.053, 0.021, 0.010], dtype=np.float32)[None, None, :]
+            sienna = np.array([0.120, 0.044, 0.016], dtype=np.float32)[None, None, :]
+            ochre = np.array([0.216, 0.101, 0.020], dtype=np.float32)[None, None, :]
             rt = np.clip(0.32 + 0.55 * w_fine + 0.30 * (w_micro - 0.5), 0.0, 1.0)[..., None]
             # When combined with moisture/moss (abandoned/coastal), old rust darkens into pitted black-umber scale
             aged_scale = float(np.clip(0.65 * wet + 0.55 * moss, 0.0, 0.72))
@@ -656,9 +657,10 @@ def apply_weathering_maps(
     m_moss = masks["moss"]
     if float(m_moss.max()) > 1e-4:
         tuft = masks.get("moss_tuft", w_micro)
-        moss_dark = np.array([0.034, 0.076, 0.020], dtype=np.float32)[None, None, :]
-        moss_mid = np.array([0.088, 0.185, 0.042], dtype=np.float32)[None, None, :]
-        lichen_pale = np.array([0.275, 0.315, 0.180], dtype=np.float32)[None, None, :]
+        # Tones fitted to CC0 moss scans (Lab L 20-46, olive hue ~108 deg): see tools/weathering_refs.py
+        moss_dark = np.array([0.026, 0.034, 0.000], dtype=np.float32)[None, None, :]
+        moss_mid = np.array([0.060, 0.082, 0.000], dtype=np.float32)[None, None, :]
+        lichen_pale = np.array([0.158, 0.166, 0.002], dtype=np.float32)[None, None, :]
         lich_w = gd._smoothstep(0.72, 0.92, w_fine * (0.45 + 0.55 * w_micro))[..., None]
         moss_col = moss_dark * (1.0 - tuft[..., None]) + moss_mid * tuft[..., None]
         moss_col = moss_col * (1.0 - 0.45 * lich_w) + lichen_pale * (0.45 * lich_w)

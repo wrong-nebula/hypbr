@@ -4,7 +4,8 @@
 For each weathering type, the pixels that *are* the weathering are compared in CIE Lab:
   - in each scan, pixels classified by colour (rust: warm, saturated orange-brown; moss: green);
   - in hypbr output, the pixels where that channel's own mask is above 0.6, on matching materials.
-Prints per-scan and per-material L/a/b/chroma/lightness spread plus group means, and writes a board of
+Prints per-scan and per-material L/a/b/chroma/lightness spread and layout (coverage, largest connected
+patch as a share of the covered area, patch count, all at 512px) plus group means, and writes a board of
 scans beside hypbr renders.
 
 usage: python tools/weathering_refs.py <scan_root> <board.png>
@@ -47,6 +48,33 @@ def feature(lab_px, kind):
     if kind == "moss":   # green: negative a*, positive b*
         return (a < -4) & (b > 4)
 
+def patches(mask, min_px=12):
+    """Connected 4-neighbour patches of a boolean mask (NumPy min-label propagation, no SciPy).
+    Returns patch areas (>= min_px pixels), largest first."""
+    h, w = mask.shape
+    lab_ = np.where(mask, np.arange(1, h * w + 1, dtype=np.int64).reshape(h, w), 0)
+    big = np.int64(h * w + 10)
+    while True:
+        cur = np.where(mask, lab_, big)
+        nb = cur.copy()
+        nb[1:, :] = np.minimum(nb[1:, :], cur[:-1, :]); nb[:-1, :] = np.minimum(nb[:-1, :], cur[1:, :])
+        nb[:, 1:] = np.minimum(nb[:, 1:], cur[:, :-1]); nb[:, :-1] = np.minimum(nb[:, :-1], cur[:, 1:])
+        new = np.where(mask, nb, 0)
+        if np.array_equal(new, lab_):
+            break
+        lab_ = new
+    _, counts = np.unique(lab_[mask], return_counts=True)
+    counts = np.sort(counts)[::-1]
+    return counts[counts >= min_px]
+
+def layout(mask):
+    """coverage, largest patch share of the covered area, patch count."""
+    cov = float(mask.mean())
+    areas = patches(mask)
+    if cov < 1e-4 or not len(areas):
+        return {"cov": cov, "largest": 0.0, "count": 0}
+    return {"cov": cov, "largest": float(areas[0] / mask.sum()), "count": int(len(areas))}
+
 def stats(lab_px, sel):
     x = lab_px[sel]
     if len(x) < 50:
@@ -57,7 +85,7 @@ GROUPS = {
     "rust": (["rust_coarse_01", "rusted_shutter", "rusty_metal_02", "rusty_metal_grid", "rusty_metal_sheet", "rusty_metal_shutter", "rusty_painted_metal", "worn_corrugated_iron"],
              [("diamond_tread_plate", "metal", {"rust": 0.9}), ("black_steel_tread_plate", "metal", {"rust": 0.9}), ("hardops_plate", "metal", {"rust": 0.9})]),
     "moss": (["brick_moss_001", "mossy_brick_floor", "mossy_stone_wall", "moss_wood"],
-             [("classic_red_brick", "brick", {"moss": 0.9}), ("fieldstone_drystack_wall", "stone", {"moss": 0.9}), ("weathered_driftwood", "wood", {"moss": 0.9})]),
+             [("classic_red_brick", "brick", {"moss": 0.8}), ("fieldstone_drystack_wall", "stone", {"moss": 0.8}), ("weathered_driftwood", "wood", {"moss": 0.8})]),
 }
 board = []
 for grp, (refs, ours) in GROUPS.items():
@@ -68,12 +96,16 @@ for grp, (refs, ours) in GROUPS.items():
             a = scan(r)
         except FileNotFoundError:
             continue
-        lp = lab(srgb_u8_to_linear(a)); st = stats(lp, feature(lp, grp))
-        if st: agg["ref"].append(st); print(f"   ref  {r:26s} n={st['n']:6d} L {st['L']:5.1f}  a {st['a']:5.1f}  b {st['b']:5.1f}  C {st['C']:5.1f}  sdL {st['sdL']:4.1f}")
+        a = a[:512, :512]
+        lp = lab(srgb_u8_to_linear(a)); sel = feature(lp, grp); st = stats(lp, sel)
+        if st:
+            st.update(layout(sel.reshape(a.shape[:2])))
+            agg["ref"].append(st)
+            print(f"   ref  {r:26s} L {st['L']:5.1f} a {st['a']:5.1f} b {st['b']:5.1f} C {st['C']:5.1f} sdL {st['sdL']:4.1f} | cover {st['cov']:.2f} largest {st['largest']:.2f} patches {st['count']}")
         board.append((grp, "scan: " + r, a))
     for mid, kind, kw in ours:
         try:
-            m = synthesize_material_maps(mid, size=256, preview=False)
+            m = synthesize_material_maps(mid, size=512, preview=False)
         except Exception as e:
             print("   skip", mid, e); continue
         w = weather_material_maps(m, material_kind=kind, seed=7, preview=False, **kw)
@@ -82,11 +114,16 @@ for grp, (refs, ours) in GROUPS.items():
         mask = np.asarray(w.weather_mask).astype(np.float32); mask = mask / 255 if mask.max() > 1.5 else mask
         ch = mask[..., 1] if grp == "rust" else mask[..., 3]
         lp = lab(alb_lin); st = stats(lp, ch.reshape(-1) > 0.6)
-        if st: agg["ours"].append(st); print(f"   ours {mid:26s} n={st['n']:6d} L {st['L']:5.1f}  a {st['a']:5.1f}  b {st['b']:5.1f}  C {st['C']:5.1f}  sdL {st['sdL']:4.1f}")
+        if st:
+            st.update(layout(ch > 0.5))
+            agg["ours"].append(st)
+            print(f"   ours {mid:26s} L {st['L']:5.1f} a {st['a']:5.1f} b {st['b']:5.1f} C {st['C']:5.1f} sdL {st['sdL']:4.1f} | cover {st['cov']:.2f} largest {st['largest']:.2f} patches {st['count']}")
+        else:
+            print(f"   ours {mid:26s} (no pixels above 0.6) | cover {float((ch > 0.5).mean()):.3f}")
         board.append((grp, "hypbr: " + mid, alb))
     for side in ("ref", "ours"):
         v = agg[side]
-        if v: print(f"   {side.upper():4s} mean: L {np.mean([s['L'] for s in v]):5.1f}  a {np.mean([s['a'] for s in v]):5.1f}  b {np.mean([s['b'] for s in v]):5.1f}  C {np.mean([s['C'] for s in v]):5.1f}  sdL {np.mean([s['sdL'] for s in v]):4.1f}")
+        if v: print(f"   {side.upper():4s} mean: L {np.mean([s['L'] for s in v]):5.1f} a {np.mean([s['a'] for s in v]):5.1f} b {np.mean([s['b'] for s in v]):5.1f} C {np.mean([s['C'] for s in v]):5.1f} sdL {np.mean([s['sdL'] for s in v]):4.1f} | cover {np.mean([s['cov'] for s in v]):.2f} largest {np.median([s['largest'] for s in v]):.2f} (median) patches {np.median([s['count'] for s in v]):.0f} (median)")
 W = 150; cols = 6
 rows = (len(board) + cols - 1) // cols
 img = Image.new("RGB", (W * cols, rows * (W + 14)), (24, 24, 24)); d = ImageDraw.Draw(img)

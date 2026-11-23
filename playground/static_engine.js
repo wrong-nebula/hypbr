@@ -92,6 +92,55 @@ function periodicFbm(size, freqs, seed) {
   return out;
 }
 
+// Sparse-patch scales, the same as hypbr/weathering.py: [cells per tile, radius lo, hi (cell units),
+// on-probability lo, hi, seed offset]. Rust: corrosion patches + pits. Moss: colonies + tufts.
+const RUST_SPOT_SCALES = [[9, 0.22, 0.42, 0.25, 0.70, 5301], [14, 0.20, 0.42, 0.16, 0.55, 5303]];
+const MOSS_COLONY_SCALES = [[6, 0.26, 0.50, 0.30, 0.80, 5401], [13, 0.20, 0.44, 0.22, 0.70, 5403]];
+
+// Periodic jittered cells: distance to the nearest cell point (cell units) and that cell's hash in [0, 1),
+// on noise-warped coordinates so patch outlines are irregular.
+function periodicCells(size, cells, seed, warpA, warpB) {
+  const f1 = new Float32Array(size * size);
+  const cid = new Float32Array(size * size);
+  for (let y = 0, i = 0; y < size; y++) {
+    for (let x = 0; x < size; x++, i++) {
+      const u = (((x + 0.5) / size + 0.05 * (warpA[i] - 0.5)) % 1 + 1) % 1;
+      const v = (((y + 0.5) / size + 0.05 * (warpB[i] - 0.5)) % 1 + 1) % 1;
+      const gx = u * cells, gy = v * cells;
+      const ix = Math.floor(gx), iy = Math.floor(gy);
+      let best = 1e9, id = 0;
+      for (let dy = -1; dy <= 1; dy++) {
+        const cy = (iy + dy + cells) % cells;
+        for (let dx = -1; dx <= 1; dx++) {
+          const cx = (ix + dx + cells) % cells;
+          const px = ix + dx + 0.14 + 0.72 * hash2i(cx, cy, seed);
+          const py = iy + dy + 0.14 + 0.72 * hash2i(cx, cy, seed + 1);
+          const d = Math.hypot(px - gx, py - gy);
+          if (d < best) { best = d; id = hash2i(cx, cy, seed + 2); }
+        }
+      }
+      f1[i] = best;
+      cid[i] = id;
+    }
+  }
+  return { f1, cid };
+}
+
+// Sparse patches in [0, 1] at pixel i: each cell turns on with a probability that grows with `amount` and
+// `anchor` (near crevices) and has its own radius. Mirrors _sparse_patches in hypbr/weathering.py.
+function patchAt(fields, scales, i, amount, anchor) {
+  let out = 0;
+  for (let s = 0; s < scales.length; s++) {
+    const [, rLo, rHi, pLo, pHi] = scales[s];
+    const f1 = fields[s].f1[i], cid = fields[s].cid[i];
+    const on = smoothstep(-0.03, 0.03, (pLo + (pHi - pLo) * amount) * (0.6 + 0.8 * anchor) - cid);
+    const radius = (rLo + (rHi - rLo) * ((cid * 7.13) % 1)) * (0.65 + 0.5 * amount);
+    const t = clamp01((f1 - 0.6 * radius) / Math.max(0.4 * radius, 1e-4));
+    out = Math.max(out, (1 - t * t * (3 - 2 * t)) * on);
+  }
+  return out;
+}
+
 // Track created object URLs per slot/result so browser memory stays bounded
 const _ownedBlobUrls = new Set();
 function registerBlobUrl(blob) {
@@ -307,6 +356,19 @@ export function weatherBase(base, entry, weather, seed) {
   const wLow = periodicFbm(size, [4, 8], seed + 17);
   const wFine = periodicFbm(size, [12, 24], seed + 53);
   const wMicro = periodicFbm(size, [32, 48], seed + 89);
+  const rustCells = rust > 1e-4 ? RUST_SPOT_SCALES.map(([c, , , , , sd]) => periodicCells(size, c, seed + sd, wFine, wMicro)) : null;
+  const mossCells = moss > 1e-4 ? MOSS_COLONY_SCALES.map(([c, , , , , sd]) => periodicCells(size, c, seed + sd, wFine, wMicro)) : null;
+  // Moss joints, normalized to this material (median -> 0, 95th percentile -> 1) like crevice_wide_n in Python,
+  // so faces with low baked occlusion do not count as joints.
+  let jointN = null;
+  if (moss > 1e-4) {
+    const raw = new Float32Array(size * size);
+    for (let i = 0; i < raw.length; i++) raw[i] = (1 - base.ao[i] / 255) * 1.4 + (base.cav[i] / 255) * 0.6;
+    const sorted = Float32Array.from(raw).sort();
+    const med = sorted[Math.floor(sorted.length * 0.5)], p95 = sorted[Math.floor(sorted.length * 0.95)];
+    jointN = new Float32Array(raw.length);
+    for (let i = 0; i < raw.length; i++) jointN[i] = clamp01((raw[i] - med) / Math.max(p95 - med, 1e-4));
+  }
 
   const kind = (entry.archetype || entry.kind || "stone").toLowerCase();
   const idLow = entry.id.toLowerCase();
@@ -400,15 +462,23 @@ export function weatherBase(base, entry, weather, seed) {
     // 3. Organic Moss Colonies
     let mMoss = 0;
     if (moss > 1e-4) {
-      const msDrive = crevice * (0.75 + 0.55 * wl) + 0.38 * basin * wl + 0.22 * wf - 0.38 * convex;
-      mMoss = smoothstep(0.66 - 0.42 * moss, 0.78 - 0.36 * moss, msDrive) * (0.72 + 0.28 * moss) * fade.moss;
+      // Colonies that creep out from joints (as in hypbr/weathering.py), not the whole joint network
+      const col = patchAt(mossCells, MOSS_COLONY_SCALES, i, moss, clamp01(0.6 * crevice + 0.4 * basin));
+      const msDrive = crevice * (0.75 + 0.55 * wl) + 0.38 * basin * wl + 0.22 * wf - 0.38 * convex
+        + 0.30 * (0.65 + 0.35 * moss) * col;
+      // Joints only (normalized occlusion + cavity): `crevice` also counts every low area, which let moss fill disks
+      const joint = jointN[i];
+      const reach = 0.15 + 0.55 * smoothstep(0.10, 1.0, moss);
+      const creep = smoothstep(1 - reach, 1, joint * (0.55 + 0.9 * wf));
+      const gate = Math.max(smoothstep(0.05, 0.28, joint) * (0.3 + 0.7 * col), col * creep);
+      mMoss = smoothstep(0.66 - 0.42 * moss, 0.78 - 0.36 * moss, msDrive) * (0.72 + 0.28 * moss) * gate * fade.moss;
       if (mMoss > 1e-3) {
         const lush = clamp01(0.45 * wf + 0.55 * wm);
         // Olive moss, dark to pale lichen: same tones as hypbr/weathering.py (fitted to CC0 moss scans)
         const mr = 0.026 + 0.132 * lush;
         const mg = 0.034 + 0.132 * lush;
         const mb = 0.001 + 0.002 * lush;
-        const k = 0.90 * mMoss;
+        const k = 0.95 * Math.min(1, mMoss / 0.6); // opaque cushions from mask 0.6, linear below
         r = r * (1 - k) + mr * k;
         g = g * (1 - k) + mg * k;
         b = b * (1 - k) + mb * k;
@@ -423,8 +493,13 @@ export function weatherBase(base, entry, weather, seed) {
     // 4. Archetype-Aware Rust / Verdigris / Efflorescence
     let mRust = 0;
     if (rust > 1e-4) {
-      const rDrive = crevice * (0.76 + 0.60 * wl) + 0.34 * wl * wf + 0.18 * wm - 0.32 * convex;
-      mRust = smoothstep(0.64 - 0.40 * rust, 0.76 - 0.34 * rust, rDrive) * (0.72 + 0.28 * rust) * fade.rust;
+      if (kind === "brick" || kind === "concrete" || kind === "plaster" || kind === "wood") {
+        const rDrive = crevice * (0.76 + 0.60 * wl) + 0.34 * wl * wf + 0.18 * wm - 0.32 * convex;
+        mRust = smoothstep(0.64 - 0.40 * rust, 0.76 - 0.34 * rust, rDrive) * (0.72 + 0.28 * rust) * fade.rust;
+      } else {
+        // Separate corrosion spots and pits (as in hypbr/weathering.py), not near-total coverage
+        mRust = patchAt(rustCells, RUST_SPOT_SCALES, i, rust, crevice) * (1 - 0.6 * convex) * (0.72 + 0.28 * rust) * fade.rust;
+      }
       if (mRust > 1e-3) {
         let rr, rgC, rb, rRough;
         if (isCu) {
@@ -448,12 +523,14 @@ export function weatherBase(base, entry, weather, seed) {
         } else {
           // Iron oxide rust, dark oxide to ochre: same tones as hypbr/weathering.py (fitted to CC0 rust scans)
           const ox = clamp01(0.55 * wf + 0.45 * wm);
-          rr = 0.053 + 0.163 * ox;
-          rgC = 0.021 + 0.080 * ox;
-          rb = 0.010 + 0.010 * ox;
+          rr = 0.057 + 0.172 * ox;
+          rgC = 0.017 + 0.073 * ox;
+          rb = 0.006 + 0.001 * ox;
           rRough = 0.89;
         }
-        const k = 0.88 * mRust;
+        // Opaque crusts from mask 0.6 (linear below); per-kind cover caps as in hypbr/weathering.py
+        const kMax = isCu ? 0.90 : isMasonry ? 0.86 : kind === "wood" ? 0.88 : 0.96;
+        const k = kMax * Math.min(1, mRust / 0.6);
         r = r * (1 - k) + rr * k;
         g = g * (1 - k) + rgC * k;
         b = b * (1 - k) + rb * k;

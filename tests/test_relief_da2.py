@@ -83,3 +83,35 @@ def test_infer_relief_returns_finite_height_at_input_size(patched_model, tileabl
     rgb = (np.random.default_rng(0).random((96, 96, 3)) * 255).astype(np.uint8)
     h = rd.infer_relief(model, rgb, tileable=tileable, rot4=rot4, res=126)
     assert h.shape == (96, 96) and h.dtype == np.float32 and np.isfinite(h).all() and h.std() > 0
+
+
+def test_relief_normal_is_calibrated_unit_length_and_seamless():
+    yy, xx = np.mgrid[0:128, 0:128].astype(np.float32)
+    bumps = np.sin(xx * 2 * np.pi / 32) * np.cos(yy * 2 * np.pi / 32)
+    flat = dp.relief_normal(np.zeros((64, 64), np.float32))
+    assert np.allclose(flat[..., 2], 1.0)
+    n = dp.relief_normal(bumps)
+    assert np.allclose(np.linalg.norm(n, axis=-1), 1.0, atol=1e-5)
+    slope = lambda m: float((np.hypot(m[..., 0], m[..., 1]) / m[..., 2])[8:-8, 8:-8].mean())
+    # the relief's units barely matter: 10x steeper relief gives 10**RELIEF_SLOPE_B = 2.3x the slope...
+    assert slope(dp.relief_normal(bumps * 10)) / slope(n) == pytest.approx(10 ** dp.RELIEF_SLOPE_B, rel=1e-3)
+    # ...and amplitude scales the slope linearly
+    assert slope(dp.relief_normal(bumps, amplitude=2.0)) / slope(dp.relief_normal(bumps, amplitude=1.0)) == pytest.approx(2.0, rel=1e-3)
+    # circular mode wraps: the first column continues the last one
+    c = dp.relief_normal(bumps, circular=True)
+    assert np.abs(c[:, 0] - c[:, -1]).mean() < 3 * np.abs(c[:, 1] - c[:, 0]).mean() + 1e-3
+
+
+def test_without_deepbump_da2_relief_feeds_the_neural_normals(monkeypatch):
+    from hypbr import normal_graph as ng
+
+    rgb = (np.random.default_rng(1).random((64, 64, 3)) * 255).astype(np.uint8)
+    yy, xx = np.mgrid[0:64, 0:64].astype(np.float32)
+    relief = np.sin(xx / 5.0) + np.cos(yy / 7.0)
+    monkeypatch.setattr(dp, "_run_deepbump_batch", lambda rgbs: (None, False))
+    monkeypatch.setattr(ng, "_run_wsp_roughness_batch", lambda rgbs: None)
+    monkeypatch.setattr(dp, "macro_relief_maps", lambda rgbs, **kw: {k: relief for k in rgbs})
+    da2 = ng.extract_neural_sources({"a": rgb}, depth_model="da2")["a"]
+    assert np.allclose(da2["neural_n"], dp.relief_normal(relief))
+    dpro = ng.extract_neural_sources({"a": rgb}, depth_model="depthpro")["a"]
+    assert not np.allclose(dpro["neural_n"], da2["neural_n"])  # Depth Pro keeps the luminance micro-relief stand-in

@@ -2006,6 +2006,12 @@ def extract_neural_sources(rgbs: dict[str, np.ndarray], tileable: bool = False,
             nz = np.sqrt(np.maximum(0.05, 1.0 - np.clip(nx * nx + ny * ny, 0.0, 0.95)))
             N_db = normalize_n(np.stack([nx, ny, nz], axis=-1))
             h_db = dp.detrend_surface((out3[..., 2] - 0.15) / 0.70, 2)
+        elif depth_model == "da2":
+            # No DeepBump weights: stand in with the relief model's own detail at a calibrated slope. Its slopes point
+            # the right way ~3.5x as often as the luminance micro-relief's (held-out scans), and the final height map
+            # correlates twice as well with the true height.
+            h_db = dp.detrend_surface(dp2_map[k], 2)
+            N_db = dp.relief_normal(dp2_map[k], circular=tileable)
         else:
             h_db = h_mic.copy()
             N_db = dp.height_to_unit_normal(h_mic, strength=2.0, circular=tileable)

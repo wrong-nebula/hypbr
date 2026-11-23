@@ -279,6 +279,36 @@ def height_to_unit_normal(
     return np.stack([nx / nl, ny / nl, nz / nl], axis=-1).astype(np.float32)
 
 
+# Calibrated relief amplitude: across 20 held-out Poly Haven scans, the mean true surface slope follows the mean
+# gradient of the Depth Anything V2 relief as log(slope) = A + B*log(gradient) (r = 0.47; B < 1 shrinks toward the
+# typical slope when the model's own scale is unreliable). Fitted on the `da2` relief only.
+RELIEF_SLOPE_A = -0.592
+RELIEF_SLOPE_B = 0.361
+
+
+def relief_normal(h: np.ndarray, amplitude: float = 1.2, circular: bool = False, border: int = 8) -> np.ndarray:
+    """Unit normals (OpenGL +Y) from a relative relief map, scaled to the slope its own gradient predicts.
+
+    Unlike `height_to_unit_normal` (which normalizes height to 0..1 per tile, so a 512 px tile tilts only ~2 deg),
+    this keeps the relief's shape and sets the mean slope from the calibration above, times `amplitude`. At 1.2
+    the photo graph's final normals beat the previous fallback on every held-out metric (see `relief_da2`).
+    """
+    hd = detrend_surface(h.astype(np.float32), degree=2)
+    mode = "circular" if circular else "reflect"
+    gx = bk.correlate3x3(hd, _SCHARR_X, mode)
+    gy = bk.correlate3x3(hd, _SCHARR_Y, mode)
+    mag = np.hypot(gx, gy)
+    inner = mag if circular or min(mag.shape) <= 4 * border else mag[border:-border, border:-border]
+    g = float(inner.mean())
+    if not np.isfinite(g) or g < 1e-12:
+        out = np.zeros(h.shape + (3,), dtype=np.float32)
+        out[..., 2] = 1.0
+        return out
+    k = math.exp(RELIEF_SLOPE_A + RELIEF_SLOPE_B * math.log(g)) * float(amplitude) / g
+    N = np.stack([-gx * k, gy * k, np.ones_like(gx)], axis=-1)
+    return (N / np.linalg.norm(N, axis=-1, keepdims=True)).astype(np.float32)
+
+
 def normal_to_u8(N: np.ndarray) -> np.ndarray:
     Np = N / (np.linalg.norm(N, axis=-1, keepdims=True) + 1e-8)
     return np.clip((Np * 0.5 + 0.5) * 255.0 + 0.5, 0, 255).astype(np.uint8)

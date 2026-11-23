@@ -155,3 +155,31 @@ def test_weather_validation_errors(tmp_path: Path) -> None:
 
     with pytest.raises(FileNotFoundError, match="patch directory not found"):
         weather_material(base, tmp_path / "no_dir", wet=0.5, backend="neural", patch_dir=tmp_path / "missing")
+
+
+def test_coating_substrate_lookup():
+    from hypbr.weathering import coating_substrate
+
+    assert coating_substrate("anodized_blue_aluminum", "metal")[2] == 1.0          # bare aluminium is metal
+    assert coating_substrate("olive_military_armor_panel", "rubber")[2] == 1.0     # painted plate over steel
+    assert coating_substrate("painted_white_brick", "stone")[0][0] > coating_substrate("painted_white_brick", "stone")[0][2]  # red body
+    assert coating_substrate("teal_glazed_quarry_tile", "ceramic") is not None
+    assert coating_substrate("classic_red_brick", "brick") is None                 # uncoated: no substrate
+    assert coating_substrate("diamond_tread_plate", "metal") is None
+
+
+def test_heavy_wear_chips_painted_coating_through_to_substrate():
+    """Painted armour plate: heavy wear exposes bare (metallic) steel in chips; light wear does not."""
+    import numpy as np
+
+    from hypbr.synthesize import synthesize_material_maps
+    from hypbr.weathering import weather_material_maps
+
+    m = synthesize_material_maps("olive_military_armor_panel", size=128, preview=False)
+    met0 = float(np.asarray(m.metallic, np.float32).mean())
+    light = weather_material_maps(m, wear=0.05, seed=7, preview=False)
+    heavy = weather_material_maps(m, wear=0.9, seed=7, preview=False)
+    met_light = float(np.asarray(light.metallic, np.float32).mean())
+    met_heavy = float(np.asarray(heavy.metallic, np.float32).mean())
+    assert met_light - met0 < 0.002 * max(1.0, float(np.asarray(m.metallic).max()))
+    assert met_heavy > met_light, (met0, met_light, met_heavy)

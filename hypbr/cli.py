@@ -222,7 +222,7 @@ def cmd_dump_preset(args: argparse.Namespace) -> int:
 
 
 def cmd_photo(args: argparse.Namespace) -> int:
-    argv = [str(args.image), "--out", str(args.out), "--preset", args.preset]
+    argv = [str(args.image), "--out", str(args.out), "--preset", args.preset, "--depth-model", args.depth_model]
     if args.graph:
         argv += ["--graph", str(args.graph)]
     if args.tileable:
@@ -402,13 +402,16 @@ def build_parser() -> argparse.ArgumentParser:
     p_dump.add_argument("preset", nargs="?", default="v13-default", help="Preset name (default: v13-default)")
     p_dump.set_defaults(func=cmd_dump_preset)
 
-    p_photo = sub.add_parser("photo", help="Convert a macro photograph to 15 PBR maps via Depth Pro + DeepBump + 47-node graph")
+    p_photo = sub.add_parser("photo", help="Convert a macro photograph to 15 PBR maps via neural relief + DeepBump + 47-node graph")
     p_photo.add_argument("image", type=Path, help="Path to input photograph")
     p_photo.add_argument("--out", type=Path, default=Path("./output/photo_pbr"), help="Output directory")
     p_photo.add_argument("--preset", default="v13-default", help="Graph preset name")
     p_photo.add_argument("--graph", type=Path, default=None, help="Optional custom JSON graph file")
     p_photo.add_argument("--tileable", action="store_true", help="Enable circular-padded seamless evaluation")
     p_photo.add_argument("--dx", action="store_true", help="Output DirectX (-Y) normals instead of OpenGL (+Y)")
+    p_photo.add_argument("--depth-model", default="da2", choices=("da2", "depthpro"),
+                         help="Macro relief model: da2 = Depth Anything V2 Small + hypbr patch (Apache-2.0 base, default); "
+                              "depthpro = Apple Depth Pro 2 (research-only license, needs depth_pro_2)")
     p_photo.set_defaults(func=cmd_photo)
 
     return p

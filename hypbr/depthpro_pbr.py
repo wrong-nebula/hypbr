@@ -2,8 +2,8 @@
 """Production $0 Local PBR Heightmap, Tangent-Space Normal Map & Cavity AO Generator.
 
 Unified V2 pipeline:
-  1. Macro/medium 3D relief from WeightCode-edited `apple/DepthPro2-S` (`wsp_depthpro2_s_pbr.pt`,
-     synthesized by `google/gemini-4-neon` medium — 1.44% weights edited, fov=False).
+  1. Macro/medium 3D relief from Depth Anything V2 Small + hypbr's 5 MB relief patch (`relief_da2`, default), or
+     from WeightCode-edited `apple/DepthPro2-S` (`--depth-model depthpro`, `wsp_depthpro2_s_pbr.pt`, fov=False).
   2. Pixel-resolution micro-relief via chromaticity-gradient gating + multi-scale morphological
      Black-Hat/Top-Hat valley/ridge extraction + joint-bilateral denoising.
   3. Tangent-space normals via physically exact Reoriented Normal Mapping (RNM) combining
@@ -15,7 +15,8 @@ standard PBR renderers (glTF 2.0, Blender, Three.js, Unreal, Unity).
 Usage:
   hypbr photo path/to/material.jpg --out ./output/pbr [--tileable] [--strength 1.0] [--dx]
 
-Note: Apple DepthPro2 weights use the non-commercial `apple-amlr` research license.
+Note: the default Depth Anything V2 Small base model is Apache-2.0. Apple DepthPro2 weights (`--depth-model
+depthpro`) use the non-commercial `apple-amlr` research license.
 """
 import argparse
 import gc
@@ -278,6 +279,36 @@ def height_to_unit_normal(
     return np.stack([nx / nl, ny / nl, nz / nl], axis=-1).astype(np.float32)
 
 
+# Calibrated relief amplitude: across 20 held-out Poly Haven scans, the mean true surface slope follows the mean
+# gradient of the Depth Anything V2 relief as log(slope) = A + B*log(gradient) (r = 0.47; B < 1 shrinks toward the
+# typical slope when the model's own scale is unreliable). Fitted on the `da2` relief only.
+RELIEF_SLOPE_A = -0.592
+RELIEF_SLOPE_B = 0.361
+
+
+def relief_normal(h: np.ndarray, amplitude: float = 1.2, circular: bool = False, border: int = 8) -> np.ndarray:
+    """Unit normals (OpenGL +Y) from a relative relief map, scaled to the slope its own gradient predicts.
+
+    Unlike `height_to_unit_normal` (which normalizes height to 0..1 per tile, so a 512 px tile tilts only ~2 deg),
+    this keeps the relief's shape and sets the mean slope from the calibration above, times `amplitude`. At 1.2
+    the photo graph's final normals beat the previous fallback on every held-out metric (see `relief_da2`).
+    """
+    hd = detrend_surface(h.astype(np.float32), degree=2)
+    mode = "circular" if circular else "reflect"
+    gx = bk.correlate3x3(hd, _SCHARR_X, mode)
+    gy = bk.correlate3x3(hd, _SCHARR_Y, mode)
+    mag = np.hypot(gx, gy)
+    inner = mag if circular or min(mag.shape) <= 4 * border else mag[border:-border, border:-border]
+    g = float(inner.mean())
+    if not np.isfinite(g) or g < 1e-12:
+        out = np.zeros(h.shape + (3,), dtype=np.float32)
+        out[..., 2] = 1.0
+        return out
+    k = math.exp(RELIEF_SLOPE_A + RELIEF_SLOPE_B * math.log(g)) * float(amplitude) / g
+    N = np.stack([-gx * k, gy * k, np.ones_like(gx)], axis=-1)
+    return (N / np.linalg.norm(N, axis=-1, keepdims=True)).astype(np.float32)
+
+
 def normal_to_u8(N: np.ndarray) -> np.ndarray:
     Np = N / (np.linalg.norm(N, axis=-1, keepdims=True) + 1e-8)
     return np.clip((Np * 0.5 + 0.5) * 255.0 + 0.5, 0, 255).astype(np.uint8)
@@ -498,6 +529,39 @@ def infer_inv_depth(model, rgb_uint8: np.ndarray, tileable: bool = False, rot4: 
     return out.astype(np.float32)
 
 
+DEPTH_MODELS = ("da2", "depthpro")
+
+
+def macro_relief_maps(rgbs: dict[str, np.ndarray], depth_model: str = "da2", tileable: bool = False,
+                      preset: str = "depthpro2-s", log=print) -> dict[str, np.ndarray]:
+    """Macro relief (larger = higher) for each photo, loading the chosen model once and freeing it afterwards.
+
+    `da2` (default): Depth Anything V2 Small + hypbr's relief patch (Apache-2.0 base, see `relief_da2`).
+    `depthpro`: Apple Depth Pro 2 (`preset`) + the Neon-WSP patch (research-only `apple-amlr` license; needs `depth_pro_2`).
+    Both average 4 rotations, or blend 4 cyclic shifts when `tileable`.
+    """
+    if depth_model not in DEPTH_MODELS:
+        raise ValueError(f"depth_model must be one of {DEPTH_MODELS}, got {depth_model!r}")
+    torch = bk.require_torch("`hypbr photo` (neural macro relief)")
+    t0 = time.time()
+    if depth_model == "da2":
+        from .relief_da2 import infer_relief, load_da2_relief
+
+        model, n = load_da2_relief()
+        log(f"Loaded Depth Anything V2 Small + relief patch ({n:,} params) on {DEVICE} in {time.time()-t0:.1f}s", flush=True)
+        out = {k: infer_relief(model, rgb, tileable=tileable, rot4=not tileable) for k, rgb in rgbs.items()}
+    else:
+        model = load_depthpro2_no_fov(preset, precision=torch.float32)
+        _, n = apply_neon_wsp_patch(model, circular_pad=tileable)
+        log(f"Loaded {preset} + Neon-WSP patch ({n:,} weights) on {DEVICE} in {time.time()-t0:.1f}s", flush=True)
+        out = {k: infer_inv_depth(model, rgb, tileable=tileable, rot4=not tileable) for k, rgb in rgbs.items()}
+    del model
+    gc.collect()
+    if DEVICE.type == "mps":
+        torch.mps.empty_cache()
+    return out
+
+
 def load_square_rgb(path: Path, size: int = 512) -> np.ndarray:
     im = Image.open(path).convert("RGB")
     w, h = im.size
@@ -521,7 +585,7 @@ def make_comparison_sheet(panels: list[tuple[str, Image.Image]], out_path: Path)
 
 def process_images(paths: list[Path], out_dir: Path, size: int = 512, strength: float = 1.0,
                    tileable: bool = False, flip_y: bool = False, use_deepbump: bool = True,
-                   preset: str = "depthpro2-s"):
+                   preset: str = "depthpro2-s", depth_model: str = "da2"):
     out_dir.mkdir(parents=True, exist_ok=True)
     t0 = time.time()
     rgbs = {p.stem: load_square_rgb(p, size=size) for p in paths}
@@ -529,16 +593,14 @@ def process_images(paths: list[Path], out_dir: Path, size: int = 512, strength: 
     # Optional WSP-DeepBump (467-param WeightCode edit: calibrated normals + neural height in ch 2!)
     db_map, db_is_wsp = _run_deepbump_batch(rgbs) if use_deepbump else (None, False)
 
-    torch = bk.require_torch("Neural photo mode (`hypbr photo`)")
-    model = load_depthpro2_no_fov(preset, precision=torch.float32)
-    _, chg = apply_neon_wsp_patch(model, circular_pad=tileable)
+    macro = macro_relief_maps(rgbs, depth_model=depth_model, tileable=tileable, preset=preset)
     db_tag = "wsp-deepbump" if db_is_wsp else ("deepbump" if db_map else "off")
-    print(f"Loaded {preset} + Neon-WSP patch ({chg:,} weights) on {DEVICE} in {time.time()-t0:.1f}s (detail={db_tag})", flush=True)
+    print(f"Macro relief: {depth_model}, detail: {db_tag} ({time.time()-t0:.1f}s)", flush=True)
 
     for p in paths:
         stem = p.stem
         rgb = rgbs[stem]
-        h_mac = detrend_surface(infer_inv_depth(model, rgb, tileable=tileable, rot4=not tileable), degree=2)
+        h_mac = detrend_surface(macro[stem], degree=2)
         h_mic_v2, chroma_gate = v2_micro_relief(rgb, circular=tileable)
         _, gconf = retinex_flat_plateau_gate(rgb, circular=tileable)
 
@@ -608,11 +670,6 @@ def process_images(paths: list[Path], out_dir: Path, size: int = 512, strength: 
         ], out_dir / f"{stem}_pbr_sheet.png")
         print(f"[{stem}] saved 512px maps -> {sub}/{{albedo_512,height,normal,ao}}.png", flush=True)
 
-    del model
-    gc.collect()
-    if DEVICE.type == "mps":
-        torch.mps.empty_cache()
-
 
 def main():
     ap = argparse.ArgumentParser(description="Unified V2 PBR Height/Normal/AO generator (Neon-WSP DepthPro2-S + BlackHat/Bilateral + RNM DeepBump)")
@@ -623,11 +680,15 @@ def main():
     ap.add_argument("--tileable", action="store_true", help="Enable circular padding & toroidal wrap blending")
     ap.add_argument("--dx", action="store_true", help="DirectX -Y normal convention (default OpenGL +Y)")
     ap.add_argument("--no-deepbump", action="store_true", help="Skip DeepBump RNM detail pass")
-    ap.add_argument("--preset", default="depthpro2-s", choices=("depthpro2-s", "depthpro2-b"))
+    ap.add_argument("--depth-model", default="da2", choices=DEPTH_MODELS,
+                    help="Macro relief model: da2 = Depth Anything V2 Small + hypbr patch (Apache-2.0 base, default); "
+                         "depthpro = Apple Depth Pro 2 (research-only license)")
+    ap.add_argument("--preset", default="depthpro2-s", choices=("depthpro2-s", "depthpro2-b"),
+                    help="Depth Pro size (only with --depth-model depthpro)")
     args = ap.parse_args()
     process_images(args.images, args.out, size=args.size, strength=args.strength,
                    tileable=args.tileable, flip_y=args.dx, use_deepbump=not args.no_deepbump,
-                   preset=args.preset)
+                   preset=args.preset, depth_model=args.depth_model)
 
 
 if __name__ == "__main__":

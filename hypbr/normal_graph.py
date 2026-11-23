@@ -1987,19 +1987,13 @@ def _run_wsp_roughness_batch(rgbs: dict[str, np.ndarray]) -> dict[str, np.ndarra
         return {k: v.astype(np.float32) for k, v in np.load(out_p).items()}
 
 
-def extract_neural_sources(rgbs: dict[str, np.ndarray], tileable: bool = False) -> dict[str, dict[str, Any]]:
-    """Run our Dual-WSP neural models (4-rot Neon-WSP DepthPro2-S + 8-way D4 WSP-DeepBump + WSP-Roughness) once per image."""
+def extract_neural_sources(rgbs: dict[str, np.ndarray], tileable: bool = False,
+                           depth_model: str = "da2") -> dict[str, dict[str, Any]]:
+    """Run the neural sources once per image: 4-rot macro relief (`depth_model`: Depth Anything V2 Small + relief
+    patch by default, or Neon-WSP DepthPro2-S) + 8-way D4 WSP-DeepBump + WSP-Roughness."""
     db_map, db_is_wsp = dp._run_deepbump_batch(rgbs)
     rough_map = _run_wsp_roughness_batch(rgbs)
-
-    torch = bk.require_torch("Neural graph sources (DepthPro2)")
-    model = dp.load_depthpro2_no_fov("depthpro2-s", precision=torch.float32)
-    dp.apply_neon_wsp_patch(model, circular_pad=tileable)
-    dp2_map = {k: dp.infer_inv_depth(model, rgb, tileable=tileable, rot4=not tileable) for k, rgb in rgbs.items()}
-    del model
-    gc.collect()
-    if dp.DEVICE.type == "mps":
-        torch.mps.empty_cache()
+    dp2_map = dp.macro_relief_maps(rgbs, depth_model=depth_model, tileable=tileable)
 
     sources = {}
     for k, rgb in rgbs.items():
@@ -2012,6 +2006,12 @@ def extract_neural_sources(rgbs: dict[str, np.ndarray], tileable: bool = False) 
             nz = np.sqrt(np.maximum(0.05, 1.0 - np.clip(nx * nx + ny * ny, 0.0, 0.95)))
             N_db = normalize_n(np.stack([nx, ny, nz], axis=-1))
             h_db = dp.detrend_surface((out3[..., 2] - 0.15) / 0.70, 2)
+        elif depth_model == "da2":
+            # No DeepBump weights: stand in with the relief model's own detail at a calibrated slope. Its slopes point
+            # the right way ~3.5x as often as the luminance micro-relief's (held-out scans), and the final height map
+            # correlates twice as well with the true height.
+            h_db = dp.detrend_surface(dp2_map[k], 2)
+            N_db = dp.relief_normal(dp2_map[k], circular=tileable)
         else:
             h_db = h_mic.copy()
             N_db = dp.height_to_unit_normal(h_mic, strength=2.0, circular=tileable)
@@ -2040,6 +2040,8 @@ def main():
     ap.add_argument("--tileable", action="store_true")
     ap.add_argument("--dx", action="store_true", help="DirectX -Y normal output (default OpenGL +Y)")
     ap.add_argument("--strength", type=float, default=1.0, help="Final normal strength multiplier")
+    ap.add_argument("--depth-model", default="da2", choices=dp.DEPTH_MODELS,
+                    help="Macro relief model: da2 (default, Apache-2.0 base) or depthpro (research-only license)")
     args = ap.parse_args()
 
     if args.dump_preset:
@@ -2054,7 +2056,7 @@ def main():
     t0 = time.time()
 
     rgbs = {p.stem: dp.load_square_rgb(p, size=args.size) for p in args.images}
-    sources = extract_neural_sources(rgbs, tileable=args.tileable)
+    sources = extract_neural_sources(rgbs, tileable=args.tileable, depth_model=args.depth_model)
 
     def get_out(state, ref):
         nid, port = ref.split(".", 1)

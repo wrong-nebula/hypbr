@@ -101,16 +101,25 @@ def test_other_sources_need_an_explicit_license(tmp_path, source_maps):
 
 def test_matsynth_rows_filters_and_mapping(tmp_path, source_maps):
     keep = imp.matsynth_keep
-    skip = ("polyhaven", "ambientcg", "deschaintre")
-    assert keep({"license": "CC0", "source": "cgbookcase"}, False, skip)[0]
-    assert not keep({"license": "CC-BY", "source": "julio"}, False, skip)[0]
-    assert keep({"license": "CC-BY", "source": "julio"}, True, skip)[0]
-    assert not keep({"license": "CC0", "source": "deschaintre_2020"}, False, skip)[0]
-    assert not keep({"license": "CC0", "source": "PolyHaven"}, False, skip)[0]
+    skip = ("polyhaven", "textures_heaven", "deschaintre")
+    scan = {"method": "photogrammetry"}
+    assert keep({"license": "CC0", "source": "cgbookcase", **scan}, False, skip)[0]
+    assert not keep({"license": "CC-BY", "source": "julio", **scan}, False, skip)[0]
+    assert keep({"license": "CC-BY", "source": "julio", **scan}, True, skip)[0]
+    assert not keep({"license": "CC BY-NC-ND 2.0", "source": "x", **scan}, True, skip)[0]  # never NC/ND
+    assert not keep({"license": "CC0", "source": "deschaintre_2020", **scan}, False, skip)[0]
+    assert not keep({"license": "CC0", "source": "PolyHaven", **scan}, False, skip)[0]
+    assert not keep({"license": "CC0", "source": "textures_heaven", **scan}, False, skip)[0]  # Poly Haven's old name
+    assert not keep({"license": "CC0", "source": "matsynth", "method": "blend"}, False, skip)[0]
+    assert not keep({"license": "CC0", "source": "cgbookcase", "method": "procedural"}, False, skip)[0]
+    assert keep({"license": "CC0", "source": "cgbookcase", "method": "procedural"}, False, skip, ("all",))[0]
+    assert keep({"license": "CC0", "source": "ambientcg", "method": "photogrammetry"}, False, skip)[0]  # 129 new scans
+    assert keep({"license": "CC0", "source": "sharetextures", "method": "scan"}, False, skip)[0]
+    assert not keep({"license": "CC0", "source": "ambientcg", "method": "approximation"}, False, skip)[0]
 
     row = {
         "name": "Bricks075", "category": 11,  # terracotta
-        "metadata": {"license": "CC0", "source": "cgbookcase", "physical_size": 1.5, "tags": ["brick", "red"],
+        "metadata": {"license": "CC0", "source": "cgbookcase", "physical_size": 150, "tags": ["brick", "red"],
                      "method": "photogrammetry", "link": "https://example.invalid/bricks075"},
         "basecolor": {"bytes": _png(source_maps["albedo"])}, "normal": {"bytes": _png(source_maps["normal"])},
         "height": {"bytes": _png(source_maps["height16"])}, "roughness": {"bytes": _png(source_maps["rough"])},
@@ -119,14 +128,17 @@ def test_matsynth_rows_filters_and_mapping(tmp_path, source_maps):
     mat = imp.matsynth_material(row)
     assert mat.id == "msyn_terracotta_bricks075" and mat.license == "CC0"
     rec = imp.write_material(mat, tmp_path / "refs")
-    assert rec["size_m"] == 1.5 and rec["category"] == "terracotta" and "metallic" not in rec["maps"]
+    assert rec["size_m"] == 1.5 and rec["category"] == "terracotta" and "metallic" not in rec["maps"]  # 150 cm
+    for bad in (0, 0.5, 1e6, "3m", None):  # implausible or missing edge lengths are dropped, not guessed
+        row["metadata"]["physical_size"] = bad
+        assert "size_m" not in imp.matsynth_material(row).meta
 
 
 def test_calibration_uses_imported_roughness_and_physical_size(tmp_path, source_maps):
     from hypbr.calibration import reference_stats
 
     row = {"name": "Bricks075", "category": 11,
-           "metadata": {"license": "CC0", "source": "cgbookcase", "physical_size": 1.5},
+           "metadata": {"license": "CC0", "source": "cgbookcase", "physical_size": 150},
            "basecolor": {"bytes": _png(source_maps["albedo"])}, "normal": {"bytes": _png(source_maps["normal"])},
            "roughness": {"bytes": _png(source_maps["rough"])}}
     imp.write_material(imp.matsynth_material(row), tmp_path / "refs")

@@ -9,7 +9,10 @@ Two sources:
             python tools/import_refs.py folder ~/Downloads/megascans --source megascans --out ~/hypbr-refs
 
   matsynth  The MatSynth dataset on Hugging Face (gvecchio/MatSynth), read shard by shard with only the
-            needed columns (needs `pip install pyarrow`). CC0 items only unless --allow-cc-by.
+            needed columns (needs `pip install pyarrow`). By default only CC0 real scans (photogrammetry
+            and scan methods) not already in the reference set: ~176 of MatSynth's 5,789 items (ambientCG
+            and ShareTextures scans, Nov 2026); --methods, --allow-cc-by and --skip-sources widen it.
+            MatSynth's Deschaintre items are CC BY-NC-ND and are never imported.
             python tools/import_refs.py matsynth --out ~/hypbr-refs --limit 200
 
 Each material becomes <out>/<source>/<id>.npz with
@@ -235,14 +238,22 @@ def iter_folder(root: Path, source: str, license_: str) -> Iterator[tuple[Materi
 
 # ---------------------------------------------------------------------------- MatSynth source
 
-def matsynth_keep(meta: dict[str, Any], allow_cc_by: bool, skip_sources: tuple[str, ...]) -> tuple[bool, str]:
+SCAN_METHODS = ("photogrammetry", "scan")  # real measurements; not procedural, blend or photo "approximation"
+
+
+def matsynth_keep(meta: dict[str, Any], allow_cc_by: bool, skip_sources: tuple[str, ...],
+                  methods: tuple[str, ...] = SCAN_METHODS) -> tuple[bool, str]:
+    """Keep CC0 (optionally CC-BY, never NC/ND) items from wanted sources and creation methods."""
     lic = str(meta.get("license") or "")
-    if lic.upper() != "CC0" and not (allow_cc_by and lic.upper().startswith("CC-BY")):
+    if lic.upper() != "CC0" and not (allow_cc_by and lic.upper() in ("CC-BY", "CC-BY 4.0", "CC BY 4.0")):
         return False, f"license {lic or '?'}"
     src = str(meta.get("source") or "").lower()
     for s in skip_sources:
         if s and s in src:
             return False, f"source {src}"
+    method = str(meta.get("method") or "unknown").lower()
+    if methods and "all" not in methods and method not in methods:
+        return False, f"method {method}"
     return True, ""
 
 
@@ -260,13 +271,16 @@ def matsynth_material(row: dict[str, Any]) -> Material:
     size = meta.get("physical_size")
     keep = {"name": name, "category": cat_name, "tags": list(meta.get("tags") or []), "method": meta.get("method"),
             "upstream_source": meta.get("source"), "authors": list(meta.get("authors") or []), "link": meta.get("link")}
-    if isinstance(size, (int, float)) and size > 0:
-        keep["size_m"] = float(size)
+    # The card gives "the length of the edge in centimeters" (e.g. 300 for a ~3 m brick wall). Keep only plausible
+    # tile edges (1 cm .. 50 m); anything else is left unset so calibration falls back to its name-based default.
+    if isinstance(size, (int, float)) and 1.0 <= size <= 5000.0:
+        keep["size_m"] = float(size) / 100.0
     return Material(f"msyn_{slug(cat_name)}_{slug(name)}", "matsynth", str(meta.get("license") or "CC0"), maps, keep,
                     str(meta.get("link") or f"hf://{MATSYNTH_REPO}"), "gl")  # card: "We adopt the OpenGL standard"
 
 
-def iter_matsynth(split: str, allow_cc_by: bool, skip_sources: tuple[str, ...], log: Callable[[str], None]) -> Iterator[dict[str, Any]]:
+def iter_matsynth(split: str, allow_cc_by: bool, skip_sources: tuple[str, ...], log: Callable[[str], None],
+                  methods: tuple[str, ...] = SCAN_METHODS) -> Iterator[dict[str, Any]]:
     """Stream MatSynth rows shard by shard, reading only MATSYNTH_COLUMNS (row-group sized, never whole shards)."""
     try:
         import pyarrow.parquet as pq
@@ -281,11 +295,11 @@ def iter_matsynth(split: str, allow_cc_by: bool, skip_sources: tuple[str, ...], 
             pf = pq.ParquetFile(fh)
             for g in range(pf.num_row_groups):
                 metas = pf.read_row_group(g, columns=["metadata"]).column("metadata").to_pylist()
-                if not any(matsynth_keep(m or {}, allow_cc_by, skip_sources)[0] for m in metas):
+                if not any(matsynth_keep(m or {}, allow_cc_by, skip_sources, methods)[0] for m in metas):
                     continue
                 table = pf.read_row_group(g, columns=MATSYNTH_COLUMNS)  # ~60 MB of 4K maps per material
                 for i, meta in enumerate(metas):
-                    ok, why = matsynth_keep(meta or {}, allow_cc_by, skip_sources)
+                    ok, why = matsynth_keep(meta or {}, allow_cc_by, skip_sources, methods)
                     if ok:
                         yield table.slice(i, 1).to_pylist()[0]  # one row at a time: no second copy of the group
                     else:
@@ -323,7 +337,8 @@ def run(args: argparse.Namespace, log: Callable[[str], None] = print) -> list[di
         items = ((m, orig) for m, orig in iter_folder(Path(args.root).expanduser(), args.source, args.license))
     else:
         skip = tuple(s.strip().lower() for s in args.skip_sources.split(",") if s.strip())
-        items = ((matsynth_material(r), None) for r in iter_matsynth(args.split, args.allow_cc_by, skip, log))
+        methods = tuple(m.strip().lower() for m in args.methods.split(",") if m.strip())
+        items = ((matsynth_material(r), None) for r in iter_matsynth(args.split, args.allow_cc_by, skip, log, methods))
     for mat, orig in items:
         if args.limit and done >= args.limit:
             break
@@ -368,8 +383,14 @@ def build_parser() -> argparse.ArgumentParser:
         else:
             p.add_argument("--split", default="train", choices=("train", "test"))
             p.add_argument("--allow-cc-by", action="store_true", help="Also import CC-BY items (attribution recorded)")
-            p.add_argument("--skip-sources", default="polyhaven,ambientcg,deschaintre",
-                           help="Upstream sources to skip: already in the reference set, or license not verified")
+            p.add_argument("--skip-sources", default="polyhaven,textures_heaven,deschaintre",
+                           help="Upstream sources to skip: Poly Haven is already in the reference set (Texture Haven "
+                                "is its old name); Deschaintre items are CC BY-NC-ND")
+            p.add_argument("--methods", default=",".join(SCAN_METHODS),
+                           help="Creation methods to keep, comma-separated (photogrammetry, scan, approximation, "
+                                "procedural, blend, unknown) or 'all'. Calibration wants real scans: procedural items "
+                                "show another generator, blends are MatSynth's own mixes, approximations are "
+                                "estimated from photos.")
     return ap
 
 

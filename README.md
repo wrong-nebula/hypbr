@@ -249,7 +249,7 @@ Calibration (`hypbr atlas calibrate`) and the weathering comparison (`tools/weat
 ```bash
 # Megascans surfaces (or any PBR folder) you downloaded from Fab: sub-folders and/or zips, read in place
 python tools/import_refs.py folder ~/Downloads/megascans --source megascans --out ~/hypbr-refs
-# MatSynth (CC0 items only by default), streamed shard by shard; needs: pip install -e ".[refs]"
+# MatSynth: by default only its ~176 CC0 real scans we don't already have (ambientCG, ShareTextures); needs: pip install -e ".[refs]"
 python tools/import_refs.py matsynth --out ~/hypbr-refs --limit 200
 hypbr atlas calibrate --refs ~/hypbr-refs/megascans ~/hypbr-refs/matsynth --baked <uncalibrated bake>
 ```

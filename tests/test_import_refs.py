@@ -101,12 +101,21 @@ def test_other_sources_need_an_explicit_license(tmp_path, source_maps):
 
 def test_matsynth_rows_filters_and_mapping(tmp_path, source_maps):
     keep = imp.matsynth_keep
-    skip = ("polyhaven", "ambientcg", "deschaintre")
-    assert keep({"license": "CC0", "source": "cgbookcase"}, False, skip)[0]
-    assert not keep({"license": "CC-BY", "source": "julio"}, False, skip)[0]
-    assert keep({"license": "CC-BY", "source": "julio"}, True, skip)[0]
-    assert not keep({"license": "CC0", "source": "deschaintre_2020"}, False, skip)[0]
-    assert not keep({"license": "CC0", "source": "PolyHaven"}, False, skip)[0]
+    skip = ("polyhaven", "textures_heaven", "deschaintre")
+    scan = {"method": "photogrammetry"}
+    assert keep({"license": "CC0", "source": "cgbookcase", **scan}, False, skip)[0]
+    assert not keep({"license": "CC-BY", "source": "julio", **scan}, False, skip)[0]
+    assert keep({"license": "CC-BY", "source": "julio", **scan}, True, skip)[0]
+    assert not keep({"license": "CC BY-NC-ND 2.0", "source": "x", **scan}, True, skip)[0]  # never NC/ND
+    assert not keep({"license": "CC0", "source": "deschaintre_2020", **scan}, False, skip)[0]
+    assert not keep({"license": "CC0", "source": "PolyHaven", **scan}, False, skip)[0]
+    assert not keep({"license": "CC0", "source": "textures_heaven", **scan}, False, skip)[0]  # Poly Haven's old name
+    assert not keep({"license": "CC0", "source": "matsynth", "method": "blend"}, False, skip)[0]
+    assert not keep({"license": "CC0", "source": "cgbookcase", "method": "procedural"}, False, skip)[0]
+    assert keep({"license": "CC0", "source": "cgbookcase", "method": "procedural"}, False, skip, ("all",))[0]
+    assert keep({"license": "CC0", "source": "ambientcg", "method": "photogrammetry"}, False, skip)[0]  # 129 new scans
+    assert keep({"license": "CC0", "source": "sharetextures", "method": "scan"}, False, skip)[0]
+    assert not keep({"license": "CC0", "source": "ambientcg", "method": "approximation"}, False, skip)[0]
 
     row = {
         "name": "Bricks075", "category": 11,  # terracotta

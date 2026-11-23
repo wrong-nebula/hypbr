@@ -210,6 +210,31 @@ def material_grain(texture: np.ndarray, res_scale: float = 1.0) -> np.ndarray:
     return np.clip(0.5 + 0.355 * detail / max(float(detail.std()), 1e-6), 0.0, 1.0).astype(np.float32)
 
 
+_RUST_SPOT_SCALES = ((9, 0.22, 0.42, 0.25, 0.70, 5301), (14, 0.20, 0.42, 0.16, 0.55, 5303))  # patches, pits
+_MOSS_COLONY_SCALES = ((6, 0.26, 0.50, 0.30, 0.80, 5401), (13, 0.20, 0.44, 0.22, 0.70, 5403))  # colonies, tufts
+
+
+def _sparse_patches(u: np.ndarray, v: np.ndarray, amount: float, anchor: np.ndarray, w_fine: np.ndarray,
+                    w_micro: np.ndarray, seed: int, scales) -> np.ndarray:
+    """Sparse periodic patches in [0, 1] from jittered cells at several scales.
+
+    `scales` rows: (cells per tile, radius lo/hi in cell units, on-probability lo/hi, seed offset). Each cell
+    turns on with a probability that grows with `amount` and with `anchor` in [0, 1] (e.g. near crevices) and
+    gets its own radius; noise-warped coordinates make the outlines irregular instead of round.
+    """
+    uw = np.mod(u + 0.05 * (w_fine - 0.5), 1.0)
+    vw = np.mod(v + 0.05 * (w_micro - 0.5), 1.0)
+    out = np.zeros_like(u, dtype=np.float32)
+    for n_cells, r_lo, r_hi, p_lo, p_hi, sd in scales:
+        f1, _, cid = gd._periodic_worley_id(uw, vw, n_cells, seed + sd)
+        p_on = (p_lo + (p_hi - p_lo) * amount) * (0.6 + 0.8 * anchor)
+        on = gd._smoothstep(-0.03, 0.03, p_on - cid)
+        radius = (r_lo + (r_hi - r_lo) * np.mod(cid * 7.13, 1.0)) * (0.65 + 0.5 * amount)
+        t = np.clip((f1 - 0.6 * radius) / np.maximum(0.4 * radius, 1e-4), 0.0, 1.0)  # per-cell radius: inline smoothstep
+        out = np.maximum(out, ((1.0 - t * t * (3.0 - 2.0 * t)) * on).astype(np.float32))
+    return out
+
+
 def compute_weathering_masks(
     h_n: np.ndarray,
     N: np.ndarray,
@@ -373,10 +398,20 @@ def compute_weathering_masks(
                 + 0.24 * crevice_halo * (0.4 + 0.6 * basin)
                 + 0.14 * np.clip(-N[..., 1] * 0.5 + 0.5, 0.0, 1.0) * (1.0 - ao)
             )
-            moss_drive = moss_habitat * (0.72 + 0.65 * w_low) + 0.28 * tuft_cluster * w_fine - 0.36 * convex
+            # Colonies (real moss scans: separate tufts, the largest ~10% of the moss), not the whole joint
+            # network: outside a colony joint moss is suppressed; inside, heavier growth spreads onto faces.
+            colonies = _sparse_patches(u, v, ms, np.clip(0.6 * crevice_wide_n + 0.4 * basin, 0.0, 1.0),
+                                       w_fine, w_micro, seed, _MOSS_COLONY_SCALES)
+            moss_drive = (moss_habitat * (0.72 + 0.65 * w_low) + 0.28 * tuft_cluster * w_fine - 0.36 * convex
+                          + 0.30 * (0.65 + 0.35 * ms) * colonies)
             m_thresh = 0.50 - 0.34 * ms
             m_moss = gd._smoothstep(m_thresh - 0.05, m_thresh + 0.08, moss_drive)
-            m_moss *= gd._smoothstep(0.05, 0.28, crevice + 0.58 * crevice_halo)
+            joint_gate = gd._smoothstep(0.05, 0.28, crevice + 0.58 * crevice_halo)
+            # Inside a colony moss creeps out from the joints in a band broken up by noise (real moss hugs
+            # joints and edges); it never fills disks in the middle of a face.
+            reach = 0.15 + 0.55 * gd._smoothstep(0.10, 1.0, ms)
+            creep = gd._smoothstep(1.0 - reach, 1.0, crevice_wide_n * (0.55 + 0.9 * w_fine))
+            m_moss *= np.maximum(joint_gate * (0.3 + 0.7 * colonies), colonies * creep)
         masks["moss"] = np.clip(m_moss * np.clip(0.70 + 0.30 * ms, 0.0, 1.0) * relief_gate, 0.0, 1.0).astype(np.float32)
         masks["moss_tuft"] = (0.60 * tuft_cluster + 0.40 * w_micro).astype(np.float32)
     else:
@@ -426,16 +461,13 @@ def compute_weathering_masks(
             pocket = gd._smoothstep(0.58 - 0.34 * rs, 0.70 - 0.30 * rs, bloom_drive)
             m_rust = np.clip(np.maximum(pocket, streak_mod * (0.65 + 0.35 * rs)), 0.0, 1.0)
         else:
-            # Metals/stone: crusty localized oxide patches anchored to occluded joints + organic macro corrosion blotches + sparse drips
-            crust_drive = (
-                crevice * (0.90 + 0.90 * w_low)
-                + 0.48 * crevice_wide_n * (0.35 + 1.05 * nuc_gate)
-                + 0.36 * nuc_gate * (0.45 + 0.55 * w_fine)
-                + 0.20 * w_micro
-                - 0.36 * convex
-            )
-            pocket = gd._smoothstep(0.64 - 0.36 * rs, 0.74 - 0.32 * rs, crust_drive)
-            m_rust = np.clip(np.maximum(pocket, streak_mod * (0.65 + 0.35 * rs)), 0.0, 1.0)
+            # Metals/stone: separate corrosion spots and pits (real rust scans: many patches, the largest holding
+            # ~10% of the rust) rather than one blob following the joint network; runoff streaks start at spots.
+            spots = _sparse_patches(u, v, rs, crevice_wide_n, w_fine, w_micro, seed, _RUST_SPOT_SCALES) * (1.0 - 0.6 * convex)
+            spot_streaks = _downward_gravity_streaks(spots * (0.5 + 0.5 * crevice_wide_n), length_frac=0.04 + 0.08 * rs,
+                                                     meander_field=w_macro)
+            spot_streaks *= gd._smoothstep(0.18, 0.70, 0.55 * w_fine + 0.45 * w_micro)
+            m_rust = np.clip(np.maximum(spots, spot_streaks * (0.50 + 0.35 * rs)), 0.0, 1.0)
         masks["rust"] = np.clip(m_rust * np.clip(0.72 + 0.28 * rs, 0.0, 1.0) * relief_gate, 0.0, 1.0).astype(np.float32)
     else:
         masks["rust"] = np.zeros((H, W), dtype=np.float32)
@@ -612,9 +644,9 @@ def apply_weathering_maps(
             blend_k = 0.90
         elif is_metal:
             # Tones fitted to 8 CC0 rust scans (Lab L 24-50, hue ~64 deg yellow-brown): see tools/weathering_refs.py
-            ox_dark = np.array([0.053, 0.021, 0.010], dtype=np.float32)[None, None, :]
-            sienna = np.array([0.120, 0.044, 0.016], dtype=np.float32)[None, None, :]
-            ochre = np.array([0.216, 0.101, 0.020], dtype=np.float32)[None, None, :]
+            ox_dark = np.array([0.057, 0.017, 0.006], dtype=np.float32)[None, None, :]
+            sienna = np.array([0.131, 0.036, 0.007], dtype=np.float32)[None, None, :]
+            ochre = np.array([0.229, 0.090, 0.007], dtype=np.float32)[None, None, :]
             rt = np.clip(0.32 + 0.55 * w_fine + 0.30 * (w_micro - 0.5), 0.0, 1.0)[..., None]
             # When combined with moisture/moss (abandoned/coastal), old rust darkens into pitted black-umber scale
             aged_scale = float(np.clip(0.65 * wet + 0.55 * moss, 0.0, 0.72))
@@ -649,7 +681,9 @@ def apply_weathering_maps(
             stain_col = dark_st * (1.0 - 0.60 * w_fine[..., None]) + iron_st * (0.60 * w_fine[..., None])
             blend_k = 0.82
 
-        alb = alb * (1.0 - blend_k * m_rust[..., None]) + stain_col * (blend_k * m_rust[..., None])
+        # Oxide crusts and patina are opaque: full cover from mask 0.6, a linear ramp below (no dead zone)
+        r_cover = (blend_k * np.clip(m_rust / 0.6, 0.0, 1.0))[..., None]
+        alb = alb * (1.0 - r_cover) + stain_col * r_cover
         m_out = np.clip(m_out * (1.0 - 0.96 * gd._smoothstep(0.20, 0.50, m_rust)), 0.0, 1.0)
         r_out = np.clip(r_out * (1.0 - m_rust) + np.clip(0.82 + 0.14 * w_micro, 0.76, 0.97) * m_rust, 0.06, 0.97)
 
@@ -671,7 +705,9 @@ def apply_weathering_maps(
         N_out = dp.blend_rnm(N_out, ng.slopes_to_normal(pm * m_moss, qm * m_moss), detail_weight=0.88)
         N_out = ng.node_normal_clamp_slope({"circular": True}, {"normal": N_out}, max_angle_deg=60.0)["normal"]
 
-        alb = alb * (1.0 - 0.92 * m_moss[..., None]) + moss_col * (0.92 * m_moss[..., None])
+        # Moss cushions are opaque: full cover from mask 0.6, a linear ramp below (no threshold, so no dead zone)
+        cover = (0.95 * np.clip(m_moss / 0.6, 0.0, 1.0))[..., None]
+        alb = alb * (1.0 - cover) + moss_col * cover
         m_out = np.clip(m_out * (1.0 - 0.98 * gd._smoothstep(0.18, 0.48, m_moss)), 0.0, 1.0)
         r_out = np.clip(r_out * (1.0 - m_moss) + np.clip(0.90 + 0.06 * w_micro, 0.87, 0.97) * m_moss, 0.06, 0.97)
 

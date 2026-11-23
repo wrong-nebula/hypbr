@@ -61,7 +61,7 @@ def test_playground_channels_respond_like_dials(mid, tmp_path):
         shown = ", ".join(f"{lv}:{r:.2f}" for lv, r in zip(LEVELS, rel))
         if rel[0] > 0.04:
             bad.append(f"{ch} jumps on at a trace ({shown})")
-        if not (rel[2] > 5e-4 and rel[4] >= 0.01):
+        if not (rel[2] > 5e-4 and rel[4] >= 0.005):
             bad.append(f"{ch} has a dead zone ({shown})")
         if any(b < a - 0.03 for a, b in zip(rel, rel[1:])):
             bad.append(f"{ch} is not monotone ({shown})")

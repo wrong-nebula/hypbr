@@ -242,6 +242,20 @@ with open("custom_graph.json", "w") as f:
 
 See runnable scripts in [`examples/synthesize_pbr.py`](examples/synthesize_pbr.py), [`examples/export_engines.py`](examples/export_engines.py), [`examples/blend_and_weather.py`](examples/blend_and_weather.py), and [`examples/custom_graph.py`](examples/custom_graph.py).
 
+## Reference Scans (calibration & weathering)
+
+Calibration (`hypbr atlas calibrate`) and the weathering comparison (`tools/weathering_refs.py`) read real scans as 512px `.npz` files. `tools/import_refs.py` builds them from more sources:
+
+```bash
+# Megascans surfaces (or any PBR folder) you downloaded from Fab: sub-folders and/or zips, read in place
+python tools/import_refs.py folder ~/Downloads/megascans --source megascans --out ~/hypbr-refs
+# MatSynth (CC0 items only by default), streamed shard by shard; needs: pip install -e ".[refs]"
+python tools/import_refs.py matsynth --out ~/hypbr-refs --limit 200
+hypbr atlas calibrate --refs ~/hypbr-refs/megascans ~/hypbr-refs/matsynth --baked <uncalibrated bake>
+```
+
+Every item is recorded in `<out>/manifest.jsonl` with its source, license and origin. DirectX normal maps are detected from their height map and converted to OpenGL. The importer refuses to write inside a git repository: these scans are for training and fitting only, and must not be committed or published. Megascans' terms allow AI training (Quixel, 5 Nov 2026) but forbid standalone redistribution.
+
 ## Engine & Standard I/O Targets
 
 | Target | Normal Convention | Channel Packing & Ready-to-Import Assets |

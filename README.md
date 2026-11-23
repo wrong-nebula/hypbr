@@ -15,7 +15,7 @@
 - **Reference-Photo Calibration**: 400 of the 500 materials are calibrated against 449 real CC0 photogrammetry / photometric-stereo scans (Poly Haven, ambientCG). A closed-loop fitter matches each material's multi-scale albedo contrast spectrum, chroma variation, relief (normal-slope) spectrum and roughness mean/variance to color-weighted matching scans, applied as exactly periodic FFT band equalizers inside `synthesize_material` (`calibrated=False` reproduces the uncalibrated output). Refit with `hypbr atlas calibrate --refs <scan dirs> --baked <uncalibrated bake>`.
 - **Exact Periodic Procedural Synthesis**: Pure NumPy/PyTorch circular-padded microstructure generators across metals, stones, ceramics, fabrics, wood, and hard-surface panels with `0.00 px` seam error — about 1 s per material at 512px and 11–13 s at 2048px on CPU (see [Performance](#performance)).
 - **47-Node Composable PBR Graph**: Editable JSON node graph with analytic bevels, Weickert structure tensors, Reoriented Normal Mapping (RNM), 8-azimuth Horizon-Based Ambient Occlusion (HBAO) + Bent Normals, and Kaplanyan/Toksvig Specular Anti-Aliasing.
-- **Optional Neural Photo-to-PBR**: Calibrate real macro photographs through **Apple Depth Pro** (metric depth prior) and **DeepBump ONNX** (micro-relief tangent normals) before feeding into the circular-padded 47-node graph.
+- **Optional Neural Photo-to-PBR**: Lift macro relief from real close-up photographs with **Depth Anything V2 Small** plus hypbr's 5 MB relief patch (Apache-2.0 base; Apple Depth Pro via `--depth-model depthpro`) and micro-relief normals from **DeepBump ONNX**, then feed both into the circular-padded 47-node graph.
 
 <p align="center">
   <img src="examples/assets/showcase_1.png" alt="hypbr PBR showcase 1" width="100%" />
@@ -70,7 +70,7 @@ verification run on pure NumPy. PyTorch is optional:
 
 ```bash
 pip install -e ".[gpu]"      # optional torch: CUDA/MPS-accelerated kernels (same output on CPU)
-pip install -e ".[neural]"   # neural photo-to-PBR (`hypbr photo`): torch + ONNX Runtime (+ Apple Depth Pro)
+pip install -e ".[neural]"   # neural photo-to-PBR (`hypbr photo`): torch + transformers + ONNX Runtime
 ```
 
 With torch installed hypbr uses its kernels (bit-identical to previous releases); without it the
@@ -161,11 +161,17 @@ Export and inspect a 47-node PBR graph preset as JSON:
 hypbr dump-preset v13-default > my_graph.json
 ```
 
-Convert a macro photograph to 15 seamless PBR maps (requires optional Depth Pro + ONNX Runtime):
+Convert a macro photograph to 15 seamless PBR maps (requires `hypbr[neural]`):
 
 ```bash
 hypbr photo path/to/surface.jpg --preset v13-default --tileable --out ./output/photo_pbr
 ```
+
+Macro relief comes from Depth Anything V2 Small (Apache-2.0, ~99 MB, downloaded from Hugging Face on first use) with
+hypbr's 5 MB relief patch, which retrains only the model's DPT neck and head on 344 CC0 Poly Haven scans. On held-out
+scans it beats the Apple Depth Pro 2 path on every relief metric, including scans from a different lab
+([`hypbr/weights/NOTICE.md`](hypbr/weights/NOTICE.md) has the numbers). `--depth-model depthpro` switches back to
+Apple Depth Pro 2 (research-only license, needs `depth_pro_2`).
 
 ## Python API Examples
 
@@ -303,7 +309,8 @@ Every material synthesis writes a clean, renderer-ready directory compatible wit
 - [`hypbr/maps.py`](hypbr/maps.py): `MaterialMaps` in-memory material (float32 maps + metadata) with byte-exact `.save()` / `.load()`, and the directory-or-memory `MapSource` reader used by blend/weather/export/verify.
 - [`hypbr/_backend.py`](hypbr/_backend.py): Optional-PyTorch backend: lazy `torch` import, device selection, and NumPy equivalents of the `pad` / `conv2d` / `max_pool2d` / `interpolate` / `grid_sample` kernels on the procedural path.
 - [`hypbr/weightcode.py`](hypbr/weightcode.py): Zero-training analytic weight surgery (exact 9-mode orthonormal 3×3 spatial kernel filtering, SVD energy shrinkage, circular Conv2d padding, and 4-quadrant partition-of-unity tileable blending).
-- [`hypbr/depthpro_pbr.py`](hypbr/depthpro_pbr.py): Optional Apple Depth Pro + DeepBump ONNX neural relief extractor (needs `hypbr[neural]`) with 4-rotation perspective cancellation, plus the shared exact FFT / separable Gaussian, morphology and Scharr kernels (torch-accelerated when installed, `HYPBR_DEVICE=cpu|mps|cuda`).
+- [`hypbr/relief_da2.py`](hypbr/relief_da2.py): Default photo-mode macro relief: Depth Anything V2 Small + hypbr's relief patch ([`weights/`](hypbr/weights)), with 4-rotation and tileable inference.
+- [`hypbr/depthpro_pbr.py`](hypbr/depthpro_pbr.py): Photo-mode relief pipeline (`macro_relief_maps` picks the model; Apple Depth Pro + DeepBump ONNX, needs `hypbr[neural]`) with 4-rotation perspective cancellation, plus the shared exact FFT / separable Gaussian, morphology and Scharr kernels (torch-accelerated when installed, `HYPBR_DEVICE=cpu|mps|cuda`).
 - [`hypbr/exporters.py`](hypbr/exporters.py): Zero-dependency engine & standard exporters (`unity`, `unity-hdrp`, `godot`, `unreal`, `blender`, `threejs`, `gltf`, `glb`, `vulkan`, `materialx`, `usd`).
 - [`hypbr/blend.py`](hypbr/blend.py): Physically based 16-bit HeightLerp / cavity material blending (`hypbr blend`) with linear-light albedo mixing and recomputed HBAO/curvature/ORM.
 - [`hypbr/preview.py`](hypbr/preview.py): Zero-dependency local interactive Three.js PBR studio viewer (`hypbr preview`) with per-channel inspection, tiling, and displacement controls.
@@ -314,4 +321,4 @@ Every material synthesis writes a clean, renderer-ready directory compatible wit
 
 Code is released under the [MIT License](LICENSE).
 
-> **Note on optional neural weights:** If you use the optional `hypbr photo` neural mode with Apple Depth Pro checkpoints, those external weights are subject to Apple's `apple-amlr` research license. Pure procedural synthesis (`hypbr synth`) has zero external model dependencies and is 100% MIT licensed.
+> **Note on optional neural weights:** `hypbr photo` uses Depth Anything V2 Small by default, which is Apache-2.0; hypbr's relief patch for it (`hypbr/weights/da2s_relief_pbr.safetensors`) is a modified version of its weights under the same license (see [`hypbr/weights/NOTICE.md`](hypbr/weights/NOTICE.md)). With `--depth-model depthpro`, Apple Depth Pro checkpoints are subject to Apple's `apple-amlr` research license. Pure procedural synthesis (`hypbr synth`) has zero external model dependencies and is 100% MIT licensed.

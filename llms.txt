@@ -6,7 +6,7 @@
 
 - `pip install -e .` (core procedural synthesis, blend, weather, export, verify: `numpy`, `pillow` only — no torch)
 - `pip install -e ".[gpu]"` (optional `torch` for CUDA/MPS-accelerated procedural kernels; identical output on CPU)
-- `pip install -e ".[neural]"` (optional photo-to-PBR via torch + ONNX Runtime + Apple Depth Pro)
+- `pip install -e ".[neural]"` (optional photo-to-PBR via torch + transformers + ONNX Runtime; Depth Anything V2 Small downloads on first use)
 - Env: `HYPBR_TORCH=0` forces the NumPy path; `HYPBR_DEVICE=cpu|mps|cuda` selects the torch device. `hypbr.has_torch()` reports availability.
 
 ## Performance & Environment
@@ -27,7 +27,7 @@
 - `hypbr export <src_dir> --target <unity|unity-hdrp|godot|unreal|blender|threejs|gltf|glb|vulkan|materialx|usd|all> --out <out_dir>` — Export an existing `hypbr` material directory with engine-native channel packing, normal convention, and material definition files.
 - `hypbr verify <material_dir> [--json] [--seam-limit 1.3]` — Automated physical calibration, ORM consistency, normal validity, and wrap-around seamlessness QA check (CI exit code 0/1). A seam is a border jump that stands out from the jumps across every other row/column of the same map (score = border jump / 99th-percentile jump of the other lines; tileable textures score about 1).
 - `hypbr dump-preset [v13-default]` — Export a built-in composable PBR node graph preset as JSON.
-- `hypbr photo <image> --preset v13-default [--graph custom.json] [--tileable] [--dx] --out ./output/photo_pbr` — Convert a macro photograph into 15 PBR maps using Apple Depth Pro + DeepBump ONNX + the 47-node graph.
+- `hypbr photo <image> --preset v13-default [--graph custom.json] [--tileable] [--dx] [--depth-model da2] --out ./output/photo_pbr` — Convert a macro photograph into 15 PBR maps: macro relief from Depth Anything V2 Small + hypbr's 5 MB relief patch (`da2`, Apache-2.0 base, default) or Apple Depth Pro (`--depth-model depthpro`, research-only license), DeepBump ONNX micro-relief, then the 47-node graph.
 
 ## Python API
 
@@ -108,7 +108,8 @@ Signatures below are checked against the code by `tests/test_docs.py`.
 - [hypbr/_backend.py](hypbr/_backend.py): Optional-torch backend with NumPy fallbacks for the procedural kernels.
 - [hypbr/procedural.py](hypbr/procedural.py): Exact periodic FBM, Voronoi, weave, ceramic, wood, and metal heightfield generators.
 - [hypbr/normal_graph.py](hypbr/normal_graph.py): 47-node composable PBR graph engine (RNM blending, Weickert structure tensor, analytic bevels, 8-azimuth HBAO, Specular AA).
-- [hypbr/depthpro_pbr.py](hypbr/depthpro_pbr.py): Optional Apple Depth Pro + DeepBump ONNX neural relief extractor with 4-rotation perspective cancellation.
+- [hypbr/relief_da2.py](hypbr/relief_da2.py): Default photo-mode macro relief (Depth Anything V2 Small + the relief patch in hypbr/weights).
+- [hypbr/depthpro_pbr.py](hypbr/depthpro_pbr.py): Photo-mode relief pipeline (`macro_relief_maps` picks `da2` or `depthpro`) with Apple Depth Pro + DeepBump ONNX and 4-rotation perspective cancellation.
 
 ## Examples & Tests
 

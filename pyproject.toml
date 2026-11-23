@@ -29,10 +29,13 @@ dependencies = [
 gpu = [
     "torch>=2.1",
 ]
-# Neural photo-to-PBR (`hypbr photo`, neural weathering); also needs Apple Depth Pro (`depth_pro_2`).
+# Neural photo-to-PBR (`hypbr photo`, neural weathering). The default relief model is Depth Anything V2 Small
+# (Apache-2.0, fetched from Hugging Face on first use); `--depth-model depthpro` also needs Apple Depth Pro (`depth_pro_2`).
 neural = [
     "torch>=2.1",
     "onnxruntime>=1.17",
+    "transformers>=4.45",
+    "safetensors>=0.4",
 ]
 # tools/import_refs.py matsynth: stream MatSynth shards from Hugging Face, reading only needed columns.
 refs = [
@@ -54,4 +57,4 @@ Repository = "https://github.com/wrong-nebula/hypbr"
 include = ["hypbr*"]
 
 [tool.setuptools.package-data]
-hypbr = ["data/*.json"]
+hypbr = ["data/*.json", "weights/*.safetensors", "weights/*.json", "weights/NOTICE.md"]

@@ -33,15 +33,7 @@ def _effect(mid: str, kind: str, **kw) -> float:
     return float(alb + rgh)
 
 
-LOW_RELIEF_WEAR = pytest.mark.xfail(
-    strict=True,
-    reason="Known: edge wear is thresholded twice, so low-relief materials (oak planks, p99 convexity ~0.37) "
-    "show no wear below ~0.5. Fixing it changes every preset's wear look; tracked separately.",
-)
-CASES = [
-    pytest.param(ch, mid, marks=LOW_RELIEF_WEAR) if (ch, mid) == ("wear", "white_oak_plank_floor") else (ch, mid)
-    for ch in CHANNELS for mid in sorted(MATERIALS)
-]
+CASES = [(ch, mid) for ch in CHANNELS for mid in sorted(MATERIALS)]
 
 
 @pytest.mark.parametrize("channel,mid", CASES)

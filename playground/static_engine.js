@@ -404,9 +404,10 @@ export function weatherBase(base, entry, weather, seed) {
       mMoss = smoothstep(0.66 - 0.42 * moss, 0.78 - 0.36 * moss, msDrive) * (0.72 + 0.28 * moss) * fade.moss;
       if (mMoss > 1e-3) {
         const lush = clamp01(0.45 * wf + 0.55 * wm);
-        const mr = 0.038 + 0.055 * lush;
-        const mg = 0.095 + 0.105 * lush;
-        const mb = 0.022 + 0.020 * lush;
+        // Olive moss, dark to pale lichen: same tones as hypbr/weathering.py (fitted to CC0 moss scans)
+        const mr = 0.026 + 0.132 * lush;
+        const mg = 0.034 + 0.132 * lush;
+        const mb = 0.001 + 0.002 * lush;
         const k = 0.90 * mMoss;
         r = r * (1 - k) + mr * k;
         g = g * (1 - k) + mg * k;
@@ -445,11 +446,11 @@ export function weatherBase(base, entry, weather, seed) {
           rb = 0.032 + 0.015 * wf;
           rRough = 0.88;
         } else {
-          // Iron oxide rust crust (deep umber-sienna to bright burnt orange-ochre)
+          // Iron oxide rust, dark oxide to ochre: same tones as hypbr/weathering.py (fitted to CC0 rust scans)
           const ox = clamp01(0.55 * wf + 0.45 * wm);
-          rr = 0.16 + 0.24 * ox;
-          rgC = 0.045 + 0.085 * ox;
-          rb = 0.015 + 0.025 * ox;
+          rr = 0.053 + 0.163 * ox;
+          rgC = 0.021 + 0.080 * ox;
+          rb = 0.010 + 0.010 * ox;
           rRough = 0.89;
         }
         const k = 0.88 * mRust;

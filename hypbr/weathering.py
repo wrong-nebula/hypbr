@@ -163,6 +163,53 @@ def _downward_gravity_streaks(
     return out.astype(np.float32)
 
 
+# What a coating wears through to (linear base colour, roughness, metallic). Uncoated materials have no
+# entry: their worn core is the same material, which the per-kind edge wear already lightens.
+_STEEL = ((0.56, 0.57, 0.58), 0.38, 1.0)
+_ALUMINIUM = ((0.91, 0.92, 0.92), 0.28, 1.0)
+_RED_BRICK = ((0.40, 0.15, 0.09), 0.88, 0.0)
+_CONCRETE = ((0.30, 0.29, 0.27), 0.90, 0.0)
+_RED_CLAY = ((0.42, 0.18, 0.10), 0.88, 0.0)
+_BISQUE = ((0.62, 0.55, 0.44), 0.88, 0.0)
+_RATTAN = ((0.42, 0.30, 0.16), 0.80, 0.0)
+
+
+def coating_substrate(material_id: str, kind: str) -> tuple[tuple[float, float, float], float, float] | None:
+    """(base colour, roughness, metallic) exposed when a coated material wears through, else None."""
+    mid = (material_id or "").lower()
+    k = (kind or "").lower()
+    if "anodized" in mid or "anodised" in mid:
+        return _ALUMINIUM
+    if "armor" in mid or "armour" in mid or ("panel" in mid and k == "rubber"):
+        return _STEEL
+    painted = "painted" in mid or "epoxy" in mid or "enamel" in mid
+    glazed = "glaze" in mid or "glazed" in mid or "gloss" in mid
+    if painted and "wicker" in mid:
+        return _RATTAN
+    if (painted or glazed) and "brick" in mid:
+        return _RED_BRICK
+    if painted or (glazed and k in ("concrete",)) or "epoxy" in mid:
+        return _CONCRETE if k in ("concrete", "stone") else None
+    if glazed and k in ("ceramic", "stone"):
+        return _RED_CLAY if any(t in mid for t in ("terracotta", "quarry", "barrel", "fishscale")) else _BISQUE
+    return None
+
+
+WEAR_RELIEF_TARGET = 0.55  # top-1% edge-wear drive that every material is lifted toward (never lowered)
+
+
+def material_grain(texture: np.ndarray, res_scale: float = 1.0) -> np.ndarray:
+    """The material's own fine texture (wood grain lines, stone speckle, weave) as a breakup field centred
+    on 0.5 with the same spread (std 0.355) as the periodic noise it stands in for.
+
+    `texture` is albedo luminance when available (log, so dark and light materials read alike), else
+    height. A ~2px periodic high-pass keeps the fine pattern and drops the shapes of bevels and joints.
+    """
+    t = np.asarray(texture, dtype=np.float32)
+    detail = t - dp.gaussian_blur_np(t, max(1.0, 2.0 * res_scale), circular=True)
+    return np.clip(0.5 + 0.355 * detail / max(float(detail.std()), 1e-6), 0.0, 1.0).astype(np.float32)
+
+
 def compute_weathering_masks(
     h_n: np.ndarray,
     N: np.ndarray,
@@ -177,8 +224,13 @@ def compute_weathering_masks(
     moss: float = 0.0,
     rust: float = 0.0,
     dust: float = 0.0,
+    texture: np.ndarray | None = None,
 ) -> dict[str, np.ndarray]:
-    """Compute exact periodic, resolution-invariant weathering masks in `[0, 1]`."""
+    """Compute exact periodic, resolution-invariant weathering masks in `[0, 1]`.
+
+    `texture` (optional, same shape as `h_n`): the material's own fine pattern, e.g. log albedo
+    luminance; edge wear breaks up along it. Height is used when it is not given.
+    """
     H, W = h_n.shape
     res_scale = min(H, W) / 512.0
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
@@ -229,9 +281,18 @@ def compute_weathering_masks(
     # 1. Convex Edge Wear (crisp smoothstepped ridge exposure, zero flat-face chalky haze)
     if wear > 1e-4:
         w_amt = float(np.clip(wear, 0.0, 1.0))
-        raw_wear = convex * (0.50 + 0.85 * w_fine) * (0.75 + 0.35 * h_n)
+        # Breakup follows the material's own fine relief (wood grain, aggregate, weave) more than noise
+        grain = material_grain(h_n if texture is None else texture, res_scale)
+        # 0.55^2 + 0.835^2 = 1: same mean and spread as w_fine alone, so only the pattern changes
+        breakup = 0.5 + 0.55 * (w_fine - 0.5) + 0.835 * (grain - 0.5)
+        raw_wear = convex * (0.50 + 0.85 * breakup) * (0.75 + 0.35 * h_n)
+        # Low-relief materials (oak planks: top-1% drive ~0.37 vs ~0.5 for brick) never reached the edge
+        # threshold; lift their drive toward WEAR_RELIEF_TARGET, at most x2 so polished slabs stay unworn.
+        p99 = float(np.percentile(raw_wear, 99.0))
+        raw_wear = raw_wear * float(np.clip(WEAR_RELIEF_TARGET / max(p99, 1e-4), 1.0, 2.0))
         m_wear = gd._smoothstep(0.18 - 0.08 * w_amt, 0.62 - 0.14 * w_amt, raw_wear) * w_amt
         masks["wear"] = np.clip(m_wear, 0.0, 1.0).astype(np.float32)
+        masks["grain"] = grain
     else:
         masks["wear"] = np.zeros((H, W), dtype=np.float32)
 
@@ -442,10 +503,12 @@ def apply_weathering_maps(
     m_out = met_f.astype(np.float32).copy()
 
     kind = material_kind.lower() if material_kind else infer_material_kind(material_id, float(m_out.mean()))
+    lum = 0.2126 * alb[..., 0] + 0.7152 * alb[..., 1] + 0.0722 * alb[..., 2]
     masks = compute_weathering_masks(
         h_n, N_out, ao, curv,
         seed=seed, material_kind=kind,
         wear=wear, dirt=dirt, wet=wet, moss=moss, rust=rust, dust=dust,
+        texture=np.log(np.maximum(lum, 1e-3)).astype(np.float32),
     )
     if custom_masks:
         for k in ("wear", "dirt", "wet", "moss", "rust", "dust"):
@@ -500,6 +563,25 @@ def apply_weathering_maps(
             alb = alb * (1.0 - 0.28 * wear_crisp[..., None]) + scuff * (0.28 * wear_crisp[..., None])
             r_out = np.clip(r_out + 0.12 * wear_crisp, 0.08, 0.97)
 
+        substrate = coating_substrate(material_id, kind)
+        if substrate is not None:
+            # Chips through the coating: crisp, patchy cores inside the worn band (outlines follow the material's
+            # texture plus fine noise), showing what lies underneath, with a slight step at the coating's edge.
+            col, s_rough, s_metal = substrate
+            unfaded = wear_crisp / max(w_fade, 1e-6)
+            breakup = masks.get("grain", np.full_like(unfaded, 0.5))
+            chip = gd._smoothstep(0.42, 0.58, unfaded * (0.55 + 0.45 * breakup + 0.55 * w_micro)) * w_fade
+            if float(chip.max()) > 1e-4:
+                c3 = chip[..., None]
+                alb = alb * (1.0 - c3) + np.array(col, np.float32)[None, None, :] * c3
+                r_out = np.clip(r_out * (1.0 - chip) + s_rough * chip, 0.06, 0.97)
+                m_out = np.clip(m_out * (1.0 - chip) + s_metal * chip, 0.0, 1.0)
+                N_step = gd._height_to_normal_periodic(-chip.astype(np.float32), slope=1.6)
+                ps, qs = ng.normal_to_slopes(N_step)
+                N_out = dp.blend_rnm(N_out, ng.slopes_to_normal(ps, qs), detail_weight=1.0)
+                N_out = ng.node_normal_clamp_slope({"circular": True}, {"normal": N_out}, max_angle_deg=60.0)["normal"]
+            masks["chip"] = chip.astype(np.float32)
+
     # --- Layer 2: Crevice Dirt & Grime ---
     m_dirt = masks["dirt"]
     if float(m_dirt.max()) > 1e-4:
@@ -529,9 +611,10 @@ def apply_weathering_maps(
             stain_col = cuprite * (1.0 - core_w) + verd * core_w
             blend_k = 0.90
         elif is_metal:
-            ox_dark = np.array([0.055, 0.024, 0.012], dtype=np.float32)[None, None, :]
-            sienna = np.array([0.330, 0.088, 0.018], dtype=np.float32)[None, None, :]
-            ochre = np.array([0.520, 0.205, 0.042], dtype=np.float32)[None, None, :]
+            # Tones fitted to 8 CC0 rust scans (Lab L 24-50, hue ~64 deg yellow-brown): see tools/weathering_refs.py
+            ox_dark = np.array([0.053, 0.021, 0.010], dtype=np.float32)[None, None, :]
+            sienna = np.array([0.120, 0.044, 0.016], dtype=np.float32)[None, None, :]
+            ochre = np.array([0.216, 0.101, 0.020], dtype=np.float32)[None, None, :]
             rt = np.clip(0.32 + 0.55 * w_fine + 0.30 * (w_micro - 0.5), 0.0, 1.0)[..., None]
             # When combined with moisture/moss (abandoned/coastal), old rust darkens into pitted black-umber scale
             aged_scale = float(np.clip(0.65 * wet + 0.55 * moss, 0.0, 0.72))
@@ -574,9 +657,10 @@ def apply_weathering_maps(
     m_moss = masks["moss"]
     if float(m_moss.max()) > 1e-4:
         tuft = masks.get("moss_tuft", w_micro)
-        moss_dark = np.array([0.034, 0.076, 0.020], dtype=np.float32)[None, None, :]
-        moss_mid = np.array([0.088, 0.185, 0.042], dtype=np.float32)[None, None, :]
-        lichen_pale = np.array([0.275, 0.315, 0.180], dtype=np.float32)[None, None, :]
+        # Tones fitted to CC0 moss scans (Lab L 20-46, olive hue ~108 deg): see tools/weathering_refs.py
+        moss_dark = np.array([0.026, 0.034, 0.000], dtype=np.float32)[None, None, :]
+        moss_mid = np.array([0.060, 0.082, 0.000], dtype=np.float32)[None, None, :]
+        lichen_pale = np.array([0.158, 0.166, 0.002], dtype=np.float32)[None, None, :]
         lich_w = gd._smoothstep(0.72, 0.92, w_fine * (0.45 + 0.55 * w_micro))[..., None]
         moss_col = moss_dark * (1.0 - tuft[..., None]) + moss_mid * tuft[..., None]
         moss_col = moss_col * (1.0 - 0.45 * lich_w) + lichen_pale * (0.45 * lich_w)

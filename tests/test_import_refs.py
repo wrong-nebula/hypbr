@@ -119,7 +119,7 @@ def test_matsynth_rows_filters_and_mapping(tmp_path, source_maps):
 
     row = {
         "name": "Bricks075", "category": 11,  # terracotta
-        "metadata": {"license": "CC0", "source": "cgbookcase", "physical_size": 1.5, "tags": ["brick", "red"],
+        "metadata": {"license": "CC0", "source": "cgbookcase", "physical_size": 150, "tags": ["brick", "red"],
                      "method": "photogrammetry", "link": "https://example.invalid/bricks075"},
         "basecolor": {"bytes": _png(source_maps["albedo"])}, "normal": {"bytes": _png(source_maps["normal"])},
         "height": {"bytes": _png(source_maps["height16"])}, "roughness": {"bytes": _png(source_maps["rough"])},
@@ -128,14 +128,17 @@ def test_matsynth_rows_filters_and_mapping(tmp_path, source_maps):
     mat = imp.matsynth_material(row)
     assert mat.id == "msyn_terracotta_bricks075" and mat.license == "CC0"
     rec = imp.write_material(mat, tmp_path / "refs")
-    assert rec["size_m"] == 1.5 and rec["category"] == "terracotta" and "metallic" not in rec["maps"]
+    assert rec["size_m"] == 1.5 and rec["category"] == "terracotta" and "metallic" not in rec["maps"]  # 150 cm
+    for bad in (0, 0.5, 1e6, "3m", None):  # implausible or missing edge lengths are dropped, not guessed
+        row["metadata"]["physical_size"] = bad
+        assert "size_m" not in imp.matsynth_material(row).meta
 
 
 def test_calibration_uses_imported_roughness_and_physical_size(tmp_path, source_maps):
     from hypbr.calibration import reference_stats
 
     row = {"name": "Bricks075", "category": 11,
-           "metadata": {"license": "CC0", "source": "cgbookcase", "physical_size": 1.5},
+           "metadata": {"license": "CC0", "source": "cgbookcase", "physical_size": 150},
            "basecolor": {"bytes": _png(source_maps["albedo"])}, "normal": {"bytes": _png(source_maps["normal"])},
            "roughness": {"bytes": _png(source_maps["rough"])}}
     imp.write_material(imp.matsynth_material(row), tmp_path / "refs")

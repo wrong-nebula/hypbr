@@ -271,8 +271,10 @@ def matsynth_material(row: dict[str, Any]) -> Material:
     size = meta.get("physical_size")
     keep = {"name": name, "category": cat_name, "tags": list(meta.get("tags") or []), "method": meta.get("method"),
             "upstream_source": meta.get("source"), "authors": list(meta.get("authors") or []), "link": meta.get("link")}
-    if isinstance(size, (int, float)) and size > 0:
-        keep["size_m"] = float(size)
+    # The card gives "the length of the edge in centimeters" (e.g. 300 for a ~3 m brick wall). Keep only plausible
+    # tile edges (1 cm .. 50 m); anything else is left unset so calibration falls back to its name-based default.
+    if isinstance(size, (int, float)) and 1.0 <= size <= 5000.0:
+        keep["size_m"] = float(size) / 100.0
     return Material(f"msyn_{slug(cat_name)}_{slug(name)}", "matsynth", str(meta.get("license") or "CC0"), maps, keep,
                     str(meta.get("link") or f"hf://{MATSYNTH_REPO}"), "gl")  # card: "We adopt the OpenGL standard"
 

@@ -92,6 +92,42 @@ function periodicFbm(size, freqs, seed) {
   return out;
 }
 
+// Periodic (wrap-around) blur: three box passes approximate a Gaussian of `sigma` px, O(1) per pixel per pass.
+function blurPeriodic(src, size, sigma) {
+  const r = Math.max(1, Math.min(size - 1, Math.round((Math.sqrt(4 * sigma * sigma + 1) - 1) / 2)));
+  const inv = 1 / (2 * r + 1);
+  const a = Float32Array.from(src);
+  const b = new Float32Array(src.length);
+  for (let pass = 0; pass < 3; pass++) {
+    for (let y = 0; y < size; y++) {
+      const row = y * size;
+      let sum = 0;
+      for (let k = -r; k <= r; k++) sum += a[row + ((k % size) + size) % size];
+      let add = r + 1 >= size ? r + 1 - size : r + 1;
+      let sub = size - r;
+      for (let x = 0; x < size; x++) {
+        b[row + x] = sum * inv;
+        sum += a[row + add] - a[row + sub];
+        if (++add === size) add = 0;
+        if (++sub === size) sub = 0;
+      }
+    }
+    for (let x = 0; x < size; x++) {
+      let sum = 0;
+      for (let k = -r; k <= r; k++) sum += b[(((k % size) + size) % size) * size + x];
+      let add = r + 1 >= size ? r + 1 - size : r + 1;
+      let sub = size - r;
+      for (let y = 0; y < size; y++) {
+        a[y * size + x] = sum * inv;
+        sum += b[add * size + x] - b[sub * size + x];
+        if (++add === size) add = 0;
+        if (++sub === size) sub = 0;
+      }
+    }
+  }
+  return a;
+}
+
 // Sparse-patch scales, the same as hypbr/weathering.py: [cells per tile, radius lo, hi (cell units),
 // on-probability lo, hi, seed offset]. Rust: corrosion patches + pits. Moss: colonies + tufts.
 const RUST_SPOT_SCALES = [[9, 0.22, 0.42, 0.25, 0.70, 5301], [14, 0.20, 0.42, 0.16, 0.55, 5303]];
@@ -361,6 +397,8 @@ export function weatherBase(base, entry, weather, seed) {
   // Moss joints, normalized to this material (median -> 0, 95th percentile -> 1) like crevice_wide_n in Python,
   // so faces with low baked occlusion do not count as joints.
   let jointN = null;
+  let jointHalo = null;
+  let jointWideN = null;
   if (moss > 1e-4) {
     const raw = new Float32Array(size * size);
     for (let i = 0; i < raw.length; i++) raw[i] = (1 - base.ao[i] / 255) * 1.4 + (base.cav[i] / 255) * 0.6;
@@ -368,6 +406,14 @@ export function weatherBase(base, entry, weather, seed) {
     const med = sorted[Math.floor(sorted.length * 0.5)], p95 = sorted[Math.floor(sorted.length * 0.95)];
     jointN = new Float32Array(raw.length);
     for (let i = 0; i < raw.length; i++) jointN[i] = clamp01((raw[i] - med) / Math.max(p95 - med, 1e-4));
+    // Python's crevice_halo (~9 px) and crevice_wide_n (~22 px, / its p95): where moss creeps out from joints
+    const res = size / 512;
+    jointHalo = blurPeriodic(jointN, size, Math.max(1.8, 9 * res));
+    const wide = blurPeriodic(jointN, size, Math.max(3.5, 22 * res));
+    const wSorted = Float32Array.from(wide).sort();
+    const wP95 = Math.max(wSorted[Math.floor(wSorted.length * 0.95)], 0.08);
+    jointWideN = new Float32Array(wide.length);
+    for (let i = 0; i < wide.length; i++) jointWideN[i] = clamp01(wide[i] / wP95);
   }
 
   const kind = (entry.archetype || entry.kind || "stone").toLowerCase();
@@ -463,14 +509,13 @@ export function weatherBase(base, entry, weather, seed) {
     let mMoss = 0;
     if (moss > 1e-4) {
       // Colonies that creep out from joints (as in hypbr/weathering.py), not the whole joint network
-      const col = patchAt(mossCells, MOSS_COLONY_SCALES, i, moss, clamp01(0.6 * crevice + 0.4 * basin));
+      const col = patchAt(mossCells, MOSS_COLONY_SCALES, i, moss, clamp01(0.6 * jointWideN[i] + 0.4 * basin));
       const msDrive = crevice * (0.75 + 0.55 * wl) + 0.38 * basin * wl + 0.22 * wf - 0.38 * convex
         + 0.30 * (0.65 + 0.35 * moss) * col;
-      // Joints only (normalized occlusion + cavity): `crevice` also counts every low area, which let moss fill disks
-      const joint = jointN[i];
+      // Joints (normalized occlusion + cavity), their halo and wide creep zone, as in hypbr/weathering.py
       const reach = 0.15 + 0.55 * smoothstep(0.10, 1.0, moss);
-      const creep = smoothstep(1 - reach, 1, joint * (0.55 + 0.9 * wf));
-      const gate = Math.max(smoothstep(0.05, 0.28, joint) * (0.3 + 0.7 * col), col * creep);
+      const creep = smoothstep(1 - reach, 1, jointWideN[i] * (0.55 + 0.9 * wf));
+      const gate = Math.max(smoothstep(0.05, 0.28, jointN[i] + 0.58 * jointHalo[i]) * (0.3 + 0.7 * col), col * creep);
       mMoss = smoothstep(0.66 - 0.42 * moss, 0.78 - 0.36 * moss, msDrive) * (0.72 + 0.28 * moss) * gate * fade.moss;
       if (mMoss > 1e-3) {
         const lush = clamp01(0.45 * wf + 0.55 * wm);

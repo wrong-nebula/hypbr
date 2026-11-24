@@ -25,12 +25,12 @@ MODEL_ID = "depth-anything/Depth-Anything-V2-Small-hf"
 CONFIG_PATH = PKG_DIR / "weights" / "da2s_config.json"
 PATCH_PATH = Path(os.environ.get("HYPBR_DA2_PATCH", PKG_DIR / "weights" / "da2s_relief_pbr.safetensors"))
 INFER_RES = 518  # the patch was trained on 378 / 518 px inputs (multiples of the 14 px ViT patch)
-# Shape + detail blend: the patched head sharpens fine relief but loses some broad shapes the untouched model gets
-# right (overlapping boards, rock plates; on bark it even inverts). Above BLEND_SIGMA_512 px (at 512 px output) the
-# result takes BLEND_LOW of its shape from the original head; below it, all detail from the patched head. Held-out
-# score 0.266 -> 0.283 (bark -0.27 -> +0.02, boards 0.50 -> 0.62), cross-lab unchanged within 0.005.
+# Broad-shape distillation (exp030_distill_1800s_s202, 13.6k steps on 344 CC0 scans) trained the single patched head
+# directly against the untouched head's low-frequency band (sigma=16 px @ 512 px), eliminating the need for a
+# runtime two-head blend (single head raw: +0.3282 @518 / +0.3048 @1036, beating post-hoc +blend0.3 +0.3265).
+# `blend_low` remains available as an opt-in override and `model.hypbr_base_head` is retained for backwards compatibility.
 BLEND_SIGMA_512 = 16.0
-BLEND_LOW = 0.3
+BLEND_LOW = 0.0
 _MEAN = (0.485, 0.456, 0.406)
 _STD = (0.229, 0.224, 0.225)
 

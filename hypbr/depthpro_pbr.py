@@ -529,14 +529,15 @@ def infer_inv_depth(model, rgb_uint8: np.ndarray, tileable: bool = False, rot4: 
     return out.astype(np.float32)
 
 
-DEPTH_MODELS = ("da2", "depthpro")
+DEPTH_MODELS = ("da2", "da3mono", "depthpro")
 
 
 def macro_relief_maps(rgbs: dict[str, np.ndarray], depth_model: str = "da2", tileable: bool = False,
                       preset: str = "depthpro2-s", log=print) -> dict[str, np.ndarray]:
     """Macro relief (larger = higher) for each photo, loading the chosen model once and freeing it afterwards.
 
-    `da2` (default): Depth Anything V2 Small + hypbr's relief patch (Apache-2.0 base, see `relief_da2`).
+    `da2` (default): Depth Anything V2 Small + hypbr's distilled relief patch (Apache-2.0 base, 5.2 MB, see `relief_da2`).
+    `da3mono`: Depth Anything 3 Mono Large + optional `HYPBR_DA3_PATCH` (Apache-2.0 base, highest cross-lab accuracy).
     `depthpro`: Apple Depth Pro 2 (`preset`) + the Neon-WSP patch (research-only `apple-amlr` license; needs `depth_pro_2`).
     Both average 4 rotations, or blend 4 cyclic shifts when `tileable`.
     """
@@ -550,6 +551,13 @@ def macro_relief_maps(rgbs: dict[str, np.ndarray], depth_model: str = "da2", til
         model, n = load_da2_relief()
         log(f"Loaded Depth Anything V2 Small + relief patch ({n:,} params) on {DEVICE} in {time.time()-t0:.1f}s", flush=True)
         out = {k: infer_relief(model, rgb, tileable=tileable, rot4=not tileable) for k, rgb in rgbs.items()}
+    elif depth_model == "da3mono":
+        from .relief_da3 import infer_relief as infer_da3_relief, load_da3mono_relief
+
+        model, n = load_da3mono_relief()
+        tag = f"+ patch ({n:,} params)" if n else "(untuned)"
+        log(f"Loaded Depth Anything 3 Mono Large {tag} on {DEVICE} in {time.time()-t0:.1f}s", flush=True)
+        out = {k: infer_da3_relief(model, rgb, tileable=tileable, rot4=not tileable) for k, rgb in rgbs.items()}
     else:
         model = load_depthpro2_no_fov(preset, precision=torch.float32)
         _, n = apply_neon_wsp_patch(model, circular_pad=tileable)

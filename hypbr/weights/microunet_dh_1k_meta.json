@@ -1,0 +1,366 @@
+{
+  "total": 117561,
+  "tensors": [
+    {
+      "name": "stem.weight",
+      "shape": [
+        24,
+        10,
+        3,
+        3
+      ],
+      "offset": 0,
+      "count": 2160
+    },
+    {
+      "name": "stem.bias",
+      "shape": [
+        24
+      ],
+      "offset": 2160,
+      "count": 24
+    },
+    {
+      "name": "e0.c1.weight",
+      "shape": [
+        24,
+        24,
+        3,
+        3
+      ],
+      "offset": 2184,
+      "count": 5184
+    },
+    {
+      "name": "e0.c1.bias",
+      "shape": [
+        24
+      ],
+      "offset": 7368,
+      "count": 24
+    },
+    {
+      "name": "e0.c2.weight",
+      "shape": [
+        24,
+        24,
+        1,
+        1
+      ],
+      "offset": 7392,
+      "count": 576
+    },
+    {
+      "name": "e0.c2.bias",
+      "shape": [
+        24
+      ],
+      "offset": 7968,
+      "count": 24
+    },
+    {
+      "name": "d1_conv.weight",
+      "shape": [
+        36,
+        24,
+        3,
+        3
+      ],
+      "offset": 7992,
+      "count": 7776
+    },
+    {
+      "name": "d1_conv.bias",
+      "shape": [
+        36
+      ],
+      "offset": 15768,
+      "count": 36
+    },
+    {
+      "name": "e1.c1.weight",
+      "shape": [
+        36,
+        36,
+        3,
+        3
+      ],
+      "offset": 15804,
+      "count": 11664
+    },
+    {
+      "name": "e1.c1.bias",
+      "shape": [
+        36
+      ],
+      "offset": 27468,
+      "count": 36
+    },
+    {
+      "name": "e1.c2.weight",
+      "shape": [
+        36,
+        36,
+        1,
+        1
+      ],
+      "offset": 27504,
+      "count": 1296
+    },
+    {
+      "name": "e1.c2.bias",
+      "shape": [
+        36
+      ],
+      "offset": 28800,
+      "count": 36
+    },
+    {
+      "name": "d2_conv.weight",
+      "shape": [
+        48,
+        36,
+        3,
+        3
+      ],
+      "offset": 28836,
+      "count": 15552
+    },
+    {
+      "name": "d2_conv.bias",
+      "shape": [
+        48
+      ],
+      "offset": 44388,
+      "count": 48
+    },
+    {
+      "name": "b0.c1.weight",
+      "shape": [
+        48,
+        48,
+        3,
+        3
+      ],
+      "offset": 44436,
+      "count": 20736
+    },
+    {
+      "name": "b0.c1.bias",
+      "shape": [
+        48
+      ],
+      "offset": 65172,
+      "count": 48
+    },
+    {
+      "name": "b0.c2.weight",
+      "shape": [
+        48,
+        48,
+        1,
+        1
+      ],
+      "offset": 65220,
+      "count": 2304
+    },
+    {
+      "name": "b0.c2.bias",
+      "shape": [
+        48
+      ],
+      "offset": 67524,
+      "count": 48
+    },
+    {
+      "name": "b1.c1.weight",
+      "shape": [
+        48,
+        48,
+        3,
+        3
+      ],
+      "offset": 67572,
+      "count": 20736
+    },
+    {
+      "name": "b1.c1.bias",
+      "shape": [
+        48
+      ],
+      "offset": 88308,
+      "count": 48
+    },
+    {
+      "name": "b1.c2.weight",
+      "shape": [
+        48,
+        48,
+        1,
+        1
+      ],
+      "offset": 88356,
+      "count": 2304
+    },
+    {
+      "name": "b1.c2.bias",
+      "shape": [
+        48
+      ],
+      "offset": 90660,
+      "count": 48
+    },
+    {
+      "name": "u1_fuse.weight",
+      "shape": [
+        36,
+        84,
+        1,
+        1
+      ],
+      "offset": 90708,
+      "count": 3024
+    },
+    {
+      "name": "u1_fuse.bias",
+      "shape": [
+        36
+      ],
+      "offset": 93732,
+      "count": 36
+    },
+    {
+      "name": "u1_blk.c1.weight",
+      "shape": [
+        36,
+        36,
+        3,
+        3
+      ],
+      "offset": 93768,
+      "count": 11664
+    },
+    {
+      "name": "u1_blk.c1.bias",
+      "shape": [
+        36
+      ],
+      "offset": 105432,
+      "count": 36
+    },
+    {
+      "name": "u1_blk.c2.weight",
+      "shape": [
+        36,
+        36,
+        1,
+        1
+      ],
+      "offset": 105468,
+      "count": 1296
+    },
+    {
+      "name": "u1_blk.c2.bias",
+      "shape": [
+        36
+      ],
+      "offset": 106764,
+      "count": 36
+    },
+    {
+      "name": "u0_fuse.weight",
+      "shape": [
+        24,
+        60,
+        1,
+        1
+      ],
+      "offset": 106800,
+      "count": 1440
+    },
+    {
+      "name": "u0_fuse.bias",
+      "shape": [
+        24
+      ],
+      "offset": 108240,
+      "count": 24
+    },
+    {
+      "name": "u0_blk.c1.weight",
+      "shape": [
+        24,
+        24,
+        3,
+        3
+      ],
+      "offset": 108264,
+      "count": 5184
+    },
+    {
+      "name": "u0_blk.c1.bias",
+      "shape": [
+        24
+      ],
+      "offset": 113448,
+      "count": 24
+    },
+    {
+      "name": "u0_blk.c2.weight",
+      "shape": [
+        24,
+        24,
+        1,
+        1
+      ],
+      "offset": 113472,
+      "count": 576
+    },
+    {
+      "name": "u0_blk.c2.bias",
+      "shape": [
+        24
+      ],
+      "offset": 114048,
+      "count": 24
+    },
+    {
+      "name": "head1.weight",
+      "shape": [
+        16,
+        24,
+        3,
+        3
+      ],
+      "offset": 114072,
+      "count": 3456
+    },
+    {
+      "name": "head1.bias",
+      "shape": [
+        16
+      ],
+      "offset": 117528,
+      "count": 16
+    },
+    {
+      "name": "head2.weight",
+      "shape": [
+        1,
+        16,
+        1,
+        1
+      ],
+      "offset": 117544,
+      "count": 16
+    },
+    {
+      "name": "head2.bias",
+      "shape": [
+        1
+      ],
+      "offset": 117560,
+      "count": 1
+    }
+  ]
+}

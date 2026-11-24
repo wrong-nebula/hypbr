@@ -286,6 +286,8 @@ const state = {
   elevationDeg: 14,
   iblMult: 1.0,
   specAA: 1.0,
+  microDetail: 0.45,
+  antiTile: 0.0,
   exposure: 1.08,
   repeat: 4.0,
   normalScale: 1.0,
@@ -615,11 +617,15 @@ scene.add(seamGuide);
 // 3. 4-tap Rotated Grid Super-Sampling (RGSS) minification (eliminates grazing/distance moire!)
 // 4. Dual Specular AA: Kaplanyan/Filament screen-space normal variance + Toksvig mipmap variance
 const specAAUniform = { value: state.specAA };
+const microDetailUniform = { value: state.microDetail };
+const antiTileUniform = { value: state.antiTile };
 
 function applySpecularAA(mat) {
-  mat.customProgramCacheKey = () => "hypbr-pbr-studio-aa-v3";
+  mat.customProgramCacheKey = () => "hypbr-pbr-studio-aa-v4-micro-hextile";
   mat.onBeforeCompile = (shader) => {
     shader.uniforms.uSpecAA = specAAUniform;
+    shader.uniforms.uMicroDetail = microDetailUniform;
+    shader.uniforms.uAntiTile = antiTileUniform;
 
     // 5-tap smooth texel-filtered vertex displacement eliminates coarse triangle spikes
     shader.vertexShader = shader.vertexShader.replace(
@@ -638,6 +644,8 @@ function applySpecularAA(mat) {
 
     const aaHelpers = `
       uniform float uSpecAA;
+      uniform float uMicroDetail;
+      uniform float uAntiTile;
       // Exact 4-tap GPU Cubic B-Spline lookup (Ruijters / Sigg-Hadwiger): strictly non-negative weights, C2-smooth, zero overshoot!
       vec3 sampleCubicBSpline3( sampler2D tex, vec2 uv, vec2 texSize ) {
         vec2 invSize = 1.0 / texSize;
@@ -670,13 +678,113 @@ function applySpecularAA(mat) {
         s += texture2D( tex, uv + dx *  0.125 + dy * -0.375 ).xyz;
         return 0.25 * s;
       }
+      // Stochastic Hex-Tile UV randomization (eliminates visible macro tile repetition!)
+      vec2 hypbrHash22( vec2 p ) {
+        vec3 p3 = fract( vec3( p.xyx ) * vec3( 0.1031, 0.1030, 0.0973 ) );
+        p3 += dot( p3, p3.yzx + 33.33 );
+        return fract( ( p3.xx + p3.yz ) * p3.zy );
+      }
+      void hypbrHexGrid( vec2 uv, out vec2 v1, out vec2 v2, out vec2 v3, out vec3 w ) {
+        vec2 st = mat2( 1.0, -0.57735027, 0.0, 1.15470054 ) * uv;
+        vec2 id = floor( st );
+        vec2 f = fract( st );
+        if ( f.x + f.y < 1.0 ) {
+          v1 = id; v2 = id + vec2( 1.0, 0.0 ); v3 = id + vec2( 0.0, 1.0 );
+          w = vec3( 1.0 - f.x - f.y, f.x, f.y );
+        } else {
+          v1 = id + vec2( 1.0, 1.0 ); v2 = id + vec2( 1.0, 0.0 ); v3 = id + vec2( 0.0, 1.0 );
+          w = vec3( f.x + f.y - 1.0, 1.0 - f.y, 1.0 - f.x );
+        }
+        w = pow( max( w, vec3( 1e-4 ) ), vec3( 6.0 ) );
+        w /= ( w.x + w.y + w.z );
+      }
+      vec4 sampleHexDetile( sampler2D tex, vec2 uv, vec2 ddx, vec2 ddy ) {
+        vec2 v1, v2, v3; vec3 w;
+        hypbrHexGrid( uv, v1, v2, v3, w );
+        vec4 s1 = textureGrad( tex, uv + hypbrHash22( v1 ), ddx, ddy );
+        vec4 s2 = textureGrad( tex, uv + hypbrHash22( v2 ), ddx, ddy );
+        vec4 s3 = textureGrad( tex, uv + hypbrHash22( v3 ), ddx, ddy );
+        return s1 * w.x + s2 * w.y + s3 * w.z;
+      }
+      // Curl-free mutually-prime isotropic micro-normal synthesis (LPPN-v3, zero waffle/wavy lines)
+      float hypbrHashAngle( float ix, float iy, float seed ) {
+        return fract( sin( ix * 127.1 + iy * 311.7 + seed * 74.7 ) * 43758.5453123 ) * 6.28318530718;
+      }
+      vec3 hypbrTileGradNoise( float u, float v, float p, float seed ) {
+        float x = u * p, y = v * p;
+        float ix = floor( x ), iy = floor( y );
+        float fx = x - ix, fy = y - iy;
+        float ux = fx * fx * fx * ( fx * ( fx * 6.0 - 15.0 ) + 10.0 );
+        float uy = fy * fy * fy * ( fy * ( fy * 6.0 - 15.0 ) + 10.0 );
+        float dux = 30.0 * fx * fx * ( fx - 1.0 ) * ( fx - 1.0 );
+        float duy = 30.0 * fy * fy * ( fy - 1.0 ) * ( fy - 1.0 );
+        float cx0 = mod( ix, p ), cx1 = mod( ix + 1.0, p );
+        float cy0 = mod( iy, p ), cy1 = mod( iy + 1.0, p );
+        float a00 = hypbrHashAngle( cx0, cy0, seed ); vec2 g00 = vec2( cos( a00 ), sin( a00 ) ); float n00 = dot( g00, vec2( fx, fy ) );
+        float a10 = hypbrHashAngle( cx1, cy0, seed ); vec2 g10 = vec2( cos( a10 ), sin( a10 ) ); float n10 = dot( g10, vec2( fx - 1.0, fy ) );
+        float a01 = hypbrHashAngle( cx0, cy1, seed ); vec2 g01 = vec2( cos( a01 ), sin( a01 ) ); float n01 = dot( g01, vec2( fx, fy - 1.0 ) );
+        float a11 = hypbrHashAngle( cx1, cy1, seed ); vec2 g11 = vec2( cos( a11 ), sin( a11 ) ); float n11 = dot( g11, vec2( fx - 1.0, fy - 1.0 ) );
+        float k0 = n10 - n00, k1 = n01 - n00, k2 = n00 - n10 - n01 + n11;
+        vec2 gInt = mix( mix( g00, g10, ux ), mix( g01, g11, ux ), uy );
+        return vec3( mix( mix( n00, n10, ux ), mix( n01, n11, ux ), uy ), gInt.x + dux * ( k0 + uy * k2 ), gInt.y + duy * ( k1 + ux * k2 ) );
+      }
+      vec3 hypbrApplyCurlFreeMicroDetail( vec3 baseN, vec2 uv, float uvFw, float roughFactor, float strength ) {
+        if ( strength <= 0.001 ) return baseN;
+        float gate = smoothstep( 0.16, 0.55, roughFactor ) * smoothstep( 0.015, 0.18, length( baseN.xy ) ) * strength;
+        if ( gate <= 0.001 ) return baseN;
+        float u0 = fract( uv.x ), v0 = fract( uv.y );
+        float ur = fract( uv.x + uv.y ), vr = fract( uv.x - uv.y );
+        vec2 dxy = vec2( 0.0 );
+        float periods[5]; periods[0] = 37.0; periods[1] = 53.0; periods[2] = 79.0; periods[3] = 127.0; periods[4] = 191.0;
+        float weights[5]; weights[0] = 0.036; weights[1] = 0.044; weights[2] = 0.052; weights[3] = 0.048; weights[4] = 0.038;
+        for ( int i = 0; i < 5; i++ ) {
+          bool rot = ( i == 1 || i == 3 );
+          float p = periods[i];
+          float eff = rot ? ( p * 1.41421356 ) : p;
+          float fade = clamp( 1.0 - smoothstep( 0.25, 0.60, uvFw * eff ), 0.0, 1.0 );
+          if ( fade <= 0.001 ) continue;
+          vec2 gxy;
+          if ( rot ) {
+            vec3 g = hypbrTileGradNoise( ur, vr, p, float( i + 1 ) );
+            gxy = vec2( ( g.y + g.z ) * 0.70710678, ( g.y - g.z ) * 0.70710678 );
+          } else {
+            vec3 g = hypbrTileGradNoise( u0, v0, p, float( i + 1 ) );
+            gxy = g.yz;
+          }
+          dxy += vec2( -gxy.x, gxy.y ) * ( weights[i] * gate * 1.1328 * fade );
+        }
+        dxy = clamp( dxy, vec2( -0.35 ), vec2( 0.35 ) );
+        vec3 t = vec3( baseN.xy, baseN.z + 1.0 );
+        vec3 u = vec3( -dxy, sqrt( max( 0.05, 1.0 - dot( dxy, dxy ) ) ) );
+        return normalize( t * ( dot( t, u ) / max( t.z, 1e-5 ) ) - u );
+      }
     `;
 
     shader.fragmentShader =
       aaHelpers +
-      shader.fragmentShader.replace(
-        "#include <normal_fragment_maps>",
-        `#ifdef USE_NORMALMAP_OBJECTSPACE
+      shader.fragmentShader
+        .replace(
+          "#include <map_fragment>",
+          `#ifdef USE_MAP
+            vec4 sampledDiffuseColor = ( uAntiTile > 0.001 )
+              ? mix( texture2D( map, vMapUv ), sampleHexDetile( map, vMapUv, dFdx( vMapUv ), dFdy( vMapUv ) ), clamp( uAntiTile, 0.0, 1.0 ) )
+              : texture2D( map, vMapUv );
+            diffuseColor *= sampledDiffuseColor;
+          #endif`
+        )
+        .replace(
+          "#include <roughnessmap_fragment>",
+          `float roughnessFactor = roughness;
+          #ifdef USE_ROUGHNESSMAP
+            vec4 texelRoughness = ( uAntiTile > 0.001 )
+              ? mix( texture2D( roughnessMap, vRoughnessMapUv ), sampleHexDetile( roughnessMap, vRoughnessMapUv, dFdx( vRoughnessMapUv ), dFdy( vRoughnessMapUv ) ), clamp( uAntiTile, 0.0, 1.0 ) )
+              : texture2D( roughnessMap, vRoughnessMapUv );
+            roughnessFactor *= texelRoughness.g;
+          #endif`
+        )
+        .replace(
+          "#include <normal_fragment_maps>",
+          `#ifdef USE_NORMALMAP_OBJECTSPACE
           normal = texture2D( normalMap, vNormalMapUv ).xyz * 2.0 - 1.0;
           #ifdef FLIP_SIDED
             normal = - normal;
@@ -690,9 +798,11 @@ function applySpecularAA(mat) {
           vec2 nDx = dFdx( vNormalMapUv );
           vec2 nDy = dFdy( vNormalMapUv );
           float nFootprint = max( length( nDx * nTexSize ), length( nDy * nTexSize ) );
-          vec3 nBaseSample = texture2D( normalMap, vNormalMapUv ).xyz;
+          vec3 nBaseSample = ( uAntiTile > 0.001 )
+            ? mix( texture2D( normalMap, vNormalMapUv ).xyz, sampleHexDetile( normalMap, vNormalMapUv, nDx, nDy ).xyz, clamp( uAntiTile, 0.0, 1.0 ) )
+            : texture2D( normalMap, vNormalMapUv ).xyz;
           vec3 nFiltered = nBaseSample;
-          if ( uSpecAA > 0.001 ) {
+          if ( uSpecAA > 0.001 && uAntiTile <= 0.001 ) {
             if ( nFootprint < 0.95 ) {
               float wCubic = smoothstep( 0.95, 0.45, nFootprint ) * clamp( uSpecAA, 0.0, 1.0 );
               nFiltered = mix( nBaseSample, sampleCubicBSpline3( normalMap, vNormalMapUv, nTexSize ), wCubic );
@@ -706,6 +816,10 @@ function applySpecularAA(mat) {
           #if defined( USE_PACKED_NORMALMAP )
             mapN = vec3( mapN.xy, sqrt( saturate( 1.0 - dot( mapN.xy, mapN.xy ) ) ) );
           #endif
+          if ( uMicroDetail > 0.001 ) {
+            float uvFw = max( length( nDx ), length( nDy ) );
+            mapN = hypbrApplyCurlFreeMicroDetail( normalize( mapN ), vNormalMapUv, uvFw, roughnessFactor, uMicroDetail );
+          }
           mapN.xy *= normalScale;
           normal = normalize( tbn * mapN );
         #elif defined( USE_BUMPMAP )
@@ -724,7 +838,7 @@ function applySpecularAA(mat) {
           #endif
           roughnessFactor = sqrt( clamp( roughnessFactor * roughnessFactor + kRough, 0.0, 1.0 ) );
         }`
-      );
+        );
   };
 }
 
@@ -970,6 +1084,8 @@ function syncAllTextureRepeats() {
 
 function updateMaterialScalars() {
   specAAUniform.value = state.specAA;
+  microDetailUniform.value = state.microDetail;
+  antiTileUniform.value = state.antiTile;
   applyPhysicalMaterialProps(matMainPbr, false);
   applyPhysicalMaterialProps(matFreshPbr, true);
 }
@@ -2259,6 +2375,16 @@ function wireEvents() {
     $("valSpecAA").textContent = `${state.specAA.toFixed(2)}×`;
     specAAUniform.value = state.specAA;
   });
+  $("slMicroDetail")?.addEventListener("input", (e) => {
+    state.microDetail = parseFloat(e.target.value);
+    $("valMicroDetail").textContent = `${state.microDetail.toFixed(2)}×`;
+    microDetailUniform.value = state.microDetail;
+  });
+  $("slAntiTile")?.addEventListener("input", (e) => {
+    state.antiTile = parseFloat(e.target.value);
+    $("valAntiTile").textContent = `${state.antiTile.toFixed(2)}×`;
+    antiTileUniform.value = state.antiTile;
+  });
   $("slExposure").addEventListener("input", (e) => {
     state.exposure = parseFloat(e.target.value);
     $("valExposure").textContent = state.exposure.toFixed(2);
@@ -2280,6 +2406,8 @@ function wireEvents() {
     state.elevationDeg = rig.keyElevDeg ?? 14;
     state.iblMult = 1.0;
     state.specAA = 1.0;
+    state.microDetail = 0.45;
+    state.antiTile = 0.0;
     state.exposure = 1.08;
     $("slRepeat").value = String(state.repeat); $("valRepeat").textContent = `${state.repeat.toFixed(1)}×`;
     $("slNormal").value = "1"; $("valNormal").textContent = "1.00";
@@ -2290,6 +2418,8 @@ function wireEvents() {
     $("slElevation").value = String(state.elevationDeg); $("valElevation").textContent = `${Math.round(state.elevationDeg)}°`;
     $("slIbl").value = "1"; $("valIbl").textContent = "1.00×";
     $("slSpecAA").value = "1"; $("valSpecAA").textContent = "1.00×";
+    if ($("slMicroDetail")) { $("slMicroDetail").value = "0.45"; $("valMicroDetail").textContent = "0.45×"; }
+    if ($("slAntiTile")) { $("slAntiTile").value = "0"; $("valAntiTile").textContent = "0.00×"; }
     $("slExposure").value = "1.08"; $("valExposure").textContent = "1.08";
     renderer.toneMappingExposure = state.exposure;
     if (state.autoStage) {

@@ -409,8 +409,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_photo.add_argument("--graph", type=Path, default=None, help="Optional custom JSON graph file")
     p_photo.add_argument("--tileable", action="store_true", help="Enable circular-padded seamless evaluation")
     p_photo.add_argument("--dx", action="store_true", help="Output DirectX (-Y) normals instead of OpenGL (+Y)")
-    p_photo.add_argument("--depth-model", default="da2", choices=("da2", "depthpro"),
+    p_photo.add_argument("--depth-model", default="da2", choices=("da2", "da3mono", "depthpro"),
                          help="Macro relief model: da2 = Depth Anything V2 Small + hypbr patch (Apache-2.0 base, default); "
+                              "da3mono = Depth Anything 3 Mono Large (Apache-2.0, optional HYPBR_DA3_PATCH); "
                               "depthpro = Apple Depth Pro 2 (research-only license, needs depth_pro_2)")
     p_photo.set_defaults(func=cmd_photo)
 

@@ -1,24 +1,25 @@
-# hypbr relief patch for Depth Anything V2 Small
+# hypbr Neural Patches (Apache-2.0 & CC0 Derived)
 
-`da2s_relief_pbr.safetensors` holds the DPT neck and head of
-[Depth Anything V2 Small](https://huggingface.co/depth-anything/Depth-Anything-V2-Small-hf) (2,728,513 parameters, fp16),
-fine-tuned by hypbr to predict surface relief from close-up material photos. The DINOv2 ViT-S backbone is unchanged and
-is downloaded from Hugging Face on first use; `da2s_config.json` is that model's configuration.
+1. **`da2s_relief_pbr.safetensors`** (5.21 MB, 2,728,513 params, fp16): DPT neck + head of
+   [Depth Anything V2 Small](https://huggingface.co/depth-anything/Depth-Anything-V2-Small-hf) (Apache-2.0),
+   fine-tuned with broad-shape distillation (`exp030_distill_1800s_s202`, 13,639 steps on 344 CC0 Poly Haven scans).
+   Single-head inference (`BLEND_LOW = 0.0`) outperforms the earlier two-head runtime blend while halving decoder work.
 
-- **Base model**: Depth Anything V2 Small, Copyright the Depth Anything authors, licensed under the
-  [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). These tensors are modified versions of its neck
-  and head weights. (Only the Small model is Apache-2.0; the Base, Large and Giant models are CC BY-NC 4.0.)
-- **Training data**: 344 CC0 scans from [Poly Haven](https://polyhaven.com) (height + normal + albedo), rendered as
-  studio-lit photos with randomized raking light, plus flat painted patterns that must stay flat.
-- **Recipe**: frozen backbone; multi-scale height-correlation, normal-slope and high-frequency losses; EMA weights and
-  an L2 pull toward the original weights. 10 minutes on an Apple M1.
+2. **`svbrdf_da2s.safetensors`** (3.15 MB, 1,649,669 params, fp16): optional skip-connected SVBRDF decoder
+   (`hypbr/svbrdf_da2.py`) sharing the frozen DINOv2 ViT-S backbone to predict shadow-free delighted albedo,
+   calibrated roughness, and metalness, trained on 882 CC0 Poly Haven + ambientCG SVBRDF scans.
 
-Held-out results (20 Poly Haven scans never trained on, 7 ambientCG scans from a different lab, 2 flat traps; score =
-0.35 depth + 0.35 slope + 0.30 fine-detail correlation, minus a penalty for reading paint as relief):
+3. **`microunet_dh_1k_f16.bin`** (229.6 KB, 117,561 params, fp16): optional 3-scale curl-free micro-height U-Net
+   (`hypbr/micro_detail.py` & WebGPU compute) trained on 1K CC0 scans with VGG16 perceptual + PatchGAN losses.
 
-| Model | Score | Cross-lab depth / slope / detail | Paint read as relief |
-|---|---|---|---|
-| Apple Depth Pro 2-S, unmodified | 0.027 | -0.015 / 0.021 / 0.014 | 0.07 |
-| Apple Depth Pro 2-S, best hypbr fine-tune | 0.233 | 0.269 / 0.271 / 0.320 | 0.28 |
-| Depth Anything V2 Small, unmodified | 0.183 | 0.255 / 0.271 / 0.328 | 0.02 |
-| **Depth Anything V2 Small + this patch** | **0.266** | **0.350 / 0.295 / 0.355** | 0.07 |
+Held-out relief results (20 Poly Haven scans never trained on, 7 ambientCG scans from a different lab, 2 flat traps):
+
+| Model | Res | Val Score | Cross-lab depth / slope / detail | Paint leak |
+|---|---:|---:|---|---:|
+| Apple Depth Pro 2-S, unmodified | 512 | 0.027 | -0.015 / 0.021 / 0.014 | 0.070 |
+| Apple Depth Pro 2-S, best hypbr fine-tune | 512 | 0.233 | 0.269 / 0.271 / 0.320 | 0.280 |
+| Depth Anything V2 Small, unmodified | 518 | 0.183 | 0.255 / 0.271 / 0.328 | 0.020 |
+| Earlier `da2s` patch + 0.3 two-head blend | 518 | 0.283 | 0.351 / 0.290 / 0.353 | 0.070 |
+| **Shipped `da2s_relief_pbr` (single head)** | **518** | **0.328** | **0.360 / 0.319 / 0.374** | **0.029** |
+| **Shipped `da2s_relief_pbr` (single head)** | **1036** | **0.305** | **0.367 / 0.330 / 0.365** | **0.033** |
+| Optional `da3mono` Pro (`exp032`, Apache-2.0) | 1008 | 0.325 | **0.405 / 0.365 / 0.428** | **0.010** |

@@ -1323,6 +1323,114 @@ def node_normal_seamless_tile(
     return out
 
 
+@register_node("NarrowJointSlopes")
+def node_narrow_joint_slopes(ctx: dict, inputs: dict, **_):
+    """Reduce the shoulders of strong, locally aligned slope peaks in masonry."""
+    height, normal = inputs["height"], inputs["normal"]
+    if min(height.shape) <= 3:
+        return {"height": height, "normal": normal}
+    circular = ctx.get("circular", False)
+
+    def blur(field, sigma):
+        return dp.gaussian_blur_np(field, sigma, circular=circular)
+
+    p, q = normal_to_slopes(normal)
+    px, py = blur(p, 0.8), blur(q, 0.8)
+    power = px*px + py*py
+    magnitude = np.sqrt(power)
+    mode = "circular" if circular else "reflect"
+    peak = bk.max_filter(magnitude, 3, mode)
+    # Opposite sides of a joint have the same axis. A structure tensor recognizes
+    # that axis without canceling the two sides or assuming horizontal brickwork.
+    coherence = np.hypot(blur(px*px - py*py, 3), blur(2*px*py, 3)) / (blur(power, 3) + 1e-8)
+    aligned = np.clip((coherence - 0.45) / 0.35, 0, 1)
+    steep = np.clip((peak - 0.15) / 0.20, 0, 1)
+    base = blur(height, 0.8)
+    # Closing bridges a narrow depression. Only its recessed side receives
+    # the correction, so grain on the adjacent raised face keeps its own slope.
+    radius = min(6, min(height.shape) - 1)
+    top = dp._morph_close_2d(base, radius, circular=circular)
+    depth = top - base
+    lo, hi = dp._fast_percentiles(base, (5, 95))
+    recess = np.clip((depth / max(float(hi-lo), 1e-6) - 0.015) / 0.105, 0, 1)
+    recess = recess*recess*(3 - 2*recess)
+    lip = np.clip((magnitude - 0.055) / 0.12, 0, 1)
+    weight = aligned * steep * recess * lip*lip*(3 - 2*lip)
+    if not np.any(weight):
+        return {"height": height, "normal": normal}
+
+    # Steepen just the middle of the resolved height transition, keeping its
+    # floor, upper surface, and input high-frequency residual. The independently
+    # calibrated normal map needs narrower shoulders while retaining its peak.
+    floor = -bk.max_filter(-base, radius, mode)
+    span = np.maximum(top-floor, 1e-8)
+    t = np.clip((base-floor)/span, 0, 1)
+    shaped = t*t / (t*t + (1-t)**2)
+    relative = magnitude / np.maximum(peak, 1e-6)
+    taper = weight * (1-relative**2)
+    return {"height": height + weight*span*(shaped-t),
+            "normal": slopes_to_normal(p - taper*px, q - taper*py)}
+
+
+@register_node("ShadingMicroRelief")
+def node_shading_micro_relief(ctx: dict, inputs: dict, **_):
+    """Recover a limited fine height residual along the dominant observed shading direction."""
+    normal, height = inputs["normal"], inputs["height"]
+    circ = ctx.get("circular", False)
+    rgb = srgb_to_linear(inputs["rgb"].astype(np.float32) / 255.0)
+    lum = np.log(0.035 + rgb @ np.array([0.2126, 0.7152, 0.0722], dtype=np.float32))
+    p, q = normal_to_slopes(normal)
+
+    def blur(x, sigma):
+        return dp.gaussian_blur_np(x, sigma, circular=circ)
+
+    # Infer the light from resolved relief. A band pass removes broad changes of dye
+    # and exposure. Subsampling here affects only the two fitted coefficients.
+    sample = np.s_[::3, ::3]
+    design = np.column_stack([(blur(v, 1.5) - blur(v, 6))[sample].ravel() for v in (p, q)])
+    observed = (blur(lum, 1.5) - blur(lum, 6))[sample].ravel()
+    weights = np.ones_like(observed)
+    for _ in range(3):
+        weighted = design * weights[:, None]
+        light = np.linalg.solve(weighted.T @ design + 0.001*np.eye(2), weighted.T @ observed)
+        error = observed - design @ light
+        weights = np.minimum(1.0, 2.0*np.median(np.abs(error)) / (np.abs(error) + 1e-7))
+    fit = design @ light
+    agreement = np.dot(fit, observed) / (np.linalg.norm(fit)*np.linalg.norm(observed) + 1e-8)
+    confidence = float(np.clip((agreement - 0.12) / 0.15, 0.0, 1.0))
+    if confidence == 0.0:
+        return {"normal": normal, "height": height}
+
+    light /= max(float(np.linalg.norm(light)), 1e-6)
+    shade = light[0]*p + light[1]*q
+    observed_fine = 0.15 * np.tanh((lum - blur(lum, 1.8)) / 0.15)
+    residual = observed_fine - (shade - blur(shade, 1.8))
+    # Invert directional shading only where it constrains height. Regularize
+    # perpendicular frequencies and suppress DC. Reflect at nonperiodic borders.
+    pad = 0 if circ else 16
+    field = np.pad(residual, pad, mode="reflect") if pad else residual
+    ky = 2*np.pi*np.fft.fftfreq(field.shape[0])[:, None]
+    kx = 2*np.pi*np.fft.rfftfreq(field.shape[1])[None, :]
+    direction = -light[0]*kx + light[1]*ky
+    inverse = -1j*direction / (direction**2 + 0.35*(kx*kx + ky*ky) + 1e-4)
+    dh = np.fft.irfft2(np.fft.rfft2(field)*inverse, s=field.shape)
+    if pad:
+        dh = dh[pad:-pad, pad:-pad]
+    dh = np.ascontiguousarray(dh*confidence, dtype=np.float32)
+    dh -= blur(dh, 2.0)
+    mode = "circular" if circ else "reflect"
+    dx = bk.correlate3x3(dh, dp._SCHARR_X, mode)
+    dy = bk.correlate3x3(dh, dp._SCHARR_Y, mode)
+
+    # Match height units to the base slopes using their common resolved band.
+    base = blur(height, 2.0)
+    gx = bk.correlate3x3(base, dp._SCHARR_X, mode)
+    gy = bk.correlate3x3(base, dp._SCHARR_Y, mode)
+    slope_power = np.mean(blur(p, 2.0)**2 + blur(q, 2.0)**2)
+    units = np.sqrt(np.mean(gx*gx + gy*gy) / max(slope_power, 1e-8))
+    return {"normal": slopes_to_normal(p-dx, q+dy), "height": height + dh*units}
+
+
 @register_node("NormalDetailTransfer")
 def node_normal_detail_transfer(
     ctx: dict,

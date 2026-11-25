@@ -10,6 +10,7 @@ The output follows the same convention as `depthpro_pbr.infer_inv_depth`: larger
 """
 from __future__ import annotations
 
+import copy
 import json
 import os
 from pathlib import Path
@@ -24,6 +25,12 @@ MODEL_ID = "depth-anything/Depth-Anything-V2-Small-hf"
 CONFIG_PATH = PKG_DIR / "weights" / "da2s_config.json"
 PATCH_PATH = Path(os.environ.get("HYPBR_DA2_PATCH", PKG_DIR / "weights" / "da2s_relief_pbr.safetensors"))
 INFER_RES = 518  # the patch was trained on 378 / 518 px inputs (multiples of the 14 px ViT patch)
+# Broad-shape distillation (exp030_distill_1800s_s202, 13.6k steps on 344 CC0 scans) trained the single patched head
+# directly against the untouched head's low-frequency band (sigma=16 px @ 512 px), eliminating the need for a
+# runtime two-head blend (single head raw: +0.3282 @518 / +0.3048 @1036, beating post-hoc +blend0.3 +0.3265).
+# `blend_low` remains available as an opt-in override and `model.hypbr_base_head` is retained for backwards compatibility.
+BLEND_SIGMA_512 = 16.0
+BLEND_LOW = 0.0
 _MEAN = (0.485, 0.456, 0.406)
 _STD = (0.229, 0.224, 0.225)
 
@@ -64,19 +71,43 @@ def apply_relief_patch(model, patch_path: Path | str = PATCH_PATH) -> int:
 
 
 def load_da2_relief(patch_path: Path | str | None = PATCH_PATH, pretrained: bool = True):
-    """Base model + relief patch on `HYPBR_DEVICE` (auto: cuda > mps > cpu), in eval mode."""
+    """Base model + relief patch on `HYPBR_DEVICE` (auto: cuda > mps > cpu), in eval mode.
+
+    The original neck + head are kept alongside as `model.hypbr_base_head` (2.7M params) for the shape blend.
+    """
     model = build_da2_model(pretrained=pretrained)
+    base = (copy.deepcopy(model.neck), copy.deepcopy(model.head)) if patch_path else None
     n = apply_relief_patch(model, patch_path) if patch_path else 0
-    return model.to(bk.resolve_device()).eval(), n
+    dev = bk.resolve_device()
+    if base is not None:
+        model.hypbr_base_head = tuple(m.to(dev).eval() for m in base)
+    return model.to(dev).eval(), n
+
+
+def blend_shape_detail(base: np.ndarray, patched: np.ndarray, sigma: float, low: float = BLEND_LOW) -> np.ndarray:
+    """Broad shape from `base` (Gaussian low-pass) + fine detail from `patched` (high-pass), in `patched`'s units."""
+    from .depthpro_pbr import detrend_surface, gaussian_blur_np
+
+    b = detrend_surface(base, degree=2)
+    t = detrend_surface(patched, degree=2)
+    scale = float(t.std())
+    if low <= 0.0 or scale < 1e-12 or float(b.std()) < 1e-12:
+        return patched.astype(np.float32)
+    lo = gaussian_blur_np(b / b.std(), sigma, circular=False)
+    tn = t / scale
+    hi = tn - gaussian_blur_np(tn, sigma, circular=False)
+    out = low * lo / (lo.std() + 1e-8) + (1.0 - low) * hi / (hi.std() + 1e-8)
+    return (out * scale).astype(np.float32)
 
 
 @no_grad
 def infer_relief(model, rgb_uint8: np.ndarray, tileable: bool = False, rot4: bool = False,
-                 res: int = INFER_RES) -> np.ndarray:
+                 res: int = INFER_RES, blend_low: float = BLEND_LOW) -> np.ndarray:
     """Relief height (H, W) float32 for an RGB uint8 photo; larger = higher.
 
     `rot4` averages the four 90-degree rotations; `tileable` evaluates four half-tile cyclic shifts blended with an
     exact partition of unity, so the result has no seam at the tile border (both as in the Depth Pro path).
+    `blend_low` > 0 mixes in the original head's broad shape (see BLEND_LOW); 0 uses the patched head alone.
     """
     torch = bk.require_torch("`hypbr photo` (Depth Anything V2 relief)")
     import torch.nn.functional as F
@@ -88,12 +119,23 @@ def infer_relief(model, rgb_uint8: np.ndarray, tileable: bool = False, rot4: boo
     mean = torch.tensor(_MEAN, device=dev).view(1, 3, 1, 1)
     std = torch.tensor(_STD, device=dev).view(1, 3, 1, 1)
 
+    base = getattr(model, "hypbr_base_head", None) if blend_low > 0.0 else None
+
+    def _up(y, hw) -> np.ndarray:
+        y = F.interpolate(y[:, None].float(), size=hw, mode="bicubic", align_corners=False)
+        return y[0, 0].cpu().numpy().astype(np.float32)
+
     def _once(img: np.ndarray) -> np.ndarray:
         x = torch.from_numpy(np.ascontiguousarray(img)).to(dev).float().permute(2, 0, 1)[None] / 255.0
         x = F.interpolate(x, size=(res, res), mode="bicubic", align_corners=False).clamp(0.0, 1.0)
-        y = model(pixel_values=(x - mean) / std).predicted_depth[:, None].float()
-        y = F.interpolate(y, size=img.shape[:2], mode="bicubic", align_corners=False)
-        return y[0, 0].cpu().numpy().astype(np.float32)
+        x = (x - mean) / std
+        if base is None:
+            return _up(model(pixel_values=x).predicted_depth, img.shape[:2])
+        feats = model.backbone.forward_with_filtered_kwargs(x).feature_maps  # one backbone pass, two heads
+        ph, pw = x.shape[-2] // model.config.patch_size, x.shape[-1] // model.config.patch_size
+        t = _up(model.head(model.neck(feats, ph, pw), ph, pw), img.shape[:2])
+        b = _up(base[1](base[0](feats, ph, pw), ph, pw), img.shape[:2])
+        return blend_shape_detail(b, t, BLEND_SIGMA_512 * img.shape[0] / 512.0, blend_low)
 
     def _run(img: np.ndarray) -> np.ndarray:
         if rot4:

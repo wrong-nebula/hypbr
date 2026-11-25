@@ -1,0 +1,334 @@
+{
+  "name": "masonry-narrow-joints",
+  "description": "Preserve fine face relief and narrow strong, directionally aligned masonry lips.",
+  "nodes": [
+    {
+      "id": "neural_n_cf",
+      "type": "NormalHelmholtzProject",
+      "inputs": {
+        "normal": "src.neural_n"
+      },
+      "params": {
+        "mix": 0.7
+      }
+    },
+    {
+      "id": "relief_slope_bands",
+      "type": "NormalFrequencySplit",
+      "inputs": {
+        "normal": "neural_n_cf.normal"
+      },
+      "params": {
+        "sigma": 2.0,
+        "low_gain": 0.5,
+        "high_gain": 1.0
+      }
+    },
+    {
+      "id": "neural_n_gated",
+      "type": "NormalMaskGate",
+      "inputs": {
+        "normal": "relief_slope_bands.normal",
+        "mask": "src.chroma_gate",
+        "gconf": "src.gconf"
+      },
+      "params": {
+        "min_weight": 0.25
+      }
+    },
+    {
+      "id": "pol",
+      "type": "HeightJointAutoPolarity",
+      "inputs": {
+        "macro": "src.macro",
+        "micro": "src.micro_h",
+        "neural": "src.neural_h"
+      },
+      "params": {
+        "min_each": -0.22,
+        "min_avg": -0.32,
+        "blend": 0.9
+      }
+    },
+    {
+      "id": "anchor",
+      "type": "HeightBandCombine",
+      "inputs": {
+        "macro": "src.macro",
+        "neural": "pol.neural",
+        "micro": "pol.micro",
+        "chroma_gate": "src.chroma_gate",
+        "gconf": "src.gconf"
+      },
+      "params": {
+        "w_macro": 0.26,
+        "w_neural": 0.4,
+        "w_micro": 0.34,
+        "sigma_macro": 3.0,
+        "sigma_micro_hp": 12.0
+      }
+    },
+    {
+      "id": "bevel_h",
+      "type": "HeightBevelShape",
+      "inputs": {
+        "height": "anchor.height"
+      },
+      "params": {
+        "flat_smooth": 1.6,
+        "edge_sigma": 0.24,
+        "bevel_gain": 1.05
+      }
+    },
+    {
+      "id": "poisson_h",
+      "type": "ScreenedPoisson",
+      "inputs": {
+        "height": "bevel_h.height",
+        "normal": "neural_n_gated.normal"
+      },
+      "params": {
+        "lam": 0.06,
+        "slope_gain": 0.5
+      }
+    },
+    {
+      "id": "base_n",
+      "type": "HeightToNormal",
+      "inputs": {
+        "height": "poisson_h.height"
+      },
+      "params": {
+        "strength": 1.95,
+        "pre_blur": 0.65,
+        "adaptive_amp": true
+      }
+    },
+    {
+      "id": "rnm_n",
+      "type": "NormalBlendRNM",
+      "inputs": {
+        "base": "base_n.normal",
+        "detail": "neural_n_gated.normal"
+      },
+      "params": {
+        "detail_weight": 0.82
+      }
+    },
+    {
+      "id": "denoise_n",
+      "type": "NormalBilateralDenoise",
+      "inputs": {
+        "normal": "rnm_n.normal",
+        "guide": "poisson_h.height"
+      },
+      "params": {
+        "sigma_s": 1.8,
+        "sigma_r": 0.2
+      }
+    },
+    {
+      "id": "st_n",
+      "type": "StructureTensorDenoise",
+      "inputs": {
+        "normal": "denoise_n.normal",
+        "guide": "poisson_h.height"
+      },
+      "params": {
+        "sigma_tensor": 2.0,
+        "alpha": 0.35,
+        "iters": 2
+      }
+    },
+    {
+      "id": "eq_n",
+      "type": "NormalFrequencySplit",
+      "inputs": {
+        "normal": "st_n.normal"
+      },
+      "params": {
+        "sigma": 3.5,
+        "low_gain": 1.02,
+        "high_gain": 0.9
+      }
+    },
+    {
+      "id": "sg_n",
+      "type": "NormalSlopeGate",
+      "inputs": {
+        "normal": "eq_n.normal"
+      },
+      "params": {
+        "thresh": 0.055,
+        "bevel_boost": 1.08
+      }
+    },
+    {
+      "id": "cf_n",
+      "type": "NormalHelmholtzProject",
+      "inputs": {
+        "normal": "sg_n.normal"
+      },
+      "params": {
+        "mix": 0.32
+      }
+    },
+    {
+      "id": "face_detail",
+      "type": "ShadingMicroRelief",
+      "inputs": {
+        "rgb": "src.rgb",
+        "normal": "cf_n.normal",
+        "height": "poisson_h.height"
+      }
+    },
+    {
+      "id": "joint_profile",
+      "type": "NarrowJointSlopes",
+      "inputs": {
+        "normal": "face_detail.normal",
+        "height": "face_detail.height"
+      }
+    },
+    {
+      "id": "final_n",
+      "type": "NormalClampSlope",
+      "inputs": {
+        "normal": "joint_profile.normal"
+      },
+      "params": {
+        "max_angle_deg": 52.0
+      }
+    },
+    {
+      "id": "curv",
+      "type": "CurvatureMultiScale",
+      "inputs": {
+        "normal": "final_n.normal"
+      },
+      "params": {
+        "gain": 3.2
+      }
+    },
+    {
+      "id": "ao",
+      "type": "HorizonBentNormalAO",
+      "inputs": {
+        "height": "joint_profile.height",
+        "normal": "final_n.normal"
+      },
+      "params": {
+        "strength": 1.45,
+        "height_scale": 18.0
+      }
+    },
+    {
+      "id": "albedo",
+      "type": "AlbedoDelightV13",
+      "inputs": {
+        "rgb": "src.rgb",
+        "normal": "final_n.normal",
+        "ao": "ao.ao"
+      },
+      "params": {
+        "directional_remove": 0.65,
+        "shadow_lift": 0.55,
+        "ao_remove": 0.45,
+        "spec_suppress": 0.55
+      }
+    },
+    {
+      "id": "rough_raw",
+      "type": "RoughnessPhysical",
+      "inputs": {
+        "rgb": "src.rgb",
+        "height": "joint_profile.height",
+        "normal": "final_n.normal",
+        "ao": "ao.ao",
+        "convex": "curv.convex",
+        "concave": "curv.concave",
+        "neural_rough": "src.neural_rough"
+      },
+      "params": {
+        "base_rough": null,
+        "span": 0.36,
+        "w_neural": 0.42,
+        "w_physical": 0.36,
+        "w_curv": 0.22
+      }
+    },
+    {
+      "id": "rough",
+      "type": "RoughnessSpecularAA",
+      "inputs": {
+        "roughness": "rough_raw.roughness",
+        "normal": "final_n.normal"
+      },
+      "params": {
+        "strength": 0.25,
+        "max_boost": 0.08
+      }
+    },
+    {
+      "id": "metal",
+      "type": "MetallicPhysical",
+      "inputs": {
+        "rgb": "src.rgb",
+        "ao": "ao.ao",
+        "convex": "curv.convex"
+      },
+      "params": {
+        "base_metal": 0.0,
+        "edge_wear_metal": 0.0,
+        "cavity_demetal": 0.75,
+        "oxide_demetal": 0.6
+      }
+    },
+    {
+      "id": "orm",
+      "type": "PackORM",
+      "inputs": {
+        "ao": "ao.ao",
+        "roughness": "rough.roughness",
+        "metallic": "metal.metallic"
+      }
+    },
+    {
+      "id": "aniso",
+      "type": "AnisotropyFlow",
+      "inputs": {
+        "height": "joint_profile.height",
+        "ao": "ao.ao",
+        "roughness": "rough.roughness"
+      },
+      "params": {
+        "sigma_tensor": 2.0,
+        "base_f0": 0.5
+      }
+    },
+    {
+      "id": "thick",
+      "type": "ThicknessSubsurface",
+      "inputs": {
+        "height": "joint_profile.height"
+      },
+      "params": {}
+    }
+  ],
+  "outputs": {
+    "albedo": "albedo.albedo_u8",
+    "height": "joint_profile.height",
+    "normal": "final_n.normal",
+    "bent_normal": "ao.bent_normal_u8",
+    "ao": "ao.ao_u8",
+    "roughness": "rough.roughness_u8",
+    "metallic": "metal.metallic_u8",
+    "orm": "orm.orm_u8",
+    "curvature": "curv.curvature_u8",
+    "cavity": "curv.cavity_u8",
+    "edge_wear": "curv.convex",
+    "anisotropy": "aniso.anisotropy_u8",
+    "specular": "aniso.specular_u8",
+    "thickness": "thick.thickness_u8"
+  }
+}

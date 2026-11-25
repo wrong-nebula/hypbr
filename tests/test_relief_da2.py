@@ -117,6 +117,54 @@ def test_without_deepbump_da2_relief_feeds_the_neural_normals(monkeypatch):
     assert not np.allclose(dpro["neural_n"], da2["neural_n"])  # Depth Pro keeps the luminance micro-relief stand-in
 
 
+@pytest.mark.parametrize("circular", [False, True])
+def test_joint_profile_trims_steep_shoulders_and_preserves_faint_texture(circular):
+    from hypbr import normal_graph as ng
+
+    _, x = np.mgrid[:40, :80].astype(np.float32)
+    h = np.tanh((x-32)/2.2) - np.tanh((x-24)/2.2)
+    p = -np.gradient(h, axis=1)
+    zero = np.zeros_like(h)
+    inputs = dict(height=h, normal=ng.slopes_to_normal(p, zero))
+    out = ng.node_narrow_joint_slopes({"circular": circular}, inputs)
+    narrowed, _ = ng.normal_to_slopes(out["normal"])
+    shoulder, peak = 26, 24
+    assert abs(narrowed[20, shoulder]/narrowed[20, peak]) < abs(p[20, shoulder]/p[20, peak])
+    assert np.allclose(narrowed[:, peak], p[:, peak], atol=1e-5)
+    assert np.isfinite(out["height"]).all() and np.std(out["height"]-h) > 1e-4
+    faint = dict(height=h*.03, normal=ng.slopes_to_normal(p*.03, zero))
+    result = ng.node_narrow_joint_slopes({"circular": circular}, faint)
+    assert np.array_equal(result["height"], faint["height"])
+    assert np.array_equal(result["normal"], faint["normal"])
+
+
+def test_shading_micro_relief_recovers_a_lit_ripple_and_ignores_flat_paint():
+    from hypbr import normal_graph as ng
+    from hypbr.color import linear_to_srgb
+
+    _, x = np.mgrid[:72, :72].astype(np.float32)
+    coarse = 0.6 * np.sin(2*np.pi*x/24)
+    ripple = 0.04 * np.sin(2*np.pi*x/6)
+
+    def dx(a):
+        return (np.roll(a, -1, axis=1) - np.roll(a, 1, axis=1)) * 0.5
+
+    coarse_p, detail_p = -dx(coarse), -dx(ripple)
+    zero = np.zeros_like(coarse)
+    base = ng.slopes_to_normal(coarse_p, zero)
+    lum = 0.45 * np.exp(coarse_p + detail_p)
+    rgb = np.repeat(np.rint(255 * linear_to_srgb(lum)).astype(np.uint8)[..., None], 3, axis=2)
+    inputs = dict(normal=base, height=coarse, rgb=rgb)
+    out = ng.node_shading_micro_relief({"circular": True}, inputs)
+    p, _ = ng.normal_to_slopes(out["normal"])
+    assert np.corrcoef((p-coarse_p).ravel(), detail_p.ravel())[0, 1] > 0.9
+    assert np.corrcoef((out["height"]-coarse).ravel(), ripple.ravel())[0, 1] > 0.9
+    flat = dict(inputs, normal=ng.slopes_to_normal(zero, zero), height=zero)
+    out = ng.node_shading_micro_relief({"circular": False}, flat)
+    assert np.array_equal(out["normal"], flat["normal"])
+    assert np.array_equal(out["height"], flat["height"])
+
+
 def test_blend_takes_broad_shape_from_base_and_detail_from_patch():
     from hypbr import relief_da2 as rd
 

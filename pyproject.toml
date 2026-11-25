@@ -57,4 +57,4 @@ Repository = "https://github.com/wrong-nebula/hypbr"
 include = ["hypbr*"]
 
 [tool.setuptools.package-data]
-hypbr = ["data/*.json", "weights/*.safetensors", "weights/*.json", "weights/NOTICE.md"]
+hypbr = ["data/*.json", "weights/*.safetensors", "weights/microunet_dh_1k_f16.bin", "weights/*.json", "weights/NOTICE.md"]
